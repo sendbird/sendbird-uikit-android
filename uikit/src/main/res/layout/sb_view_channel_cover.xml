@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.sendbird.android.GroupChannel" />
+
+        <variable
+            name="channel"
+            type="com.sendbird.android.GroupChannel" />
+    </data>
+
+    <com.sendbird.uikit.widgets.ChannelCoverView
+        android:id="@+id/ivProfileView"
+        android:layout_width="@dimen/sb_size_45"
+        android:layout_height="@dimen/sb_size_45"
+        app:SBProfileImageAdapter="com.sendbird.uikit.adapter.DefaultProfileImageAdapter"
+        />
+</layout>

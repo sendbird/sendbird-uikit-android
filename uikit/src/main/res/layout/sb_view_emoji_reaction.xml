@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <com.sendbird.uikit.widgets.EmojiReactionView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        bind:reaction="@{reaction}"/>
+
+    <data>
+        <variable
+            name="reaction"
+            type="com.sendbird.android.Reaction" />
+    </data>
+</layout>

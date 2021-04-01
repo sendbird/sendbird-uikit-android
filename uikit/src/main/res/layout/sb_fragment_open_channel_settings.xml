@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:fillViewport="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_50"
+            tools:context=".activities.ChannelSettingsActivity">
+
+            <com.sendbird.uikit.widgets.AppBarView
+                android:id="@+id/abSettingsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:sb_appbar_title="@string/sb_text_header_channel_settings"
+                app:sb_appbar_left_button_icon="@drawable/icon_arrow_left"/>
+
+            <com.sendbird.uikit.widgets.OpenChannelSettingsView
+                android:id="@+id/csvSettings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</layout>

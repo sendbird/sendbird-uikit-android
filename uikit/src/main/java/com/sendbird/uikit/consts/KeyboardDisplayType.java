@@ -1,0 +1,12 @@
+package com.sendbird.uikit.consts;
+
+/**
+ * The keyboard display types.
+ * A Plane type is a default display type.
+ * A dialog type is a display type that is contained in a dialog box and displayed separately.
+ * @since 2.0.0
+ */
+public enum KeyboardDisplayType {
+    Plane,
+    Dialog
+}

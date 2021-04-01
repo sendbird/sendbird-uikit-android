@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/vgContent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.sendbird.uikit.widgets.AppBarView
+            android:id="@+id/abSettingsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sb_appbar_title="@string/sb_text_channel_settings_moderations"
+            app:sb_appbar_left_button_icon="@drawable/icon_arrow_left"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.sendbird.uikit.widgets.SingleMenuItemView
+                    android:id="@+id/operatorsItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_56"
+                    app:sb_menu_item_icon="@drawable/icon_operator"
+                    app:sb_menu_item_name="@string/sb_text_operator"
+                    app:sb_menu_item_action_drawable="@drawable/icon_chevron_right"
+                    />
+
+                <com.sendbird.uikit.widgets.SingleMenuItemView
+                    android:id="@+id/mutedMembersItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_56"
+                    app:sb_menu_item_icon="@drawable/icon_mute"
+                    app:sb_menu_item_name="@string/sb_text_menu_muted_members"
+                    app:sb_menu_item_action_drawable="@drawable/icon_chevron_right"
+                    />
+
+                <com.sendbird.uikit.widgets.SingleMenuItemView
+                    android:id="@+id/bannedMembersItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_56"
+                    app:sb_menu_item_icon="@drawable/icon_ban"
+                    app:sb_menu_item_name="@string/sb_text_menu_banned_members"
+                    app:sb_menu_item_action_drawable="@drawable/icon_chevron_right"
+                    />
+
+                <com.sendbird.uikit.widgets.SingleMenuItemView
+                    android:id="@+id/freezeChannelItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_56"
+                    app:sb_menu_item_type="switcher"
+                    app:sb_menu_item_icon="@drawable/icon_freeze"
+                    app:sb_menu_item_name="@string/sb_text_menu_freeze_channel"
+                    app:sb_menu_item_action_drawable="@drawable/icon_chevron_right"
+                    />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+</layout>

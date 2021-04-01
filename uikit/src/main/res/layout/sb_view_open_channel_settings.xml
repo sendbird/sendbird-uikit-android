@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_channel_setting_height_132"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingLeft="@dimen/sb_size_16"
+                android:paddingRight="@dimen/sb_size_16">
+
+                <com.sendbird.uikit.widgets.ChannelCoverView
+                    android:id="@+id/ccvChannelImage"
+                    android:layout_width="@dimen/sb_size_64"
+                    android:layout_height="@dimen/sb_size_64"
+                    android:layout_margin="@dimen/sb_size_8"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvChannelName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:paddingLeft="@dimen/sb_size_50"
+                    android:paddingRight="@dimen/sb_size_50"/>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_1"
+                android:layout_marginLeft="@dimen/sb_size_16"
+                android:layout_marginRight="@dimen/sb_size_16"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:paddingLeft="@dimen/sb_size_24"
+                android:paddingRight="@dimen/sb_size_24"
+                android:paddingTop="@dimen/sb_size_16"
+                android:paddingBottom="@dimen/sb_size_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvInformationTitle"
+                    android:text="@string/sb_text_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvInformationContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sb_size_4"
+                    app:layout_constraintTop_toBottomOf="@id/tvInformationTitle"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_1"
+                android:layout_marginLeft="@dimen/sb_size_16"
+                android:layout_marginRight="@dimen/sb_size_16"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/participantsItem"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_56"
+                android:paddingLeft="@dimen/sb_size_16"
+                android:paddingRight="@dimen/sb_size_16"
+                android:clickable="true"
+                android:focusable="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivParticipantsIcon"
+                    android:layout_width="@dimen/sb_size_28"
+                    android:layout_height="@dimen/sb_size_28"
+                    android:src="@drawable/icon_members"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvParticipantsTitle"
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvParticipantsTitle"
+                    android:layout_width="@dimen/sb_size_0"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/sb_text_header_participants"
+                    android:layout_marginLeft="@dimen/sb_size_16"
+                    android:layout_marginRight="@dimen/sb_size_16"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivParticipantsIcon"
+                    app:layout_constraintEnd_toStartOf="@id/tvParticipantsCount"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvParticipantsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sb_size_8"
+                    android:layout_marginRight="@dimen/sb_size_8"
+                    app:layout_constraintStart_toEndOf="@id/tvParticipantsTitle"
+                    app:layout_constraintEnd_toStartOf="@+id/ivNext"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/ivNext"
+                    android:layout_width="@dimen/sb_size_24"
+                    android:layout_height="@dimen/sb_size_24"
+                    android:src="@drawable/icon_chevron_right"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvParticipantsCount" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_1"
+                android:layout_marginLeft="@dimen/sb_size_16"
+                android:layout_marginRight="@dimen/sb_size_16"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/channelDeleteItem"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_56"
+                android:paddingLeft="@dimen/sb_size_16"
+                android:paddingRight="@dimen/sb_size_16"
+                android:clickable="true"
+                android:focusable="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivChannelDeleteIcon"
+                    android:layout_width="@dimen/sb_size_28"
+                    android:layout_height="@dimen/sb_size_28"
+                    android:src="@drawable/icon_delete"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvChannelDeleteTitle"
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvChannelDeleteTitle"
+                    android:layout_width="@dimen/sb_size_0"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/sb_text_channel_settings_delete_channel"
+                    android:layout_marginLeft="@dimen/sb_size_16"
+                    android:layout_marginRight="@dimen/sb_size_16"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivChannelDeleteIcon"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_1"
+                android:layout_marginLeft="@dimen/sb_size_16"
+                android:layout_marginRight="@dimen/sb_size_16"/>
+
+        </LinearLayout>
+</layout>

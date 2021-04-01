@@ -1,0 +1,33 @@
+package com.sendbird.uikit.model;
+
+public class DialogListItem {
+    private final int key;
+    private final int icon;
+    private final boolean isAlert;
+
+    public DialogListItem(int key) {
+        this(key, 0);
+    }
+
+    public DialogListItem(int key, int icon) {
+        this(key, icon, false);
+    }
+
+    public DialogListItem(int key, int icon, boolean isAlert) {
+        this.key = key;
+        this.icon = icon;
+        this.isAlert = isAlert;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public int getIcon() {
+        return icon;
+    }
+
+    public boolean isAlert() {
+        return isAlert;
+    }
+}

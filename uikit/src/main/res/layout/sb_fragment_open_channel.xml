@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <ImageView
+            android:id="@+id/bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.sendbird.uikit.widgets.AppBarView
+            android:id="@+id/chvChannelHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone"/>
+
+        <com.sendbird.uikit.widgets.MessageRecyclerView
+            android:id="@+id/mrvMessageList"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="@dimen/sb_size_0"
+            android:clipToPadding="false"
+            android:background="@null"
+            app:reverseLayout="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/chvChannelHeader"
+            app:layout_constraintBottom_toTopOf="@+id/vgInputBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sendbird.uikit.widgets.StatusFrameView
+            android:id="@+id/statusFrame"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="@dimen/sb_size_0"
+            app:layout_constraintTop_toBottomOf="@id/chvChannelHeader"
+            app:layout_constraintBottom_toTopOf="@+id/vgInputBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:sb_status_frame_empty_icon="@drawable/icon_message"
+            app:sb_status_frame_empty_text="@string/sb_text_channel_message_empty"/>
+
+        <com.sendbird.uikit.widgets.MessageInputView
+            android:id="@+id/vgInputBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/mrvMessageList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvInformation"
+            android:visibility="gone"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sb_size_8"
+            android:padding="@dimen/sb_size_6"
+            android:gravity="center"
+            android:background="@drawable/sb_shape_channel_information_bg"
+            android:textAppearance="@style/SendbirdCaption2OnLight01"
+            app:layout_constraintTop_toTopOf="@id/mrvMessageList"
+            app:layout_constraintEnd_toEndOf="@id/mrvMessageList"
+            app:layout_constraintStart_toStartOf="@id/mrvMessageList" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

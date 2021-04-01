@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <com.sendbird.uikit.widgets.OtherUserMessageView
+        android:id="@+id/otherMessageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        bind:message="@{message}"
+        bind:channel="@{channel}"
+        bind:highlightInfo="@{highlightInfo}"
+        bind:messageGroupType="@{messageGroupType}"
+        />
+
+    <data>
+
+        <variable
+            name="message"
+            type="com.sendbird.android.BaseMessage" />
+
+        <variable
+            name="channel"
+            type="com.sendbird.android.GroupChannel" />
+
+        <variable
+            name="messageGroupType"
+            type="com.sendbird.uikit.consts.MessageGroupType" />
+
+        <variable
+            name="highlightInfo"
+            type="com.sendbird.uikit.model.HighlightMessageInfo" />
+    </data>
+</layout>

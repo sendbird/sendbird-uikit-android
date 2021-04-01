@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.sendbird.uikit.widgets.UserPreview
+        android:id="@+id/userViewHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sb_user_preview_use_selection="true"
+        bind:userInfo="@{userInfo}"
+        bind:isSelected="@{selected}"
+        bind:isEnabled="@{enabled}"
+        />
+
+    <data>
+        <import type="com.sendbird.uikit.interfaces.UserInfo" />
+
+        <variable
+            name="userInfo"
+            type="com.sendbird.uikit.interfaces.UserInfo" />
+
+        <variable
+            name="enabled"
+            type="java.lang.Boolean" />
+        <variable
+            name="selected"
+            type="java.lang.Boolean" />
+    </data>
+</layout>

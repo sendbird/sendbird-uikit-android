@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <com.sendbird.uikit.widgets.ThemeableRecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rvEmojiReactionList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:sb_pager_recycler_view_use_divide_line="false" />
+
+    <data>
+
+    <variable
+        name="emoji"
+        type="com.sendbird.android.Emoji" />
+    </data>
+</layout>
