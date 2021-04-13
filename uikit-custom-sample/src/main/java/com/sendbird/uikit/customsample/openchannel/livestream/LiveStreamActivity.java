@@ -280,7 +280,8 @@ public class LiveStreamActivity extends AppCompatActivity {
                 .setUseUserProfile(false)
                 .setLoadingDialogHandler(null)
                 .setInputText(inputText)
-                .setOnInputTextChangedListener((s, start, before, count) -> inputText = s.toString());
+                .setOnInputTextChangedListener((s, start, before, count) -> inputText = s.toString())
+                .showInputRightButtonAlways();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             builder.useOverlayMode();

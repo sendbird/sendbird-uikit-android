@@ -49,6 +49,7 @@ public class MessageInputView extends FrameLayout {
     private OnInputTextChangedListener editModeTextChangedListener;
     private boolean isEditMode;
     private int addButtonVisibilityBeforeEditMode;
+    private boolean showSendButtonAlways;
 
     public MessageInputView(@NonNull Context context) {
         this(context, null);
@@ -124,7 +125,7 @@ public class MessageInputView extends FrameLayout {
             binding.etInputText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    if (!TextUtils.isEmpty(s) && !isEditMode) {
+                    if (!TextUtils.isEmpty(s) && !isEditMode || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
                     } else {
                         setSendButtonVisibility(View.GONE);
@@ -143,7 +144,7 @@ public class MessageInputView extends FrameLayout {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (!TextUtils.isEmpty(s) && !isEditMode) {
+                    if (!TextUtils.isEmpty(s) && !isEditMode || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
                     } else {
                         setSendButtonVisibility(View.GONE);
@@ -214,6 +215,10 @@ public class MessageInputView extends FrameLayout {
 
     public void setSendImageButtonTint(ColorStateList tint) {
         ImageViewCompat.setImageTintList(binding.ibtnSend, tint);
+    }
+
+    public void showSendButtonAlways(boolean always) {
+        showSendButtonAlways = always;
     }
 
     public void setAddButtonVisibility(int visibility) {
@@ -292,7 +297,7 @@ public class MessageInputView extends FrameLayout {
 
     private void showInputDialog(CharSequence text) {
         final SendBirdDialogFragment.Builder builder = new SendBirdDialogFragment.Builder();
-        MessageInputView messageInputView = generateDialogInputView(this, text, isEditMode);
+        MessageInputView messageInputView = generateDialogInputView(this, text, isEditMode, showSendButtonAlways);
         builder.setContentView(messageInputView)
                 .setDialogGravity(SendBirdDialogFragment.DialogGravity.BOTTOM);
 
@@ -372,7 +377,8 @@ public class MessageInputView extends FrameLayout {
 
     private static MessageInputView generateDialogInputView(@NonNull MessageInputView currentView,
                                                             CharSequence text,
-                                                            boolean isEditMode) {
+                                                            boolean isEditMode,
+                                                            boolean showSendButtonAlways) {
         Context context = currentView.getContext();
         MessageInputView messageInputView = new MessageInputView(context);
 
@@ -385,6 +391,7 @@ public class MessageInputView extends FrameLayout {
             messageInputView.setAddButtonVisibility(GONE);
             messageInputView.setEditPanelVisibility(VISIBLE);
         }
+        if (showSendButtonAlways) messageInputView.setSendButtonVisibility(VISIBLE);
 
         currentView.getBinding().ibtnSend.getDrawable();
         messageInputView.getBinding().ibtnSend.setImageDrawable(currentView.getBinding().ibtnSend.getDrawable());

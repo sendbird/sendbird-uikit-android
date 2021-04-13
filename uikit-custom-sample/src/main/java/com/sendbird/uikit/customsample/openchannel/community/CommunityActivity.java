@@ -98,6 +98,7 @@ public class CommunityActivity extends AppCompatActivity {
                 .setOnProfileClickListener(null)
                 .setUseUserProfile(false)
                 .setLoadingDialogHandler(null)
+                .showInputRightButtonAlways()
                 .build();
     }
 

@@ -26,6 +26,7 @@ public class StringSet {
     public final static String KEY_USE_TYPING_INDICATOR = "KEY_TYPING_INDICATOR";
     public final static String KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID = "KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID";
     public final static String KEY_INPUT_RIGHT_BUTTON_ICON_TINT = "KEY_INPUT_RIGHT_BUTTON_ICON_TINT";
+    public final static String KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS = "KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS";
     public final static String KEY_INPUT_LEFT_BUTTON_ICON_RES_ID = "KEY_INPUT_LEFT_BUTTON_ICON_RES_ID";
     public final static String KEY_INPUT_LEFT_BUTTON_ICON_TINT = "KEY_INPUT_LEFT_BUTTON_ICON_TINT";
     public final static String KEY_INPUT_HINT = "KEY_INPUT_HINT";

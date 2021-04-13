@@ -1,4 +1,8 @@
 # Change Log
+### v2.1.2 (April 13, 2021) with Core SDK `v3.0.161`
+* Added `showInputRightButtonAlways()` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
+* From this version, it is not available on `jcenter`. This version can only be available from Sendbird's maven repository: `maven { url "https://repo.sendbird.com/public/maven" }`.
+
 ### v2.1.1 (March 30, 2021) with Core SDK `v3.0.160`
 * Added `setHeaderTitle(String)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
 * Improved stability.

@@ -470,6 +470,12 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
                     binding.vgInputBox.setAddButtonVisibility(View.GONE);
                 }
             }
+
+            if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS)) {
+                boolean always = args.getBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, false);
+                if (always) binding.vgInputBox.setSendButtonVisibility(View.VISIBLE);
+                binding.vgInputBox.showSendButtonAlways(always);
+            }
         }
 
         binding.vgInputBox.setOnSendClickListener(this::sendMessage);
@@ -1219,6 +1225,17 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT, tint);
+            return this;
+        }
+
+        /**
+         * Sets whether showing the right button of the input always.
+         *
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.1.2
+         */
+        public Builder showInputRightButtonAlways() {
+            bundle.putBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, true);
             return this;
         }
 

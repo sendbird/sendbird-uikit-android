@@ -40,6 +40,7 @@ public class CustomChannelActivity extends ChannelActivity {
                 .setInputLeftButtonListener(v -> showMessageTypeDialog())
                 .setMessageListParams(null)
                 .setUseMessageGroupUI(useMessageGroupUI)
+                .showInputRightButtonAlways()
                 .build();
     }
 
