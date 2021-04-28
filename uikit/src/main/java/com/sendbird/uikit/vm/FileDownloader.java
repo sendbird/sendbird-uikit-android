@@ -1,6 +1,7 @@
 package com.sendbird.uikit.vm;
 
 import android.content.Context;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,20 +82,20 @@ public class FileDownloader {
         return downloadingFileSet.contains(url);
     }
 
-    public File saveFile(Context context, @NonNull String url, @NonNull String fileName) throws Exception {
+    public void saveFile(Context context, @NonNull String url,
+                         @NonNull String type, @NonNull String filename) throws Exception {
         if (downloadingFileSet.contains(url) || context == null) {
-            return null;
+            return;
         }
-        File result = null;
+
         try {
             downloadingFileSet.add(url);
             final RequestManager glide = Glide.with(context);
             File file = glide.asFile().load(url).submit().get();
-            result = FileUtils.saveFile(context, file, fileName);
+            FileUtils.saveFile(context, file, type, filename);
         } finally {
             downloadingFileSet.remove(url);
         }
-        return result;
     }
 
     public static boolean downloadFile(@NonNull Context context, @NonNull FileMessage message, @NonNull OnResultHandler<File> handler) {

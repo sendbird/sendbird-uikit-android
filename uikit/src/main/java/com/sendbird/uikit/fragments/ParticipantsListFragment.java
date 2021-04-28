@@ -181,6 +181,9 @@ public class ParticipantsListFragment extends BaseOpenChannelFragment {
             Logger.dev("++ observing result users size : %s", users.size());
             adapter.setItems((List<User>) users, channel.isOperator(SendBird.getCurrentUser()) ? Member.Role.OPERATOR : Member.Role.NONE);
         });
+        viewModel.getChannelDeleted().observe(this, isDeleted -> {
+            if (isDeleted) finish();
+        });
         viewModel.loadInitial();
     }
 

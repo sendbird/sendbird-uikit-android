@@ -12,6 +12,7 @@ import androidx.annotation.StyleRes;
 
 import com.sendbird.android.BannedUserListQuery;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.Member;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
@@ -34,6 +35,7 @@ public class BannedListFragment extends UserTypeListFragment {
     @Override
     protected void onConfigure() {
         super.onConfigure();
+        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
         if (customQueryHandler == null) {
             setCustomQueryHandler(new BannedMembersQueryHandler(channel));
         }
@@ -48,6 +50,11 @@ public class BannedListFragment extends UserTypeListFragment {
 
         DialogUtils.buildItems(user.getNickname(), (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                 items, (v, p, key) -> unbanUser(user.getUserId())).showSingle(getFragmentManager());
+    }
+
+    @Override
+    protected void onOperatorDismissed() {
+        finish();
     }
 
     private void unbanUser(@NonNull String userId) {

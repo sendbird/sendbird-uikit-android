@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.databinding.DataBindingUtil;
 
+import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.OpenChannelParams;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ParticipantsListActivity;
@@ -49,7 +53,7 @@ import static android.app.Activity.RESULT_OK;
 public class OpenChannelSettingsFragment extends BaseOpenChannelFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
-    private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_OPEN_CHANNEL_SETTINGS" + System.currentTimeMillis();;
 
     private SbFragmentOpenChannelSettingsBinding binding;
     private Uri mediaUri;
@@ -73,6 +77,71 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
         if (getActivity() != null) {
             getActivity().setTheme(themeResId);
         }
+
+        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+            @Override
+            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
+
+            @Override
+            public void onUserEntered(OpenChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> OpenChannelSettingsFragment::onUserEntered()");
+                    Logger.d("++ joind user : " + user);
+                    OpenChannelSettingsFragment.this.channel = channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onUserExited(OpenChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> OpenChannelSettingsFragment::onUserLeft()");
+                    Logger.d("++ left user : " + user);
+                    OpenChannelSettingsFragment.this.channel = channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onChannelChanged(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> OpenChannelSettingsFragment::onChannelChanged()");
+                    OpenChannelSettingsFragment.this.channel = (OpenChannel) channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+                if (isCurrentChannel(channelUrl)) {
+                    Logger.i(">> OpenChannelSettingsFragment::onChannelDeleted()");
+                    Logger.d("++ deleted channel url : " + channelUrl);
+                    // will have to finish activity
+                    finish();
+                }
+            }
+
+            @Override
+            public void onOperatorUpdated(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> OpenChannelSettingsFragment::onOperatorUpdated()");
+                    OpenChannelSettingsFragment.this.channel = (OpenChannel) channel;
+                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendBird.getCurrentUser()));
+                    if (!((OpenChannel) channel).isOperator(SendBird.getCurrentUser())) {
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onUserBanned(BaseChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl()) &&
+                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    Logger.i(">> OpenChannelSettingsFragment::onUserBanned()");
+                    finish();
+                }
+            }
+        });
     }
 
     @Nullable
@@ -114,11 +183,22 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
     public void onDestroy() {
         super.onDestroy();
         SendBird.setAutoBackgroundDetection(true);
+        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+    }
+
+    private boolean isCurrentChannel(@NonNull String channelUrl) {
+        return channelUrl.equals(channel.getUrl());
     }
 
     @Override
     public String[] getPermissions(int requestCode) {
-        return REQUIRED_PERMISSIONS;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        return new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
     }
 
     @Override
@@ -218,7 +298,7 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
                     break;
             }
         });
-        binding.csvSettings.drawSettingsView(channel);
+        drawSettingsView();
     }
 
     private void showMediaSelectDialog() {
@@ -311,10 +391,13 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
                     return;
                 }
                 Logger.i("++ updated channel name : %s", updatedChannel.getName());
-                if (isActive()) {
-                    binding.csvSettings.drawSettingsView(updatedChannel);
-                }
             });
+        }
+    }
+
+    private void drawSettingsView() {
+        if (isActive() && binding != null && channel != null) {
+            binding.csvSettings.drawSettingsView(channel);
         }
     }
 

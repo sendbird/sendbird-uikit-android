@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.databinding.DataBindingUtil;
@@ -552,7 +554,13 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
         checkPermission(PERMISSION_REQUEST_ALL, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                return new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    return new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+                return new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE};
             }
 
             @Override
@@ -576,7 +584,11 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE};
             }
 
             @Override
@@ -597,7 +609,11 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE};
             }
 
             @Override
@@ -942,27 +958,34 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
             } else if (key == R.string.sb_text_channel_anchor_delete) {
                 showWarningDialog(message);
             } else if (key == R.string.sb_text_channel_anchor_save) {
-                checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
-                    @Override
-                    public String[] getPermissions(int requestCode) {
-                        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                    }
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    download((FileMessage) message);
+                } else {
+                    checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
+                        @Override
+                        public String[] getPermissions(int requestCode) {
+                            return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE};
+                        }
 
-                    @Override
-                    public void onPermissionGranted(int requestCode) {
-                        download((FileMessage) message);
-                    }
-                });
+                        @Override
+                        public void onPermissionGranted(int requestCode) {
+                            download((FileMessage) message);
+                        }
+                    });
+                }
             }
         };
     }
 
-    private void download(FileMessage message) {
+    private void download(@NonNull FileMessage fileMessage) {
         toastSuccess(R.string.sb_text_toast_success_start_download_file);
         TaskQueue.addTask(new JobResultTask<Boolean>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public Boolean call() throws Exception {
-                FileDownloader.getInstance().saveFile(getContext(), message.getUrl(), message.getName());
+                FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
+                        fileMessage.getType(), fileMessage.getName());
                 return true;
             }
 

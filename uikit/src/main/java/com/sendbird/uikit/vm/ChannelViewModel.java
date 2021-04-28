@@ -46,8 +46,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ChannelViewModel extends BaseViewModel implements LifecycleObserver, PagerRecyclerView.Pageable<List<BaseMessage>> {
     private static final int DEFAULT_MESSAGE_LOAD_SIZE = 40;
-    private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHAT";
-    private static final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_CHAT";
+    private final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHAT" + System.currentTimeMillis();;
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_CHAT" + System.currentTimeMillis();;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private final ExecutorService cachedMessageChangeLogs = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<BaseMessage>> messageList = new MutableLiveData<>();
@@ -132,8 +132,8 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
         return startingPoint;
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private void onResume() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void onCreate() {
         SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
             @Override
             public void onReconnectStarted() {
@@ -353,7 +353,10 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
                 }
             }
         });
+    }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private void onResume() {
         Logger.i("++ channel.getMyMemberState() : " + channel.getMyMemberState());
         if (channel.getMyMemberState() == Member.MemberState.JOINED) {
             requestChangeLogs(channel);

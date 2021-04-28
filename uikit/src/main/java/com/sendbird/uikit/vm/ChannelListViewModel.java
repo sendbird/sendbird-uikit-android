@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ChannelListViewModel extends BaseViewModel implements PagerRecyclerView.Pageable<List<GroupChannel>>, LifecycleObserver {
 
-    private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHANNEL_LIST";
-    private static final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_LIST";
+    private final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHANNEL_LIST" + System.currentTimeMillis();;
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_LIST" + System.currentTimeMillis();;
 
     private final AtomicLong lastSyncTs = new AtomicLong(0);
     private final MutableLiveData<List<GroupChannel>> channelList = new MutableLiveData<>();

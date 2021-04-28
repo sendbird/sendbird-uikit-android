@@ -9,6 +9,8 @@ import androidx.lifecycle.OnLifecycleEvent;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.GroupChannel;
+import com.sendbird.android.Member;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
 import com.sendbird.uikit.interfaces.CustomMemberListQueryHandler;
@@ -28,6 +30,8 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
     private final String CHANNEL_HANDLER_MEMBER_LIST = "CHANNEL_HANDLER_MEMBER_LIST" + System.currentTimeMillis();
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     private final MutableLiveData<List<User>> memberList = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> operatorDismissed = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> channelDeleted = new MutableLiveData<>();
     private final CustomMemberListQueryHandler<User> queryHandler;
     protected BaseChannel channel;
 
@@ -53,29 +57,61 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
         //queryHandler = createQueryHandler(channel, type);
     }
 
+    public LiveData<Boolean> getOperatorDismissed() {
+        return operatorDismissed;
+    }
+
+    public LiveData<Boolean> getChannelDeleted() {
+        return channelDeleted;
+    }
+
     private boolean isCurrentChannel(@NonNull String channelUrl) {
         return channelUrl.equals(channel.getUrl());
     }
 
     private void updateChannel(@NonNull BaseChannel channel) {
         if (isCurrentChannel(channel.getUrl())) {
-            Logger.i(">> MemberListViewModel::updateChannel()");
+            Logger.i(">> UserTypeListViewModel::updateChannel()");
             UserTypeListViewModel.this.channel = channel;
             loadInitial();
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private void onResume() {
-        Logger.i(">> MemberListViewModel::onResume()");
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void onCreate() {
+        Logger.i(">> UserTypeListViewModel::onCreate()");
         SendBird.addChannelHandler(CHANNEL_HANDLER_MEMBER_LIST, new SendBird.ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel channel, BaseMessage message) {
             }
 
             @Override
+            public void onUserLeft(GroupChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> UserTypeListViewModel::onUserLeft()");
+                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                        channelDeleted.postValue(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+                if (isCurrentChannel(channelUrl)) {
+                    Logger.i(">> UserTypeListViewModel::onChannelDeleted()");
+                    channelDeleted.postValue(true);
+                }
+            }
+
+            @Override
             public void onOperatorUpdated(BaseChannel channel) {
                 updateChannel(channel);
+                if (isCurrentChannel(channel.getUrl()) &&
+                        ((GroupChannel) channel).getMyRole() != Member.Role.OPERATOR) {
+                    Logger.i(">> UserTypeListViewModel::onOperatorUpdated()");
+                    Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
+                    operatorDismissed.postValue(true);
+                }
             }
 
             @Override
@@ -91,6 +127,11 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
             @Override
             public void onUserBanned(BaseChannel channel, User user) {
                 updateChannel(channel);
+                if (isCurrentChannel(channel.getUrl()) &&
+                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    Logger.i(">> UserTypeListViewModel::onUserBanned()");
+                    channelDeleted.postValue(true);
+                }
             }
 
             @Override

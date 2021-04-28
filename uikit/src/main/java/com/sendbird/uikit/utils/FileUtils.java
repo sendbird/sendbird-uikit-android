@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
 import com.sendbird.android.FileMessage;
@@ -113,17 +116,33 @@ public class FileUtils {
         return new File(uriToPath(context, uri));
     }
 
-    public static File saveFile(@NonNull Context context, @NonNull File src, @NonNull String fileName) throws Exception {
-        File newFile = createDownloadFile(fileName);
-        return saveFile(context, src, newFile);
+    public static void saveFile(@NonNull Context context, @NonNull File src,
+                                @NonNull String type, @NonNull String fileName) throws Exception {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri newFileUri = createDownloadFileUri(context, type, fileName);
+            saveFile(context, src, newFileUri);
+        } else {
+            File newFile = createDownloadFile(fileName);
+            saveFile(context, src, newFile);
+        }
     }
 
     public static File saveFile(@NonNull Context context, @NonNull File src, @NonNull File dest) throws Exception {
         FileInputStream input = new FileInputStream(src);
         FileOutputStream output = new FileOutputStream(dest);
         copy(input, output);
-        galleryAddPic(context, dest.getAbsolutePath());
+        galleryAddPic(context, Uri.fromFile(dest));
         return dest;
+    }
+
+    private static void saveFile(@NonNull Context context, @NonNull File src, @NonNull Uri dest) throws Exception {
+        FileInputStream input = new FileInputStream(src);
+        ParcelFileDescriptor pfd = context.getContentResolver().
+                openFileDescriptor(dest, "w");
+        FileOutputStream output =
+                new FileOutputStream(pfd.getFileDescriptor());
+        copy(input, output);
+        galleryAddPic(context, dest);
     }
 
     public static File bitmapToFile(@NonNull Bitmap image, @NonNull File dest, @NonNull Bitmap.CompressFormat format) throws IOException {
@@ -138,11 +157,9 @@ public class FileUtils {
         return dest;
     }
 
-    private static void galleryAddPic(Context context, String imagePath) {
+    private static void galleryAddPic(Context context, Uri uri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(imagePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
+        mediaScanIntent.setData(uri);
         context.sendBroadcast(mediaScanIntent);
     }
 
@@ -171,7 +188,21 @@ public class FileUtils {
         ContentValues cv = new ContentValues();
         String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         cv.put(MediaStore.Images.Media.TITLE, fileName);
+        cv.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static Uri createDownloadFileUri(@NonNull Context context,
+                                            @NonNull String mimeType,
+                                            @NonNull String fileName) {
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues cv = new ContentValues();
+        String downloadedFileName = "Downloaded_file_" + System.currentTimeMillis() + "_" + fileName;
+        cv.put(MediaStore.Downloads.TITLE, downloadedFileName);
+        cv.put(MediaStore.Downloads.DISPLAY_NAME, downloadedFileName);
+        cv.put(MediaStore.Downloads.MIME_TYPE, mimeType);
+        return contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
     }
 
     private static void deleteRecursive(File fileOrDirectory) {

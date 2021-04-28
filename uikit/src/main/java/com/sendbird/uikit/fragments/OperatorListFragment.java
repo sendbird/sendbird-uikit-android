@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.Member;
 import com.sendbird.android.OperatorListQuery;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
@@ -38,6 +39,7 @@ public class OperatorListFragment extends UserTypeListFragment implements Loadin
     @Override
     protected void onConfigure() {
         super.onConfigure();
+        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
         if (customQueryHandler == null) setCustomQueryHandler(new OperatorQueryHandler(channel));
         if (headerRightButtonListener == null) {
             setHeaderRightButtonListener(v -> {
@@ -69,6 +71,11 @@ public class OperatorListFragment extends UserTypeListFragment implements Loadin
                 toastError(R.string.sb_text_error_dismiss_operator);
             }
         });
+    }
+
+    @Override
+    protected void onOperatorDismissed() {
+        finish();
     }
 
     /**

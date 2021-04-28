@@ -48,8 +48,6 @@ import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 
-import java.io.File;
-
 public class PhotoViewFragment extends BaseFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
     private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -203,7 +201,11 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
 
         ivDownload.setOnClickListener(v -> {
             if (!loadComplete) return;
-            checkPermission(0, this);
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                download();
+            } else {
+                checkPermission(0, this);
+            }
         });
 
         PhotoViewAttacher attacher = new PhotoViewAttacher(ivPhoto);
@@ -272,16 +274,16 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
 
     @Override
     public void onPermissionGranted(int requestCode) {
-        saveFileFromUrl();
+        download();
     }
 
-    private void saveFileFromUrl() {
+    private void download() {
         loadingDialogHandler.shouldShowLoadingDialog();
         TaskQueue.addTask(new JobResultTask<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                File newFile = FileDownloader.getInstance().saveFile(getContext(), url, fileName);
-                Logger.dev("++ file name : %s, size : %s", newFile.getPath(), newFile.length());
+                FileDownloader.getInstance().saveFile(getContext(), url, mimeType, fileName);
+                Logger.dev("++ file name : %s, size : %s", fileName);
                 return true;
             }
 

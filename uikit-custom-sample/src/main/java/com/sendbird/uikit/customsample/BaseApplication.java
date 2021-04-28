@@ -1,9 +1,8 @@
 package com.sendbird.uikit.customsample;
 
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
+import androidx.multidex.MultiDexApplication;
 
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.FileMessageParams;
@@ -26,7 +25,7 @@ import com.sendbird.uikit.interfaces.UserListResultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseApplication extends Application {
+public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
 

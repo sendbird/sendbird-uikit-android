@@ -193,7 +193,29 @@ abstract public class MemberTypeListFragment extends BaseGroupChannelFragment im
             Logger.dev("++ observing result members size : %s", members.size());
             adapter.setItems((List<Member>) members, channel.getMyRole());
         });
+        viewModel.getOperatorDismissed().observe(this, isDismissed -> {
+            if (isDismissed) onOperatorDismissed();
+        });
+        viewModel.getChannelDeleted().observe(this, isDeleted -> {
+            if (isDeleted) onChannelDeleted();
+        });
         viewModel.loadInitial();
+    }
+
+    /**
+     * Called when a user is dismissed from the operator.
+     *
+     * @since 2.1.3
+     */
+    protected void onOperatorDismissed() {}
+
+    /**
+     * Called when a channel is deleted from the user.
+     *
+     * @since 2.1.3
+     */
+    protected void onChannelDeleted() {
+        finish();
     }
 
     /**

@@ -1,4 +1,11 @@
 # Change Log
+### v2.1.3 (April 27, 2021) with Core SDK `v3.0.163`
+* Targeted Android 11 (API 30).
+* Supported Scoped storage.
+    * The `requestLegacyExternalStorage` attribute has been deleted.
+    * Used `Media Store API`.
+* Improved stability.
+
 ### v2.1.2 (April 13, 2021) with Core SDK `v3.0.161`
 * Added `showInputRightButtonAlways()` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
 * From this version, it is not available on `jcenter`. This version can only be available from Sendbird's maven repository: `maven { url "https://repo.sendbird.com/public/maven" }`.

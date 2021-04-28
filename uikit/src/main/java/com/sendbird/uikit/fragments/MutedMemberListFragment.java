@@ -32,8 +32,10 @@ import com.sendbird.uikit.utils.DialogUtils;
  */
 public class MutedMemberListFragment extends MemberTypeListFragment implements LoadingDialogHandler {
 
+    @Override
     protected void onConfigure() {
         super.onConfigure();
+        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
         if (customQueryHandler == null) {
             setCustomQueryHandler(new MutedMembersQueryHandler(channel));
         }
@@ -47,6 +49,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
         items = new DialogListItem[]{unMute};
         DialogUtils.buildItems(member.getNickname(), (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                 items, (v, p, key) -> unmuteUser(member.getUserId())).showSingle(getFragmentManager());
+    }
+
+    @Override
+    protected void onOperatorDismissed() {
+        finish();
     }
 
     private void unmuteUser(@NonNull String userId) {

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.databinding.DataBindingUtil;
 
+import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelParams;
 import com.sendbird.android.Member;
@@ -54,7 +57,7 @@ import static android.app.Activity.RESULT_OK;
 public class ChannelSettingsFragment extends BaseFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
-    private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_SETTINGS" + System.currentTimeMillis();;
 
     private SbFragmentChannelSettingsBinding binding;
     private Uri mediaUri;
@@ -80,6 +83,73 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
         if (getActivity() != null) {
             getActivity().setTheme(themeResId);
         }
+
+        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+            @Override
+            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
+
+            @Override
+            public void onUserJoined(GroupChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ChannelSettingsFragment::onUserJoined()");
+                    Logger.d("++ joind user : " + user);
+                    ChannelSettingsFragment.this.channel = channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onUserLeft(GroupChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ChannelSettingsFragment::onUserLeft()");
+                    Logger.d("++ left user : " + user);
+                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                        finish();
+                        return;
+                    }
+                    ChannelSettingsFragment.this.channel = channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onChannelChanged(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ChannelSettingsFragment::onChannelChanged()");
+                    ChannelSettingsFragment.this.channel = (GroupChannel) channel;
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+                if (isCurrentChannel(channelUrl)) {
+                    Logger.i(">> ChannelSettingsFragment::onChannelDeleted()");
+                    Logger.d("++ deleted channel url : " + channelUrl);
+                    // will have to finish activity
+                    finish();
+                }
+            }
+
+            @Override
+            public void onOperatorUpdated(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ChannelSettingsFragment::onOperatorUpdated()");
+                    ChannelSettingsFragment.this.channel = (GroupChannel) channel;
+                    Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
+                    drawSettingsView();
+                }
+            }
+
+            @Override
+            public void onUserBanned(BaseChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl()) &&
+                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    Logger.i(">> ChannelSettingsFragment::onUserBanned()");
+                    finish();
+                }
+            }
+        });
     }
 
     @Nullable
@@ -133,19 +203,22 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
     public void onDestroy() {
         super.onDestroy();
         SendBird.setAutoBackgroundDetection(true);
+        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (channel != null && binding != null) {
-            binding.csvSettings.drawSettingsView(channel);
-        }
+    private boolean isCurrentChannel(@NonNull String channelUrl) {
+        return channelUrl.equals(channel.getUrl());
     }
 
     @Override
     public String[] getPermissions(int requestCode) {
-        return REQUIRED_PERMISSIONS;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            return new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        return new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
     }
 
     @Override
@@ -259,7 +332,6 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
 
                     channel.setMyPushTriggerOption(option, e -> {
                         loadingDialogHandler.shouldDismissLoadingDialog();
-                        binding.csvSettings.drawSettingsView(channel);
                         if (e != null) {
                             Logger.e(e);
                             if (option == GroupChannel.PushTriggerOption.ALL) {
@@ -287,7 +359,7 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
                     break;
             }
         });
-        binding.csvSettings.drawSettingsView(channel);
+        drawSettingsView();
     }
 
     private void showMediaSelectDialog() {
@@ -394,10 +466,13 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
                     return;
                 }
                 Logger.i("++ updated channel name : %s", updatedChannel.getName());
-                if (isActive()) {
-                    binding.csvSettings.drawSettingsView(updatedChannel);
-                }
             });
+        }
+    }
+
+    private void drawSettingsView() {
+        if (channel != null && binding != null && isActive()) {
+            binding.csvSettings.drawSettingsView(channel);
         }
     }
 

@@ -13,7 +13,11 @@ import androidx.annotation.StyleRes;
 import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.Member;
+import com.sendbird.android.SendBird;
+import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.BannedListActivity;
@@ -32,6 +36,8 @@ import com.sendbird.uikit.log.Logger;
  * @since 1.2.0
  */
 public class ModerationFragment extends BaseGroupChannelFragment implements LoadingDialogHandler {
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_MODERATION" + System.currentTimeMillis();;
+
     private LoadingDialogHandler loadingDialogHandler;
 
     /**
@@ -62,6 +68,70 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
         if (getActivity() != null) {
             getActivity().setTheme(themeResId);
         }
+
+        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+            @Override
+            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
+
+            @Override
+            public void onUserLeft(GroupChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ModerationFragment::onUserLeft()");
+                    Logger.d("++ left user : " + user);
+                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+                if (isCurrentChannel(channelUrl)) {
+                    Logger.i(">> ModerationFragment::onChannelDeleted()");
+                    Logger.d("++ deleted channel url : " + channelUrl);
+                    // will have to finish activity
+                    finish();
+                }
+            }
+
+            @Override
+            public void onChannelFrozen(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ModerationFragment::onChannelFrozen(%s)", channel.isFrozen());
+                    ModerationFragment.this.channel = (GroupChannel) channel;
+                    binding.freezeChannelItem.setChecked(true);
+                }
+            }
+
+            @Override
+            public void onChannelUnfrozen(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl())) {
+                    Logger.i(">> ModerationFragment::onChannelUnfrozen(%s)", channel.isFrozen());
+                    ModerationFragment.this.channel = (GroupChannel) channel;
+                    binding.freezeChannelItem.setChecked(false);
+                }
+            }
+
+            @Override
+            public void onOperatorUpdated(BaseChannel channel) {
+                if (isCurrentChannel(channel.getUrl()) &&
+                        ((GroupChannel) channel).getMyRole() != Member.Role.OPERATOR) {
+                    Logger.i(">> ModerationFragment::onOperatorUpdated()");
+                    ModerationFragment.this.channel = (GroupChannel) channel;
+                    Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
+                    finish();
+                }
+            }
+
+            @Override
+            public void onUserBanned(BaseChannel channel, User user) {
+                if (isCurrentChannel(channel.getUrl()) &&
+                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                    Logger.i(">> ModerationFragment::onUserBanned()");
+                    finish();
+                }
+            }
+        });
     }
 
     @Nullable
@@ -82,12 +152,23 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
 
     @Override
     protected void onConfigure() {
+        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
     }
 
     @Override
     protected void onDrawPage() {
         initHeaderOnReady();
         initModerations(channel);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+    }
+
+    private boolean isCurrentChannel(@NonNull String channelUrl) {
+        return channelUrl.equals(channel.getUrl());
     }
 
     private void initHeaderOnCreated() {
@@ -185,12 +266,10 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
         if (isFrozen) {
             channel.unfreeze(e -> {
                 loadingDialogHandler.shouldDismissLoadingDialog();
-                binding.freezeChannelItem.setChecked(e != null);
             });
         } else {
             channel.freeze(e -> {
                 loadingDialogHandler.shouldDismissLoadingDialog();
-                binding.freezeChannelItem.setChecked(e == null);
             });
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -50,7 +51,7 @@ import java.util.TimeZone;
 import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment {
-    private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private String[] REQUIRED_PERMISSIONS;
 
     private static final int STORAGE_PERMISSIONS_REQUEST_CODE = 1001;
     private static final int PERMISSION_SETTINGS_REQUEST_ID = 2000;
@@ -182,6 +183,15 @@ public class SettingsFragment extends Fragment {
     private void initPage() {
         if (getContext() == null) {
             return;
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        } else {
+            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
         }
 
         boolean useHeader = true;

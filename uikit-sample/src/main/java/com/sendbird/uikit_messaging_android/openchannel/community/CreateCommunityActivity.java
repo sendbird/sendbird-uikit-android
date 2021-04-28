@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreateCommunityActivity extends AppCompatActivity {
-    private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private String[] REQUIRED_PERMISSIONS;
 
     private static final int STORAGE_PERMISSIONS_REQUEST_CODE = 1001;
     private static final int PERMISSION_SETTINGS_REQUEST_ID = 2000;
@@ -92,6 +93,15 @@ public class CreateCommunityActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
         binding.clearButton.setOnClickListener(v -> binding.etTitle.setText(""));
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        } else {
+            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
     }
 
     private void createCommunityChannel() {
