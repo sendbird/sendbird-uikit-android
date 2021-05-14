@@ -1,4 +1,11 @@
 # Change Log
+
+### v2.1.4 (May 14, 2021) with Core SDK `v3.0.164`
+* Fixed problems in API level 30.
+    * Fixed camera launching issue.
+    * Fixed video and file viewer launching issue.
+* Upgraded Gradle version to `3.5.4`
+
 ### v2.1.3 (April 27, 2021) with Core SDK `v3.0.163`
 * Targeted Android 11 (API 30).
 * Supported Scoped storage.

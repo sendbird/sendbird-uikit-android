@@ -188,7 +188,6 @@ public class FileUtils {
         ContentValues cv = new ContentValues();
         String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         cv.put(MediaStore.Images.Media.TITLE, fileName);
-        cv.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
     }
 
