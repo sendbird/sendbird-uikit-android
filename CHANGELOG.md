@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.5 (Jun 8, 2021) with Core SDK `v3.0.166`
+* Added support for [Firebase Cloud Messaging version 22.0.0](https://firebase.google.com/support/release-notes/android#messaging_v22-0-0).
+
 ### v2.1.4 (May 14, 2021) with Core SDK `v3.0.164`
 * Fixed problems in API level 30.
     * Fixed camera launching issue.
