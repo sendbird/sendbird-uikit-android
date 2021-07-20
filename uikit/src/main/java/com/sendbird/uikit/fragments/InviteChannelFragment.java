@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 
 import com.sendbird.android.GroupChannel;
@@ -281,6 +282,32 @@ public class InviteChannelFragment extends SelectUserFragment {
          */
         public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
             this.headerLeftButtonListener = listener;
+            return this;
+        }
+
+        /**
+         * Sets the icon when the data is not exists.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.1.6
+         */
+        public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
+            bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
+            bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
+            return this;
+        }
+
+        /**
+         * Sets the text when the data is not exists
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.1.6
+         */
+        public Builder setEmptyText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
             return this;
         }
 

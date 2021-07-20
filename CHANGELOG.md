@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.1.6 (July 20, 2021) with Core SDK `v3.0.168`
+* Added `setEmptyIcon(int resId, ColorStateList tint)` in `CreateChannelFragment.Builder`, `InviteChannelFragment.Builder`, and `PromoteOperatorsFragment.Builder`.
+* Added `setEmptyText(int resId)` in `CreateChannelFragment.Builder`, `InviteChannelFragment.Builder`, and `PromoteOperatorsFragment.Builder`.
+* Upgraded Gradle version to `4.0.1`.
+
 ### v2.1.5 (Jun 8, 2021) with Core SDK `v3.0.166`
 * Added support for [Firebase Cloud Messaging version 22.0.0](https://firebase.google.com/support/release-notes/android#messaging_v22-0-0).
 

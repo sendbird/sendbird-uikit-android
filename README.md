@@ -33,7 +33,7 @@ The minimum requirements for UIKit for Android are:
 - Android + (API level as 16 or higher) 
 - Java 8
 - Support androidx only 
-- Gradle 3.4.0 or higher 
+- Gradle 4.0.1 or higher 
 
 ### Try the sample app using your data 
 
@@ -69,7 +69,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
     }
 }
 

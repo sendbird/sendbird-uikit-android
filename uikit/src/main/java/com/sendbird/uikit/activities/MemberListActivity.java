@@ -79,7 +79,7 @@ public class MemberListActivity extends AppCompatActivity {
                 .setUseHeader(true)
                 .setUseHeaderRightButton(true)
                 .setHeaderTitle(getString(R.string.sb_text_header_member_list))
-                .setEmptyIcon(R.drawable.icon_chat, SendBirdUIKit.getDefaultThemeMode().getMonoTintColorStateList(this))
+                .setEmptyIcon(R.drawable.icon_members, SendBirdUIKit.getDefaultThemeMode().getMonoTintColorStateList(this))
                 .setEmptyText(R.string.sb_text_user_list_empty)
                 .build();
     }

@@ -69,6 +69,7 @@ abstract public class SelectUserFragment extends BaseGroupChannelFragment {
         super.onViewCreated(view, savedInstanceState);
         binding.statusFrame.setStatus(StatusFrameView.Status.LOADING);
         initHeaderOnCreated();
+        initStatusFrame();
     }
 
     @Override
@@ -99,6 +100,26 @@ abstract public class SelectUserFragment extends BaseGroupChannelFragment {
             binding.statusFrame.setStatus(StatusFrameView.Status.LOADING);
             connect();
         });
+    }
+
+    private void initStatusFrame() {
+        Bundle args = getArguments();
+
+        int emptyIconId = R.drawable.icon_members;
+        ColorStateList emptyIconTint = null;
+        int emptyTextId = R.string.sb_text_user_list_empty;
+
+        if (args != null) {
+            emptyIconId = args.getInt(StringSet.KEY_EMPTY_ICON_RES_ID, R.drawable.icon_members);
+            emptyIconTint = args.getParcelable(StringSet.KEY_EMPTY_ICON_TINT);
+            emptyTextId = args.getInt(StringSet.KEY_EMPTY_TEXT_RES_ID, R.string.sb_text_user_list_empty);
+        }
+
+        binding.statusFrame.setEmptyIcon(emptyIconId);
+        binding.statusFrame.setEmptyText(emptyTextId);
+        if (args != null && args.containsKey(StringSet.KEY_EMPTY_ICON_RES_ID)) {
+            binding.statusFrame.setIconTint(emptyIconTint);
+        }
     }
 
     private void initHeaderOnCreated() {
