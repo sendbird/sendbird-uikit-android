@@ -167,6 +167,8 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
         SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
+                if (!messageListParams.belongsTo(baseMessage)) return;
+
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> ChannelFragnemt::onMessageReceived(%s), hasNext=%s", baseMessage.getMessageId(), hasNext);
                     ChannelViewModel.this.channel = (GroupChannel) baseChannel;
@@ -227,7 +229,12 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
                     Logger.i(">> ChannelFragnemt::onMessageUpdated()");
                     Logger.d("++ updatedMessage : " + updatedMessage.getMessageId());
                     ChannelViewModel.this.channel = (GroupChannel) baseChannel;
-                    messageCollection.update(updatedMessage);
+                    if (!messageListParams.belongsTo(updatedMessage)) {
+                        messageDeleted.postValue(updatedMessage.getMessageId());
+                        messageCollection.remove(updatedMessage);
+                    } else {
+                        messageCollection.update(updatedMessage);
+                    }
                     notifyDataSetChanged();
                 }
             }
@@ -467,20 +474,32 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
 
                 @Override
                 public void onResult(List<BaseMessage> added, List<BaseMessage> updated, List<Long> deletedIds) {
-                    Logger.i("++ channel message change logs result >> deleted message size : %s, current message size : %s, added message size : %s", deletedIds.size(), messageCollection.size(), added.size());
                     for (long deletedId : deletedIds) {
                         BaseMessage deletedMessage = messageCollection.get(deletedId);
                         if (deletedMessage != null) {
                             messageCollection.remove(deletedMessage);
                         }
                     }
-                    Logger.i("++ updated Message size : %s", updated.size());
-                    messageCollection.updateAll(updated);
-                    if (added.size() > 0) {
-                        messageCollection.addAll(added);
+                    List<BaseMessage> filteredAdded = new ArrayList<>();
+                    for (BaseMessage addedMessage : added) {
+                        if (messageListParams.belongsTo(addedMessage)) {
+                            filteredAdded.add(addedMessage);
+                        }
+                    }
+                    List<BaseMessage> filteredUpdated = new ArrayList<>();
+                    for (BaseMessage updatedMessage : updated) {
+                        if (messageListParams.belongsTo(updatedMessage)) {
+                            filteredUpdated.add(updatedMessage);
+                        }
+                    }
+                    Logger.i("++ channel message change logs result >> deleted message size : %s, current message size : %s, added message size : %s", deletedIds.size(), messageCollection.size(), filteredAdded.size());
+                    Logger.i("++ updated Message size : %s", filteredUpdated.size());
+                    messageCollection.updateAll(filteredUpdated);
+                    if (filteredAdded.size() > 0) {
+                        messageCollection.addAll(filteredAdded);
                     }
                     Logger.i("++ merged message size : %s", messageCollection.size());
-                    boolean changed = added.size() > 0 || updated.size() > 0 || deletedIds.size() > 0;
+                    boolean changed = filteredAdded.size() > 0 || filteredUpdated.size() > 0 || deletedIds.size() > 0;
                     Logger.dev("++ changeLogs updated : %s", changed);
 
                     if (changed) {
@@ -513,15 +532,23 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
                 return;
             }
 
-            Logger.i("++ sent message : %s", message);
-            messageCollection.add(message);
-            PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
-            notifyDataSetChanged();
-            newRequestedMessage.postValue(message);
+            if (messageListParams.belongsTo(message)) {
+                Logger.i("++ sent message : %s", message);
+                messageCollection.add(message);
+                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
+                notifyDataSetChanged();
+                newRequestedMessage.postValue(message);
+            }
         });
-        PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingUserMessage);
-        notifyDataSetChanged();
-        newRequestedMessage.postValue(pendingUserMessage);
+        if (pendingUserMessage != null) {
+            if (messageListParams.belongsTo(pendingUserMessage)) {
+                PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingUserMessage);
+                notifyDataSetChanged();
+                newRequestedMessage.postValue(pendingUserMessage);
+            } else {
+                errorToast.postValue(R.string.sb_text_error_message_filtered);
+            }
+        }
     }
 
     public void sendFileMessage(@NonNull FileMessageParams params, @NonNull FileInfo fileInfo) {
@@ -540,18 +567,24 @@ public class ChannelViewModel extends BaseViewModel implements LifecycleObserver
                 return;
             }
 
-            Logger.i("++ sent message : %s", message);
-            //if (file.exists()) file.deleteOnExit();
-            messageCollection.add(message);
-            PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
-            notifyDataSetChanged();
-            newRequestedMessage.postValue(message);
+            if (messageListParams.belongsTo(message)) {
+                Logger.i("++ sent message : %s", message);
+                //if (file.exists()) file.deleteOnExit();
+                messageCollection.add(message);
+                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
+                notifyDataSetChanged();
+                newRequestedMessage.postValue(message);
+            }
         });
         if (pendingFileMessage != null) {
-            PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingFileMessage);
-            PendingMessageRepository.getInstance().addFileInfo(pendingFileMessage, fileInfo);
-            notifyDataSetChanged();
-            newRequestedMessage.postValue(pendingFileMessage);
+            if (messageListParams.belongsTo(pendingFileMessage)) {
+                PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingFileMessage);
+                PendingMessageRepository.getInstance().addFileInfo(pendingFileMessage, fileInfo);
+                notifyDataSetChanged();
+                newRequestedMessage.postValue(pendingFileMessage);
+            } else {
+                errorToast.postValue(R.string.sb_text_error_message_filtered);
+            }
         }
     }
 

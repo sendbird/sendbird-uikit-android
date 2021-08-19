@@ -33,6 +33,11 @@ public class MessageUtils {
         return messageType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME || messageType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_OTHER;
     }
 
+    public static boolean isFailed(@NonNull BaseMessage message) {
+        final BaseMessage.SendingStatus status = message.getSendingStatus();
+        return status == BaseMessage.SendingStatus.FAILED || status == BaseMessage.SendingStatus.CANCELED;
+    }
+
     public static boolean isGroupChanged(@Nullable BaseMessage frontMessage, @Nullable BaseMessage backMessage) {
         return frontMessage == null ||
                 frontMessage.getSender() == null ||

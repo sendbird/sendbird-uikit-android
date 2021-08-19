@@ -893,14 +893,17 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
         DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
         DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete);
 
+        DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
+        DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
+
         DialogListItem[] actions = null;
         BaseMessage.SendingStatus status = message.getSendingStatus();
         switch (type) {
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == BaseMessage.SendingStatus.SUCCEEDED) {
                     actions = new DialogListItem[]{copy, edit, delete};
-                } else if (status == BaseMessage.SendingStatus.FAILED || status == BaseMessage.SendingStatus.CANCELED) {
-                    actions = new DialogListItem[]{delete};
+                } else if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
                 }
                 break;
             case VIEW_TYPE_USER_MESSAGE_OTHER:
@@ -909,8 +912,8 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
             case VIEW_TYPE_FILE_MESSAGE_ME:
-                if (status == BaseMessage.SendingStatus.FAILED || status == BaseMessage.SendingStatus.CANCELED) {
-                    actions = new DialogListItem[]{delete};
+                if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
                 } else {
                     actions = new DialogListItem[]{delete, save};
                 }
@@ -956,7 +959,12 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
             } else if (key == R.string.sb_text_channel_anchor_edit) {
                 editMessage(message);
             } else if (key == R.string.sb_text_channel_anchor_delete) {
-                showWarningDialog(message);
+                if (MessageUtils.isFailed(message)) {
+                    Logger.dev("delete");
+                    deleteMessage(message);
+                } else {
+                    showWarningDialog(message);
+                }
             } else if (key == R.string.sb_text_channel_anchor_save) {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                     download((FileMessage) message);
@@ -974,6 +982,8 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnIt
                         }
                     });
                 }
+            } else if (key == R.string.sb_text_channel_anchor_retry) {
+                resendMessage(message);
             }
         };
     }

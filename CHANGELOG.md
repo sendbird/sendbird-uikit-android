@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.1.7 (August 19, 2021) with Core SDK `v3.0.170`
+* Added filtering logics for channel events by custom message list params.
+* Added filtering logics for channel list events by custom channel list query.
+* Improved handling of failed messages.
+
 ### v2.1.6 (July 20, 2021) with Core SDK `v3.0.168`
 * Added `setEmptyIcon(int resId, ColorStateList tint)` in `CreateChannelFragment.Builder`, `InviteChannelFragment.Builder`, and `PromoteOperatorsFragment.Builder`.
 * Added `setEmptyText(int resId)` in `CreateChannelFragment.Builder`, `InviteChannelFragment.Builder`, and `PromoteOperatorsFragment.Builder`.

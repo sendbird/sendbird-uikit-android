@@ -165,6 +165,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
 
     private void updateIfExist(@NonNull GroupChannel channel) {
         Logger.dev(">> updateIfExist()");
+        if (!channelListQuery.belongsTo(channel)) return;
         synchronized (channelListCache) {
             if (channelListCache.contains(channel)) {
                 channelListCache.remove(channel);
@@ -176,6 +177,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
 
     private void updateOrInsert(@NonNull GroupChannel channel) {
         Logger.dev(">> updateOrInsert()");
+        if (!channelListQuery.belongsTo(channel)) return;
         synchronized (channelListCache) {
             channelListCache.remove(channel);
             channelListCache.add(channel);
@@ -208,10 +210,16 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
 
                 @Override
                 public void onResult(List<GroupChannel> updatedChannels, List<String> deletedChannelUrls) {
-                    Logger.i("[changeLogs] updatedChannels size : %s, deletedChannelUrls size : %s", updatedChannels.size(), deletedChannelUrls.size());
+                    List<GroupChannel> filteredUpdatedChannels = new ArrayList<>();
+                    for (GroupChannel channel : updatedChannels) {
+                        if (channelListQuery.belongsTo(channel)) {
+                            filteredUpdatedChannels.add(channel);
+                        }
+                    }
+                    Logger.i("[changeLogs] updatedChannels size : %s, deletedChannelUrls size : %s", filteredUpdatedChannels.size(), deletedChannelUrls.size());
                     synchronized (channelListCache) {
-                        channelListCache.removeAll(updatedChannels);
-                        channelListCache.addAll(updatedChannels);
+                        channelListCache.removeAll(filteredUpdatedChannels);
+                        channelListCache.addAll(filteredUpdatedChannels);
                         List<GroupChannel> willDeleteChannel = new ArrayList<>();
                         for (GroupChannel channel : channelListCache) {
                             if (deletedChannelUrls.contains(channel.getUrl())) {

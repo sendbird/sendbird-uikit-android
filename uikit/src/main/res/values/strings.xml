@@ -30,6 +30,7 @@
     <string name="sb_text_channel_anchor_save">Save</string>
     <string name="sb_text_channel_anchor_edit">Edit</string>
     <string name="sb_text_channel_anchor_delete">Delete</string>
+    <string name="sb_text_channel_anchor_retry">Retry</string>
     <string name="sb_text_channel_input_text_hint">Enter message</string>
     <string name="sb_text_channel_input_camera">Camera</string>
     <string name="sb_text_channel_input_gallery">Photo library</string>
@@ -109,6 +110,7 @@
     <string name="sb_text_error_delete_message">Couldn\&#39;t delete message.</string>
     <string name="sb_text_error_copy_message">Couldn\&#39;t copy message.</string>
     <string name="sb_text_error_send_message">Couldn\&#39;t send message. Try again.</string>
+    <string name="sb_text_error_message_filtered">Message filtered.</string>
     <string name="sb_text_error_mute_member">Couldn\&#39;t mute member. Try again.</string>
     <string name="sb_text_error_ban_member">Couldn\&#39;t ban member. Try again.</string>
     <string name="sb_text_error_unmute_member">Couldn\&#39;t unmute member. Try again.</string>
