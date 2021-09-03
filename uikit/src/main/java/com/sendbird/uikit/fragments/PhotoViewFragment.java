@@ -283,7 +283,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             @Override
             public Boolean call() throws Exception {
                 FileDownloader.getInstance().saveFile(getContext(), url, mimeType, fileName);
-                Logger.dev("++ file name : %s, size : %s", fileName);
+                Logger.dev("++ file name : %s", fileName);
                 return true;
             }
 
