@@ -1,13 +1,26 @@
-# Sendbird UIKit for Android
+# [Sendbird](https://sendbird.com?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) UIKit for Android
 ![Platform](https://img.shields.io/badge/platform-ANDROID-orange.svg)
 ![Languages](https://img.shields.io/badge/language-JAVA-orange.svg)
+[![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
+
+## Table of contents
+
+  1. [Introduction](#introduction)
+  1. [Requirements](#requirements)
+  1. [Getting started](#getting-started)
+  1. [UIKit at a glance](#uikit-at-a-glance)  
+  1. [Getting help](#getting-help)
+  1. [Hiring](#we-are-hiring)
+<br />
 
 ## Introduction
 
-Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
+[**Sendbird UIKit**](https://sendbird.com/docs/uikit/v1/android/getting-started/about-uikit?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
+
+![ThemeLight](https://static.sendbird.com/docs/uikit-android-theme-light.png)
 
 - **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
-- **uikit-sample** is a chat app with UIKit’s core core features in which you can see items such as push notifications, total unread message count and auto sign-in are demonstrated. When you sign in to the sample app, you will only see a list of channels rendered by the [ChannelListActivity](https://sendbird.com/docs/uikit/v1/android/guides/group-channel#2-list-channels) on the screen. 
+- **uikit-sample** is a chat app with UIKit’s core core features in which you can see items such as push notifications, total unread message count and auto sign-in are demonstrated. When you sign in to the sample app, you will only see a list of channels rendered by the [ChannelListActivity](https://sendbird.com/docs/uikit/v1/android/guides/group-channel#2-list-channels?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) on the screen. 
 - **uikit-custom-sample** is a chat app which contains customizable sample code for the following:  
   * An example of how you can create your own custom message type, for example, a demonstration of sending a message in highlight.
   * MessageListParams provides various options for retrieving a list of messages with `MessageListParams`
@@ -16,17 +29,9 @@ Sendbird UIKit for Android is a development kit with an user interface that enab
   * Styles, colors, fonts
   * An example of multilingual UI support. In the `/res/values-ko-rKR/strings.xml`, you can find an example written in Korean language.
 
-### More about Sendbird UIKIT for Android
-
-Find out more about Sendbird UIKit for Android at [UIKit for Android doc](https://sendbird.com/docs/uikit/v1/android/getting-started/about-uikit). If you need any help in resolving any issues or have questions, visit [our community](https://community.sendbird.com).
-
 <br />
 
-## Before getting started
-
-This section shows you the prerequisites you need for testing Sendbird UIKit for Android sample apps.
-
-### Requirements
+## Requirements
 
 The minimum requirements for UIKit for Android are:
 
@@ -37,7 +42,7 @@ The minimum requirements for UIKit for Android are:
 
 ### Try the sample app using your data 
 
-If you would like to try the sample app specifically fit to your usage, you can do so by replacing the default sample app ID with yours, which you can obtain by [creating your Sendbird application from the dashboard](https://docs.sendbird.com/android/quick_start#3_install_and_configure_the_chat_sdk_4_step_1_create_a_sendbird_application_from_your_dashboard). Furthermore, you could also add data of your choice on the dashboard to test. This will allow you to experience the sample app with data from your Sendbird application. 
+If you would like to try the sample app specifically fit to your usage, you can do so by replacing the default sample app ID with yours, which you can obtain by [creating your Sendbird application from the dashboard](https://docs.sendbird.com/android/quick_start#3_install_and_configure_the_chat_sdk_4_step_1_create_a_sendbird_application_from_your_dashboard?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk). Furthermore, you could also add data of your choice on the dashboard to test. This will allow you to experience the sample app with data from your Sendbird application. 
 
 <br />
 
@@ -116,7 +121,7 @@ After saving your `build.gradle` file, click the **Sync** button to apply all th
 
 <br />
 
-## UIKit features and ways to customize 
+## UIKit at a glance 
 
 Here is an overview of a list of key components that can be customized on UIKit. All components can be called while fragments and activities are running on the Android platform. 
 
@@ -128,3 +133,13 @@ Here is an overview of a list of key components that can be customized on UIKit.
 |InviteChannel|A component that shows all the users of your client app from the current channel so you can invite other users to join. |
 |ChannelSettings|A component that changes the channel information.|
 |MemberList|A component that shows the list of members who have joined the current channel.|
+
+<br/>
+
+## Getting Help
+Check out the Official Sendbird [Android UIKit docs](https://sendbird.com/docs/uikit/v1/android/quickstart/send-first-message?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) and Sendbird's [Developer Portal](https://sendbird.com/developer?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) for tutorials and videos. If you need any help in resolving any issues or have questions, visit our [community forums](https://community.sendbird.com?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk).
+
+<br />
+
+## We are Hiring!
+Sendbird is made up of a diverse group of humble, friendly, and hardworking individuals united by a shared purpose to build the next generation of mobile & social technologies. Join our team remotely or at one of our locations in San Mateo, Seoul, New York, London, and Singapore. More information on a [careers page](https://sendbird.com/careers?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk).
