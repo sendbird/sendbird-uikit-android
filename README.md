@@ -15,11 +15,11 @@
 
 ## Introduction
 
-[**Sendbird UIKit**](https://sendbird.com/docs/uikit/v1/android/getting-started/about-uikit?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
+[**Sendbird UIKit**](https://sendbird.com/docs/uikit/v1/android/getting-started/about-uikit?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) for Android is a development kit with a user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
 
 ![ThemeLight](https://static.sendbird.com/docs/uikit-android-theme-light.png)
 
-- **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
+- **uikit** contains the source code. Check out the [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information.
 - **uikit-sample** is a chat app with UIKit’s core core features in which you can see items such as push notifications, total unread message count and auto sign-in are demonstrated. When you sign in to the sample app, you will only see a list of channels rendered by the [ChannelListActivity](https://sendbird.com/docs/uikit/v1/android/guides/group-channel#2-list-channels?&utm_source=github&utm_medium=referral&utm_campaign=repo&utm_content=sendbird-uikit-android-sdk) on the screen. 
 - **uikit-custom-sample** is a chat app which contains customizable sample code for the following:  
   * An example of how you can create your own custom message type, for example, a demonstration of sending a message in highlight.
@@ -28,6 +28,13 @@
   * User list provides various options for retrieving a list of users
   * Styles, colors, fonts
   * An example of multilingual UI support. In the `/res/values-ko-rKR/strings.xml`, you can find an example written in Korean language.
+
+### Benefits
+
+- Easy installation
+- Fully-featured chat with a minimal amount of code
+- Customizable components, events, and views
+- Customizable user list to enable chat among specified users
 
 <br />
 
