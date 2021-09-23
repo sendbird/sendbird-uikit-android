@@ -40,4 +40,5 @@
     <string name="text_error_connection_must_be_made">Connection must be made.</string>
     <string name="text_error_update_user_information">Couldn\&#39;t update user information.</string>
     <string name="text_error_update_do_not_disturb">Couldn\&#39;t update disturb setting.</string>
+    <string name="sb_text_channel_tooltip_with_count_over_10">Over 10 messages</string>
 </resources>

@@ -127,9 +127,28 @@ public class SendBirdUIKit {
      * @param context <code>Context</code> of <code>Application</code>.
      */
     public synchronized static void init(@NonNull SendBirdUIKitAdapter adapter, @NonNull Context context) {
+        init(adapter, context, false);
+    }
+
+    /**
+     * Initializes Sendbird from foreground with given app ID.
+     *
+     * @param adapter The {@link SendBirdUIKitAdapter} providing an app ID, a information of the user.
+     * @param context <code>Context</code> of <code>Application</code>.
+     * @since 2.1.8
+     */
+    public synchronized static void initFromForeground(@NonNull SendBirdUIKitAdapter adapter, @NonNull Context context) {
+        init(adapter, context, true);
+    }
+
+    private synchronized static void init(@NonNull SendBirdUIKitAdapter adapter, @NonNull Context context, boolean isForeground) {
         SendBirdUIKit.adapter = adapter;
         SendBirdUIKit.setResizingSize(new Pair<>(DEFAULT_RESIZING_WIDTH_SIZE, DEFAULT_RESIZING_HEIGHT_SIZE));
-        SendBird.init(adapter.getAppId(), context);
+        if (isForeground) {
+            SendBird.initFromForeground(adapter.getAppId(), context);
+        } else {
+            SendBird.init(adapter.getAppId(), context);
+        }
         FileUtils.removeDeletableDir(context.getApplicationContext());
 
         try {

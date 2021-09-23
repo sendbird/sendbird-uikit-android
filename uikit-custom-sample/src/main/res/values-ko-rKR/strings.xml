@@ -25,6 +25,7 @@
     <string name="sb_text_channel_message_badge_edited">&#160;(편집됨)</string>
     <string name="sb_text_channel_tooltip">새 메시지 %d개</string>
     <string name="sb_text_channel_tooltip_with_count">새 메시지 %d개</string>
+    <string name="sb_text_channel_tooltip_with_count_over_10">10개 이상</string>
     <string name="sb_text_channel_anchor_copy">복사</string>
     <string name="sb_text_channel_anchor_save">저장</string>
     <string name="sb_text_channel_anchor_edit">편집</string>

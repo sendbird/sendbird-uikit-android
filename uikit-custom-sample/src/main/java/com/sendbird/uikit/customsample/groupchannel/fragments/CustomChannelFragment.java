@@ -7,8 +7,11 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.UserMessageParams;
+import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.models.CustomMessageType;
 import com.sendbird.uikit.fragments.ChannelFragment;
+
+import java.util.Locale;
 
 public class CustomChannelFragment extends ChannelFragment {
     private CustomMessageType customMessageType = CustomMessageType.NONE;
@@ -77,6 +80,19 @@ public class CustomChannelFragment extends ChannelFragment {
     @Override
     protected void resendMessage(@NonNull BaseMessage message) {
         super.resendMessage(message);
+    }
+
+    @Override
+    protected String getTooltipMessage(int count) {
+        String result = "";
+        if (count <= 1) {
+            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip), count);
+        } else if (count <= 9) {
+            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip_with_count), count);
+        } else {
+            result = getString(R.string.sb_text_channel_tooltip_with_count_over_10);
+        }
+        return result;
     }
 
     public void setCustomMessageType(CustomMessageType customMessageType) {

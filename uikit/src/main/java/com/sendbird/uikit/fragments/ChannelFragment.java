@@ -785,16 +785,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         }
     }
 
-    private String getTooltipMessage(int count) {
-        String result = "";
-        if (count > 1) {
-            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip_with_count), count);
-        } else if (count == 1) {
-            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip), count);
-        }
-        return result;
-    }
-
     private void sendMessage(View view) {
         Logger.dev("++ onClick()");
         if (view.getId() == binding.vgInputBox.getBinding().ibtnSend.getId()) {
@@ -948,6 +938,23 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
      */
     @Override
     public void shouldDismissLoadingDialog() {
+    }
+
+    /**
+     * It will be called when the tooltip retrieve a text to show the information of new messages.
+     *
+     * @param count Number of newly added messages.
+     * @return Text to show in tooltip.
+     * @since 2.1.8
+     */
+    protected String getTooltipMessage(int count) {
+        String result = "";
+        if (count > 1) {
+            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip_with_count), count);
+        } else if (count == 1) {
+            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip), count);
+        }
+        return result;
     }
 
     private String getEditTextString() {

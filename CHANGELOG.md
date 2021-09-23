@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.1.8 (Sep 23, 2021) with Core SDK `v3.0.172`
+* Added `getMessageTootip(int count)` in `ChannelFragment`.
+* Added `initFromForeground(SendBirdUIKitAdapter adapter, Context context)` in `SendBirdUIKit`.
+
 ### v2.1.7 (August 19, 2021) with Core SDK `v3.0.170`
 * Added filtering logics for channel events by custom message list params.
 * Added filtering logics for channel list events by custom channel list query.
