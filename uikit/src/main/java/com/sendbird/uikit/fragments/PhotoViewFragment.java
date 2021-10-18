@@ -283,7 +283,9 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             @Override
             public Boolean call() throws Exception {
                 FileDownloader.getInstance().saveFile(getContext(), url, mimeType, fileName);
-                Logger.dev("++ file name : %s, size : %s", fileName);
+                // occur SendBirdException{code=800220, message=Format specifier '%s'}
+                // following line which has bug without a String value as size
+                // Logger.dev("++ file name : %s, size : %s", fileName);
                 return true;
             }
 
