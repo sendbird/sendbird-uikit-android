@@ -15,7 +15,9 @@ import com.sendbird.android.AppInfo;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
+import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
+import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
@@ -26,6 +28,7 @@ import com.sendbird.uikit.tasks.JobResultTask;
 import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.utils.UIKitPrefs;
 
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
@@ -114,10 +117,12 @@ public class SendBirdUIKit {
     private static CustomParamsHandler customParamsHandler;
     private static int compressQuality = 100;
     private static Pair<Integer, Integer> resizingSize;
+    private static ReplyType replyType = ReplyType.QUOTE_REPLY;
 
     static void clearAll() {
         SendBirdUIKit.customUserListQueryHandler = null;
         defaultThemeMode = ThemeMode.Light;
+        UIKitPrefs.clearAll();
     }
 
     /**
@@ -144,16 +149,48 @@ public class SendBirdUIKit {
     private synchronized static void init(@NonNull SendBirdUIKitAdapter adapter, @NonNull Context context, boolean isForeground) {
         SendBirdUIKit.adapter = adapter;
         SendBirdUIKit.setResizingSize(new Pair<>(DEFAULT_RESIZING_WIDTH_SIZE, DEFAULT_RESIZING_HEIGHT_SIZE));
-        if (isForeground) {
-            SendBird.initFromForeground(adapter.getAppId(), context);
-        } else {
-            SendBird.init(adapter.getAppId(), context);
-        }
-        FileUtils.removeDeletableDir(context.getApplicationContext());
 
-        try {
-            SendBird.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
-        } catch (Throwable ignored) {}
+        final InitResultHandler handler = adapter.getInitResultHandler();
+        final InitResultHandler initResultHandler = new InitResultHandler() {
+            @Override
+            public void onMigrationStarted() {
+                Logger.d(">> onMigrationStarted()");
+                if (handler != null) {
+                    handler.onMigrationStarted();
+                }
+            }
+
+            @Override
+            public void onInitFailed(SendBirdException e) {
+                Logger.d(">> onInitFailed() e=%s", e);
+                Logger.e(e);
+                if (handler != null) {
+                    handler.onInitFailed(e);
+                }
+            }
+
+            @Override
+            public void onInitSucceed() {
+                Logger.d(">> onInitSucceed()");
+                FileUtils.removeDeletableDir(context.getApplicationContext());
+                UIKitPrefs.init(context.getApplicationContext());
+                EmojiManager.getInstance().init();
+
+                try {
+                    SendBird.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
+                } catch (Throwable ignored) {}
+
+                if (handler != null) {
+                    handler.onInitSucceed();
+                }
+            }
+        };
+
+        if (isForeground) {
+            SendBird.initFromForeground(adapter.getAppId(), context, true, initResultHandler);
+        } else {
+            SendBird.init(adapter.getAppId(), context, true, initResultHandler);
+        }
     }
 
     /**
@@ -248,22 +285,24 @@ public class SendBirdUIKit {
             @Override
             public User call() throws Exception {
                 User user = connect();
-                UserInfo userInfo = adapter.getUserInfo();
-                String userId = userInfo.getUserId();
-                String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
-                if (TextUtils.isEmpty(nickname)) nickname = userId;
-                String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
-                if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
-                    updateUserInfoBlocking(nickname, profileUrl);
-                }
+                if (SendBird.getConnectionState() == SendBird.ConnectionState.OPEN) {
+                    UserInfo userInfo = adapter.getUserInfo();
+                    String userId = userInfo.getUserId();
+                    String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
+                    if (TextUtils.isEmpty(nickname)) nickname = userId;
+                    String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
+                    if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
+                        updateUserInfoBlocking(nickname, profileUrl);
+                    }
 
-                Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
+                    Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
 
-                AppInfo appInfo = SendBird.getAppInfo();
-                if (appInfo != null &&
-                        appInfo.useReaction() &&
-                        appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
-                    updateEmojiList();
+                    AppInfo appInfo = SendBird.getAppInfo();
+                    if (appInfo != null &&
+                            appInfo.useReaction() &&
+                            appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
+                        updateEmojiList();
+                    }
                 }
 
                 return user;
@@ -272,7 +311,7 @@ public class SendBirdUIKit {
             @Override
             public void onResultForUiThread(User user, SendBirdException e) {
                 if (handler != null) {
-                    handler.onConnected(e == null ? user : null, e);
+                    handler.onConnected(SendBird.getCurrentUser(), e);
                 }
             }
         });
@@ -287,13 +326,13 @@ public class SendBirdUIKit {
         String accessToken = adapter.getAccessToken();
 
         SendBird.connect(userId, accessToken, (user, e) -> {
+            result.set(user);
             if (e != null) {
                 error.set(e);
                 latch.countDown();
                 return;
             }
 
-            result.set(user);
             latch.countDown();
         });
         latch.await();
@@ -358,6 +397,7 @@ public class SendBirdUIKit {
     }
 
     private static void updateEmojiList() {
+        Logger.d(">> SendBirdUIkit::updateEmojiList()");
         SendBird.getAllEmoji((emojiContainer, e) -> {
             if (e != null) {
                 Logger.e(e);
@@ -433,5 +473,25 @@ public class SendBirdUIKit {
      */
     public static Pair<Integer, Integer> getResizingSize() {
         return SendBirdUIKit.resizingSize;
+    }
+
+    /**
+     * Sets <code>ReplyType</code>, which is how replies are displayed in the message list.
+     *
+     * @since 2.2.0
+     */
+    public static void setReplyType(@NonNull ReplyType replyType) {
+        SendBirdUIKit.replyType = replyType;
+    }
+
+    /**
+     * Returns <code>ReplyType</code>, which is how replies are displayed in the message list.
+     *
+     * @return The value of <code>ReplyType</code>.
+     * @since 2.2.0
+     */
+    @NonNull
+    public static ReplyType getReplyType() {
+        return SendBirdUIKit.replyType;
     }
 }

@@ -6,100 +6,196 @@
     <LinearLayout
         android:id="@+id/messageInputParent"
         android:orientation="vertical"
-        android:paddingTop="@dimen/sb_size_10"
-        android:paddingBottom="@dimen/sb_size_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/inputPanel"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/sb_size_8"
-            android:paddingRight="@dimen/sb_size_16"
-            android:paddingStart="@dimen/sb_size_8"
-            android:paddingEnd="@dimen/sb_size_16"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivReplyDivider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/sb_size_1"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibtnAdd"
-                android:layout_width="@dimen/sb_size_40"
-                android:layout_height="@dimen/sb_size_40"
-                android:src="@drawable/icon_add"
-                android:padding="@dimen/sb_size_8"
-                android:layout_marginRight="@dimen/sb_size_4"
-                android:layout_marginLeft="@dimen/sb_size_0"
-                android:layout_marginEnd="@dimen/sb_size_4"
-                android:layout_marginStart="@dimen/sb_size_0"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/etInputText"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/quoteReplyPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/sb_size_12"
+            android:paddingBottom="@dimen/sb_size_12"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:paddingRight="@dimen/sb_size_16"
+            android:visibility="gone"
+            >
+
+            <com.sendbird.uikit.widgets.RoundCornerView
+                android:id="@+id/ivQuoteReplyMessageImage"
+                android:layout_width="@dimen/sb_size_32"
+                android:layout_height="@dimen/sb_size_32"
+                android:layout_marginRight="@dimen/sb_size_8"
+                android:layout_marginEnd="@dimen/sb_size_8"
+                android:background="@drawable/sb_shape_image_message_background"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toStartOf="@id/tvQuoteReplyTitle"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etInputText"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivQuoteReplyMessageIcon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerInside"
+                app:layout_constraintStart_toStartOf="@id/ivQuoteReplyMessageImage"
+                app:layout_constraintEnd_toEndOf="@id/ivQuoteReplyMessageImage"
+                app:layout_constraintTop_toTopOf="@id/ivQuoteReplyMessageImage"
+                app:layout_constraintBottom_toBottomOf="@id/ivQuoteReplyMessageImage" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvQuoteReplyTitle"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="wrap_content"
-                android:hint="@string/sb_text_channel_input_text_hint"
-                android:maxLines="3"
-                android:paddingLeft="@dimen/sb_size_20"
-                android:paddingRight="@dimen/sb_size_20"
-                android:imeOptions="flagNoExtractUi"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ibtnSend"
-                app:layout_constraintStart_toEndOf="@id/ibtnAdd"
-                app:layout_constraintTop_toTopOf="parent">
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="@style/SendbirdCaption1OnLight01"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/ivQuoteReplyMessageImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tvQuoteReplyMessage"
+                app:layout_constraintEnd_toStartOf="@id/ivQuoteReplyClose"
+                />
 
-                <requestFocus />
-            </androidx.appcompat.widget.AppCompatEditText>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvQuoteReplyMessage"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="@style/SendbirdCaption2OnLight03"
+                android:layout_marginTop="@dimen/sb_size_4"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/tvQuoteReplyTitle"
+                app:layout_constraintEnd_toEndOf="@id/tvQuoteReplyTitle"
+                app:layout_constraintStart_toEndOf="@id/ivQuoteReplyMessageImage"
+                app:layout_constraintTop_toBottomOf="@id/tvQuoteReplyTitle"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/ibtnSend"
-                android:src="@drawable/icon_send"
-                android:layout_width="@dimen/sb_size_24"
-                android:layout_height="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_0"
-                android:layout_marginLeft="@dimen/sb_size_12"
-                android:layout_marginEnd="@dimen/sb_size_0"
-                android:layout_marginStart="@dimen/sb_size_12"
-                android:visibility="gone"
-                android:padding="@dimen/sb_size_0"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toEndOf="@id/etInputText"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivQuoteReplyClose"
+                android:layout_width="@dimen/sb_size_22"
+                android:layout_height="@dimen/sb_size_22"
+                android:src="@drawable/icon_close"
+                android:layout_marginLeft="@dimen/sb_size_16"
+                app:layout_constraintStart_toEndOf="@id/tvQuoteReplyTitle"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/sb_size_16" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
-            android:id="@+id/editPanel"
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingTop="@dimen/sb_size_10"
+            android:paddingBottom="@dimen/sb_size_10"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/sb_size_56"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_gravity="start|center_vertical"
-                android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/sb_size_40"
-                android:paddingRight="@dimen/sb_size_4"
-                android:paddingLeft="@dimen/sb_size_4"
-                android:text="@string/sb_text_button_cancel"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_gravity="end|center_vertical"
-                android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/sb_size_40"
-                android:paddingRight="@dimen/sb_size_4"
-                android:paddingLeft="@dimen/sb_size_4"
-                android:text="@string/sb_text_button_save"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/inputPanel"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/sb_size_8"
+                android:paddingRight="@dimen/sb_size_16"
+                android:paddingStart="@dimen/sb_size_8"
+                android:paddingEnd="@dimen/sb_size_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        </FrameLayout>
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/ibtnAdd"
+                    android:layout_width="@dimen/sb_size_40"
+                    android:layout_height="@dimen/sb_size_40"
+                    android:src="@drawable/icon_add"
+                    android:padding="@dimen/sb_size_8"
+                    android:layout_marginRight="@dimen/sb_size_4"
+                    android:layout_marginLeft="@dimen/sb_size_0"
+                    android:layout_marginEnd="@dimen/sb_size_4"
+                    android:layout_marginStart="@dimen/sb_size_0"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/etInputText"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etInputText"
+                    android:layout_width="@dimen/sb_size_0"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/sb_text_channel_input_text_hint"
+                    android:maxLines="3"
+                    android:paddingLeft="@dimen/sb_size_20"
+                    android:paddingRight="@dimen/sb_size_20"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="textCapSentences|textMultiLine"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ibtnSend"
+                    app:layout_constraintStart_toEndOf="@id/ibtnAdd"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <requestFocus />
+                </androidx.appcompat.widget.AppCompatEditText>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/ibtnSend"
+                    android:src="@drawable/icon_send"
+                    android:layout_width="@dimen/sb_size_24"
+                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_marginRight="@dimen/sb_size_0"
+                    android:layout_marginLeft="@dimen/sb_size_12"
+                    android:layout_marginEnd="@dimen/sb_size_0"
+                    android:layout_marginStart="@dimen/sb_size_12"
+                    android:visibility="gone"
+                    android:padding="@dimen/sb_size_0"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toEndOf="@id/etInputText"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <FrameLayout
+                android:id="@+id/editPanel"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_56"
+                android:paddingLeft="@dimen/sb_size_16"
+                android:paddingRight="@dimen/sb_size_16"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_gravity="start|center_vertical"
+                    android:id="@+id/btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/sb_size_40"
+                    android:paddingRight="@dimen/sb_size_4"
+                    android:paddingLeft="@dimen/sb_size_4"
+                    android:text="@string/sb_text_button_cancel"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_gravity="end|center_vertical"
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/sb_size_40"
+                    android:paddingRight="@dimen/sb_size_4"
+                    android:paddingLeft="@dimen/sb_size_4"
+                    android:text="@string/sb_text_button_save"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
 </layout>

@@ -10,7 +10,9 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.uikit.BR;
 import com.sendbird.uikit.consts.MessageGroupType;
 
-public class AdminMessageViewHolder extends MessageViewHolder {
+import java.util.Map;
+
+public final class AdminMessageViewHolder extends MessageViewHolder {
     AdminMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
     }
@@ -21,7 +23,7 @@ public class AdminMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return itemView;
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

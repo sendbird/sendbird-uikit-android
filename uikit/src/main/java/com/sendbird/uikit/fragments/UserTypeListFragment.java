@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
@@ -266,7 +267,8 @@ abstract public class UserTypeListFragment extends BaseGroupChannelFragment impl
      */
     protected void onProfileClicked(View view, int position, User user) {
         if (getContext() == null || getFragmentManager() == null) return;
-        DialogUtils.buildUserProfile(getContext(), user, true, null, loadingDialogHandler).showSingle(getFragmentManager());
+        boolean useChannelCreateButton = !user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        DialogUtils.buildUserProfile(getContext(), user, useChannelCreateButton, null, loadingDialogHandler).showSingle(getFragmentManager());
     }
 
     /**

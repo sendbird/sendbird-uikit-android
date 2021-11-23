@@ -17,6 +17,7 @@ import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOtherFileMessageComponentBinding;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
+import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.SpannableStringBuilder;
 import com.sendbird.uikit.utils.ViewUtils;
 
@@ -76,7 +77,7 @@ public class OtherFileMessageView extends GroupChannelMessageView {
         boolean sendingState = message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED;
         boolean hasReaction = message.getReactions() != null && message.getReactions().size() > 0;
         boolean showProfile = messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL;
-        boolean showNickname = messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD;
+        boolean showNickname = (messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD) && !MessageUtils.hasParentMessage(message);
 
         binding.ivProfileView.setVisibility(showProfile ? View.VISIBLE : View.INVISIBLE);
         binding.tvNickname.setVisibility(showNickname ? View.VISIBLE : View.GONE);
@@ -100,5 +101,7 @@ public class OtherFileMessageView extends GroupChannelMessageView {
         int paddingTop = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);
         int paddingBottom = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);
         binding.root.setPadding(binding.root.getPaddingLeft(), paddingTop, binding.root.getPaddingRight(), paddingBottom);
+
+        ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message);
     }
 }

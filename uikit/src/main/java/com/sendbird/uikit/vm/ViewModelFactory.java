@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.MessageListParams;
 import com.sendbird.android.MessageSearchQuery;
 import com.sendbird.android.OpenChannel;
@@ -32,11 +31,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ChannelViewModel.class)) {
-            return (T) new ChannelViewModel((GroupChannel) Objects.requireNonNull(params)[0], (MessageListParams) params[1]);
-        } else if (modelClass.isAssignableFrom(SuperChannelViewModel.class)) {
-            return (T) new SuperChannelViewModel((GroupChannel) Objects.requireNonNull(params)[0], (MessageListParams) params[1]);
+            return (T) new ChannelViewModel((GroupChannel) Objects.requireNonNull(params)[0]);
         } else if (modelClass.isAssignableFrom(ChannelListViewModel.class)) {
-            return (T) new ChannelListViewModel((GroupChannelListQuery) Objects.requireNonNull(params)[0]);
+            return (T) new ChannelListViewModel();
         } else if (modelClass.isAssignableFrom(SelectableUserInfoListViewModel.class)) {
             return (T) new SelectableUserInfoListViewModel(params != null ? (CustomUserListQueryHandler) params[0] : null);
         } else if (modelClass.isAssignableFrom(UserTypeListViewModel.class)) {

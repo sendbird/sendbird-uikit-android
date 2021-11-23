@@ -14,12 +14,17 @@ import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
  */
 public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     protected ViewDataBinding binding;
     protected HighlightMessageInfo highlight;
+    protected Map<String, View> clickableViewMap = new ConcurrentHashMap<>();
     private boolean isNewDate = false;
     private boolean isMine = false;
     private boolean isShowProfile = false;
@@ -56,10 +61,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
 
         if (binding != null) {
             binding.executePendingBindings();
-        }
-
-        if (getClickableView() != null) {
-            getClickableView().requestLayout();
+            binding.getRoot().requestLayout();
         }
     }
 
@@ -112,10 +114,11 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     abstract public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType);
 
     /**
-     * Return the view that recognizes the click of the ViewHolder.
+     * Returns a Map containing views to register a click event with an identifier.
      *
-     * @return View that recognizes the click of the ViewHolder.
+     * @return A Map containing views to register a click event with an identifier.
+     * @since 2.2.0
      */
-    abstract public View getClickableView();
+    abstract public Map<String, View> getClickableViewMap();
 }
 

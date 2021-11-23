@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="contentPanel" />
+            app:constraint_referenced_ids="contentPanel, tvSentAt, ivStatus" />
 
         <com.sendbird.uikit.widgets.MyMessageStatusView
             android:id="@+id/ivStatus"
@@ -34,10 +34,19 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/sb_size_0"
             android:layout_marginRight="@dimen/sb_size_4"
-            app:layout_constraintBottom_toTopOf="@+id/tvSentAt"
-            app:layout_constraintEnd_toStartOf="@+id/contentPanel"
             app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvSentAt"
+            app:layout_constraintEnd_toStartOf="@+id/tvSentAt" />
+
+        <com.sendbird.uikit.widgets.MyQuotedMessageView
+            android:id="@+id/quoteReplyPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationY="@dimen/sb_size_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/contentPanel"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/contentPanel"
@@ -49,7 +58,7 @@
             app:layout_constraintBottom_toTopOf="@+id/brBottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvSentAt"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toBottomOf="@id/quoteReplyPanel" >
 
             <View
                 android:id="@+id/emojiReactionListBackground"

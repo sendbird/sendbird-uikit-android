@@ -9,11 +9,13 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
@@ -40,6 +42,7 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.vm.PendingMessageRepository;
+import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.OgtagView;
 import com.sendbird.uikit.widgets.RoundCornerView;
@@ -138,9 +141,7 @@ public class ViewUtils {
         }
 
         Sender sender = message.getSender();
-        String nickname = sender == null || TextUtils.isEmpty(sender.getNickname()) ?
-                tvNickname.getContext().getString(R.string.sb_text_channel_list_title_unknown) :
-                sender.getNickname();
+        String nickname = UserUtils.getDisplayName(tvNickname.getContext(), sender);
         tvNickname.setText(nickname);
     }
 
@@ -174,7 +175,25 @@ public class ViewUtils {
     }
 
     public static void drawThumbnail(@NonNull RoundCornerView view, @NonNull FileMessage message) {
+        drawThumbnail(view, message, null, R.dimen.sb_size_48);
+    }
+
+    public static void drawQuotedMessageThumbnail(@NonNull RoundCornerView view,
+                                                  @NonNull FileMessage message,
+                                                  @Nullable RequestListener<Drawable> requestListener) {
+        drawThumbnail(view, message, requestListener, R.dimen.sb_size_24);
+    }
+
+    private static void drawThumbnail(@NonNull RoundCornerView view,
+                                      @NonNull FileMessage message,
+                                      @Nullable RequestListener<Drawable> requestListener,
+                                      @DimenRes int iconSize
+                                      ) {
         String url = message.getUrl();
+        if (TextUtils.isEmpty(url) && message.getMessageParams() != null &&
+                message.getMessageParams().getFile() != null) {
+            url = message.getMessageParams().getFile().getAbsolutePath();
+        }
         Context context = view.getContext();
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL);
         RequestBuilder<Drawable> builder = Glide.with(context)
@@ -198,13 +217,16 @@ public class ViewUtils {
             if (thumbnails.size() > 0) {
                 thumbnail = thumbnails.get(0);
             }
-            if (thumbnail != null) {
+            if (thumbnail != null && !TextUtils.isEmpty(thumbnail.getUrl())) {
                 Logger.dev("++ thumbnail width : %s, thumbnail height : %s", thumbnail.getRealWidth(), thumbnail.getRealHeight());
-                width = thumbnail.getRealWidth();
-                height = thumbnail.getRealHeight();
+                width = Math.max(MINIMUM_THUMBNAIL_WIDTH, thumbnail.getRealWidth());
+                height = Math.max(MINIMUM_THUMBNAIL_HEIGHT, thumbnail.getRealHeight());
                 url = thumbnail.getUrl();
+                builder = builder.override(width, height);
+            } else {
+                final int size = Math.min(Math.max(MINIMUM_THUMBNAIL_WIDTH, width), Math.max(MINIMUM_THUMBNAIL_HEIGHT, height));
+                builder = builder.override(size);
             }
-            builder = builder.override(Math.max(MINIMUM_THUMBNAIL_WIDTH, width), Math.max(MINIMUM_THUMBNAIL_HEIGHT, height));
         }
 
         if (message.getType().toLowerCase().contains(StringSet.image) && !message.getType().toLowerCase().contains(StringSet.gif)) {
@@ -212,10 +234,10 @@ public class ViewUtils {
             int thumbnailIconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
             builder = builder
                     .placeholder(DrawableUtils.setTintList(
-                            ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_photo), R.dimen.sb_size_48, R.dimen.sb_size_48),
+                            ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_photo), iconSize, iconSize),
                             AppCompatResources.getColorStateList(context, thumbnailIconTint)))
                     .error(DrawableUtils.setTintList(
-                            ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_thumbnail_none), R.dimen.sb_size_48, R.dimen.sb_size_48),
+                            ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_thumbnail_none), iconSize, iconSize),
                             AppCompatResources.getColorStateList(context, thumbnailIconTint)));
         }
 
@@ -223,12 +245,18 @@ public class ViewUtils {
         builder.load(url).centerCrop().thumbnail(0.3f).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                if (requestListener != null) {
+                    requestListener.onLoadFailed(e, model, target, isFirstResource);
+                }
                 return false;
             }
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                 view.getContent().setScaleType(ImageView.ScaleType.CENTER_CROP);
+                if (requestListener != null) {
+                    requestListener.onResourceReady(resource, model, target, dataSource, isFirstResource);
+                }
                 return false;
             }
         }).into(view.getContent());
@@ -261,5 +289,32 @@ public class ViewUtils {
             Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_document, iconTint);
             imageView.setImageDrawable(DrawableUtils.createLayerIcon(background, icon, inset));
         }
+    }
+
+    public static void drawFileMessageIconToReply(ImageView imageView, FileMessage fileMessage) {
+        String type = fileMessage.getType();
+        Context context = imageView.getContext();
+        int backgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_500 : R.color.background_100;
+        int iconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+        int inset = (int) context.getResources().getDimension(R.dimen.sb_size_8);
+        Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
+
+        if ((fileMessage.getType().toLowerCase().startsWith(StringSet.audio))) {
+            Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_audio, iconTint);
+            imageView.setImageDrawable(DrawableUtils.createLayerIcon(background, icon, inset));
+        } else if ((type.startsWith(StringSet.image) && !type.contains(StringSet.svg)) ||
+                type.toLowerCase().contains(StringSet.gif) ||
+                type.toLowerCase().contains(StringSet.video)) {
+            imageView.setImageResource(android.R.color.transparent);
+        } else {
+            Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_document, iconTint);
+            imageView.setImageDrawable(DrawableUtils.createLayerIcon(background, icon, inset));
+        }
+    }
+
+    public static void drawQuotedMessage(@NonNull BaseQuotedMessageView replyPanel, @NonNull BaseMessage message) {
+        final boolean hasParentMessage = message.getParentMessageId() != 0L;
+        replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
+        replyPanel.drawQuotedMessage(message);
     }
 }

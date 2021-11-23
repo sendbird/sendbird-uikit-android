@@ -81,6 +81,11 @@ public class DateUtils {
                 && now.get(Calendar.DATE) == cdate.get(Calendar.DATE);
     }
 
+    public static String getDateString(long dateMillis) {
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        return dateFormat.format(dateMillis);
+    }
+
     /**
      * Checks if two dates are of the same day.
      * @param millisFirst   The time in milliseconds of the first date.

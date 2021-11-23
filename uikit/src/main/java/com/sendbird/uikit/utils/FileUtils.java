@@ -107,7 +107,7 @@ public class FileUtils {
     }
 
     public static String uriToPath(@NonNull Context context, @NonNull Uri uri) {
-        String tempFileName = "Temp_" + uri.hashCode() + "." + extractExtension(context, uri);
+        String tempFileName = "Temp_" + System.currentTimeMillis() + "." + extractExtension(context, uri);
         File dstFile = createCachedDirFile(context, tempFileName);
         return copyFromUri(context, uri, dstFile);
     }

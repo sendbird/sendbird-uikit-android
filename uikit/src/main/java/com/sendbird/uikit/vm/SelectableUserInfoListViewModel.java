@@ -27,17 +27,45 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SelectableUserInfoListViewModel extends BaseViewModel implements PagerRecyclerView.Pageable<List<? extends UserInfo>>, UserListResultHandler {
-
+    private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
     private final static int USER_LIST_LIMIT = 15;
     private final ApplicationUserListQuery userListQuery;
     private final MutableLiveData<List<UserInfo>> userList = new MutableLiveData<>();
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     private final CustomUserListQueryHandler customUserListQueryHandler;
+    private volatile boolean isInitialRequest = true;
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+    }
 
     @Override
     public void onResult(List<? extends UserInfo> userList, Exception e) {
         if (e != null) {
             Logger.e(e);
+            if (isInitialRequest) {
+                SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+                    @Override
+                    public void onReconnectStarted() {
+                    }
+
+                    @Override
+                    public void onReconnectSucceeded() {
+                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        loadInitial();
+                    }
+
+                    @Override
+                    public void onReconnectFailed() {
+                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        changeAlertStatus(StatusFrameView.Status.ERROR);
+                        notifyDataSetChanged(SelectableUserInfoListViewModel.this.userList.getValue());
+                    }
+                });
+                return;
+            }
             changeAlertStatus(StatusFrameView.Status.ERROR);
             notifyDataSetChanged(this.userList.getValue());
         } else {
@@ -50,6 +78,7 @@ public class SelectableUserInfoListViewModel extends BaseViewModel implements Pa
             removeCurrentUser(newUsers);
             applyUserList(newUsers);
         }
+        isInitialRequest = false;
     }
 
     SelectableUserInfoListViewModel(CustomUserListQueryHandler customUserListQueryHandler) {
@@ -98,6 +127,7 @@ public class SelectableUserInfoListViewModel extends BaseViewModel implements Pa
     }
 
     private void loadInitial() {
+        isInitialRequest = true;
         if (customUserListQueryHandler != null) {
             customUserListQueryHandler.loadInitial(this);
         } else {
@@ -115,12 +145,18 @@ public class SelectableUserInfoListViewModel extends BaseViewModel implements Pa
         }
     }
 
-    private boolean hasMore() {
+    @Override
+    public boolean hasNext() {
         if (customUserListQueryHandler != null) {
             return customUserListQueryHandler.hasMore();
         } else {
             return userListQuery.hasNext();
         }
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return false;
     }
 
     @Override
@@ -130,7 +166,7 @@ public class SelectableUserInfoListViewModel extends BaseViewModel implements Pa
 
     @Override
     public List<? extends UserInfo> loadNext() {
-        if (hasMore()) {
+        if (hasNext()) {
             final CountDownLatch latch = new CountDownLatch(1);
             final AtomicReference<List<? extends UserInfo>> result = new AtomicReference<>();
             final AtomicReference<Exception> error = new AtomicReference<>();

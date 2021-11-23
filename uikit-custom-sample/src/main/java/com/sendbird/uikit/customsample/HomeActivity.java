@@ -1,5 +1,7 @@
 package com.sendbird.uikit.customsample;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -105,6 +107,8 @@ public class HomeActivity extends AppCompatActivity {
                 SendBirdUIKit.disconnect(() -> {
                     WaitingDialog.dismiss();
                     PreferenceUtils.clearAll();
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancelAll();
                     startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     finish();
                 });

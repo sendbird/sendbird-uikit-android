@@ -9,6 +9,7 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.BR;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -16,20 +17,18 @@ import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.OtherVideoFileMessageView;
 
 import java.util.List;
+import java.util.Map;
 
-public class OtherVideoFileMessageViewHolder extends OtherMessageViewHolder {
-    private final View clickableView;
+public final class OtherVideoFileMessageViewHolder extends GroupChannelMessageViewHolder {
     private final EmojiReactionListView emojiReactionListView;
 
     OtherVideoFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
-        clickableView = ((OtherVideoFileMessageView) binding.getRoot()).getBinding().ivThumbnailOveray;
         emojiReactionListView = ((OtherVideoFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
-    }
-
-    @Override
-    public View getProfileView() {
-        return ((OtherVideoFileMessageView) binding.getRoot()).getBinding().ivProfileView;
+        final OtherVideoFileMessageView root = ((OtherVideoFileMessageView) binding.getRoot());
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().ivThumbnailOveray);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), root.getBinding().ivProfileView);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 
     @Override
@@ -37,11 +36,6 @@ public class OtherVideoFileMessageViewHolder extends OtherMessageViewHolder {
         binding.setVariable(BR.channel, channel);
         binding.setVariable(BR.message, message);
         binding.setVariable(BR.messageGroupType, messageGroupType);
-    }
-
-    @Override
-    public View getClickableView() {
-        return clickableView;
     }
 
     @Override
@@ -53,5 +47,10 @@ public class OtherVideoFileMessageViewHolder extends OtherMessageViewHolder {
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
         emojiReactionListView.setMoreButtonClickListener(moreButtonClickListener);
+    }
+
+    @Override
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

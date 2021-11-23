@@ -41,6 +41,7 @@ final public class FileInfo {
     private final int thumbnailWidth;
     private final int thumbnailHeight;
     private final String thumbnailPath;
+    private final File file;
 
     public FileInfo(String path, int size, String mimeType, String fileName, Uri uri, int thumbnailWidth, int thumbnailHeight, String thumbnailPath) {
         this.path = path;
@@ -51,6 +52,7 @@ final public class FileInfo {
         this.thumbnailWidth = thumbnailWidth;
         this.thumbnailHeight = thumbnailHeight;
         this.thumbnailPath = thumbnailPath;
+        this.file = new File(path);
     }
 
     public String getPath() {
@@ -97,13 +99,6 @@ final public class FileInfo {
     }
 
     public File getFile() {
-        File file = null;
-        if (!TextUtils.isEmpty(path)) {
-            file = new File(path);
-            if (file.exists() && file.length() > 0) {
-                return file;
-            }
-        }
         return file;
     }
 
@@ -112,10 +107,7 @@ final public class FileInfo {
         params.setMimeType(getMimeType());
         params.setFileName(getFileName());
         params.setFileSize(getSize());
-        File file = getFile();
-        if (file != null) {
-            params.setFile(file);
-        }
+        params.setFile(getFile());
 
         int thumbWidth = getThumbnailWidth();
         int thumbHeight = getThumbnailHeight();

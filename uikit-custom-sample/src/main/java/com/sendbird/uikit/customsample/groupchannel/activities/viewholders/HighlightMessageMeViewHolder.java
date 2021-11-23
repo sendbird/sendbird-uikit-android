@@ -8,16 +8,24 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
-import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
+import com.sendbird.android.Reaction;
+import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.databinding.ViewHighlightMessageMeHolderBinding;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 
-public class HighlightMessageMeViewHolder extends MessageViewHolder {
+import java.util.List;
+import java.util.Map;
+
+public class HighlightMessageMeViewHolder extends GroupChannelMessageViewHolder {
     private final ViewHighlightMessageMeHolderBinding binding;
 
     public HighlightMessageMeViewHolder(ViewHighlightMessageMeHolderBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), binding.tvMessage);
     }
 
     @Override
@@ -37,7 +45,10 @@ public class HighlightMessageMeViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return binding.tvMessage;
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
+
+    @Override
+    public void setEmojiReaction(List<Reaction> reactionList, OnItemClickListener<String> emojiReactionClickListener, OnItemLongClickListener<String> emojiReactionLongClickListener, View.OnClickListener moreButtonClickListener) {}
 }

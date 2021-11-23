@@ -28,15 +28,15 @@ android {
         targetCompatibility = 1.8
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding true
     }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 //    implementation project(":uikit")
-    implementation "com.sendbird.sdk:uikit:2.1.8"
+    implementation "com.sendbird.sdk:uikit:2.2.0"
 
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.google.firebase:firebase-messaging:21.0.0'

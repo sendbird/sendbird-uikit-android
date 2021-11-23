@@ -33,7 +33,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
-                    android:text="@{message.getSender().getNickname()}"
                     android:textAppearance="@style/SendbirdH2OnDark01"
                     android:textSize="@dimen/sb_text_size_16" />
 
@@ -44,7 +43,6 @@
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="0sp"
-                    android:text="@{DateUtils.formatTime(context, message.getCreatedAt())}"
                     android:textAppearance="@style/SendbirdCaption2OnDark01"
                     android:textColor="@color/ondark_01"
                     android:textSize="@dimen/sb_text_size_12"
@@ -101,13 +99,4 @@
             android:layout_gravity="center"/>
 
     </RelativeLayout>
-
-    <data>
-        <import type="com.sendbird.uikit.utils.DateUtils" />
-
-        <variable
-            name="message"
-            type="com.sendbird.android.FileMessage" />
-
-    </data>
 </layout>

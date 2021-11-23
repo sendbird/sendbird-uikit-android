@@ -63,6 +63,8 @@
         <attr name="sb_user_profile_style" format="reference"/>
         <attr name="sb_search_bar_style" format="reference"/>
         <attr name="sb_message_preview_style" format="reference"/>
+        <attr name="sb_my_quoted_message_style" format="reference"/>
+        <attr name="sb_other_quoted_message_style" format="reference"/>
 
         <attr name="sb_open_channel_message_user_style" format="reference"/>
         <attr name="sb_open_channel_message_file_style" format="reference"/>
@@ -99,6 +101,7 @@
         <attr name="sb_dialog_view_title_appearance" format="reference"/>
         <attr name="sb_dialog_view_message_appearance" format="reference"/>
         <attr name="sb_dialog_view_list_item_appearance" format="reference"/>
+        <attr name="sb_dialog_view_list_item_text_color" format="reference"/>
         <attr name="sb_dialog_view_list_item_background" format="reference"/>
         <attr name="sb_dialog_view_edit_text_appearance" format="reference"/>
         <attr name="sb_dialog_view_edit_text_tint" format="reference"/>
@@ -164,6 +167,12 @@
         <attr name="sb_message_input_edit_cancel_button_text_appearance" format="reference"/>
         <attr name="sb_message_input_edit_cancel_button_text_color" format="reference"/>
         <attr name="sb_message_input_edit_cancel_button_background" format="reference"/>
+
+        <attr name="sb_message_input_quote_reply_title_text_appearance" format="reference"/>
+        <attr name="sb_message_input_quoted_message_text_appearance" format="reference"/>
+        <attr name="sb_message_input_quote_reply_right_icon" format="reference"/>
+        <attr name="sb_message_input_quote_reply_right_icon_tint" format="reference"/>
+        <attr name="sb_message_input_quote_reply_right_icon_background" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="SelectChannelTypeView">
@@ -371,4 +380,15 @@
         <attr name="sb_message_preview_message_metaphor_background_color" format="reference"/>
         <attr name="sb_message_preview_message_metaphor_icon_tint_color" format="reference"/>
     </declare-styleable>
+
+    <!-- Message View -->
+    <declare-styleable name="QuotedMessageView">
+        <attr name="sb_quoted_message_title_icon" format="reference"/>
+        <attr name="sb_quoted_message_title_icon_tint" format="reference"/>
+        <attr name="sb_quoted_message_title_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_background" format="reference"/>
+        <attr name="sb_quoted_message_background_tint" format="reference"/>
+        <attr name="sb_quoted_message_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_file_icon_tint" format="reference"/>
+    </declare-styleable>\
 </resources>

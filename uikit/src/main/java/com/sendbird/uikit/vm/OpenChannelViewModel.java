@@ -23,12 +23,13 @@ import com.sendbird.android.UserMessageParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.ChatMessageCollection;
 import com.sendbird.uikit.model.FileInfo;
+import com.sendbird.uikit.model.MessageList;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,15 +44,16 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_OPEN_CHANNEL_CHAT" + System.currentTimeMillis();;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<BaseMessage>> messageList = new MutableLiveData<>();
-    private final ChatMessageCollection messageCollection = new ChatMessageCollection();
+    private final MessageList messageCollection = new MessageList();
     private final MutableLiveData<OpenChannel> isChannelChanged = new MutableLiveData<>();
     private final MutableLiveData<Boolean> channelDeleted = new MutableLiveData<>();
     private final MutableLiveData<Long> messageDeleted = new MutableLiveData<>();
     private final MessageListParams messageListParams;
     private final MutableLiveData<MessageLoadState> messageLoadState = new MutableLiveData<>();
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
+    private final OpenChannel channel;
 
-    private OpenChannel channel;
+    private boolean hasPrevious = true;
 
     OpenChannelViewModel(@NonNull OpenChannel openChannel, @Nullable MessageListParams params) {
         super();
@@ -142,7 +144,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
 
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> ChannelFragnemt::onMessageReceived(%s)", baseMessage.getMessageId());
-                    OpenChannelViewModel.this.channel = (OpenChannel) baseChannel;
                     messageCollection.add(baseMessage);
                     notifyDataSetChanged();
                 }
@@ -153,9 +154,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserEntered()");
                     Logger.d("++ joind user : " + user);
-                    OpenChannelViewModel.this.channel = channel;
-                    isChannelChanged.postValue(channel);
                     notifyDataSetChanged();
+                    isChannelChanged.postValue(channel);
                 }
             }
 
@@ -164,9 +164,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserLeft()");
                     Logger.d("++ left user : " + user);
-                    OpenChannelViewModel.this.channel = channel;
-                    isChannelChanged.postValue(channel);
                     notifyDataSetChanged();
+                    isChannelChanged.postValue(channel);
                 }
             }
 
@@ -175,10 +174,9 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onMessageDeleted()");
                     Logger.d("++ deletedMessage : " + msgId);
-                    OpenChannelViewModel.this.channel = (OpenChannel) baseChannel;
-                    messageDeleted.postValue(msgId);
-                    messageCollection.removeByMessageId(msgId);
+                    messageCollection.deleteByMessageId(msgId);
                     notifyDataSetChanged();
+                    messageDeleted.postValue(msgId);
                 }
             }
 
@@ -187,10 +185,10 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onMessageUpdated()");
                     Logger.d("++ updatedMessage : " + updatedMessage.getMessageId());
-                    OpenChannelViewModel.this.channel = (OpenChannel) baseChannel;
                     if (!messageListParams.belongsTo(updatedMessage)) {
-                        messageDeleted.postValue(updatedMessage.getMessageId());
-                        messageCollection.remove(updatedMessage);
+                        final long msgId = updatedMessage.getMessageId();
+                        messageCollection.deleteByMessageId(msgId);
+                        messageDeleted.postValue(msgId);
                     } else {
                         messageCollection.update(updatedMessage);
                     }
@@ -202,7 +200,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onChannelChanged(BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelChanged()");
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
                     isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
@@ -221,9 +218,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onChannelFrozen(BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelFrozen(%s)", channel.isFrozen());
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
-                    isChannelChanged.postValue((OpenChannel) channel);
                     notifyDataSetChanged();
+                    isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
 
@@ -231,9 +227,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onChannelUnfrozen(BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelUnfrozen(%s)", channel.isFrozen());
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
-                    isChannelChanged.postValue((OpenChannel) channel);
                     notifyDataSetChanged();
+                    isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
 
@@ -241,10 +236,9 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onOperatorUpdated(BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onOperatorUpdated()");
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
                     Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendBird.getCurrentUser()));
-                    isChannelChanged.postValue((OpenChannel) channel);
                     notifyDataSetChanged();
+                    isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
 
@@ -261,7 +255,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onUserMuted(BaseChannel channel, User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserMuted()");
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
                     isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
@@ -270,7 +263,27 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             public void onUserUnmuted(BaseChannel channel, User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserUnmuted()");
-                    OpenChannelViewModel.this.channel = (OpenChannel) channel;
+                    isChannelChanged.postValue((OpenChannel) channel);
+                }
+            }
+
+            @Override
+            public void onChannelParticipantCountChanged(List<OpenChannel> channels) {
+                com.sendbird.android.log.Logger.i(">> OpenChannelViewModel::onChannelParticipantCountChanged()");
+                if (channels != null && !channels.isEmpty()) {
+                    for (OpenChannel channel : channels) {
+                        if (isCurrentChannel(channel.getUrl())) {
+                            isChannelChanged.postValue(channel);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onMentionReceived(BaseChannel channel, BaseMessage message) {
+                com.sendbird.android.log.Logger.i(">> MessageCollection::onMentionReceived()");
+                if (isCurrentChannel(channel.getUrl())) {
                     isChannelChanged.postValue((OpenChannel) channel);
                 }
             }
@@ -332,7 +345,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     }
 
     private void notifyDataSetChanged() {
-        List<BaseMessage> currentList = messageCollection.copyToList();
+        List<BaseMessage> currentList = messageCollection.toList();
         currentList.addAll(0, PendingMessageRepository.getInstance().getPendingMessageList(channel.getUrl()));
         if (currentList.size() == 0) {
             statusFrame.postValue(StatusFrameView.Status.EMPTY);
@@ -345,7 +358,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     private void requestChangeLogs(@NonNull BaseChannel channel) {
         String channelUrl = channel.getUrl();
         int cacheMessageSize = messageCollection.size();
-        long lastSyncTs = cacheMessageSize > 0 ? messageCollection.last().getCreatedAt() : 0;
+        long lastSyncTs = cacheMessageSize > 0 ? messageCollection.getLatestMessage().getCreatedAt() : 0;
         Logger.dev("++ change logs channel url = %s, lastSyncTs = %s", channelUrl, lastSyncTs);
 
         if (lastSyncTs > 0) {
@@ -359,9 +372,9 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 @Override
                 public void onResult(List<BaseMessage> added, List<BaseMessage> updated, List<Long> deletedIds) {
                     for (long deletedId : deletedIds) {
-                        BaseMessage deletedMessage = messageCollection.get(deletedId);
+                        BaseMessage deletedMessage = messageCollection.getById(deletedId);
                         if (deletedMessage != null) {
-                            messageCollection.remove(deletedMessage);
+                            messageCollection.delete(deletedMessage);
                         }
                     }
                     List<BaseMessage> filteredAdded = new ArrayList<>();
@@ -480,7 +493,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
         } else if (message instanceof FileMessage) {
             FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
             Logger.d("++ file info=%s", info);
-            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, info.getFile(), (message1, e1) -> {
+            final File file = info == null ? null : info.getFile();
+            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, file, (message1, e1) -> {
                 if (e1 != null) {
                     Logger.e(e1);
                     errorToast.postValue(R.string.sb_text_error_resend_message);
@@ -523,7 +537,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
 
                 Logger.i("++ deleted message : %s", message);
                 messageDeleted.postValue(message.getMessageId());
-                messageCollection.remove(message);
+                messageCollection.delete(message);
                 notifyDataSetChanged();
             });
         } else {
@@ -533,15 +547,28 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     }
 
     @Override
+    public boolean hasNext() {
+        return false;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return hasPrevious;
+    }
+
+    @Override
     public List<BaseMessage> loadPrevious() throws Exception {
+        if (!hasPrevious()) return Collections.emptyList();
+
         List<BaseMessage> newMessageList;
         try {
             messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
             int cacheMessageSize = messageCollection.size();
-            long ts = cacheMessageSize > 0 ? messageCollection.first().getCreatedAt() : Long.MAX_VALUE;
+            long ts = cacheMessageSize > 0 ? messageCollection.getOldestMessage().getCreatedAt() : Long.MAX_VALUE;
             newMessageList = loadPrevious(ts);
             Logger.i("++ load previous message list : " + newMessageList);
             messageCollection.addAll(newMessageList);
+            hasPrevious = newMessageList.size() >= messageListParams.getPreviousResultSize();
             return newMessageList;
         } catch (Exception e) {
             Logger.w(e);

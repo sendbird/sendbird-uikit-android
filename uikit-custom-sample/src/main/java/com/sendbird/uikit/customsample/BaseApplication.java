@@ -2,6 +2,8 @@ package com.sendbird.uikit.customsample;
 
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
 import com.sendbird.android.ApplicationUserListQuery;
@@ -9,10 +11,13 @@ import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannelParams;
 import com.sendbird.android.OpenChannelParams;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
+import com.sendbird.uikit.customsample.consts.InitState;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit.customsample.models.CustomUser;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
@@ -28,6 +33,7 @@ import java.util.List;
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
+    private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     @Override
     public void onCreate() {
@@ -64,12 +70,33 @@ public class BaseApplication extends MultiDexApplication {
                     }
                 };
             }
+
+            @Override
+            public InitResultHandler getInitResultHandler() {
+                return new InitResultHandler() {
+                    @Override
+                    public void onMigrationStarted() {
+                        initState.setValue(InitState.MIGRATING);
+                    }
+
+                    @Override
+                    public void onInitFailed(SendBirdException e) {
+                        initState.setValue(InitState.FAILED);
+                    }
+
+                    @Override
+                    public void onInitSucceed() {
+                        PushUtils.registerPushHandler(new MyFirebaseMessagingService());
+                        SendBirdUIKit.setDefaultThemeMode(SendBirdUIKit.ThemeMode.Light);
+                        SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
+                        SendBirdUIKit.setUseDefaultUserProfile(false);
+
+                        initState.setValue(InitState.SUCCEED);
+                    }
+                };
+            }
         }, this);
 
-        PushUtils.registerPushHandler(new MyFirebaseMessagingService());
-        SendBirdUIKit.setDefaultThemeMode(SendBirdUIKit.ThemeMode.Light);
-        SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
-        SendBirdUIKit.setUseDefaultUserProfile(false);
         SendBirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
             @Override
             public void onBeforeCreateGroupChannel(@NonNull GroupChannelParams groupChannelParams) {
@@ -101,6 +128,10 @@ public class BaseApplication extends MultiDexApplication {
                 // You can set OpenChannelParams globally before updating a channel.
             }
         });
+    }
+
+    public static LiveData<InitState> initStateChanges() {
+        return initState;
     }
 
     public static CustomUserListQueryHandler getCustomUserListQuery() {

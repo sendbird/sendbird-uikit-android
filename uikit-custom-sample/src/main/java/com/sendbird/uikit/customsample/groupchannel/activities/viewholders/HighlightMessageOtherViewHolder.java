@@ -14,20 +14,29 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.Reaction;
 import com.sendbird.android.Sender;
-import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
+import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewHighlightMessageOtherHolderBinding;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+
+import java.util.List;
+import java.util.Map;
 
 
-public class HighlightMessageOtherViewHolder extends MessageViewHolder {
+public class HighlightMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     final private ViewHighlightMessageOtherHolderBinding binding;
 
     public HighlightMessageOtherViewHolder(ViewHighlightMessageOtherHolderBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(),binding.tvMessage);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
     }
 
     @Override
@@ -63,7 +72,11 @@ public class HighlightMessageOtherViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return binding.tvMessage;
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
+
+
+    @Override
+    public void setEmojiReaction(List<Reaction> reactionList, OnItemClickListener<String> emojiReactionClickListener, OnItemLongClickListener<String> emojiReactionLongClickListener, View.OnClickListener moreButtonClickListener) {}
 }

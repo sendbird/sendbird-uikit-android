@@ -2,6 +2,7 @@ package com.sendbird.uikit.adapter;
 
 import android.content.Context;
 
+import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 
 /**
@@ -29,4 +30,11 @@ public interface SendBirdUIKitAdapter {
      * @return the current user.
      */
     UserInfo getUserInfo();
+
+    /**
+     *
+     * @return
+     * @since 2.2.0
+     */
+    InitResultHandler getInitResultHandler();
 }

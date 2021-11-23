@@ -46,7 +46,8 @@ class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewH
     @Override
     public void onBindViewHolder(@NonNull DialogListAdapter.ListViewHolder holder, int position) {
         if (items != null && position >= 0 && position < items.length) {
-            holder.bind(items[position]);
+            DialogListItem item = items[position];
+            if (item != null) holder.bind(item);
         }
     }
 
@@ -58,7 +59,6 @@ class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewH
     static class ListViewHolder extends RecyclerView.ViewHolder {
         private final SbViewDialogListItemBinding binding;
         private final Context context;
-        private final int listItemAppearance;
         private final ColorStateList buttonTint;
 
         private final OnItemClickListener<Integer> listener;
@@ -77,41 +77,49 @@ class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewH
                     R.styleable.DialogView,
                     R.attr.sb_dialog_view_style, 0);
             try {
-                listItemAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_list_item_appearance, R.style.SendbirdSubtitle2OnLight01);
+                final int listItemAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_list_item_appearance, R.style.SendbirdSubtitle2OnLight01);
+                final ColorStateList listItemTextColor = a.getColorStateList(R.styleable.DialogView_sb_dialog_view_list_item_text_color);
                 int listItemBackground = a.getResourceId(R.styleable.DialogView_sb_dialog_view_list_item_background, R.drawable.selector_rectangle_light);
                 buttonTint = a.getColorStateList(R.styleable.DialogView_sb_dialog_view_icon_tint);
                 this.binding.clItem.setBackgroundResource(listItemBackground);
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) binding.name.getLayoutParams();
                 params.setMargins((int) context.getResources().getDimension(nameMarginLeft), 0, 0, 0);
+
+                binding.name.setTextAppearance(context, listItemAppearance);
+                if (listItemTextColor != null) binding.name.setTextColor(listItemTextColor);
             } finally {
                 a.recycle();
             }
         }
 
-        private void bind(DialogListItem item) {
-            if (item != null && item.getKey() != 0) {
+        private void bind(@NonNull DialogListItem item) {
+            binding.getRoot().setEnabled(!item.isDisabled());
+
+            if (item.getKey() != 0) {
                 binding.name.setText(item.getKey());
-                binding.name.setTextAppearance(context, listItemAppearance);
+                binding.name.setEnabled(!item.isDisabled());
             }
 
-            if (item != null && item.getIcon() != 0) {
+            if (item.getIcon() != 0) {
                 Drawable icon = DrawableUtils.setTintList(itemView.getContext(), item.getIcon(), buttonTint);
                 if (isIconLeft) {
+                    binding.iconLeft.setEnabled(!item.isDisabled());
                     binding.iconLeft.setVisibility(View.VISIBLE);
                     binding.iconLeft.setImageDrawable(icon);
                 } else {
+                    binding.iconRight.setEnabled(!item.isDisabled());
                     binding.iconRight.setVisibility(View.VISIBLE);
                     binding.iconRight.setImageDrawable(icon);
                 }
             }
 
             binding.getRoot().setOnClickListener((v) -> {
-                if (listener != null && item != null && item.getKey() != 0) {
+                if (listener != null && item.getKey() != 0) {
                     listener.onItemClick(binding.getRoot(), getAdapterPosition(), item.getKey());
                 }
             });
 
-            if (item != null && item.isAlert()) {
+            if (item.isAlert()) {
                 int alertColor = SendBirdUIKit.isDarkMode() ? R.color.error_200 : R.color.error_300;
                 binding.name.setTextColor(context.getResources().getColor(alertColor));
             }

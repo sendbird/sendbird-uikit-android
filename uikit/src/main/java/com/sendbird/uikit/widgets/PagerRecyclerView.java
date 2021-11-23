@@ -32,6 +32,9 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
     public void setLayoutManager(LayoutManager layoutManager) {
         if (!(layoutManager instanceof LinearLayoutManager)) throw new IllegalArgumentException("LinearLayoutManager supports only.");
         this.layoutManager = (LinearLayoutManager) layoutManager;
+        if (this.scrollListener != null) {
+            this.scrollListener.setLayoutManager(this.layoutManager);
+        }
         super.setLayoutManager(layoutManager);
     }
 
@@ -80,7 +83,8 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         private Pageable<?> pager;
         private LinearLayoutManager layoutManager;
         private OnScrollEndDetectListener scrollEndDetectListener;
-        private final ExecutorService workerThread = Executors.newFixedThreadPool(2);
+        private final ExecutorService topLoadingWorker = Executors.newSingleThreadExecutor();
+        private final ExecutorService bottomLoadingWorker = Executors.newSingleThreadExecutor();
         private final AtomicBoolean topLoading = new AtomicBoolean(false);
         private final AtomicBoolean bottomLoading = new AtomicBoolean(false);
 
@@ -103,7 +107,7 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            int itemCount = recyclerView.getAdapter().getItemCount();
+            int itemCount = layoutManager.getItemCount();
 
             if (!recyclerView.canScrollVertically(ScrollDirection.Bottom.getDirection())) {
                 if (scrollEndDetectListener != null) {
@@ -117,31 +121,27 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
                 }
             }
 
-            if (pager != null && !topLoading.get() && itemCount - lastVisibleItemPosition <= threshold) {
+            if (pager == null) return;
+            final boolean reverseLayout = layoutManager.getReverseLayout();
+            final boolean topLoadMore = pager.hasPrevious() && (reverseLayout ? itemCount - lastVisibleItemPosition <= threshold : firstVisibleItemPosition <= threshold);
+            if (!topLoading.get() && topLoadMore) {
                 topLoading.set(true);
-                workerThread.submit(() -> {
+                topLoadingWorker.submit(() -> {
                     try {
-                        if (layoutManager.getReverseLayout()) {
-                            pager.loadPrevious();
-                        } else {
-                            pager.loadNext();
-                        }
+                        pager.loadPrevious();
                     } catch (Exception ignore) {
                     } finally {
                         topLoading.set(false);
                     }
                 });
             }
-
-            if (pager != null && !bottomLoading.get() && firstVisibleItemPosition <= threshold) {
+            //final boolean bottomLoadMore = !(reverseLayout? !pager.hasNext() : !pager.hasPrevious());
+            final boolean bottomLoadMore = pager.hasNext() && (reverseLayout ? firstVisibleItemPosition <= threshold : itemCount - lastVisibleItemPosition <= threshold);
+            if (!bottomLoading.get() && bottomLoadMore) {
                 bottomLoading.set(true);
-                workerThread.submit(() -> {
+                bottomLoadingWorker.submit(() -> {
                     try {
-                        if (layoutManager.getReverseLayout()) {
-                            pager.loadNext();
-                        } else {
-                            pager.loadPrevious();
-                        }
+                        pager.loadNext();
                     } catch (Exception ignore) {
                     } finally {
                         bottomLoading.set(false);
@@ -158,7 +158,8 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         }
 
         public void dispose() {
-            this.workerThread.shutdown();
+            this.topLoadingWorker.shutdown();
+            this.bottomLoadingWorker.shutdown();
         }
     }
 
@@ -172,6 +173,9 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
          * Synchronized function call must be used.
          */
         T loadNext() throws Exception;
+
+        boolean hasNext();
+        boolean hasPrevious();
     }
 
     public interface OnScrollEndDetectListener {

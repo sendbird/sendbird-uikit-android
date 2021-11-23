@@ -83,6 +83,12 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) adapter.notifyDataSetChanged();
+    }
+
+    @Override
     protected void onReadyFailure() {
         setErrorFrame();
     }
@@ -204,8 +210,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
             query.setIncludeEmpty(includeEmpty);
         }
 
-        viewModel = new ViewModelProvider(this, new ViewModelFactory(query)).get(ChannelListViewModel.class);
-        getLifecycle().addObserver(viewModel);
+        viewModel = new ViewModelProvider(this, new ViewModelFactory()).get(ChannelListViewModel.class);
 
         initAdapter();
         binding.rvGroupChannelList.setAdapter(adapter);
@@ -229,7 +234,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
             adapter.setItems(groupChannels);
         });
         viewModel.getErrorToast().observe(this, this::toastError);
-        viewModel.loadInitial();
+        viewModel.loadInitial(query);
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override

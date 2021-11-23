@@ -50,9 +50,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (e != null) {
                     Logger.e(e);
                     WaitingDialog.dismiss();
+                    PreferenceUtils.clearAll();
                     return;
                 }
                 WaitingDialog.dismiss();
+                PreferenceUtils.setUserId(userIdString);
+                PreferenceUtils.setNickname(userNickname.toString());
+
                 PushUtils.registerPushHandler(new MyFirebaseMessagingService());
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);

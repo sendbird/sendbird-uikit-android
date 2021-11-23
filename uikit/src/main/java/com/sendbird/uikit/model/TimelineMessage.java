@@ -8,8 +8,8 @@ import com.sendbird.uikit.utils.DateUtils;
 
 public class TimelineMessage extends BaseMessage {
     private final BaseMessage anchor;
-    TimelineMessage(@NonNull BaseMessage anchor) {
-        super(anchor.getChannelUrl(), anchor.getMessageId() + 1, anchor.getCreatedAt() - 1);
+    public TimelineMessage(@NonNull BaseMessage anchor) {
+        super(anchor.getChannelUrl(), anchor.getMessageId() + anchor.getCreatedAt(), anchor.getCreatedAt() - 1);
         this.anchor = anchor;
     }
 

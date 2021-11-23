@@ -9,6 +9,7 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.BR;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -16,20 +17,18 @@ import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.OtherFileMessageView;
 
 import java.util.List;
+import java.util.Map;
 
-public class OtherFileMessageViewHolder extends OtherMessageViewHolder {
-    private final View clickableView;
+public final class OtherFileMessageViewHolder extends GroupChannelMessageViewHolder {
     private final EmojiReactionListView emojiReactionListView;
 
     OtherFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
-        clickableView = ((OtherFileMessageView) binding.getRoot()).getBinding().contentPanelWithReactions;
         emojiReactionListView = ((OtherFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
-    }
-
-    @Override
-    public View getProfileView() {
-        return ((OtherFileMessageView) binding.getRoot()).getBinding().ivProfileView;
+        final OtherFileMessageView root = (OtherFileMessageView) binding.getRoot();
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanelWithReactions);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), root.getBinding().ivProfileView);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 
     @Override
@@ -41,11 +40,6 @@ public class OtherFileMessageViewHolder extends OtherMessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return clickableView;
-    }
-
-    @Override
     public void setEmojiReaction(List<Reaction> reactionList,
                                  OnItemClickListener<String> emojiReactionClickListener,
                                  OnItemLongClickListener<String> emojiReactionLongClickListener,
@@ -54,5 +48,10 @@ public class OtherFileMessageViewHolder extends OtherMessageViewHolder {
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
         emojiReactionListView.setMoreButtonClickListener(moreButtonClickListener);
+    }
+
+    @Override
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

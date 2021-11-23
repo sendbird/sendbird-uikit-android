@@ -13,7 +13,6 @@ import com.sendbird.uikit.interfaces.DialogProvider;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.utils.EventProvider;
 import com.sendbird.uikit.widgets.WaitingDialog;
 
 abstract class BaseFragment extends PermissionFragment implements DialogProvider {
@@ -36,37 +35,14 @@ abstract class BaseFragment extends PermissionFragment implements DialogProvider
         Logger.dev(">> BaseFragment::connect()");
         SendBirdUIKit.connect((user, e) -> {
             Logger.dev("++ BaseFragment::connect e : " + e);
-            ReadyStatus status;
-            if (e != null) {
-                if (SendBird.getCurrentUser() == null) {
-                    status = ReadyStatus.ERROR;
-                } else {
-                    SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
-                        @Override
-                        public void onReconnectStarted() {}
-
-                        @Override
-                        public void onReconnectSucceeded() {
-                            if (!isActive()) return;
-                            SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-                            onReady(SendBird.getCurrentUser(), ReadyStatus.READY);
-                        }
-
-                        @Override
-                        public void onReconnectFailed() {
-                            if (!isActive()) return;
-                            SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-                            onReady(null, ReadyStatus.ERROR);
-                        }
-                    });
-                    return;
-                }
-            } else {
-                status = ReadyStatus.READY;
-            }
-
             if (!isActive()) return;
-            onReady(SendBird.getCurrentUser(), status);
+
+            // Regardless of the error state, the user data exists when the local caching is used.
+            if (user != null) {
+                onReady(SendBird.getCurrentUser(), ReadyStatus.READY);
+            } else {
+                onReady(null, ReadyStatus.ERROR);
+            }
         });
     }
 
@@ -74,7 +50,6 @@ abstract class BaseFragment extends PermissionFragment implements DialogProvider
     public void onDestroy() {
         super.onDestroy();
         SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        EventProvider.getInstance().unRegister(getClass());
     }
 
     @Override

@@ -1,10 +1,16 @@
 package com.sendbird.uikit.model;
 
+import android.util.Base64;
+
 import androidx.annotation.NonNull;
 
 import com.sendbird.android.Emoji;
 import com.sendbird.android.EmojiCategory;
 import com.sendbird.android.EmojiContainer;
+import com.sendbird.android.SendBird;
+import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.utils.UIKitPrefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +43,19 @@ public final class EmojiManager {
     private LinkedHashMap<Long, EmojiCategory> emojiCategoryMap = new LinkedHashMap<>();
     private LinkedHashMap<String, Emoji> allEmojiMap = new LinkedHashMap<>();
 
+    public void init() {
+        String emojiContainerStr = UIKitPrefs.getString(StringSet.KEY_EMOJI_CONTAINER);
+        if (!TextUtils.isEmpty(emojiContainerStr)) {
+            EmojiContainer container = decodeEmojiContainer(emojiContainerStr);
+            upsertEmojiContainer(container, false);
+        }
+    }
+
     public void upsertEmojiContainer(@NonNull EmojiContainer emojiContainer) {
+        upsertEmojiContainer(emojiContainer, true);
+    }
+
+    private void upsertEmojiContainer(@NonNull EmojiContainer emojiContainer, boolean saveToFile) {
         emojiHash = emojiContainer.getEmojiHash();
         synchronized (emojiLock) {
             emojiCategoryMap = new LinkedHashMap<>();
@@ -48,6 +66,11 @@ public final class EmojiManager {
                     allEmojiMap.put(emoji.getKey(), emoji);
                 }
             }
+        }
+
+        if (saveToFile) {
+            final String emojiContainerSerialized = EmojiManager.getInstance().encodeEmojiContainer(emojiContainer);
+            UIKitPrefs.putString(StringSet.KEY_EMOJI_CONTAINER, emojiContainerSerialized);
         }
     }
 
@@ -117,5 +140,14 @@ public final class EmojiManager {
             }
         }
         return null;
+    }
+
+    private String encodeEmojiContainer(@NonNull EmojiContainer container) {
+        return Base64.encodeToString(container.serialize(), Base64.DEFAULT);
+    }
+
+    private EmojiContainer decodeEmojiContainer(@NonNull String data) {
+        byte[] array = Base64.decode(data, Base64.DEFAULT);
+        return EmojiContainer.buildFromSerializedData(array);
     }
 }

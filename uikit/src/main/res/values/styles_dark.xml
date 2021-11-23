@@ -47,6 +47,10 @@
         <!-- Search -->
         <item name="sb_search_bar_style">@style/Widget.SendBird.SearchBar.Dark</item>
         <item name="sb_message_preview_style">@style/Widget.SendBird.MessagePreview.Dark</item>
+
+        <!-- Message threading -->
+        <item name="sb_my_quoted_message_style">@style/Widget.SendBird.MyQuotedMessageView.Dark</item>
+        <item name="sb_other_quoted_message_style">@style/Widget.SendBird.OtherQuotedMessageView.Dark</item>
     </style>
 
     <style name="Widget.SendBird.AppBar.Dark">
@@ -124,12 +128,13 @@
         <item name="sb_dialog_view_title_appearance">@style/SendbirdH1OnDark01</item>
         <item name="sb_dialog_view_message_appearance">@style/SendbirdSubtitle2OnDark01</item>
         <item name="sb_dialog_view_list_item_appearance">@style/SendbirdSubtitle2OnDark01</item>
+        <item name="sb_dialog_view_list_item_text_color">@color/sb_selector_enabled_01_dark</item>
         <item name="sb_dialog_view_list_item_background">@drawable/selector_rectangle_dark500</item>
         <item name="sb_dialog_view_edit_text_appearance">@style/SendbirdSubtitle2OnDark01</item>
         <item name="sb_dialog_view_edit_text_tint">@color/primary_200</item>
         <item name="sb_dialog_view_edit_text_cursor_drawable">@drawable/sb_message_input_cursor_dark</item>
         <item name="sb_dialog_view_edit_text_hint_color">@color/ondark_03</item>
-        <item name="sb_dialog_view_icon_tint">@color/primary_200</item>
+        <item name="sb_dialog_view_icon_tint">@color/sb_selector_enabled_primary_dark</item>
 
         <item name="sb_dialog_view_positive_button_text_appearance">@style/SendbirdButtonPrimary200</item>
         <item name="sb_dialog_view_positive_button_text_color">@color/sb_button_uncontained_text_color_dark</item>
@@ -181,6 +186,12 @@
         <item name="sb_message_input_edit_cancel_button_text_appearance">@style/SendbirdButtonPrimary200</item>
         <item name="sb_message_input_edit_cancel_button_text_color">@color/sb_button_uncontained_text_color_dark</item>
         <item name="sb_message_input_edit_cancel_button_background">@drawable/sb_button_uncontained_background_dark</item>
+
+        <item name="sb_message_input_quote_reply_title_text_appearance">@style/SendbirdCaption1OnDark01</item>
+        <item name="sb_message_input_quoted_message_text_appearance">@style/SendbirdCaption2OnDark03</item>
+        <item name="sb_message_input_quote_reply_right_icon">@drawable/icon_close</item>
+        <item name="sb_message_input_quote_reply_right_icon_tint">@color/ondark_02</item>
+        <item name="sb_message_input_quote_reply_right_icon_background">@drawable/sb_button_uncontained_background_dark</item>
     </style>
 
     <style name="Widget.SendBird.Message.User.Dark">
@@ -332,4 +343,25 @@
         <item name="sb_channel_information_title_appearance">@style/SendbirdBody2OnDark02</item>
         <item name="sb_channel_information_content_appearance">@style/SendbirdBody3OnDark01</item>
     </style>
+
+
+    <style name="Widget.SendBird.MyQuotedMessageView.Dark">
+        <item name="sb_quoted_message_title_icon_tint">@color/ondark_03</item>
+        <item name="sb_quoted_message_title_text_appearance">@style/SendbirdCaption1OnDark03</item>
+        <item name="sb_quoted_message_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_quoted_message_background_tint">@color/background_500</item>
+        <item name="sb_quoted_message_file_icon_tint">@color/ondark_03</item>
+        <item name="sb_quoted_message_text_appearance">@style/SendbirdCaption2OnDark03</item>
+    </style>
+
+    <style name="Widget.SendBird.OtherQuotedMessageView.Dark">
+        <item name="sb_quoted_message_title_icon">@drawable/icon_reply_filled</item>
+        <item name="sb_quoted_message_title_icon_tint">@color/ondark_03</item>
+        <item name="sb_quoted_message_title_text_appearance">@style/SendbirdCaption1OnDark03</item>
+        <item name="sb_quoted_message_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_quoted_message_background_tint">@color/background_500</item>
+        <item name="sb_quoted_message_file_icon_tint">@color/ondark_03</item>
+        <item name="sb_quoted_message_text_appearance">@style/SendbirdCaption2OnDark03</item>
+    </style>
+
 </resources>

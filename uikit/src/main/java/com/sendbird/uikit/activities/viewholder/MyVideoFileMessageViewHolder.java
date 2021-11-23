@@ -9,6 +9,7 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.BR;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -16,15 +17,18 @@ import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.MyVideoFileMessageView;
 
 import java.util.List;
+import java.util.Map;
 
-public class MyVideoFileMessageViewHolder extends GroupChannelMessageViewHolder {
-    private final View clickableView;
+public final class MyVideoFileMessageViewHolder extends GroupChannelMessageViewHolder {
     private final EmojiReactionListView emojiReactionListView;
 
     MyVideoFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
-        clickableView = ((MyVideoFileMessageView) binding.getRoot()).getBinding().ivThumbnailOveray;
         emojiReactionListView = ((MyVideoFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
+        final MyVideoFileMessageView root = (MyVideoFileMessageView) binding.getRoot();
+
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().ivThumbnailOveray);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 
     @Override
@@ -32,11 +36,6 @@ public class MyVideoFileMessageViewHolder extends GroupChannelMessageViewHolder 
         binding.setVariable(BR.channel, channel);
         binding.setVariable(BR.message, message);
         binding.setVariable(BR.messageGroupType, messageGroupType);
-    }
-
-    @Override
-    public View getClickableView() {
-        return clickableView;
     }
 
     @Override
@@ -48,5 +47,10 @@ public class MyVideoFileMessageViewHolder extends GroupChannelMessageViewHolder 
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
         emojiReactionListView.setMoreButtonClickListener(moreButtonClickListener);
+    }
+
+    @Override
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

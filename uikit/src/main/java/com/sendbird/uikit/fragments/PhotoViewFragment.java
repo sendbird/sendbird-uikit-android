@@ -64,6 +64,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     private String senderNickname;
     private long createdAt;
     private long messageId;
+    private boolean isDeletableMessage;
     private BaseChannel.ChannelType channelType = BaseChannel.ChannelType.GROUP;
     private LoadingDialogHandler loadingDialogHandler;
 
@@ -76,6 +77,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Logger.d("PhotoViewFragment::onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         binding.ivClose.setOnClickListener(v -> finish());
 
@@ -111,6 +113,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     protected void onConfigure() {
+        Logger.d("PhotoViewFragment::onConfigure()");
         Bundle args = getArguments();
         if (args != null) {
             senderId = args.getString(StringSet.KEY_SENDER_ID);
@@ -121,6 +124,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             senderNickname = args.getString(StringSet.KEY_MESSAGE_SENDER_NAME);
             createdAt = args.getLong(StringSet.KEY_MESSAGE_CREATEDAT);
             messageId = args.getLong(StringSet.KEY_MESSAGE_ID);
+            isDeletableMessage = args.getBoolean(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isMine(senderId));
 
             if (args.containsKey(StringSet.KEY_CHANNEL_TYPE)) {
                 channelType = (BaseChannel.ChannelType) args.getSerializable(StringSet.KEY_CHANNEL_TYPE);
@@ -156,6 +160,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     protected void onDrawPage() {
+        Logger.d("PhotoViewFragment::onDrawPage() - nickname:" + senderNickname);
         final ImageView ivPhoto = binding.ivPhoto;
         final ImageView ivDelete = binding.ivDelete;
         final ImageView ivDownload = binding.ivDownload;
@@ -174,7 +179,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             makeRequestBuilder(url, Bitmap.class).into(ivPhoto);
         }
 
-        if (channel != null && MessageUtils.isMine(senderId)) {
+        if (channel != null && isDeletableMessage) {
             ivDelete.setVisibility(View.VISIBLE);
             ivDelete.setOnClickListener(v -> {
                         if (!loadComplete || getContext() == null || getFragmentManager() == null) return;
@@ -184,6 +189,10 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
                                 (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                                 getString(R.string.sb_text_button_delete),
                                 v1 -> channel.deleteMessage(createDummyMessage(), e -> {
+                                    if (e != null) {
+                                        toastError(R.string.sb_text_error_delete_message);
+                                        return;
+                                    }
                                     if (isActive()) {
                                         finish();
                                     }
@@ -283,7 +292,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             @Override
             public Boolean call() throws Exception {
                 FileDownloader.getInstance().saveFile(getContext(), url, mimeType, fileName);
-                Logger.dev("++ file name : %s, size : %s", fileName);
+                Logger.dev("++ file name : %s", fileName);
                 return true;
             }
 
@@ -349,13 +358,35 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     public static class Builder {
-        private final Bundle bundle;
+        private final Bundle bundle = new Bundle();
         private LoadingDialogHandler loadingDialogHandler;
 
+        /**
+         * Constructor
+         *
+         * @param senderId sender user id
+         * @param fileName the file name
+         * @param channelUrl
+         * @param url
+         * @param mimeType
+         * @param senderNickname
+         * @param createdAt
+         * @param messageId
+         * @param channelType
+         * @param themeMode
+         *
+         * @deprecated As of 2.2.0, replaced by {@link Builder(String, String, String, String, String, String, long, long, SendBirdUIKit.ThemeMode, boolean)}
+         */
+        @Deprecated
         public Builder(String senderId, String fileName, String channelUrl,
                        String url, String mimeType, String senderNickname, long createdAt,
                        long messageId, BaseChannel.ChannelType channelType, SendBirdUIKit.ThemeMode themeMode) {
-            bundle = new Bundle();
+            this(senderId, fileName, channelUrl, url, mimeType, senderNickname, createdAt, messageId, channelType, themeMode, MessageUtils.isMine(senderId));
+        }
+
+        public Builder(String senderId, String fileName, String channelUrl,
+                       String url, String mimeType, String senderNickname, long createdAt,
+                       long messageId, BaseChannel.ChannelType channelType, SendBirdUIKit.ThemeMode themeMode, boolean isDeletableMessage) {
             bundle.putString(StringSet.KEY_SENDER_ID, senderId);
             bundle.putString(StringSet.KEY_MESSAGE_FILENAME, fileName);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -365,6 +396,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             bundle.putLong(StringSet.KEY_MESSAGE_CREATEDAT, createdAt);
             bundle.putLong(StringSet.KEY_MESSAGE_ID, messageId);
             bundle.putSerializable(StringSet.KEY_CHANNEL_TYPE, channelType);
+            bundle.putBoolean(StringSet.KEY_DELETABLE_MESSAGE, isDeletableMessage);
         }
 
         /**

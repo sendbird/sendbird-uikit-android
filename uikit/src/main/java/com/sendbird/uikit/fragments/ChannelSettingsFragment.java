@@ -326,9 +326,9 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
                     break;
                 case NOTIFICATIONS:
                     loadingDialogHandler.shouldShowLoadingDialog();
-                    GroupChannel.PushTriggerOption option = channel.getMyPushTriggerOption() == GroupChannel.PushTriggerOption.ALL ?
-                            GroupChannel.PushTriggerOption.OFF :
-                            GroupChannel.PushTriggerOption.ALL;
+                    GroupChannel.PushTriggerOption option = channel.getMyPushTriggerOption() == GroupChannel.PushTriggerOption.OFF ?
+                            GroupChannel.PushTriggerOption.ALL :
+                            GroupChannel.PushTriggerOption.OFF;
 
                     channel.setMyPushTriggerOption(option, e -> {
                         loadingDialogHandler.shouldDismissLoadingDialog();

@@ -1,7 +1,6 @@
 package com.sendbird.uikit.vm;
 
 import android.content.Context;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +17,7 @@ import com.sendbird.uikit.utils.FileUtils;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -124,5 +124,19 @@ public class FileDownloader {
             }
         });
         return true;
+    }
+
+    public static void downloadThumbnail(@NonNull Context context, @NonNull FileMessage message) {
+        List<FileMessage.Thumbnail> thumbnails = message.getThumbnails();
+        FileMessage.Thumbnail thumbnail = null;
+        if (thumbnails.size() > 0) {
+            thumbnail = thumbnails.get(0);
+        }
+        String url = message.getUrl();
+        if (thumbnail != null) {
+            Logger.dev("++ thumbnail width : %s, thumbnail height : %s", thumbnail.getRealWidth(), thumbnail.getRealHeight());
+            url = thumbnail.getUrl();
+        }
+        Glide.with(context).asFile().load(url).submit();
     }
 }

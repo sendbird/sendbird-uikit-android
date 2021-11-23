@@ -4,7 +4,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/sb_size_12"
         android:paddingRight="@dimen/sb_size_12">
@@ -35,8 +35,7 @@
             android:paddingRight="@dimen/sb_size_50"
             android:paddingBottom="@dimen/sb_size_4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/contentPanel"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvSentAt"
@@ -52,6 +51,24 @@
             app:layout_constraintBottom_toBottomOf="@+id/brBottom"
             />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/contentTopBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvNickname, quoteReplyPanel" />
+
+        <com.sendbird.uikit.widgets.OtherQuotedMessageView
+            android:id="@+id/quoteReplyPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/sb_size_12"
+            android:layout_marginLeft="@dimen/sb_size_12"
+            android:translationY="@dimen/sb_size_6"
+            app:layout_constraintStart_toEndOf="@+id/ivProfileView"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/contentPanel"
             android:layout_width="wrap_content"
@@ -62,7 +79,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/ivProfileView"
             app:layout_constraintEnd_toStartOf="@+id/tvSentAt"
-            app:layout_constraintTop_toBottomOf="@+id/tvNickname"
+            app:layout_constraintTop_toBottomOf="@+id/contentTopBarrier"
             app:layout_constraintBottom_toTopOf="@+id/brBottom"
             >
 

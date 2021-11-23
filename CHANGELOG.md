@@ -1,4 +1,25 @@
 # Change Log
+### v2.2.0 (Nov 23, 2021) with Core SDK `v3.1.0`
+* Supported local caching.
+  * Added `getInitResultHandler()` in `SendBirdUIKitAdapter`.
+* Supported message threading.
+  * Added `enum ReplyType { NONE, QUOTE_REPLY }`.
+  * Added `setReplyType(ReplyType)` in `SendBirdUIKit`.
+  * Added `getReplyType()` in `SendBirdUIKit`.
+* Added `getClickableViewMap()` in `MessageViewHolder`.
+* Removed `getClickableView()`, `getProfileView()` in `MessageViewHolder`.
+* Added `setListItemClickListener(OnIdentifiableItemClickListener<BaseMessage>)`, `setListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage>)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
+* Deprecated `setItemClickListener(OnItemClickListener<BaseMessage>)`, `setItemLongClickListener(OnItemLongClickListener<BaseMessage>)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
+* Added `MessageListAdapter(GroupChannel, boolean)` in `MessageListAdapter`.
+* Deprecated `MessageListAdapter(GroupChannel, OnItemClickListener<BaseMessage>)`, `MessageListAdapter(GroupChannel, OnItemClickListener<BaseMessage>, OnItemLongClickListener<BaseMessage>)`, `MessageListAdapter(GroupChannel, OnItemClickListener<BaseMessage>, OnItemLongClickListener<BaseMessage>, boolean)` in `MessageListAdapter`.
+* Added `setItems(GroupChannel, List<BaseMessage>, OnMessageListUpdateHandler)` in `MessageListAdapter`.
+* Deprecated `setItems(GroupChannel, List<BaseMessage>)` in `MessageListAdapter`.
+* Added `OpenChannelMessageListAdapter(OpenChannel, boolean)` in `OpenChannelMessageListAdapter`.
+* Deprecated `OpenChannelMessageListAdapter(OpenChannel, OnItemClickListener<BaseMessage>)`, `OpenChannelMessageListAdapter(OpenChannel, OnItemClickListener<BaseMessage>, OnItemLongClickListener<BaseMessage>)`, `OpenChannelMessageListAdapter(OpenChannel, OnItemClickListener<BaseMessage>, OnItemLongClickListener<BaseMessage>, boolean)` in `OpenChannelMessageListAdapter`.
+* Added `setItems(OpenChannel, List<BaseMessage>, OnMessageListUpdateHandler)` in `OpenChannelMessageListAdapter`.
+* Deprecated `setItems(OpenChannel, List<BaseMessage>)` in `OpenChannelMessageListAdapter`.
+* Added `setOnListItemClickListener(OnIdentifiableItemClickListener<BaseMessage>)`, `setOnListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage>)` in `MessageListAdapter`, `OpenChannelMessageListAdapter`.
+* Deprecated `setOnItemClickListener(OnItemClickListener<BaseMessage>)`, `setOnProfileClickListener(OnItemClickListener<BaseMessage>)`, `setOnItemLongClickListener(OnItemLongClickListener<BaseMessage>)` in `MessageListAdapter`, `OpenChannelMessageListAdapter`.
 
 ### v2.1.8 (Sep 23, 2021) with Core SDK `v3.0.172`
 * Added `getMessageTootip(int count)` in `ChannelFragment`.

@@ -18,10 +18,13 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.Sender;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewOpenChannelHighlightMessageHolderBinding;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
+
+import java.util.Map;
 
 
 public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
@@ -39,6 +42,8 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         } finally {
             a.recycle();
         }
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), binding.contentPanel);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
     }
 
     @Override
@@ -90,7 +95,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return binding.contentPanel;
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

@@ -24,15 +24,20 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 
+import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewMessageInputBinding;
 import com.sendbird.uikit.fragments.SendBirdDialogFragment;
+import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.utils.ViewUtils;
 
 import java.lang.reflect.Field;
 
@@ -45,11 +50,17 @@ public class MessageInputView extends FrameLayout {
     private OnClickListener addClickListener;
     private OnClickListener editCancelClickListener;
     private OnClickListener editSaveClickListener;
+    private OnClickListener replyCloseButtonClickListener;
     private OnInputTextChangedListener inputTextChangedListener;
     private OnInputTextChangedListener editModeTextChangedListener;
-    private boolean isEditMode;
-    private int addButtonVisibilityBeforeEditMode;
+    private OnInputModeChangedListener inputModeChangedListener;
+    private Mode mode;
+    private int addButtonVisibilityBeforeEditMode = VISIBLE;
     private boolean showSendButtonAlways;
+
+    public enum Mode {
+        DEFAULT, EDIT, QUOTE_REPLY
+    }
 
     public MessageInputView(@NonNull Context context) {
         this(context, null);
@@ -86,6 +97,12 @@ public class MessageInputView extends FrameLayout {
             int editCancelButtonTextColor = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_cancel_button_text_color, R.color.sb_button_uncontained_text_color_light);
             int editCancelButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_cancel_button_background, R.drawable.sb_button_uncontained_background_light);
 
+            int replyTitleAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_title_text_appearance, R.style.SendbirdCaption1OnLight01);
+            int replyMessageAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_quoted_message_text_appearance, R.style.SendbirdCaption2OnLight03);
+            int replyRightButtonIcon = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon, R.drawable.icon_close);
+            int replyRightButtonTint = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon_tint, R.color.onlight_02);
+            int replyRightButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon_background, R.drawable.sb_button_uncontained_background_light);
+
             binding.messageInputParent.setBackgroundResource(backgroundId);
             binding.etInputText.setBackgroundResource(textBackgroundId);
             binding.etInputText.setTextAppearance(context, textAppearance);
@@ -114,18 +131,22 @@ public class MessageInputView extends FrameLayout {
             binding.btnCancel.setTextColor(AppCompatResources.getColorStateList(context, editCancelButtonTextColor));
             binding.btnCancel.setBackgroundResource(editCancelButtonBackground);
 
+            binding.ivQuoteReplyMessageImage.setRadius(getResources().getDimensionPixelSize(R.dimen.sb_size_8));
+            binding.tvQuoteReplyTitle.setTextAppearance(context, replyTitleAppearance);
+            binding.tvQuoteReplyMessage.setTextAppearance(context, replyMessageAppearance);
+            binding.ivQuoteReplyClose.setImageResource(replyRightButtonIcon);
+            ImageViewCompat.setImageTintList(binding.ivQuoteReplyClose, AppCompatResources.getColorStateList(context, replyRightButtonTint));
+            binding.ivQuoteReplyClose.setBackgroundResource(replyRightButtonBackground);
+            final int dividerColor = SendBirdUIKit.isDarkMode() ? R.color.ondark_04 : R.color.onlight_04;
+            binding.ivReplyDivider.setBackgroundColor(getResources().getColor(dividerColor));
             binding.etInputText.setOnClickListener(v -> {
-                if (displayType == KeyboardDisplayType.Dialog) {
-                    showInputDialog(getInputText());
-                } else {
-                    SoftInputUtils.showSoftKeyboard(binding.etInputText);
-                }
+                showKeyboard();
             });
 
             binding.etInputText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    if (!TextUtils.isEmpty(s) && !isEditMode || showSendButtonAlways) {
+                    if (!TextUtils.isEmpty(s) && Mode.EDIT != getInputMode() || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
                     } else {
                         setSendButtonVisibility(View.GONE);
@@ -134,17 +155,17 @@ public class MessageInputView extends FrameLayout {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (editModeTextChangedListener != null && isEditMode) {
+                    if (editModeTextChangedListener != null && Mode.EDIT == getInputMode()) {
                         editModeTextChangedListener.onInputTextChanged(s, start, before, count);
                     }
-                    if (inputTextChangedListener != null && !isEditMode) {
+                    if (inputTextChangedListener != null && Mode.EDIT != getInputMode()) {
                         inputTextChangedListener.onInputTextChanged(s, start, before, count);
                     }
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (!TextUtils.isEmpty(s) && !isEditMode || showSendButtonAlways) {
+                    if (!TextUtils.isEmpty(s) && Mode.EDIT != getInputMode() || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
                     } else {
                         setSendButtonVisibility(View.GONE);
@@ -158,29 +179,68 @@ public class MessageInputView extends FrameLayout {
         }
     }
 
-    public void showEditMode(CharSequence text) {
-        setInputText("");
-        setIsEditMode(true);
-        if (this.displayType == KeyboardDisplayType.Dialog) {
-            showInputDialog(text);
-            return;
+    public void setInputMode(@NonNull final Mode mode) {
+        final Mode before = this.mode;
+        this.mode = mode;
+        if (Mode.EDIT == mode) {
+            setQuoteReplyPanelVisibility(GONE);
+            setEditPanelVisibility(VISIBLE);
+            addButtonVisibilityBeforeEditMode = binding.ibtnAdd.getVisibility();
+            setAddButtonVisibility(GONE);
+        } else if (Mode.QUOTE_REPLY == mode) {
+            setQuoteReplyPanelVisibility(VISIBLE);
+            setEditPanelVisibility(GONE);
+            setAddButtonVisibility(addButtonVisibilityBeforeEditMode);
+        } else {
+            setQuoteReplyPanelVisibility(GONE);
+            setEditPanelVisibility(GONE);
+            setAddButtonVisibility(addButtonVisibilityBeforeEditMode);
         }
-        setInputText(text.toString());
-        addButtonVisibilityBeforeEditMode = binding.ibtnAdd.getVisibility();
-        setAddButtonVisibility(GONE);
-        setEditPanelVisibility(VISIBLE);
 
-        if (!TextUtils.isEmpty(text)) {
-            binding.etInputText.setSelection(text.length());
+        if (inputModeChangedListener != null) {
+            inputModeChangedListener.onInputModeChanged(before, mode);
         }
-        SoftInputUtils.showSoftKeyboard(binding.etInputText);
     }
 
-    public void hideEditMode() {
-        setIsEditMode(false);
-        setInputText("");
-        setAddButtonVisibility(addButtonVisibilityBeforeEditMode);
-        setEditPanelVisibility(GONE);
+    public void showKeyboard() {
+        binding.etInputText.setSelection(getInputText().length());
+        if (displayType == KeyboardDisplayType.Dialog) {
+            showInputDialog();
+        } else {
+            SoftInputUtils.showSoftKeyboard(binding.etInputText);
+        }
+    }
+
+    public void drawMessageToReply(@NonNull BaseMessage message) {
+        String displayMessage = message.getMessage();
+        if (message instanceof FileMessage) {
+            final FileMessage fileMessage = (FileMessage) message;
+            ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, fileMessage);
+            ViewUtils.drawThumbnail(binding.ivQuoteReplyMessageImage, fileMessage);
+            binding.ivQuoteReplyMessageIcon.setVisibility(VISIBLE);
+            binding.ivQuoteReplyMessageImage.setVisibility(VISIBLE);
+
+            if (fileMessage.getType().contains(StringSet.gif)) {
+                displayMessage = StringSet.gif.toUpperCase();
+            } else if (fileMessage.getType().startsWith(StringSet.image)) {
+                displayMessage = TextUtils.capitalize(StringSet.photo);
+            } else if (fileMessage.getType().startsWith(StringSet.video)) {
+                displayMessage = TextUtils.capitalize(StringSet.video);
+            } else if (fileMessage.getType().startsWith(StringSet.audio)) {
+                displayMessage = TextUtils.capitalize(StringSet.audio);
+            } else {
+                displayMessage = fileMessage.getName();
+            }
+        } else {
+            binding.ivQuoteReplyMessageIcon.setVisibility(GONE);
+            binding.ivQuoteReplyMessageImage.setVisibility(GONE);
+        }
+        if (null != message.getSender()) {
+            binding.tvQuoteReplyTitle.setText(
+                    String.format(getContext().getString(R.string.sb_text_reply_to),
+                            message.getSender().getNickname()));
+        }
+        binding.tvQuoteReplyMessage.setText(displayMessage);
     }
 
     public SbViewMessageInputBinding getBinding() {
@@ -225,6 +285,10 @@ public class MessageInputView extends FrameLayout {
         binding.ibtnAdd.setVisibility(visibility);
     }
 
+    public void setOnInputModeChangedListener(@NonNull OnInputModeChangedListener inputModeChangedListener) {
+        this.inputModeChangedListener = inputModeChangedListener;
+    }
+
     public void setOnAddClickListener(OnClickListener addClickListener) {
         this.addClickListener = addClickListener;
         binding.ibtnAdd.setOnClickListener(addClickListener);
@@ -242,14 +306,24 @@ public class MessageInputView extends FrameLayout {
         binding.editPanel.setVisibility(visibility);
     }
 
+    public void setQuoteReplyPanelVisibility(int visibility) {
+        binding.quoteReplyPanel.setVisibility(visibility);
+        binding.ivReplyDivider.setVisibility(visibility);
+    }
+
     public void setOnEditCancelClickListener(OnClickListener editCancelClickListener) {
-        this.editCancelClickListener =editCancelClickListener;
+        this.editCancelClickListener = editCancelClickListener;
         binding.btnCancel.setOnClickListener(editCancelClickListener);
     }
 
     public void setOnEditSaveClickListener(OnClickListener editSaveClickListener) {
         this.editSaveClickListener = editSaveClickListener;
         binding.btnSave.setOnClickListener(editSaveClickListener);
+    }
+
+    public void setOnReplyCloseClickListener(OnClickListener replyCloseButtonClickListener) {
+        this.replyCloseButtonClickListener = replyCloseButtonClickListener;
+        binding.ivQuoteReplyClose.setOnClickListener(replyCloseButtonClickListener);
     }
 
     public void setOnInputTextChangedListener(OnInputTextChangedListener inputTextChangedListener) {
@@ -283,24 +357,27 @@ public class MessageInputView extends FrameLayout {
         if (displayType == KeyboardDisplayType.Dialog) {
             binding.etInputText.setInputType(InputType.TYPE_NULL);
         } else {
-            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         }
     }
 
-    public void setIsEditMode(boolean isEditMode) {
-        this.isEditMode = isEditMode;
-    }
-
+    /**
+     * @deprecated As of 2.2.0xx, replaced by {@link MessageInputView#getInputMode()}
+     */
+    @Deprecated
     public boolean isEditMode() {
-        return this.isEditMode;
+        return Mode.EDIT == this.mode;
     }
 
-    private void showInputDialog(CharSequence text) {
+    public Mode getInputMode() {
+        return this.mode;
+    }
+
+    private void showInputDialog() {
         final SendBirdDialogFragment.Builder builder = new SendBirdDialogFragment.Builder();
-        MessageInputView messageInputView = generateDialogInputView(this, text, isEditMode, showSendButtonAlways);
+        MessageInputView messageInputView = createDialogInputView();
         builder.setContentView(messageInputView)
                 .setDialogGravity(SendBirdDialogFragment.DialogGravity.BOTTOM);
-
         SendBirdDialogFragment dialogFragment = builder.create();
 
         final Context context = messageInputView.getContext();
@@ -348,26 +425,36 @@ public class MessageInputView extends FrameLayout {
             });
         }
 
+        if (replyCloseButtonClickListener != null) {
+            messageInputView.setOnReplyCloseClickListener(v -> {
+                dialogFragment.dismiss();
+                binding.ivQuoteReplyClose.postDelayed(() -> {
+                    replyCloseButtonClickListener.onClick(binding.ivQuoteReplyClose);
+                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
+                }, 200);
+            });
+        }
+
         messageInputView.setOnInputTextChangedListener((s, start, before, count) -> {
-            if (editModeTextChangedListener != null && isEditMode) {
+            if (editModeTextChangedListener != null && Mode.EDIT == getInputMode()) {
                 editModeTextChangedListener.onInputTextChanged(s, start, before, count);
             }
-            if (inputTextChangedListener != null && !isEditMode) {
+            if (inputTextChangedListener != null && Mode.EDIT != getInputMode()) {
                 inputTextChangedListener.onInputTextChanged(s, start, before, count);
             }
-            if (!isEditMode) {
+            if (Mode.EDIT != getInputMode()) {
                 setInputText(s.toString());
             }
         });
 
         dialogFragment.showSingle(fragmentManager);
-        SoftInputUtils.showSoftKeyboard(messageInputView.getInputEditText());
+        messageInputView.showKeyboard();
 
         final Dialog dialog = dialogFragment.getDialog();
         if (dialog != null) {
             dialog.setOnDismissListener(d -> {
                 dialogFragment.dismiss();
-                setIsEditMode(false);
+                setInputMode(Mode.DEFAULT);
                 binding.getRoot().postDelayed(() -> {
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
                 }, 200);
@@ -375,31 +462,27 @@ public class MessageInputView extends FrameLayout {
         }
     }
 
-    private static MessageInputView generateDialogInputView(@NonNull MessageInputView currentView,
-                                                            CharSequence text,
-                                                            boolean isEditMode,
-                                                            boolean showSendButtonAlways) {
-        Context context = currentView.getContext();
-        MessageInputView messageInputView = new MessageInputView(context);
-
-        messageInputView.setIsEditMode(isEditMode);
-        if (!TextUtils.isEmpty(text)) {
-            messageInputView.setInputText(text.toString());
-            messageInputView.getInputEditText().setSelection(text.length());
-        }
-        if (isEditMode) {
-            messageInputView.setAddButtonVisibility(GONE);
-            messageInputView.setEditPanelVisibility(VISIBLE);
-        }
+    private MessageInputView createDialogInputView() {
+        final MessageInputView messageInputView = new MessageInputView(getContext());
         if (showSendButtonAlways) messageInputView.setSendButtonVisibility(VISIBLE);
+        messageInputView.showSendButtonAlways(showSendButtonAlways);
 
-        currentView.getBinding().ibtnSend.getDrawable();
-        messageInputView.getBinding().ibtnSend.setImageDrawable(currentView.getBinding().ibtnSend.getDrawable());
-        messageInputView.getBinding().ibtnAdd.setImageDrawable(currentView.getBinding().ibtnAdd.getDrawable());
-        CharSequence currentHint = currentView.getInputEditText().getHint();
-        if (!TextUtils.isEmpty(currentHint)) {
-            messageInputView.setInputTextHint(currentHint.toString());
+        messageInputView.setInputMode(mode);
+        if (Mode.EDIT == mode) {
+            messageInputView.setInputText(getInputText());
+        } else if (Mode.QUOTE_REPLY == mode) {
+            messageInputView.getBinding().ivQuoteReplyMessageIcon.setVisibility(binding.ivQuoteReplyMessageIcon.getVisibility());
+            messageInputView.getBinding().ivQuoteReplyMessageImage.setVisibility(binding.ivQuoteReplyMessageImage.getVisibility());
+            messageInputView.getBinding().ivQuoteReplyMessageIcon.setImageDrawable(binding.ivQuoteReplyMessageIcon.getDrawable());
+            messageInputView.getBinding().ivQuoteReplyMessageImage.getContent().setImageDrawable(binding.ivQuoteReplyMessageImage.getContent().getDrawable());
+            messageInputView.getBinding().tvQuoteReplyTitle.setText(binding.tvQuoteReplyTitle.getText());
+            messageInputView.getBinding().tvQuoteReplyMessage.setText(binding.tvQuoteReplyMessage.getText());
         }
+
+        messageInputView.getBinding().ibtnSend.setImageDrawable(binding.ibtnSend.getDrawable());
+        messageInputView.getBinding().ibtnAdd.setImageDrawable(binding.ibtnAdd.getDrawable());
+        messageInputView.getBinding().etInputText.setHint(binding.etInputText.getHint());
+
         return messageInputView;
     }
 }

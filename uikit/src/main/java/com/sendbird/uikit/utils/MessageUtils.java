@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
+import com.sendbird.android.UserMessage;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -28,6 +30,13 @@ public class MessageUtils {
         return false;
     }
 
+    public static boolean isDeletableMessage(@NonNull BaseMessage message) {
+        if (message instanceof UserMessage || message instanceof FileMessage) {
+            return isMine(message.getSender().getUserId()) && !hasThread(message);
+        }
+        return false;
+    }
+
     public static boolean isUnknownType(@NonNull BaseMessage message) {
         MessageType messageType = MessageViewHolderFactory.getMessageType(message);
         return messageType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME || messageType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_OTHER;
@@ -43,10 +52,12 @@ public class MessageUtils {
                 frontMessage.getSender() == null ||
                 frontMessage instanceof AdminMessage ||
                 frontMessage instanceof TimelineMessage ||
+                hasParentMessage(frontMessage) ||
                 backMessage == null ||
                 backMessage.getSender() == null ||
                 backMessage instanceof AdminMessage ||
                 backMessage instanceof TimelineMessage ||
+                hasParentMessage(backMessage) ||
                 !backMessage.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED) ||
                 !frontMessage.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED) ||
                 !frontMessage.getSender().equals(backMessage.getSender()) ||
@@ -55,6 +66,10 @@ public class MessageUtils {
 
     public static MessageGroupType getMessageGroupType(@Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
         if (!message.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED)) {
+            return MessageGroupType.GROUPING_TYPE_SINGLE;
+        }
+
+        if (hasParentMessage(message)) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
 
@@ -71,5 +86,14 @@ public class MessageUtils {
         }
 
         return messageGroupType;
+    }
+
+    public static boolean hasParentMessage(@NonNull BaseMessage message) {
+        return message.getParentMessageId() != 0L;
+    }
+
+    public static boolean hasThread(@NonNull BaseMessage message) {
+        if (message.getThreadInfo() == null) return false;
+        return message.getThreadInfo().getReplyCount() > 0;
     }
 }

@@ -1,21 +1,15 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.OnLifecycleEvent;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelChangeLogsParams;
+import com.sendbird.android.GroupChannelCollection;
 import com.sendbird.android.GroupChannelListQuery;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.sendbird.android.handlers.GroupChannelCollectionHandler;
+import com.sendbird.android.handlers.GroupChannelContext;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.tasks.JobTask;
@@ -23,223 +17,89 @@ import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChannelListViewModel extends BaseViewModel implements PagerRecyclerView.Pageable<List<GroupChannel>>, LifecycleObserver {
+public class ChannelListViewModel extends BaseViewModel implements PagerRecyclerView.Pageable<List<GroupChannel>>,
+        GroupChannelCollectionHandler {
 
-    private final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHANNEL_LIST" + System.currentTimeMillis();;
-    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_LIST" + System.currentTimeMillis();;
-
-    private final AtomicLong lastSyncTs = new AtomicLong(0);
+    private GroupChannelCollection collection;
+    @NonNull
     private final MutableLiveData<List<GroupChannel>> channelList = new MutableLiveData<>();
-    private final GroupChannelListQuery channelListQuery;
-    private final GroupChannelChangeLogsParams changeLogsParams;
-    private final Set<GroupChannel> channelListCache = new HashSet<>();
-    private final AtomicBoolean hasMore = new AtomicBoolean();
-
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
 
-    private final Comparator<GroupChannel> comparator = new Comparator<GroupChannel>() {
-        @Override
-        public int compare(GroupChannel groupChannel1, GroupChannel groupChannel2) {
-            return GroupChannel.compareTo(groupChannel1, groupChannel2, channelListQuery.getOrder());
+    private synchronized void initChannelCollection(@NonNull GroupChannelListQuery query) {
+        Logger.d(">> ChannelListViewModel::initChannelCollection()");
+        if (this.collection != null) {
+            disposeChannelCollection();
         }
-    };
-
-    ChannelListViewModel(@NonNull GroupChannelListQuery customQuery) {
-        super();
-        this.channelListQuery = customQuery;
-        this.changeLogsParams = GroupChannelChangeLogsParams.from(channelListQuery);
-        Logger.d("++ limit =%s, isIncludeEmpty=%s", channelListQuery.getLimit(), channelListQuery.isIncludeEmpty());
+        this.collection = new GroupChannelCollection.Builder(query).build();
+        this.collection.setGroupChannelCollectionHandler(this);
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private void onResume(){
-        Logger.dev(">> ChannelListViewModel::onResume()");
-
-        SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
-            @Override
-            public void onReconnectStarted() {}
-
-            @Override
-            public void onReconnectSucceeded() {
-                requestChangeLogs();
-            }
-
-            @Override
-            public void onReconnectFailed() {}
-        });
-
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
-            @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
-            }
-
-            @Override
-            public void onChannelChanged(BaseChannel channel) {
-                Logger.i(">> ChannelListFragment::onChannelChanged()");
-                updateOrInsert((GroupChannel) channel);
-            }
-
-            @Override
-            public void onUserLeft(GroupChannel channel, User user) {
-                Logger.i(">> ChannelListFragment::onUserLeft()");
-                Logger.d("++ user : %s", user);
-                if (channel.getMyMemberState() == Member.MemberState.NONE) {
-                    deleteChannel(channel);
-                    return;
-                }
-                if (channelListQuery.isIncludeEmpty()) {
-                    updateOrInsert(channel);
-                } else {
-                    updateIfExist(channel);
-                }
-            }
-
-            @Override
-            public void onUserJoined(GroupChannel channel, User user) {
-                Logger.i(">> ChannelListFragment::onUserLeft()");
-                Logger.d("++ user : %s", user);
-                if (channelListQuery.isIncludeEmpty()) {
-                    updateOrInsert(channel);
-                } else {
-                    updateIfExist(channel);
-                }
-            }
-
-            @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
-                Logger.i(">> ChannelListFragment::onChannelDeleted()");
-                Logger.d("++ deleted channelUrl : %s", channelUrl);
-                if (channelType == BaseChannel.ChannelType.GROUP) {
-                    GroupChannel.getChannel(channelUrl, (channel, e) -> {
-                        if (e == null || channel != null) {
-                            deleteChannel(channel);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onChannelFrozen(BaseChannel channel) {
-                updateOrInsert((GroupChannel) channel);
-            }
-
-            @Override
-            public void onChannelUnfrozen(BaseChannel channel) {
-                updateOrInsert((GroupChannel) channel);
-            }
-        });
-
-        requestChangeLogs();
-        markChannelSyncTs();
+    private synchronized void disposeChannelCollection() {
+        Logger.d(">> ChannelListViewModel::disposeChannelCollection()");
+        if (this.collection != null) {
+            this.collection.setGroupChannelCollectionHandler(null);
+            this.collection.dispose();
+        }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    private void onPause() {
-        Logger.dev(">> ChannelListViewModel::onPause()");
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+    private void notifyChannelChanged() {
+        List<GroupChannel> newList = collection.getChannelList();
+        changeAlertStatusIfEmpty(newList.size() == 0 ? StatusFrameView.Status.EMPTY : StatusFrameView.Status.NONE);
+        channelList.postValue(newList);
     }
 
+    @Override
+    public void onChannelsAdded(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
+        notifyChannelChanged();
+    }
+
+    @Override
+    public void onChannelsUpdated(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
+        notifyChannelChanged();
+    }
+
+    @Override
+    public void onChannelsDeleted(@NonNull GroupChannelContext context, @NonNull List<String> deletedChannelUrls) {
+        notifyChannelChanged();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposeChannelCollection();
+    }
+
+    @NonNull
     public LiveData<List<GroupChannel>> getChannelList() {
         return channelList;
     }
 
+    @NonNull
     public LiveData<StatusFrameView.Status> getStatusFrame() {
         return statusFrame;
     }
 
-    private void markChannelSyncTs() {
-        this.lastSyncTs.set(System.currentTimeMillis() -  60000);
+    @Override
+    public boolean hasNext() {
+        return collection.hasMore();
     }
 
-    private void updateIfExist(@NonNull GroupChannel channel) {
-        Logger.dev(">> updateIfExist()");
-        if (!channelListQuery.belongsTo(channel)) return;
-        synchronized (channelListCache) {
-            if (channelListCache.contains(channel)) {
-                channelListCache.remove(channel);
-                channelListCache.add(channel);
-                applyChannelList();
-            }
-        }
+    @Override
+    public boolean hasPrevious() {
+        return false;
     }
 
-    private void updateOrInsert(@NonNull GroupChannel channel) {
-        Logger.dev(">> updateOrInsert()");
-        if (!channelListQuery.belongsTo(channel)) return;
-        synchronized (channelListCache) {
-            channelListCache.remove(channel);
-            channelListCache.add(channel);
-        }
-        applyChannelList();
-    }
-
-    private boolean deleteChannel(@NonNull GroupChannel deletedChannel) {
-        boolean deleted;
-        synchronized (channelListCache) {
-            deleted = channelListCache.remove(deletedChannel);
-        }
-
-        if (deleted) {
-            applyChannelList();
-        }
-        return deleted;
-    }
-
-    private void requestChangeLogs() {
-        Logger.dev(">> ChannelListViewModel::requestChangeLogs(%s)", lastSyncTs.get());
-        long lastTs = lastSyncTs.get();
-        if (lastTs > 0) {
-            ChannelChangeLogsPager pager = new ChannelChangeLogsPager(lastTs, changeLogsParams);
-            pager.load(new ChannelChangeLogsPager.ChannelChangeLogsResultHandler() {
-                @Override
-                public void onError(SendBirdException e) {
-                    Logger.e(e);
-                }
-
-                @Override
-                public void onResult(List<GroupChannel> updatedChannels, List<String> deletedChannelUrls) {
-                    List<GroupChannel> filteredUpdatedChannels = new ArrayList<>();
-                    for (GroupChannel channel : updatedChannels) {
-                        if (channelListQuery.belongsTo(channel)) {
-                            filteredUpdatedChannels.add(channel);
-                        }
-                    }
-                    Logger.i("[changeLogs] updatedChannels size : %s, deletedChannelUrls size : %s", filteredUpdatedChannels.size(), deletedChannelUrls.size());
-                    synchronized (channelListCache) {
-                        channelListCache.removeAll(filteredUpdatedChannels);
-                        channelListCache.addAll(filteredUpdatedChannels);
-                        List<GroupChannel> willDeleteChannel = new ArrayList<>();
-                        for (GroupChannel channel : channelListCache) {
-                            if (deletedChannelUrls.contains(channel.getUrl())) {
-                                willDeleteChannel.add(channel);
-                            }
-                        }
-                        channelListCache.removeAll(willDeleteChannel);
-                    }
-                    markChannelSyncTs();
-                    applyChannelList();
-                }
-            });
-        }
-    }
-
-    public void loadInitial() {
+    public void loadInitial(@NonNull final GroupChannelListQuery query) {
+        initChannelCollection(query);
         TaskQueue.addTask(new JobTask<List<GroupChannel>>() {
             @Override
             protected List<GroupChannel> call() throws Exception {
-                return next();
+                return loadMore();
             }
         });
     }
@@ -251,89 +111,64 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
 
     @Override
     public List<GroupChannel> loadNext() throws Exception {
-        if (hasMore.get()) {
-            return next();
-        }
-        return Collections.emptyList();
+        return loadMore();
     }
 
-    private List<GroupChannel> next() throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicReference<List<GroupChannel>> result = new AtomicReference<>();
-        final AtomicReference<Exception> error = new AtomicReference<>();
+    private List<GroupChannel> loadMore() throws Exception {
+        if (!hasNext()) return Collections.emptyList();
 
         try {
-            channelListQuery.next((list, e) -> {
-                try {
-                    Logger.i("____________ channelListQuery requestd result=%s", list != null ? list.size() : 0);
-                    result.set(list);
-                    error.set(e);
-                } finally {
-                    latch.countDown();
-                }
-            });
-            latch.await();
-        } catch (Exception e) {
-            error.set(e);
+            List<GroupChannel> channels = loadMoreBlocking();
+            notifyChannelChanged();
+            return channels;
+        } catch (Exception ee) {
+            handleError(ee);
+            throw ee;
         }
-        onResult(result.get(), error.get());
-
-        if (error.get() != null) throw error.get();
-        return result.get();
     }
 
-    private void onResult(List<GroupChannel> list, Exception e) {
-        boolean hasData = channelListCache.size() > 0;
-        if (e != null) {
-            Logger.e(e);
-            if (!hasData) {
-                changeAlertStatusIfEmpty(StatusFrameView.Status.ERROR);
-            }
-            notifyDataSetChanged(channelList.getValue());
-            return;
+    private List<GroupChannel> loadMoreBlocking() throws Exception {
+        final CountDownLatch lock = new CountDownLatch(1);
+        final AtomicReference<SendBirdException> error = new AtomicReference<>();
+        final AtomicReference<List<GroupChannel>> channelListRef = new AtomicReference<>();
+        collection.loadMore((channelList, e) -> {
+            channelListRef.set(channelList);
+            error.set(e);
+            lock.countDown();
+        });
+        lock.await();
+
+        if (error.get() != null) throw error.get();
+        return channelListRef.get();
+    }
+
+    private boolean hasData() {
+        return collection.getChannelList().size() > 0;
+    }
+
+    private void handleError(@NonNull Exception e) {
+        Logger.e(e);
+        boolean hasData = hasData();
+        if (!hasData) {
+            changeAlertStatusIfEmpty(StatusFrameView.Status.ERROR);
+        } else {
+            notifyChannelChanged();
         }
-        Logger.dev("++ list : %s", list);
-        this.hasMore.set(!list.isEmpty());
-        synchronized (channelListCache) {
-            channelListCache.addAll(list);
-        }
-        applyChannelList();
     }
 
     private void changeAlertStatusIfEmpty(StatusFrameView.Status status) {
-        if (channelListCache.size() <= 0 || status == StatusFrameView.Status.NONE) {
+        if (!hasData() || status == StatusFrameView.Status.NONE) {
             statusFrame.postValue(status);
         }
     }
 
-    private void applyChannelList() {
-        List<GroupChannel> newList = new ArrayList<>(channelListCache);
-        Collections.sort(newList, comparator);
-
-        changeAlertStatusIfEmpty(newList.size() == 0 ? StatusFrameView.Status.EMPTY : StatusFrameView.Status.NONE);
-        notifyDataSetChanged(newList);
-    }
-
-    private void notifyDataSetChanged(List<GroupChannel> newList) {
-        channelList.postValue(newList == null ? new ArrayList<>() : newList);
-    }
-
     public void setPushNotification(@NonNull GroupChannel channel, boolean enable) {
-        channel.setMyPushTriggerOption(enable ? GroupChannel.PushTriggerOption.ALL : GroupChannel.PushTriggerOption.OFF, new GroupChannel.GroupChannelSetMyPushTriggerOptionHandler() {
-            @Override
-            public void onResult(SendBirdException e) {
-                Logger.i("++ setPushNotification enable : %s result : %s",enable, e == null ? "success" : "error");
-            }
-        });
+        channel.setMyPushTriggerOption(enable ? GroupChannel.PushTriggerOption.ALL : GroupChannel.PushTriggerOption.OFF, e -> Logger.i("++ setPushNotification enable : %s result : %s",enable, e == null ? "success" : "error"));
     }
 
     public void leaveChannel(@NonNull final GroupChannel channel) {
         channel.leave(e -> {
             if (e != null) errorToast.postValue(R.string.sb_text_error_leave_channel);
-            if (e == null) {
-                deleteChannel(channel);
-                Logger.i("++ channel [%s] was left.", channel.getUrl());
-            }
         });
     }
 }

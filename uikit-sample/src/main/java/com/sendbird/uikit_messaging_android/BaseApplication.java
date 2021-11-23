@@ -1,10 +1,15 @@
 package com.sendbird.uikit_messaging_android;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
+import com.sendbird.android.SendBirdException;
+import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit_messaging_android.consts.InitState;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
@@ -12,6 +17,7 @@ import com.sendbird.uikit_messaging_android.utils.PushUtils;
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
+    private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     @Override
     public void onCreate() {
@@ -48,6 +54,26 @@ public class BaseApplication extends MultiDexApplication {
                     }
                 };
             }
+
+            @Override
+            public InitResultHandler getInitResultHandler() {
+                return new InitResultHandler() {
+                    @Override
+                    public void onMigrationStarted() {
+                        initState.setValue(InitState.MIGRATING);
+                    }
+
+                    @Override
+                    public void onInitFailed(SendBirdException e) {
+                        initState.setValue(InitState.FAILED);
+                    }
+
+                    @Override
+                    public void onInitSucceed() {
+                        initState.setValue(InitState.SUCCEED);
+                    }
+                };
+            }
         }, this);
 
         boolean useDarkTheme = PreferenceUtils.isUsingDarkTheme();
@@ -55,5 +81,9 @@ public class BaseApplication extends MultiDexApplication {
         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
         SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
         SendBirdUIKit.setUseDefaultUserProfile(true);
+    }
+
+    public static LiveData<InitState> initStateChanges() {
+        return initState;
     }
 }

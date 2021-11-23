@@ -8,20 +8,18 @@ import androidx.databinding.ViewDataBinding;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.uikit.BR;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.widgets.OpenChannelImageFileMessageView;
 
-public class OpenChannelImageFileMessageViewHolder extends OpenChannelMessageViewHolder {
-    private final View clickableView;
+import java.util.Map;
 
+public final class OpenChannelImageFileMessageViewHolder extends MessageViewHolder {
     OpenChannelImageFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
-        clickableView = ((OpenChannelImageFileMessageView) binding.getRoot()).getBinding().ivThumbnailOveray;
-    }
-
-    @Override
-    public View getProfileView() {
-        return ((OpenChannelImageFileMessageView) binding.getRoot()).getBinding().ivProfileView;
+        final OpenChannelImageFileMessageView root = ((OpenChannelImageFileMessageView) binding.getRoot());
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().ivThumbnailOveray);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), root.getBinding().ivProfileView);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class OpenChannelImageFileMessageViewHolder extends OpenChannelMessageVie
     }
 
     @Override
-    public View getClickableView() {
-        return clickableView;
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

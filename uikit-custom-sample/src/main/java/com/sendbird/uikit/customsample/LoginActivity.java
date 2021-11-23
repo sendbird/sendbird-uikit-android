@@ -38,14 +38,14 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.btSignIn).setOnClickListener(v -> {
             String userId = etUserId.getText().toString();
             // Remove all spaces from userID
-            userId = userId.replaceAll("\\s", "");
+            String userIdString = userId.replaceAll("\\s", "");
 
             String userNickname = etNickname.getText().toString();
             if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(userNickname)) {
                 return;
             }
 
-            PreferenceUtils.setUserId(userId);
+            PreferenceUtils.setUserId(userIdString);
             PreferenceUtils.setNickname(userNickname);
 
             WaitingDialog.show(this);
@@ -53,9 +53,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (e != null) {
                     Logger.e(e);
                     WaitingDialog.dismiss();
+                    PreferenceUtils.clearAll();
                     return;
                 }
                 WaitingDialog.dismiss();
+                PreferenceUtils.setUserId(userIdString);
+                PreferenceUtils.setNickname(userNickname);
                 PushUtils.registerPushHandler(new MyFirebaseMessagingService());
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);

@@ -1,5 +1,7 @@
 package com.sendbird.uikit.activities.adapter;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 
@@ -37,7 +39,11 @@ class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return oldMessageList.get(oldItemPosition).equals(newMessageList.get(newItemPosition));
+        BaseMessage oldMessage = oldMessageList.get(oldItemPosition);
+        BaseMessage newMessage = newMessageList.get(newItemPosition);
+        String oldItemId = getItemId(oldMessage);
+        String newItemId = getItemId(newMessage);
+        return oldItemId.equals(newItemId);
     }
 
     @Override
@@ -82,4 +88,16 @@ class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
 
         return true;
     }
+    private String getItemId(@NonNull BaseMessage item) {
+        if (TextUtils.isEmpty(item.getRequestId())) {
+            return String.valueOf(item.getMessageId());
+        } else {
+            try {
+                return item.getRequestId();
+            } catch (Exception e) {
+                return String.valueOf(item.getMessageId());
+            }
+        }
+    }
+
 }

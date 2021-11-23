@@ -9,6 +9,7 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.BR;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -16,15 +17,18 @@ import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.MyFileMessageView;
 
 import java.util.List;
+import java.util.Map;
 
-public class MyFileMessageViewHolder extends GroupChannelMessageViewHolder {
-    private final View clickableView;
+public final class MyFileMessageViewHolder extends GroupChannelMessageViewHolder {
     private final EmojiReactionListView emojiReactionListView;
 
     MyFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
         super(binding, useMessageGroupUI);
-        clickableView = ((MyFileMessageView) binding.getRoot()).getBinding().contentPanelWithReactions;
         emojiReactionListView = ((MyFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
+
+        final MyFileMessageView root = ((MyFileMessageView) binding.getRoot());
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanelWithReactions);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 
     @Override
@@ -36,11 +40,6 @@ public class MyFileMessageViewHolder extends GroupChannelMessageViewHolder {
     }
 
     @Override
-    public View getClickableView() {
-        return clickableView;
-    }
-
-    @Override
     public void setEmojiReaction(List<Reaction> reactionList,
                                  OnItemClickListener<String> emojiReactionClickListener,
                                  OnItemLongClickListener<String> emojiReactionLongClickListener,
@@ -49,5 +48,10 @@ public class MyFileMessageViewHolder extends GroupChannelMessageViewHolder {
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
         emojiReactionListView.setMoreButtonClickListener(moreButtonClickListener);
+    }
+
+    @Override
+    public Map<String, View> getClickableViewMap() {
+        return clickableViewMap;
     }
 }

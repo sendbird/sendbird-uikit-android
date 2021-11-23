@@ -86,13 +86,6 @@ public class MyMessageStatusView extends FrameLayout {
             return;
         }
 
-        if (channel.isGroupChannel()) {
-            GroupChannel groupChannel = (GroupChannel) channel;
-            if (groupChannel.isSuper() || groupChannel.isBroadcast()) {
-                return;
-            }
-        }
-
         BaseMessage.SendingStatus status = message.getSendingStatus();
 
         switch (status) {
@@ -102,6 +95,14 @@ public class MyMessageStatusView extends FrameLayout {
                 drawError();
                 break;
             case SUCCEEDED:
+                if (channel.isGroupChannel()) {
+                    GroupChannel groupChannel = (GroupChannel) channel;
+                    if (groupChannel.isSuper() || groupChannel.isBroadcast()) {
+                        setVisibility(View.GONE);
+                        return;
+                    }
+                }
+
                 if (channel.isGroupChannel()) {
                     setVisibility(View.VISIBLE);
                     GroupChannel groupChannel = (GroupChannel) channel;
@@ -119,8 +120,9 @@ public class MyMessageStatusView extends FrameLayout {
                     setVisibility(View.GONE);
                 }
                 break;
-            default:
+            case PENDING:
                 drawProgress();
+            default:
                 break;
         }
     }

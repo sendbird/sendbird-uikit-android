@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
 public class SplashActivity extends AppCompatActivity {
@@ -16,16 +18,29 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        String userId = PreferenceUtils.getUserId();
-        if (!TextUtils.isEmpty(userId)) {
-            SendBirdUIKit.connect((user, e) -> {
-                startActivity(getNextIntent());
-                finish();
-            });
-        } else {
-            startActivity(getNextIntent());
-            finish();
-        }
+        BaseApplication.initStateChanges().observe(this, initState -> {
+            Logger.i("++ init state : %s", initState);
+            WaitingDialog.dismiss();
+            switch (initState) {
+                case MIGRATING:
+                    WaitingDialog.show(SplashActivity.this);
+                    break;
+                case FAILED:
+                case SUCCEED:
+                    WaitingDialog.dismiss();
+                    String userId = PreferenceUtils.getUserId();
+                    if (!TextUtils.isEmpty(userId)) {
+                        SendBirdUIKit.connect((user, e) -> {
+                            startActivity(getNextIntent());
+                            finish();
+                        });
+                    } else {
+                        startActivity(getNextIntent());
+                        finish();
+                    }
+                    break;
+            }
+        });
     }
 
     private Intent getNextIntent() {

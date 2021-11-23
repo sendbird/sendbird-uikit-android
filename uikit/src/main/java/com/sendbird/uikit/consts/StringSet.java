@@ -22,6 +22,7 @@ public class StringSet {
     public final static String KEY_EMPTY_ICON_TINT = "KEY_EMPTY_ICON_TINT";
     public final static String KEY_EMPTY_TEXT_RES_ID = "KEY_EMPTY_TEXT_RES_ID";
     public final static String KEY_INPUT_TEXT = "KEY_INPUT_TEXT";
+    public final static String KEY_EMOJI_CONTAINER = "KEY_EMOJI_CONTAINER";
 
     public final static String KEY_USE_TYPING_INDICATOR = "KEY_TYPING_INDICATOR";
     public final static String KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID = "KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID";
@@ -39,17 +40,18 @@ public class StringSet {
     public final static String KEY_MESSAGE_ID = "KEY_MESSAGE_ID";
     public final static String KEY_SENDER_ID = "KEY_SENDER_ID";
     public final static String KEY_CHANNEL_TYPE = "KEY_CHANNEL_TYPE";
+    public final static String KEY_DELETABLE_MESSAGE = "KEY_DELETABLE_MESSAGE";
 
-    public static final String KEY_USE_MESSAGE_GROUP_UI = "KEY_USE_MESSAGE_GROUP_UI";
-    public static final String KEY_USE_USER_PROFILE = "KEY_USE_USER_PROFILE";
-    public static final String KEY_USE_OVERLAY_MODE = "KEY_USE_OVERLAY_MODE";
-    public static final String KEY_KEYBOARD_DISPLAY_TYPE = "KEY_KEYBOARD_DISPLAY_TYPE";
-    public static final String KEY_USE_SEARCH_BAR = "KEY_USE_SEARCH_BAR";
+    public final static String KEY_USE_MESSAGE_GROUP_UI = "KEY_USE_MESSAGE_GROUP_UI";
+    public final static String KEY_USE_USER_PROFILE = "KEY_USE_USER_PROFILE";
+    public final static String KEY_USE_OVERLAY_MODE = "KEY_USE_OVERLAY_MODE";
+    public final static String KEY_KEYBOARD_DISPLAY_TYPE = "KEY_KEYBOARD_DISPLAY_TYPE";
+    public final static String KEY_USE_SEARCH_BAR = "KEY_USE_SEARCH_BAR";
 
     public final static String KEY_HIGHLIGHT_MESSAGE_INFO = "KEY_HIGHLIGHT_MESSAGE_INFO";
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
-    public static final String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
-    public static final String KEY_SEARCH_BAR_BUTTON_TEXT = "KEY_SEARCH_BAR_BUTTON_TEXT";
+    public final static String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
+    public final static String KEY_SEARCH_BAR_BUTTON_TEXT = "KEY_SEARCH_BAR_BUTTON_TEXT";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String audio = "audio";
@@ -70,11 +72,56 @@ public class StringSet {
     public final static String DEFAULT_CHANNEL_COVER_URL = "https://static.sendbird.com/sample/cover/cover_";
 
     // attributes list
-    public static final String reactions = "reactions";
-    public static final String enable_og_tag = "enable_og_tag";
-    public static final String allow_super_group_channel = "allow_super_group_channel";
-    public static final String allow_broadcast_channel = "allow_broadcast_channel";
-    public static final String message_search_v3 = "message_search_v3";
+    public final static String reactions = "reactions";
+    public final static String enable_og_tag = "enable_og_tag";
+    public final static String allow_super_group_channel = "allow_super_group_channel";
+    public final static String allow_broadcast_channel = "allow_broadcast_channel";
+    public final static String message_search_v3 = "message_search_v3";
 
-    public static final String TAG_SENDBIRD_DIALOG_FRAGMENT = "TAG_SENDBIRD_DIALOG_FRAGMENT";
+    public final static String TAG_SENDBIRD_DIALOG_FRAGMENT = "TAG_SENDBIRD_DIALOG_FRAGMENT";
+
+    public final static String ACTION_PENDING_MESSAGE_ADDED = "ACTION_PENDING_MESSAGE_ADDED";
+    public final static String ACTION_PENDING_MESSAGE_UPDATED = "ACTION_PENDING_MESSAGE_UPDATED";
+    public final static String ACTION_PENDING_MESSAGE_REMOVED = "ACTION_PENDING_MESSAGE_REMOVED";
+    public final static String ACTION_FAILED_MESSAGE_ADDED = "ACTION_FAILED_MESSAGE_ADDED";
+    public final static String ACTION_FAILED_MESSAGE_UPDATED = "ACTION_FAILED_MESSAGE_UPDATED";
+    public final static String ACTION_FAILED_MESSAGE_REMOVED = "ACTION_FAILED_MESSAGE_REMOVED";
+    public final static String ACTION_INIT_FROM_CACHE = "ACTION_INIT_FROM_CACHE";
+    public final static String ACTION_INIT_FROM_REMOTE = "ACTION_INIT_FROM_REMOTE";
+    public final static String ACTION_NEXT = "ACTION_NEXT";
+    public final static String ACTION_PREVIOUS = "ACTION_PREVIOUS";
+    public final static String MESSAGE_CHANGELOG = "MESSAGE_CHANGELOG";
+    public final static String MESSAGE_FILL = "MESSAGE_FILL";
+    public final static String CHANNEL_CHANGELOG = "CHANNEL_CHANGELOG";
+    public final static String CHANNEL_FILL = "CHANNEL_FILL";
+    public final static String EVENT_MESSAGE_SENT = "EVENT_MESSAGE_SENT";
+    public final static String EVENT_MESSAGE_RECEIVED = "EVENT_MESSAGE_RECEIVED";
+    public final static String EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED";
+    public final static String EVENT_MESSAGE_DELETED = "EVENT_MESSAGE_DELETED";
+    public final static String EVENT_REACTION_UPDATED = "EVENT_REACTION_UPDATED";
+    public final static String EVENT_THREAD_INFO_UPDATED = "EVENT_THREAD_INFO_UPDATED";
+    public final static String EVENT_MENTION = "EVENT_MENTION";
+    public final static String EVENT_CHANNEL_CHANGED = "EVENT_CHANNEL_CHANGED";
+    public final static String EVENT_CHANNEL_MEMBER_COUNT_CHANGED = "EVENT_CHANNEL_MEMBER_COUNT_CHANGED";
+    public final static String EVENT_CHANNEL_FROZEN = "EVENT_CHANNEL_FROZEN";
+    public final static String EVENT_CHANNEL_UNFROZEN = "EVENT_CHANNEL_UNFROZEN";
+    public final static String EVENT_CHANNEL_HIDDEN = "EVENT_CHANNEL_HIDDEN";
+    public final static String EVENT_CHANNEL_DELETED = "EVENT_CHANNEL_DELETED";
+    public final static String EVENT_OPERATOR_UPDATED = "EVENT_OPERATOR_UPDATED";
+    public final static String EVENT_TYPING_STATUS_UPDATED = "EVENT_TYPING_STATUS_UPDATED";
+    public final static String EVENT_DELIVERY_RECEIPT_UPDATED = "EVENT_DELIVERY_RECEIPT_UPDATED";
+    public final static String EVENT_READ_RECEIPT_UPDATED = "EVENT_READ_RECEIPT_UPDATED";
+    public final static String EVENT_USER_RECEIVED_INVITATION = "EVENT_USER_RECEIVED_INVITATION";
+    public final static String EVENT_USER_DECLINED_INVITATION = "EVENT_USER_DECLINED_INVITATION";
+    public final static String EVENT_USER_JOINED = "EVENT_USER_JOINED";
+    public final static String EVENT_USER_MUTED = "EVENT_USER_MUTED";
+    public final static String EVENT_USER_UNMUTED = "EVENT_USER_UNMUTED";
+    public final static String EVENT_USER_LEFT = "EVENT_USER_LEFT";
+    public final static String EVENT_USER_BANNED = "EVENT_USER_BANNED";
+    public final static String EVENT_USER_UNBANNED = "EVENT_USER_UNBANNED";
+    public final static String photo = "photo";
+
+    public final static String Chat = "Chat";
+    public final static String Profile = "Profile";
+    public final static String QuoteReply = "QuoteReply";
 }

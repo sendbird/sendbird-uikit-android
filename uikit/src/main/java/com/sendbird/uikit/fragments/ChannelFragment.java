@@ -1,5 +1,7 @@
 package com.sendbird.uikit.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,6 +14,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -32,11 +36,16 @@ import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
 import com.sendbird.android.MessageListParams;
+import com.sendbird.android.MessagePayloadFilter;
+import com.sendbird.android.Reaction;
 import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdError;
 import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.handlers.GroupChannelContext;
+import com.sendbird.android.handlers.MessageCollectionHandler;
+import com.sendbird.android.handlers.MessageContext;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
@@ -44,13 +53,18 @@ import com.sendbird.uikit.activities.PhotoViewActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
+import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
+import com.sendbird.uikit.consts.MessageLoadState;
+import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbFragmentChannelBinding;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
+import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
+import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -60,6 +74,7 @@ import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.tasks.JobResultTask;
 import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.ChannelUtils;
@@ -73,26 +88,26 @@ import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
-import com.sendbird.uikit.vm.SuperChannelViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.EmojiListView;
 import com.sendbird.uikit.widgets.EmojiReactionUserListView;
+import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Fragment displaying the list of messages in the channel.
  */
-public class ChannelFragment extends BaseGroupChannelFragment implements OnItemClickListener<BaseMessage>,
-        OnItemLongClickListener<BaseMessage>,
+public class ChannelFragment extends BaseGroupChannelFragment implements OnIdentifiableItemClickListener<BaseMessage>,
+        OnIdentifiableItemLongClickListener<BaseMessage>,
         LoadingDialogHandler {
 
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
@@ -110,13 +125,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
 
     private final AtomicInteger tooltipMessageCount = new AtomicInteger();
     private Uri mediaUri;
-    private long editMessageId;
+
+    @Nullable
+    private BaseMessage targetMessage;
 
     private View.OnClickListener headerLeftButtonListener;
     private View.OnClickListener headerRightButtonListener;
     private OnItemClickListener<BaseMessage> profileClickListener;
     private OnItemClickListener<BaseMessage> itemClickListener;
     private OnItemLongClickListener<BaseMessage> itemLongClickListener;
+    private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
+    private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private View.OnClickListener inputLeftButtonListener;
     private MessageListParams params;
 
@@ -126,8 +145,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
     private LoadingDialogHandler loadingDialogHandler;
     private OnInputTextChangedListener inputTextChangedListener;
     private OnInputTextChangedListener editModeTextChangedListener;
-    final AtomicBoolean isInitialCall = new AtomicBoolean(true);
+    final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
+    final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
     private String headerTitle = null;
+
+    private final ReplyType replyType = SendBirdUIKit.getReplyType();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,19 +171,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (isInitialCall.get()) {
-            loadingDialogHandler.shouldDismissLoadingDialog();
-        }
-    }
-
-    @Override
     public void onDestroy() {
         Logger.i(">> ChannelFragment::onDestroy()");
         super.onDestroy();
         SendBird.setAutoBackgroundDetection(true);
-        if (isInitialCall.get()) {
+        if (!isInitCallFinished.get()) {
             loadingDialogHandler.shouldDismissLoadingDialog();
         }
     }
@@ -188,32 +202,29 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
 
     @Override
     protected void onConfigure() {
-        if (channel != null) {
-            if (channel.getMyMemberState() == Member.MemberState.NONE) {
-                finish();
-                return;
-            }
-
-            channel.refresh(e -> {
-                if (e != null) {
-                    if (e.getCode() == SendBirdError.ERR_NON_AUTHORIZED) {
-                        finish();
-                        return;
-                    }
-                }
-                if (channel.getMyMemberState() == Member.MemberState.NONE) {
-                    finish();
-                }
-            });
-        }
     }
 
     @Override
     protected void onDrawPage() {
         Logger.i(">> ChannelFragment::onDrawPage() - %s", Logger.getCallerTraceInfo(ChannelFragment.class));
-        viewModel = createViewModel(channel);
-        getLifecycle().addObserver(viewModel);
+        params = this.params == null ? new MessageListParams() : this.params;
+        params.setReverse(true);
+        if (replyType == ReplyType.QUOTE_REPLY) {
+            params.setReplyTypeFilter(com.sendbird.android.ReplyTypeFilter.ONLY_REPLY_TO_CHANNEL);
+            params.setMessagePayloadFilter(new MessagePayloadFilter.Builder()
+                    .setIncludeParentMessageInfo(true)
+                    .setIncludeThreadInfo(true)
+                    .setIncludeReactions(ReactionUtils.useReaction(channel))
+                    .build());
+        } else {
+            params.setReplyTypeFilter(com.sendbird.android.ReplyTypeFilter.NONE);
+            params.setMessagePayloadFilter(new MessagePayloadFilter.Builder()
+                    .setIncludeThreadInfo(true)
+                    .setIncludeReactions(ReactionUtils.useReaction(channel))
+                    .build());
+        }
 
+        viewModel = createViewModel(channel);
         initHeaderOnReady(channel);
         initMessageList(channel);
         initMessageInput();
@@ -221,10 +232,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
     }
 
     private ChannelViewModel createViewModel(GroupChannel channel) {
-        if (channel.isSuper()) {
-            return new ViewModelProvider(getActivity(), new ViewModelFactory(channel, params)).get(channel.getUrl(), SuperChannelViewModel.class);
-        }
-        return new ViewModelProvider(getActivity(), new ViewModelFactory(channel, params)).get(channel.getUrl(), ChannelViewModel.class);
+        return new ViewModelProvider(getActivity(), new ViewModelFactory(channel)).get(channel.getUrl(), ChannelViewModel.class);
     }
 
     private void drawChannel(GroupChannel channel) {
@@ -234,6 +242,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                 binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(getContext(), channel));
             }
             ChannelUtils.loadChannelCover(binding.chvChannelHeader.getProfileView(), channel);
+            binding.tvInformation.setVisibility(channel.isFrozen() ? View.VISIBLE : View.GONE);
+            binding.tvInformation.setText(R.string.sb_text_information_channel_frozen);
             drawMessageInput(channel);
         }
     }
@@ -241,31 +251,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
     private void drawMessageInput(GroupChannel channel) {
         boolean isOperator = channel.getMyRole() == Member.Role.OPERATOR;
         boolean isBroadcastChannel = channel.isBroadcast();
+        boolean isMuted = channel.getMyMutedState() == Member.MutedState.MUTED;
+        boolean isFrozen = channel.isFrozen() && !isOperator;
         if (isBroadcastChannel) {
             binding.vgInputBox.setVisibility(isOperator ? View.VISIBLE : View.GONE);
-        } else {
-            boolean isMuted = channel.getMyMutedState() == Member.MutedState.MUTED;
-            boolean isFrozen = channel.isFrozen() && !isOperator;
-            if (isMuted || isFrozen) {
-                enableMessageInput(false, getResources().getString(isFrozen ? R.string.sb_text_channel_input_text_hint_frozen : R.string.sb_text_channel_input_text_hint_muted));
-            } else {
-                enableMessageInput(true, inputHint);
-            }
-
-            binding.tvInformation.setVisibility(channel.isFrozen() ? View.VISIBLE : View.GONE);
-            binding.tvInformation.setText(R.string.sb_text_information_channel_frozen);
-
-            boolean isEnabled = !isMuted && !isFrozen;
-            String hintText = isEnabled ? inputHint : getResources().getString(isMuted ? R.string.sb_text_channel_input_text_hint_muted : R.string.sb_text_channel_input_text_hint_frozen);
-            Logger.dev("++ hint text : " + hintText);
-            enableMessageInput(isEnabled, hintText);
+        } else if (isMuted || isFrozen) {
+            clearInput();
         }
-    }
 
-    private void enableMessageInput(boolean isEnable, String hintText) {
-        binding.vgInputBox.setEnabled(isEnable);
-        binding.vgInputBox.setInputTextHint(hintText);
-        if (!isEnable) finishEditMode();
+        binding.vgInputBox.setEnabled(!isMuted && !isFrozen);
+        // set hint
+        setInputTextHint(isMuted, isFrozen);
     }
 
     private void initHeaderOnCreated() {
@@ -332,12 +328,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
 
         binding.chvChannelHeader.getProfileView().setVisibility(View.VISIBLE);
         viewModel.isChannelChanged().observe(this, this::drawChannel);
-        viewModel.getChannelDeleted().observe(this, deleted -> finish());
-        viewModel.getMessageDeleted().observe(this, deletedMessageId -> {
-            if (binding.vgInputBox.isEditMode() && editMessageId == deletedMessageId) {
-                finishEditMode();
-            }
-        });
 
         if (useTypingIndicator) {
             viewModel.getTypingMembers().observe(this, typingMembers -> {
@@ -352,37 +342,40 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
     }
 
     private void initMessageList(GroupChannel channel) {
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
         boolean useMessageGroupUI = args == null || args.getBoolean(StringSet.KEY_USE_MESSAGE_GROUP_UI, true);
         final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendBirdUIKit.shouldUseDefaultUserProfile());
         final long startingPoint = args != null ? args.getLong(StringSet.KEY_STARTING_POINT, Long.MAX_VALUE) : Long.MAX_VALUE;
         final HighlightMessageInfo info = (args != null && args.containsKey(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO)) ? args.getParcelable(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO) : null;
 
         if (adapter == null) {
-            adapter = new MessageListAdapter(channel, null, null, useMessageGroupUI);
+            adapter = new MessageListAdapter(channel, useMessageGroupUI);
         }
         adapter.setChannel(channel);
         adapter.setHighlightInfo(info);
 
-        if (itemClickListener == null) {
-            itemClickListener = this;
+        if (itemClickListener != null) {
+            adapter.setOnItemClickListener(itemClickListener);
         }
 
-        if (itemLongClickListener == null) {
-            itemLongClickListener = this;
+        if (itemLongClickListener != null) {
+            adapter.setOnItemLongClickListener(itemLongClickListener);
         }
 
-        if (profileClickListener == null && useUserProfile) {
-            profileClickListener = (view, position, message) -> {
-                if (getContext() == null || getFragmentManager() == null) return;
-                hideKeyboard();
-                DialogUtils.buildUserProfile(getContext(), message.getSender(), true, null, null).showSingle(getFragmentManager());
-            };
+        if (listItemClickListener == null) {
+            listItemClickListener = this;
         }
 
-        adapter.setOnItemClickListener(itemClickListener);
-        adapter.setOnItemLongClickListener(itemLongClickListener);
-        adapter.setOnProfileClickListener(profileClickListener);
+        if (listItemLongClickListener == null) {
+            listItemLongClickListener = this;
+        }
+
+        if (profileClickListener != null && useUserProfile) {
+            adapter.setOnProfileClickListener(profileClickListener);
+        }
+
+        adapter.setOnListItemClickListener(listItemClickListener);
+        adapter.setOnListItemLongClickListener(listItemLongClickListener);
 
         if (ReactionUtils.useReaction(channel)) {
             if (emojiReactionClickListener == null) {
@@ -402,7 +395,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                     emojiReactionUserListView.setEmojiReactionUserData(ChannelFragment.this,
                             position,
                             message.getReactions(),
-                            viewModel.getReactionUserInfo(message.getReactions()));
+                            getReactionUserInfo(message.getReactions()));
                     hideKeyboard();
                     DialogUtils.buildContentView(emojiReactionUserListView).showSingle(getFragmentManager());
                 };
@@ -425,6 +418,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         recyclerView.setItemAnimator(new ItemAnimator());
         recyclerView.setOnScrollEndDetectListener(this::onScrollEndReaches);
 
+        final LinearLayoutManager layoutManager = recyclerView.getLayoutManager();
+        layoutManager.setReverseLayout(params == null || params.shouldReverse());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (needToShowScrollBottomButton()) {
+                    binding.mrvMessageList.showScrollBottomButton();
+                }
+            }
+        });
+
         binding.mrvMessageList.getTooltipView().setOnClickListener(v -> scrollToBottom());
         binding.mrvMessageList.getScrollBottomView().setOnClickListener(v -> {
             recyclerView.stopScroll();
@@ -443,81 +447,178 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         }
         viewModel.getStatusFrame().observe(this, binding.statusFrame::setStatus);
 
-        viewModel.getMessageLoadState().observe(this, state -> {
-            switch (state) {
-                case LOAD_STARTED:
-                    break;
-                case LOAD_ENDED:
-                    if (isActive() && isInitialCall.getAndSet(false)) {
-                        loadingDialogHandler.shouldDismissLoadingDialog();
-                        long initialMessageAt = viewModel.getStartingPoint();
-                        int startPosition = 0;
-                        if (initialMessageAt > 0) {
-                            int offset = binding.mrvMessageList.getRecyclerView().getHeight() / 2;
-                            startPosition = scrollToFoundPosition(initialMessageAt, offset);
-                        }
+        viewModel.getMessageList().observe(this, receivedMessageData -> {
+            final List<BaseMessage> messageList = receivedMessageData.getMessages();
+            Logger.d("++ result messageList size : %s, source = %s", messageList.size(), receivedMessageData.getTraceName());
 
-                        if (startPosition > 0) {
-                            binding.mrvMessageList.showScrollBottomButton();
-                        }
+            if (messageList.isEmpty()) return;
+
+            final String traceName = receivedMessageData.getTraceName();
+            // The callback coming from setItems is worked asynchronously. So `isInitCallFinished` flag has to mark in advance.
+            final boolean isInitCallEnded = isInitCallFinished.get();
+            adapter.setItems(channel, messageList, messages -> {
+                if (traceName != null && isActive()) {
+                    Logger.d("++ Message action : %s", traceName);
+                    switch (traceName) {
+                        case StringSet.ACTION_FAILED_MESSAGE_ADDED:
+                        case StringSet.ACTION_PENDING_MESSAGE_ADDED:
+                            final BaseMessage message = adapter.getItem(0);
+                            if (message.getSendingStatus() != BaseMessage.SendingStatus.SUCCEEDED) {
+                                Logger.d("++ pending message added. message=%s", message);
+                                scrollToBottom();
+                            }
+                            break;
+                        case StringSet.EVENT_MESSAGE_SENT:
+                            int firstVisibleItemPosition = recyclerView.findFirstVisibleItemPosition();
+                            Logger.d("++ firstVisibleItemPosition=%s, message=%s", firstVisibleItemPosition, messageList.get(0).getMessage());
+                            if (firstVisibleItemPosition <= 0) {
+                                scrollToBottom();
+                            }
+
+                            final BaseMessage latestMessage = viewModel.getLatestMessage();
+                            if (latestMessage instanceof FileMessage && getContext() != null) {
+                                // Download from files already sent for quick image loading.
+                                FileDownloader.downloadThumbnail(getContext(), (FileMessage) latestMessage);
+                            }
+                            break;
+                        case StringSet.EVENT_MESSAGE_RECEIVED:
+                            firstVisibleItemPosition = recyclerView.findFirstVisibleItemPosition();
+                            Logger.d("++ firstVisibleItemPosition=%s, message=%s", firstVisibleItemPosition, messageList.get(0).getMessage());
+
+                            if (anchorDialogShowing || firstVisibleItemPosition > 0) {
+                                binding.mrvMessageList.showNewMessageTooltip(getTooltipMessage(tooltipMessageCount.incrementAndGet()));
+                            } else if (!viewModel.hasNext()) {
+                                if (firstVisibleItemPosition == 0) {
+                                    scrollToBottom();
+                                }
+                            }
+                            break;
+                        case StringSet.MESSAGE_CHANGELOG:
+                        case StringSet.MESSAGE_FILL:
+                            if (recyclerView.findFirstVisibleItemPosition() == 0 && !anchorDialogShowing && !viewModel.hasNext()) {
+                                scrollToBottom();
+                            }
+                            break;
                     }
-                    break;
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (needToShowScrollBottomButton()) {
-                    binding.mrvMessageList.showScrollBottomButton();
                 }
-            }
-        });
-
-        viewModel.getNewRequestedMessage().observe(this, message -> {
-            Logger.d("++ a new message requested : %s, hasNext=%s", message, viewModel.hasNext());
-            scrollToBottom();
-        });
-
-        viewModel.getIncomingMessage().observe(this, message -> {
-            Logger.d("++ incoming message : %s", message);
-            if (recyclerView.findFirstVisibleItemPosition() == 0) {
-                // the scroll is on the bottom.
-                if (anchorDialogShowing || viewModel.hasNext()) {
-                    binding.mrvMessageList.showNewMessageTooltip(getTooltipMessage(tooltipMessageCount.incrementAndGet()));
-                } else {
-                    scrollToBottom();
+                if (!isInitCallEnded) {
+                    int scrollPosition = scrollToStartingPointIfNeeded();
+                    if (scrollPosition > 0) {
+                        recyclerView.post(() -> {
+                            if (needToShowScrollBottomButton()) {
+                                binding.mrvMessageList.showScrollBottomButton();
+                            } else {
+                                binding.mrvMessageList.hideScrollBottomButton();
+                            }
+                        });
+                    }
                 }
-            } else {
-                // the scroll is not at the bottom.
-                binding.mrvMessageList.showNewMessageTooltip(getTooltipMessage(tooltipMessageCount.incrementAndGet()));
-            }
-        });
-
-        viewModel.getMessageList().observe(this, messageList -> {
-            Logger.d("++ result messageList size : %s", messageList.size());
-            adapter.setItems(channel, messageList);
+            });
         });
         viewModel.getErrorToast().observe(this, this::toastError);
+
+        viewModel.getMessageLoadState().observe(this, state -> {
+            if (state == MessageLoadState.LOAD_ENDED) {
+                if (!isInitCallFinished.getAndSet(true)) {
+                    if (shouldAnimate.getAndSet(false)) {
+                        final List<BaseMessage> founded = viewModel.getMessagesByCreatedAt(viewModel.getStartingPoint());
+                        Logger.i("++ founded=%s, startingPoint=%s", founded, viewModel.getStartingPoint());
+                        if (founded != null && founded.size() == 1) {
+                            final long parentMessageId = founded.get(0).getMessageId();
+                            Logger.i("++ founded parent message id = %s", parentMessageId);
+                            recyclerView.postDelayed(() -> {
+                                startAnimationForReplyMessage(parentMessageId);
+                                if (needToShowScrollBottomButton()) {
+                                    binding.mrvMessageList.showScrollBottomButton();
+                                } else {
+                                    binding.mrvMessageList.hideScrollBottomButton();
+                                }
+                            }, 200);
+                        } else {
+                            toastError(R.string.sb_text_error_original_message_not_found);
+                        }
+                    }
+                }
+            }
+        });
+        viewModel.setMessageCollectionHandler(new MessageCollectionHandler() {
+            @Override
+            public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
+            }
+
+            @Override
+            public void onMessagesUpdated(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
+            }
+
+            @Override
+            public void onMessagesDeleted(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
+                if (MessageInputView.Mode.EDIT == binding.vgInputBox.getInputMode() &&
+                        targetMessage != null && messages.contains(targetMessage)) {
+                    clearInput();
+                } else if (MessageInputView.Mode.QUOTE_REPLY == binding.vgInputBox.getInputMode() &&
+                        targetMessage != null && messages.contains(targetMessage)) {
+                    binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+                }
+            }
+
+            @Override
+            public void onChannelUpdated(@NonNull GroupChannelContext context, @NonNull GroupChannel channel) {
+            }
+
+            @Override
+            public void onChannelDeleted(@NonNull GroupChannelContext context, @NonNull String channelUrl) {
+                finish();
+            }
+
+            @Override
+            public void onHugeGapDetected() {
+                Logger.d(">> onHugeGapDetected()");
+                if (viewModel.getStartingPoint() == 0 || viewModel.getStartingPoint() == Long.MAX_VALUE) {
+                    loadInitial(viewModel.getStartingPoint());
+                } else {
+                    int position = layoutManager.findFirstVisibleItemPosition();
+                    if (position >= 0) {
+                        final BaseMessage message = adapter.getItem(position);
+                        Logger.d("++ founded first visible message = %s", message);
+                        loadInitial(message != null ? message.getCreatedAt() : startingPoint);
+                    }
+                }
+            }
+        });
         loadInitial(startingPoint);
     }
 
     private boolean needToShowScrollBottomButton() {
-        LinearLayoutManager layoutManager = binding.mrvMessageList.getRecyclerView().getLayoutManager();
+        final LinearLayoutManager layoutManager = binding.mrvMessageList.getRecyclerView().getLayoutManager();
         return layoutManager != null && layoutManager.findFirstVisibleItemPosition() > 0;
     }
 
-    private void loadInitial(long startingPoint) {
+    private synchronized void loadInitial(long startingPoint) {
         if (viewModel != null) {
-            isInitialCall.set(true);
-            viewModel.loadInitial(startingPoint);
+            isInitCallFinished.set(false);
+            viewModel.loadInitial(startingPoint, params);
         }
+    }
+
+    private int scrollToStartingPointIfNeeded() {
+        int selectionPosition = 0;
+        if (isActive()) {
+            loadingDialogHandler.shouldDismissLoadingDialog();
+            long startingPoint = viewModel.getStartingPoint();
+
+            if (startingPoint >= 0) {
+                int offset = binding.mrvMessageList.getRecyclerView().getHeight() / 2;
+                selectionPosition = scrollToFoundPosition(startingPoint, offset);
+            }
+        }
+        return selectionPosition;
     }
 
     public int scrollToFoundPosition(long createdAt, int offset) {
         Logger.d("_________ scrollToFoundPosition( %s )", createdAt);
+        if (viewModel == null) return 0;
         final List<BaseMessage> messageList = adapter.getItems();
-        if (messageList == null) {
+        if (messageList == null || messageList.isEmpty()) {
             Logger.d("_________ return scrollToFoundPosition");
             return 0;
         }
@@ -528,20 +629,34 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         if (layoutManager == null) {
             return 0;
         }
-        for (int i = 0; i < size; i++) {
-            BaseMessage message = list.get(i);
-            long ct = message.getCreatedAt();
-            //Logger.d("_________ [%s] : %s, [%s]", i, ct, message.getMessage());
-            if (createdAt >= ct) {
-                Logger.d("_________ found message=%s, i=%s", message.getMessage(), i);
-                layoutManager.scrollToPositionWithOffset(i, offset);
-                return i;
-            }
-        }
-        layoutManager.scrollToPositionWithOffset(0, 0);
-        return 0;
-    }
 
+        final long firstMessageTs = list.get(size - 1).getCreatedAt();
+        final long lastMessageTs = list.get(0).getCreatedAt();
+        final long maxMessageTs = Math.max(lastMessageTs, firstMessageTs);
+        final long minMessageTs = Math.min(lastMessageTs, firstMessageTs);
+        int position = 0;
+        if (createdAt >= minMessageTs && createdAt <= maxMessageTs) {
+            for (int i = size - 1; i >= 0; i--) {
+                BaseMessage message = list.get(i);
+                if (message instanceof TimelineMessage) continue;
+
+                long ct = message.getCreatedAt();
+                //Logger.d("_________ [%s] : %s, [%s]", i, ct, message.getMessage());
+                if (createdAt <= ct) {
+                    Logger.d("_________ found message=%s, i=%s", message.getMessage(), i);
+                    position = i;
+                    break;
+                }
+            }
+        } else if (createdAt >= maxMessageTs) {
+            position = lastMessageTs == maxMessageTs ? 0 : (size - 1);
+        } else {
+            position = firstMessageTs == minMessageTs ? (size - 1) : 0;
+        }
+
+        layoutManager.scrollToPositionWithOffset(position, offset);
+        return position;
+    }
 
     private void initMessageInput() {
         Bundle args = getArguments();
@@ -595,14 +710,18 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
 
         binding.vgInputBox.setOnSendClickListener(this::sendMessage);
         binding.vgInputBox.setOnAddClickListener(inputLeftButtonListener == null ? v -> showMediaSelectDialog() : inputLeftButtonListener);
-        binding.vgInputBox.setOnEditCancelClickListener(v -> finishEditMode());
+        binding.vgInputBox.setOnEditCancelClickListener(v -> clearInput());
         binding.vgInputBox.setOnEditSaveClickListener(v -> {
             String text = getEditTextString();
             if (!TextUtils.isEmpty(text)) {
                 UserMessageParams params = new UserMessageParams(text);
-                updateUserMessage(editMessageId, params);
+                if (null != targetMessage) {
+                    updateUserMessage(targetMessage.getMessageId(), params);
+                } else {
+                    Logger.d("Target message for update is missing");
+                }
             }
-            finishEditMode();
+            clearInput();
         });
         binding.vgInputBox.setOnInputTextChangedListener((s, start, before, count) -> {
             if (inputTextChangedListener != null) {
@@ -615,6 +734,26 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                 editModeTextChangedListener.onInputTextChanged(s, start, before, count);
             }
             viewModel.setTyping(s.length() > 0);
+        });
+        binding.vgInputBox.setOnReplyCloseClickListener(v -> clearInput());
+        binding.vgInputBox.setOnInputModeChangedListener((before, current) -> {
+            boolean isOperator = channel.getMyRole() == Member.Role.OPERATOR;
+            boolean isMuted = channel.getMyMutedState() == Member.MutedState.MUTED;
+            boolean isFrozen = channel.isFrozen() && !isOperator;
+
+            binding.vgInputBox.setEnabled(!isMuted && !isFrozen);
+            // set hint
+            setInputTextHint(isMuted, isFrozen);
+
+            if (MessageInputView.Mode.EDIT == current) {
+                if (targetMessage != null) binding.vgInputBox.setInputText(targetMessage.getMessage());
+                binding.vgInputBox.showKeyboard();
+            } else if (MessageInputView.Mode.QUOTE_REPLY == current) {
+                if (targetMessage != null) binding.vgInputBox.drawMessageToReply(targetMessage);
+                binding.vgInputBox.showKeyboard();
+            } else {
+                targetMessage = null;
+            }
         });
     }
 
@@ -634,6 +773,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         } else {
             binding.mrvMessageList.getRecyclerView().scrollToPosition(0);
         }
+        onScrollEndReaches(PagerRecyclerView.ScrollDirection.Bottom);
     }
 
     /**
@@ -752,11 +892,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         });
     }
 
-    private void finishEditMode() {
-        binding.vgInputBox.hideEditMode();
-        editMessageId = 0L;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -792,7 +927,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
             if (!TextUtils.isEmpty(text)) {
                 UserMessageParams params = new UserMessageParams(text);
                 sendUserMessage(params);
-                binding.vgInputBox.setInputText("");
             }
         }
     }
@@ -840,7 +974,13 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                 cutsomHandler.onBeforeSendUserMessage(params);
             }
             onBeforeSendUserMessage(params);
+            if (targetMessage != null && replyType == ReplyType.QUOTE_REPLY) {
+                params.setParentMessageId(targetMessage.getMessageId());
+                params.setReplyToChannel(true);
+            }
             viewModel.sendUserMessage(params);
+            clearInput();
+            scrollToBottom();
         }
     }
 
@@ -856,12 +996,18 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                 @Override
                 public void onResult(FileInfo info) {
                     FileMessageParams params = info.toFileParams();
-                    CustomParamsHandler cutsomHandler = SendBirdUIKit.getCustomParamsHandler();
-                    if (cutsomHandler != null) {
-                        cutsomHandler.onBeforeSendFileMessage(params);
+                    CustomParamsHandler customHandler = SendBirdUIKit.getCustomParamsHandler();
+                    if (customHandler != null) {
+                        customHandler.onBeforeSendFileMessage(params);
                     }
                     onBeforeSendFileMessage(params);
+                    if (targetMessage != null && replyType == ReplyType.QUOTE_REPLY) {
+                        params.setParentMessageId(targetMessage.getMessageId());
+                        params.setReplyToChannel(true);
+                    }
                     viewModel.sendFileMessage(params, info);
+                    clearInput();
+                    scrollToBottom();
                 }
 
                 @Override
@@ -983,124 +1129,172 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         });
     }
 
-    @Override
-    public void onItemClick(View view, int position, BaseMessage message) {
-        Logger.d("++ ChannelFragment::onItemClicked()");
-        BaseMessage.SendingStatus status = message.getSendingStatus();
+    private void startAnimationForReplyMessage(long targetMessageId) {
+        if (!isActive()) return;
+        final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake_quoted_message);
+        adapter.startAnimation(animation, targetMessageId);
+    }
 
-        if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+    @Override
+    public void onIdentifiableItemClick(View view, String identifier, int position, BaseMessage message) {
+        Logger.d("++ ChannelFragment::onItemClicked(), clickableType=%s", identifier);
+        final BaseMessage.SendingStatus status = message.getSendingStatus();
+        if (status == BaseMessage.SendingStatus.PENDING) return;
+
+        switch (identifier) {
+            case StringSet.Chat:
+                // ClickableViewType.Chat
+                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                    MessageType type = MessageViewHolderFactory.getMessageType(message);
+                    switch (type) {
+                        case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
+                        case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
+                            startActivity(PhotoViewActivity.newIntent(getContext(), BaseChannel.ChannelType.GROUP, (FileMessage) message));
+                            break;
+                        case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
+                        case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+                        case VIEW_TYPE_FILE_MESSAGE_ME:
+                        case VIEW_TYPE_FILE_MESSAGE_OTHER:
+                            FileMessage fileMessage = (FileMessage) message;
+                            FileDownloader.downloadFile(getContext(), fileMessage, new OnResultHandler<File>() {
+                                @Override
+                                public void onResult(File file) {
+                                    showFile(file, fileMessage.getType());
+                                }
+
+                                @Override
+                                public void onError(SendBirdException e) {
+                                    toastError(R.string.sb_text_error_download_file);
+                                }
+                            });
+                            break;
+                        default:
+                    }
+                } else {
+                    if (MessageUtils.isMine(message) &&
+                            (message instanceof UserMessage || message instanceof FileMessage)) {
+                        resendMessage(message);
+                    }
+                }
+                break;
+            case StringSet.Profile:
+                // ClickableViewType.Profile
+                final Bundle args = getArguments();
+                final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendBirdUIKit.shouldUseDefaultUserProfile());
+                if (getContext() == null || getFragmentManager() == null || !useUserProfile) return;
+                hideKeyboard();
+                DialogUtils.buildUserProfile(getContext(), message.getSender(), true, null, null).showSingle(getFragmentManager());
+                break;
+            case StringSet.QuoteReply:
+                // ClickableViewType.Reply
+                final long createdAt = message.getParentMessage() == null ? 0L :
+                        message.getParentMessage().getCreatedAt();
+                if (createdAt > 0) {
+                    if (viewModel.hasMessageById(message.getParentMessageId())) {
+                        final int offset = binding.mrvMessageList.getRecyclerView().getHeight() / 2;
+                        scrollToFoundPosition(createdAt, offset);
+
+                        binding.mrvMessageList.postDelayed(() -> {
+                            startAnimationForReplyMessage(message.getParentMessageId());
+                            if (needToShowScrollBottomButton()) {
+                                binding.mrvMessageList.showScrollBottomButton();
+                            } else {
+                                binding.mrvMessageList.hideScrollBottomButton();
+                            }
+                        }, 100);
+                    } else {
+                        shouldAnimate.set(true);
+                        loadInitial(createdAt);
+                    }
+                } else {
+                    toastError(R.string.sb_text_error_original_message_not_found);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onIdentifiableItemLongClick(View itemView, String identifier, int position, BaseMessage message) {
+        Logger.d("++ ChannelFragment::onItemLongClick(), clickableType=%s", identifier);
+        if (identifier.equals(ClickableViewIdentifier.Chat.name())) {
+            final BaseMessage.SendingStatus status = message.getSendingStatus();
+            if (status == BaseMessage.SendingStatus.PENDING) return;
+
             MessageType type = MessageViewHolderFactory.getMessageType(message);
+            DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
+            DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
+            DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
+            DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, !MessageUtils.isDeletableMessage(message));
+            DialogListItem reply = new DialogListItem(R.string.sb_text_channel_anchor_reply, R.drawable.icon_reply, false, MessageUtils.hasParentMessage(message));
+            DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
+            DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
+
+            DialogListItem[] actions = null;
             switch (type) {
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                    startActivity(PhotoViewActivity.newIntent(getContext(), BaseChannel.ChannelType.GROUP, (FileMessage) message));
+                case VIEW_TYPE_USER_MESSAGE_ME:
+                    if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                        if (replyType == ReplyType.NONE) {
+                            actions = new DialogListItem[]{copy, edit, delete};
+                        } else {
+                            actions = new DialogListItem[]{copy, edit, delete, reply};
+                        }
+                    } else if (MessageUtils.isFailed(message)) {
+                        actions = new DialogListItem[]{retry, deleteFailed};
+                    }
+                    break;
+                case VIEW_TYPE_USER_MESSAGE_OTHER:
+                    if (replyType == ReplyType.NONE) {
+                        actions = new DialogListItem[]{copy};
+                    } else {
+                        actions = new DialogListItem[]{copy, reply};
+                    }
                     break;
                 case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+                case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
                 case VIEW_TYPE_FILE_MESSAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                    FileMessage fileMessage = (FileMessage) message;
-                    FileDownloader.downloadFile(getContext(), fileMessage, new OnResultHandler<File>() {
-                        @Override
-                        public void onResult(File file) {
-                            showFile(file, fileMessage.getType());
+                    if (MessageUtils.isFailed(message)) {
+                        actions = new DialogListItem[]{retry, deleteFailed};
+                    } else {
+                        if (replyType == ReplyType.NONE) {
+                            actions = new DialogListItem[]{delete, save};
+                        } else {
+                            actions = new DialogListItem[]{delete, save, reply};
                         }
-
-                        @Override
-                        public void onError(SendBirdException e) {
-                            toastError(R.string.sb_text_error_download_file);
-                        }
-                    });
+                    }
                     break;
+                case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+                case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
+                case VIEW_TYPE_FILE_MESSAGE_OTHER:
+                    if (replyType == ReplyType.NONE) {
+                        actions = new DialogListItem[]{save};
+                    } else {
+                        actions = new DialogListItem[]{save, reply};
+                    }
+                    break;
+                case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
+                    actions = new DialogListItem[]{delete};
                 default:
+                    break;
             }
-        } else {
-            if (MessageUtils.isMine(message) &&
-                    (message instanceof UserMessage || message instanceof FileMessage)) {
-                resendMessage(message);
-            }
-        }
-    }
 
-    private boolean isLongClickable(BaseMessage message) {
-        BaseMessage.SendingStatus status = message.getSendingStatus();
-        switch (status) {
-            case FAILED:
-            case SUCCEEDED:
-            case CANCELED:
-                return true;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public void onItemLongClick(View itemView, int position, BaseMessage message) {
-        if (!isLongClickable(message)) {
-            return;
-        }
-
-        Logger.d("++ ChannelFragment::onItemLongClick()");
-        MessageType type = MessageViewHolderFactory.getMessageType(message);
-        DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
-        DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
-        DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
-        DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete);
-
-        DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
-        DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
-
-        DialogListItem[] actions = null;
-        BaseMessage.SendingStatus status = message.getSendingStatus();
-        switch (type) {
-            case VIEW_TYPE_USER_MESSAGE_ME:
-                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
-                    actions = new DialogListItem[]{copy, edit, delete};
-                } else if (MessageUtils.isFailed(message)) {
-                    actions = new DialogListItem[]{retry, deleteFailed};
-                }
-                break;
-            case VIEW_TYPE_USER_MESSAGE_OTHER:
-                actions = new DialogListItem[]{copy};
-                break;
-            case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-            case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-            case VIEW_TYPE_FILE_MESSAGE_ME:
-                if (MessageUtils.isFailed(message)) {
-                    actions = new DialogListItem[]{retry, deleteFailed};
+            if (actions != null) {
+                if (!ReactionUtils.canSendReaction(viewModel.getChannel())) {
+                    if (getContext() != null) {
+                        MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(itemView, binding.mrvMessageList, actions)
+                                .setOnItemClickListener(createMessageActionListener(message))
+                                .setOnDismissListener(() -> anchorDialogShowing = false)
+                                .build();
+                        messageAnchorDialog.show();
+                        anchorDialogShowing = true;
+                    }
+                } else if (MessageUtils.isUnknownType(message)) {
+                    if (getContext() == null || getFragmentManager() == null) return;
+                    DialogUtils
+                            .buildItemsBottom(actions, createMessageActionListener(message))
+                            .showSingle(getFragmentManager());
                 } else {
-                    actions = new DialogListItem[]{delete, save};
+                    showEmojiActionsDialog(message, actions);
                 }
-                break;
-            case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-            case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-            case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                actions = new DialogListItem[]{save};
-                break;
-            case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
-                actions = new DialogListItem[]{delete};
-            default:
-                break;
-        }
-
-        if (actions != null) {
-            if (!ReactionUtils.canSendReaction(viewModel.getChannel())) {
-                if (getContext() != null) {
-                    MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(itemView, binding.mrvMessageList, actions)
-                            .setOnItemClickListener(createMessageActionListener(message))
-                            .setOnDismissListener(() -> anchorDialogShowing = false)
-                            .build();
-                    messageAnchorDialog.show();
-                    anchorDialogShowing = true;
-                }
-            } else if (MessageUtils.isUnknownType(message) || MessageUtils.isFailed(message)) {
-                if (getContext() == null || getFragmentManager() == null) return;
-                DialogUtils
-                        .buildItemsBottom(actions, createMessageActionListener(message))
-                        .showSingle(getFragmentManager());
-            } else {
-                showEmojiActionsDialog(message, actions);
             }
         }
     }
@@ -1172,6 +1366,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         sendBirdDialogFragment.showSingle(getFragmentManager());
     }
 
+    private void clearInput() {
+        binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+        binding.vgInputBox.setInputText("");
+    }
+
     private void hideKeyboard() {
         if (getView() != null) {
             SoftInputUtils.hideSoftKeyboard(getView());
@@ -1183,7 +1382,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
             if (key == R.string.sb_text_channel_anchor_copy) {
                 copyTextToClipboard(message.getMessage());
             } else if (key == R.string.sb_text_channel_anchor_edit) {
-                editMessage(message);
+                targetMessage = message;
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.EDIT);
             } else if (key == R.string.sb_text_channel_anchor_delete) {
                 if (MessageUtils.isFailed(message)) {
                     Logger.dev("delete");
@@ -1208,6 +1408,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                         }
                     });
                 }
+            } else if (key == R.string.sb_text_channel_anchor_reply) {
+                this.targetMessage = message;
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.QUOTE_REPLY);
             } else if (key == R.string.sb_text_channel_anchor_retry) {
                 resendMessage(message);
             }
@@ -1248,11 +1451,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         }
     }
 
-    private void editMessage(BaseMessage message) {
-        editMessageId = message.getMessageId();
-        binding.vgInputBox.showEditMode(message.getMessage());
-    }
-
     private void showWarningDialog(BaseMessage message) {
         if (getContext() == null || getFragmentManager() == null) return;
         DialogUtils.buildWarning(
@@ -1268,6 +1466,41 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
                     Logger.dev("cancel");
                 })
                 .showSingle(getFragmentManager());
+    }
+
+    private Map<Reaction, List<User>> getReactionUserInfo(List<Reaction> reactionList) {
+        Map<Reaction, List<User>> result = new HashMap<>();
+        Map<String, User> userMap = new HashMap<>();
+
+        for (Member member : channel.getMembers()) {
+            userMap.put(member.getUserId(), member);
+        }
+
+        for (Reaction reaction : reactionList) {
+            List<User> userList = new ArrayList<>();
+            List<String> userIds = reaction.getUserIds();
+            for (String userId : userIds) {
+                User user = userMap.get(userId);
+                userList.add(user);
+            }
+            result.put(reaction, userList);
+        }
+
+        return result;
+    }
+
+    private void setInputTextHint(final boolean isMuted, final boolean isFrozen) {
+        // set hint
+        String hintText = inputHint;
+        if (MessageInputView.Mode.QUOTE_REPLY == binding.vgInputBox.getInputMode()) {
+            hintText = getResources().getString(R.string.sb_text_channel_input_reply_text_hint);
+        } else if (isMuted) {
+            hintText = getResources().getString(R.string.sb_text_channel_input_text_hint_muted);
+        } else if (isFrozen) {
+            hintText = getResources().getString(R.string.sb_text_channel_input_text_hint_frozen);
+        }
+        Logger.dev("++ hint text : " + hintText);
+        binding.vgInputBox.setInputTextHint(hintText);
     }
 
     private void setHeaderLeftButtonListener(View.OnClickListener listener) {
@@ -1326,6 +1559,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         this.editModeTextChangedListener = editModeTextChangedListener;
     }
 
+    private void setOnListItemClickListener(OnIdentifiableItemClickListener<BaseMessage> listItemClickListener) {
+        this.listItemClickListener = listItemClickListener;
+    }
+
+    private void setOnListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener) {
+        this.listItemLongClickListener = listItemLongClickListener;
+    }
+
     public static class Builder {
         private final Bundle bundle;
         private ChannelFragment customFragment;
@@ -1343,6 +1584,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         private LoadingDialogHandler loadingDialogHandler;
         private OnInputTextChangedListener inputTextChangedListener;
         private OnInputTextChangedListener editModeTextChangedListener;
+
+        private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
+        private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
 
         /**
          * Constructor
@@ -1630,7 +1874,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @deprecated As of 2.2.0, replaced by {@link Builder#setOnListItemClickListener(OnIdentifiableItemClickListener)}
          */
+        @Deprecated
         public Builder setItemClickListener(OnItemClickListener<BaseMessage> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
@@ -1641,7 +1887,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @deprecated As of 2.2.0, replaced by {@link Builder#setOnListItemLongClickListener(OnIdentifiableItemLongClickListener)}
          */
+        @Deprecated
         public Builder setItemLongClickListener(OnItemLongClickListener<BaseMessage> itemLongClickListener) {
             this.itemLongClickListener = itemLongClickListener;
             return this;
@@ -1725,7 +1973,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
          * @param profileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 1.2.2
+         * @deprecated As of 2.2.0, replaced by {@link Builder#setOnListItemClickListener(OnIdentifiableItemClickListener)}
          */
+        @Deprecated
         public Builder setOnProfileClickListener(OnItemClickListener<BaseMessage> profileClickListener) {
             this.profileClickListener = profileClickListener;
             return this;
@@ -1864,6 +2114,30 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
         }
 
         /**
+         * Sets the click listener on the item of message list.
+         *
+         * @param itemClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.2.0
+         */
+        public Builder setListItemClickListener(OnIdentifiableItemClickListener<BaseMessage> itemClickListener) {
+            this.listItemClickListener = itemClickListener;
+            return this;
+        }
+
+        /**
+         * Sets the long click listener on the item of message list.
+         *
+         * @param itemLongClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.2.0
+         */
+        public Builder setListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage> itemLongClickListener) {
+            this.listItemLongClickListener = itemLongClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link ChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -1886,6 +2160,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnItemC
             fragment.setLoadingDialogHandler(loadingDialogHandler);
             fragment.setOnInputTextChangedListener(inputTextChangedListener);
             fragment.setOnEditModeTextChangedListener(editModeTextChangedListener);
+            fragment.setOnListItemClickListener(listItemClickListener);
+            fragment.setOnListItemLongClickListener(listItemLongClickListener);
             return fragment;
         }
     }

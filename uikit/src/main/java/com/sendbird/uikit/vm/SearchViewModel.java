@@ -94,6 +94,16 @@ public class SearchViewModel extends BaseViewModel implements LifecycleObserver,
     }
 
     @Override
+    public boolean hasNext() {
+        return query.hasNext();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return false;
+    }
+
+    @Override
     public List<BaseMessage> loadPrevious() {
         return Collections.emptyList();
     }
@@ -101,7 +111,7 @@ public class SearchViewModel extends BaseViewModel implements LifecycleObserver,
     @Override
     public List<BaseMessage> loadNext() {
         Logger.d("____________ loadNext hasNext=%s", query.hasNext());
-        if (query.hasNext()) {
+        if (hasNext()) {
             final CountDownLatch latch = new CountDownLatch(1);
             final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();
             final AtomicReference<Exception> error = new AtomicReference<>();

@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserTypeListViewModel extends BaseViewModel implements LifecycleObserver, PagerRecyclerView.Pageable<List<User>> {
-
+    private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
     private final String CHANNEL_HANDLER_MEMBER_LIST = "CHANNEL_HANDLER_MEMBER_LIST" + System.currentTimeMillis();
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     private final MutableLiveData<List<User>> memberList = new MutableLiveData<>();
@@ -34,10 +34,38 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
     private final MutableLiveData<Boolean> channelDeleted = new MutableLiveData<>();
     private final CustomMemberListQueryHandler<User> queryHandler;
     protected BaseChannel channel;
+    private volatile boolean isInitialRequest = true;
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+    }
 
     private void onResult(List<User> memberList, Exception e) {
         if (e != null) {
             Logger.e(e);
+            if (isInitialRequest) {
+                SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+                    @Override
+                    public void onReconnectStarted() {
+                    }
+
+                    @Override
+                    public void onReconnectSucceeded() {
+                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        loadInitial();
+                    }
+
+                    @Override
+                    public void onReconnectFailed() {
+                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        changeAlertStatus(StatusFrameView.Status.ERROR);
+                        notifyDataSetChanged(UserTypeListViewModel.this.memberList.getValue());
+                    }
+                });
+                return;
+            }
             changeAlertStatus(StatusFrameView.Status.ERROR);
             notifyDataSetChanged(this.memberList.getValue());
         } else {
@@ -48,6 +76,7 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
             }
             applyUserList(newUsers);
         }
+        isInitialRequest = false;
     }
 
     UserTypeListViewModel(BaseChannel channel, CustomMemberListQueryHandler<User> customQuery) {
@@ -181,6 +210,16 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
         memberList.postValue(list == null ? new ArrayList<>() : (List<User>)list);
     }
 
+    @Override
+    public boolean hasNext() {
+        return queryHandler.hasMore();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return false;
+    }
+
     public void loadInitial() {
         Logger.d(">> MemberListViewModel::loadInitial()");
         List<? extends User> origin = this.memberList.getValue();
@@ -197,7 +236,7 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
 
     @Override
     public List<User> loadNext() throws InterruptedException {
-        if (queryHandler.hasMore()) {
+        if (hasNext()) {
             final CountDownLatch latch = new CountDownLatch(1);
             final AtomicReference<List<User>> result = new AtomicReference<>();
             final AtomicReference<Exception> error = new AtomicReference<>();
