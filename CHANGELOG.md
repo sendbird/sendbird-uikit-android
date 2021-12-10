@@ -3,7 +3,7 @@
 ### v2.2.1 (Dec 10, 2021) with Core SDK `v3.1.1`
 * Improved stability.
 
-### v2.2.0 (Nov 23, 2021) with Core SDK `v3.1.0`
+### <strike>v2.2.0 (Nov 23, 2021) with Core SDK `v3.1.0`</strike> *DEPRECATED*
 * Supported local caching.
   * Added `getInitResultHandler()` in `SendBirdUIKitAdapter`.
 * Supported message threading.
