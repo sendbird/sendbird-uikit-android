@@ -33,7 +33,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation project(":uikit")
-    implementation "com.sendbird.sdk:uikit:2.2.0"
+    implementation "com.sendbird.sdk:uikit:2.2.1"
 
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.google.firebase:firebase-messaging:21.0.0'

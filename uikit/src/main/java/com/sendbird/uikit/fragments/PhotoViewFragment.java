@@ -80,7 +80,11 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         Logger.d("PhotoViewFragment::onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         binding.ivClose.setOnClickListener(v -> finish());
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.background_700));
         }
