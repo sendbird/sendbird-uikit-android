@@ -358,7 +358,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     private void requestChangeLogs(@NonNull BaseChannel channel) {
         String channelUrl = channel.getUrl();
         int cacheMessageSize = messageCollection.size();
-        long lastSyncTs = cacheMessageSize > 0 ? messageCollection.getLatestMessage().getCreatedAt() : 0;
+        BaseMessage lastMessage = messageCollection.getLatestMessage();
+        long lastSyncTs = cacheMessageSize > 0 && lastMessage != null ? lastMessage.getCreatedAt() : 0;
         Logger.dev("++ change logs channel url = %s, lastSyncTs = %s", channelUrl, lastSyncTs);
 
         if (lastSyncTs > 0) {
@@ -564,7 +565,8 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
         try {
             messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
             int cacheMessageSize = messageCollection.size();
-            long ts = cacheMessageSize > 0 ? messageCollection.getOldestMessage().getCreatedAt() : Long.MAX_VALUE;
+            BaseMessage oldMessage = messageCollection.getOldestMessage();
+            long ts = cacheMessageSize > 0 && oldMessage != null ? oldMessage.getCreatedAt() : Long.MAX_VALUE;
             newMessageList = loadPrevious(ts);
             Logger.i("++ load previous message list : " + newMessageList);
             messageCollection.addAll(newMessageList);

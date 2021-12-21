@@ -123,6 +123,7 @@ class ImageWaffleView extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         int width = getWidth();
         int height = getHeight();
+
         if (isInEditMode()) {
             Paint debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             debugPaint.setColor(getResources().getColor(R.color.background_400));
@@ -130,14 +131,20 @@ class ImageWaffleView extends ViewGroup {
             return;
         }
 
-        if (tempBitmap == null || tempBitmap.isRecycled() || (tempBitmap.getWidth() != getWidth() || tempBitmap.getHeight() != getHeight())) {
+        if (width == 0 || height == 0) {
+            super.dispatchDraw(canvas);
+            return;
+        }
+
+        if (tempBitmap == null || tempBitmap.isRecycled() || (tempBitmap.getWidth() != width || tempBitmap.getHeight() != height)) {
             if (tempBitmap != null) {
                 tempBitmap.recycle();
             }
+
             try {
-                tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+                tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             } catch (OutOfMemoryError e) {
-                tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
+                tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             }
         } else {
             tempBitmap.eraseColor(Color.TRANSPARENT);

@@ -153,10 +153,12 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         this.handler = handler;
     }
 
+    @Nullable
     public BaseMessage getOldestMessage() {
         return cachedMessages.getOldestMessage();
     }
 
+    @Nullable
     public BaseMessage getLatestMessage() {
         return cachedMessages.getLatestMessage();
     }

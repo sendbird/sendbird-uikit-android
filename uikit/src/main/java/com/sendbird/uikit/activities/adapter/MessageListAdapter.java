@@ -163,16 +163,18 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                 entry.getValue().setOnClickListener(v -> {
                     int messagePosition = viewHolder.getAdapterPosition();
                     if (messagePosition != NO_POSITION) {
-                        if (listItemClickListener != null) {
-                            listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
-
                         // for backward compatibilities
                         if (listener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
                             listener.onItemClick(v, messagePosition, getItem(messagePosition));
+                            return;
                         }
                         if (profileClickListener != null && identifier.equals(ClickableViewIdentifier.Profile.name())) {
                             profileClickListener.onItemClick(v, messagePosition, getItem(messagePosition));
+                            return;
+                        }
+
+                        if (listItemClickListener != null) {
+                            listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
                         }
                     }
                 });
@@ -180,13 +182,14 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                 entry.getValue().setOnLongClickListener(v -> {
                     int messagePosition = viewHolder.getAdapterPosition();
                     if (messagePosition != NO_POSITION) {
-                        if (listItemLongClickListener != null) {
-                            listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
-
                         // for backward compatibilities
                         if (longClickListener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
                             longClickListener.onItemLongClick(v, messagePosition, getItem(messagePosition));
+                            return true;
+                        }
+
+                        if (listItemLongClickListener != null) {
+                            listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
                         }
                         return true;
                     }

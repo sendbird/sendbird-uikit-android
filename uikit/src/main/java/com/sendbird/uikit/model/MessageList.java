@@ -1,9 +1,9 @@
 package com.sendbird.uikit.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseMessage;
-import com.sendbird.android.MessageListParams;
 import com.sendbird.android.log.Logger;
 import com.sendbird.uikit.utils.DateUtils;
 
@@ -22,6 +22,7 @@ public class MessageList {
     }
 
     private final Order order;
+    @NonNull
     private final TreeSet<BaseMessage> messages;
     private final Map<String, BaseMessage> timelineMap = new ConcurrentHashMap<>();
 
@@ -197,14 +198,18 @@ public class MessageList {
     /**
      * @return the latest message.
      */
+    @Nullable
     public BaseMessage getLatestMessage() {
+        if (messages.isEmpty()) return null;
         return order == Order.DESC ? messages.first() : messages.last();
     }
 
     /**
      * @return the oldest message.
      */
+    @Nullable
     public BaseMessage getOldestMessage() {
+        if (messages.isEmpty()) return null;
         return order == Order.DESC ? messages.last() : messages.first();
     }
 
