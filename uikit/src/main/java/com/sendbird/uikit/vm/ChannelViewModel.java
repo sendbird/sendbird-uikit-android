@@ -83,31 +83,6 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     ChannelViewModel(@NonNull GroupChannel groupChannel) {
         super();
         this.channel = groupChannel;
-
-        SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
-            @Override
-            public void onReconnectStarted() {
-            }
-
-            @Override
-            public void onReconnectSucceeded() {
-                loadLatestMessagesForCache();
-            }
-
-            @Override
-            public void onReconnectFailed() {
-            }
-        });
-
-        SendBird.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new SendBird.ChannelHandler() {
-            @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
-                if (channel.getUrl().equals(ChannelViewModel.this.channel.getUrl()) && hasNext()) {
-                    markAsRead();
-                    notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, BaseMessage.SendingStatus.SUCCEEDED));
-                }
-            }
-        });
     }
 
     public boolean hasMessageById(long messageId) {
@@ -120,14 +95,45 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     private synchronized void initMessageCollection(final long startingPoint, @NonNull final MessageListParams params) {
         Logger.i(">> ChannelViewModel::initMessageCollection()");
-        if (this.collection != null) {
+        final boolean wasCollectionInitialized = this.collection != null;
+
+        if (wasCollectionInitialized) {
             disposeMessageCollection();
         }
+
         this.collection = new MessageCollection.Builder(channel, params)
                 .setStartingPoint(startingPoint)
                 .build();
         this.collection.setMessageCollectionHandler(this);
+
         loadLatestMessagesForCache();
+
+        if (!wasCollectionInitialized) {
+            SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+                @Override
+                public void onReconnectStarted() {
+                }
+
+                @Override
+                public void onReconnectSucceeded() {
+                    loadLatestMessagesForCache();
+                }
+
+                @Override
+                public void onReconnectFailed() {
+                }
+            });
+
+            SendBird.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new SendBird.ChannelHandler() {
+                @Override
+                public void onMessageReceived(BaseChannel channel, BaseMessage message) {
+                    if (channel.getUrl().equals(ChannelViewModel.this.channel.getUrl()) && hasNext()) {
+                        markAsRead();
+                        notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, BaseMessage.SendingStatus.SUCCEEDED));
+                    }
+                }
+            });
+        }
     }
 
     public void onViewDestroyed() {
