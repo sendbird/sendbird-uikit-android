@@ -282,6 +282,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void setAddButtonVisibility(int visibility) {
+        addButtonVisibilityBeforeEditMode = visibility;
         binding.ibtnAdd.setVisibility(visibility);
     }
 
