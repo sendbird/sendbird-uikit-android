@@ -57,6 +57,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private final GroupChannel channel;
     private final MessageList cachedMessages = new MessageList();
 
+    @Nullable
     private MessageCollection collection;
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
@@ -64,6 +65,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     public static class ChannelMessageData {
         final List<BaseMessage> messages;
         final String traceName;
+
         ChannelMessageData(@Nullable String traceName, @NonNull List<BaseMessage> messages) {
             this.traceName = traceName;
             this.messages = messages;
@@ -131,7 +133,9 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     // If the collection starts with a starting point value, not MAX_VALUE,
     // the message should be requested the newest messages at once because there may be no new messages in the cache
     private void loadLatestMessagesForCache() {
-        if (!needToLoadMessageCache || this.collection.getStartingPoint() == Long.MAX_VALUE) return;
+        if (!needToLoadMessageCache || collection == null || this.collection.getStartingPoint() == Long.MAX_VALUE) {
+            return;
+        }
         final MessageCollection syncCollection = new MessageCollection.Builder(channel, new MessageListParams()).build();
         syncCollection.loadPrevious((messages, e) -> {
             if (e == null) {
@@ -189,16 +193,16 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     @Override
     public boolean hasNext() {
-        return collection.hasNext();
+        return collection != null && collection.hasNext();
     }
 
     @Override
     public boolean hasPrevious() {
-        return collection.hasPrevious();
+        return collection != null && collection.hasPrevious();
     }
 
     public long getStartingPoint() {
-        return collection.getStartingPoint();
+        return collection == null ? Long.MAX_VALUE : collection.getStartingPoint();
     }
 
     @UiThread
@@ -211,7 +215,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> ChannelViewModel::notifyDataSetChanged(), size = %s, action=%s", cachedMessages.size(), traceName);
         final List<BaseMessage> copiedList = cachedMessages.toList();
-        if (!hasNext()) {
+        if (!hasNext() && collection != null) {
             copiedList.addAll(0, collection.getPendingMessages());
             copiedList.addAll(0, collection.getFailedMessages());
         }
@@ -237,7 +241,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
             cachedMessages.addAll(messages);
             notifyDataSetChanged(context);
-        }  else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
+        } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
             notifyDataSetChanged(StringSet.ACTION_PENDING_MESSAGE_ADDED);
         }
 
@@ -362,7 +366,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     private void markAsRead() {
         Logger.dev("markAsRead");
-        channel.markAsRead();
+        channel.markAsRead(null);
     }
 
     public void setTyping(boolean isTyping) {
@@ -448,7 +452,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
                 Logger.i("++ deleted message : %s", message);
             });
-        } else if (status == BaseMessage.SendingStatus.FAILED) {
+        } else if (status == BaseMessage.SendingStatus.FAILED && collection != null) {
             collection.removeFailedMessages(Collections.singletonList(message), (requestIds, e) -> {
                 if (e != null) {
                     Logger.e(e);
@@ -491,43 +495,44 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
         messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
         cachedMessages.clear();
-        collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
-            @Override
-            public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendBirdException e) {
-                if (e == null && cachedList != null && cachedList.size() > 0) {
-                    cachedMessages.addAll(cachedList);
-                    notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
+        if (collection != null) {
+            collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
+                @Override
+                public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendBirdException e) {
+                    if (e == null && cachedList != null && cachedList.size() > 0) {
+                        cachedMessages.addAll(cachedList);
+                        notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
+                    }
                 }
-            }
 
-            @Override
-            public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
-                if (e == null && apiResultList != null && apiResultList.size() > 0) {
-                    cachedMessages.clear();
-                    cachedMessages.addAll(apiResultList);
-                    notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                    markAsRead();
+                @Override
+                public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
+                    if (e == null && apiResultList != null && apiResultList.size() > 0) {
+                        cachedMessages.clear();
+                        cachedMessages.addAll(apiResultList);
+                        notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
+                        markAsRead();
+                    }
+                    messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
                 }
-                messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
-            }
-        });
+            });
+        }
     }
 
     @WorkerThread
     @Override
-    public List<BaseMessage> loadPrevious() throws Exception  {
-        if (!hasPrevious()) return Collections.emptyList();
+    public List<BaseMessage> loadPrevious() throws Exception {
+        if (!hasPrevious() || collection == null) return Collections.emptyList();
         Logger.i(">> ChannelViewModel::loadPrevious()");
 
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();
         final AtomicReference<Exception> error = new AtomicReference<>();
         final CountDownLatch lock = new CountDownLatch(1);
-
         messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
         collection.loadPrevious((messages, e) -> {
-            Logger.d("++ privious size = %s", messages == null ? 0: messages.size());
+            Logger.d("++ previous size = %s", messages == null ? 0 : messages.size());
             try {
-                if (e == null) {
+                if (e == null && messages != null) {
                     cachedMessages.addAll(messages);
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
@@ -547,7 +552,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     @WorkerThread
     @Override
     public List<BaseMessage> loadNext() throws Exception {
-        if (!hasNext()) return Collections.emptyList();
+        if (!hasNext() || collection != null) return Collections.emptyList();
 
         Logger.i(">> ChannelViewModel::loadNext()");
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();
