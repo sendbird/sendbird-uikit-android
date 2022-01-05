@@ -197,6 +197,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initHeaderOnCreated();
+        customizeMessageInput();
         loadingDialogHandler.shouldShowLoadingDialog();
     }
 
@@ -664,56 +665,60 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         return position;
     }
 
-    private void initMessageInput() {
+    private void customizeMessageInput() {
         Bundle args = getArguments();
+        if (args == null) {
+            return;
+        }
 
         inputHint = getResources().getString(R.string.sb_text_channel_input_text_hint);
-        if (args != null) {
-            if (args.containsKey(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID)) {
-                int inputLeftButtonIconResId = args.getInt(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_add);
-                binding.vgInputBox.setAddImageResource(inputLeftButtonIconResId);
-                binding.vgInputBox.setAddImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_TINT));
-            }
 
-            if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID)) {
-                int inputRightButtonIconResId = args.getInt(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_send);
-                binding.vgInputBox.setSendImageResource(inputRightButtonIconResId);
-                binding.vgInputBox.setSendImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_TINT));
-            }
+        if (args.containsKey(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID)) {
+            int inputLeftButtonIconResId = args.getInt(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_add);
+            binding.vgInputBox.setAddImageResource(inputLeftButtonIconResId);
+            binding.vgInputBox.setAddImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_TINT));
+        }
 
-            if (args.containsKey(StringSet.KEY_INPUT_HINT)) {
-                inputHint = args.getString(StringSet.KEY_INPUT_HINT, getString(R.string.sb_text_channel_input_text_hint));
-                binding.vgInputBox.setInputTextHint(inputHint);
-            }
+        if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID)) {
+            int inputRightButtonIconResId = args.getInt(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_send);
+            binding.vgInputBox.setSendImageResource(inputRightButtonIconResId);
+            binding.vgInputBox.setSendImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_TINT));
+        }
 
-            if (args.containsKey(StringSet.KEY_INPUT_TEXT)) {
-                String inputText = args.getString(StringSet.KEY_INPUT_TEXT, "");
-                binding.vgInputBox.setInputText(inputText);
-            }
+        if (args.containsKey(StringSet.KEY_INPUT_HINT)) {
+            inputHint = args.getString(StringSet.KEY_INPUT_HINT, getString(R.string.sb_text_channel_input_text_hint));
+            binding.vgInputBox.setInputTextHint(inputHint);
+        }
 
-            if (args.containsKey(StringSet.KEY_KEYBOARD_DISPLAY_TYPE)) {
-                KeyboardDisplayType displayType = (KeyboardDisplayType) args.getSerializable(StringSet.KEY_KEYBOARD_DISPLAY_TYPE);
-                if (displayType != null && getFragmentManager() != null) {
-                    binding.vgInputBox.setKeyboardDisplayType(getFragmentManager(), displayType);
-                }
-            }
+        if (args.containsKey(StringSet.KEY_INPUT_TEXT)) {
+            String inputText = args.getString(StringSet.KEY_INPUT_TEXT, "");
+            binding.vgInputBox.setInputText(inputText);
+        }
 
-            if (args.containsKey(StringSet.KEY_USE_INPUT_LEFT_BUTTON)) {
-                boolean useInputLeftButton = args.getBoolean(StringSet.KEY_USE_INPUT_LEFT_BUTTON, true);
-                if (useInputLeftButton) {
-                    binding.vgInputBox.setAddButtonVisibility(View.VISIBLE);
-                } else {
-                    binding.vgInputBox.setAddButtonVisibility(View.GONE);
-                }
-            }
-
-            if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS)) {
-                boolean always = args.getBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, false);
-                if (always) binding.vgInputBox.setSendButtonVisibility(View.VISIBLE);
-                binding.vgInputBox.showSendButtonAlways(always);
+        if (args.containsKey(StringSet.KEY_KEYBOARD_DISPLAY_TYPE)) {
+            KeyboardDisplayType displayType = (KeyboardDisplayType) args.getSerializable(StringSet.KEY_KEYBOARD_DISPLAY_TYPE);
+            if (displayType != null && getFragmentManager() != null) {
+                binding.vgInputBox.setKeyboardDisplayType(getFragmentManager(), displayType);
             }
         }
 
+        if (args.containsKey(StringSet.KEY_USE_INPUT_LEFT_BUTTON)) {
+            boolean useInputLeftButton = args.getBoolean(StringSet.KEY_USE_INPUT_LEFT_BUTTON, true);
+            if (useInputLeftButton) {
+                binding.vgInputBox.setAddButtonVisibility(View.VISIBLE);
+            } else {
+                binding.vgInputBox.setAddButtonVisibility(View.GONE);
+            }
+        }
+
+        if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS)) {
+            boolean always = args.getBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, false);
+            if (always) binding.vgInputBox.setSendButtonVisibility(View.VISIBLE);
+            binding.vgInputBox.showSendButtonAlways(always);
+        }
+    }
+
+    private void initMessageInput() {
         binding.vgInputBox.setOnSendClickListener(this::sendMessage);
         binding.vgInputBox.setOnAddClickListener(inputLeftButtonListener == null ? v -> showMediaSelectDialog() : inputLeftButtonListener);
         binding.vgInputBox.setOnEditCancelClickListener(v -> clearInput());
