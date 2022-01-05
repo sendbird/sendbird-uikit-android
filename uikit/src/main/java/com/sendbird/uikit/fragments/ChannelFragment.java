@@ -118,7 +118,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private static final int PERMISSION_REQUEST_STORAGE = 2006;
 
     private SbFragmentChannelBinding binding;
-    private ChannelViewModel viewModel;
+    protected ChannelViewModel viewModel;
     private MessageListAdapter adapter;
     private String inputHint;
     private boolean anchorDialogShowing = false;
@@ -231,7 +231,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         drawChannel(channel);
     }
 
-    private ChannelViewModel createViewModel(GroupChannel channel) {
+    protected ChannelViewModel createViewModel(GroupChannel channel) {
         return new ViewModelProvider(getActivity(), new ViewModelFactory(channel)).get(channel.getUrl(), ChannelViewModel.class);
     }
 
@@ -746,7 +746,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             setInputTextHint(isMuted, isFrozen);
 
             if (MessageInputView.Mode.EDIT == current) {
-                if (targetMessage != null) binding.vgInputBox.setInputText(targetMessage.getMessage());
+                if (targetMessage != null)
+                    binding.vgInputBox.setInputText(targetMessage.getMessage());
                 binding.vgInputBox.showKeyboard();
             } else if (MessageInputView.Mode.QUOTE_REPLY == current) {
                 if (targetMessage != null) binding.vgInputBox.drawMessageToReply(targetMessage);
