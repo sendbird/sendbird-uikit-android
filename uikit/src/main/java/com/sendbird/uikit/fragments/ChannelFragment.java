@@ -171,6 +171,12 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewModel.onViewDestroyed();
+    }
+
+    @Override
     public void onDestroy() {
         Logger.i(">> ChannelFragment::onDestroy()");
         super.onDestroy();
