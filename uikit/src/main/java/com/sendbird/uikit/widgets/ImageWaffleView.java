@@ -76,7 +76,7 @@ class ImageWaffleView extends ViewGroup {
         borderPaint.setAntiAlias(true);
     }
 
-    protected ImageView prepareSingleImageView() {
+    public ImageView prepareSingleImageView() {
         return prepareImageViews(1).get(0);
     }
 
