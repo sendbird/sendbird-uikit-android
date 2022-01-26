@@ -1,6 +1,7 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ChannelListViewModel extends BaseViewModel implements PagerRecyclerView.Pageable<List<GroupChannel>>,
         GroupChannelCollectionHandler {
 
+    @Nullable
     private GroupChannelCollection collection;
     @NonNull
     private final MutableLiveData<List<GroupChannel>> channelList = new MutableLiveData<>();
@@ -48,6 +50,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
     }
 
     private void notifyChannelChanged() {
+        if (collection == null) return;
         List<GroupChannel> newList = collection.getChannelList();
         changeAlertStatusIfEmpty(newList.size() == 0 ? StatusFrameView.Status.EMPTY : StatusFrameView.Status.NONE);
         channelList.postValue(newList);
@@ -86,6 +89,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
 
     @Override
     public boolean hasNext() {
+        if (collection == null) return false;
         return collection.hasMore();
     }
 
@@ -128,6 +132,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
     }
 
     private List<GroupChannel> loadMoreBlocking() throws Exception {
+        if (!hasNext() || collection == null) return Collections.emptyList();
         final CountDownLatch lock = new CountDownLatch(1);
         final AtomicReference<SendBirdException> error = new AtomicReference<>();
         final AtomicReference<List<GroupChannel>> channelListRef = new AtomicReference<>();
@@ -143,6 +148,7 @@ public class ChannelListViewModel extends BaseViewModel implements PagerRecycler
     }
 
     private boolean hasData() {
+        if (collection == null) return false;
         return collection.getChannelList().size() > 0;
     }
 

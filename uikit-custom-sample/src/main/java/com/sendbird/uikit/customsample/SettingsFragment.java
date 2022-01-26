@@ -240,7 +240,8 @@ public class SettingsFragment extends Fragment {
                 new DialogListItem(R.string.text_settings_change_user_profile_image)
         };
 
-        DialogUtils.buildItemsBottom(items, (v, p, key) -> {
+        DialogUtils.buildItemsBottom(items, (v, p, item) -> {
+            final int key = item.getKey();
             if (key == R.string.text_settings_change_user_nickname) {
                 Logger.dev("change user nickname");
                 OnEditTextResultListener listener = result -> {
@@ -322,8 +323,9 @@ public class SettingsFragment extends Fragment {
 
         DialogUtils.buildItems(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image),
                 (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> {
+                items, (v, p, item) -> {
                     try {
+                        final int key = item.getKey();
                         SendBird.setAutoBackgroundDetection(false);
                         if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();

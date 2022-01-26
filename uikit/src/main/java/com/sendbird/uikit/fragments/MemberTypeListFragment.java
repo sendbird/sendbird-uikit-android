@@ -171,7 +171,7 @@ abstract public class MemberTypeListFragment extends BaseGroupChannelFragment im
     }
 
     private void initMemberList(@NonNull GroupChannel channel) {
-        UserTypeListViewModel viewModel = new ViewModelProvider(getActivity(), new ViewModelFactory(channel, customQueryHandler)).get(channel.getUrl(), UserTypeListViewModel.class);
+        UserTypeListViewModel viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel, customQueryHandler)).get(channel.getUrl(), UserTypeListViewModel.class);
         getLifecycle().addObserver(viewModel);
         if (adapter == null) {
             adapter = new MemberListAdapter();

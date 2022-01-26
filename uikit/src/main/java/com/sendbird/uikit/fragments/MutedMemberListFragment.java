@@ -48,7 +48,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
         DialogListItem unMute = new DialogListItem(R.string.sb_text_unmute_member);
         items = new DialogListItem[]{unMute};
         DialogUtils.buildItems(member.getNickname(), (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> unmuteUser(member.getUserId())).showSingle(getFragmentManager());
+                items, (v, p, item) -> unmuteUser(member.getUserId())).showSingle(getFragmentManager());
     }
 
     @Override

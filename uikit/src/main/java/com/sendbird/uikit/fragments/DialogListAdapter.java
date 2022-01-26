@@ -21,11 +21,11 @@ import com.sendbird.uikit.utils.DrawableUtils;
 class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewHolder> {
 
     private final DialogListItem[] items;
-    private final OnItemClickListener<Integer> listener;
+    private final OnItemClickListener<DialogListItem> listener;
     private int nameMarginLeft = R.dimen.sb_size_24;
     private final boolean isIconLeft;
 
-    DialogListAdapter(DialogListItem[] items, OnItemClickListener<Integer> listener, boolean isIconLeft) {
+    DialogListAdapter(DialogListItem[] items, OnItemClickListener<DialogListItem> listener, boolean isIconLeft) {
         this.items = items;
         this.listener = listener;
         this.isIconLeft = isIconLeft;
@@ -61,11 +61,11 @@ class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewH
         private final Context context;
         private final ColorStateList buttonTint;
 
-        private final OnItemClickListener<Integer> listener;
+        private final OnItemClickListener<DialogListItem> listener;
         private final boolean isIconLeft;
 
         private ListViewHolder(SbViewDialogListItemBinding binding,
-                              OnItemClickListener<Integer> listener,
+                              OnItemClickListener<DialogListItem> listener,
                               int nameMarginLeft, boolean isIconLeft) {
             super(binding.getRoot());
             this.binding = binding;
@@ -115,7 +115,7 @@ class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.ListViewH
 
             binding.getRoot().setOnClickListener((v) -> {
                 if (listener != null && item.getKey() != 0) {
-                    listener.onItemClick(binding.getRoot(), getAdapterPosition(), item.getKey());
+                    listener.onItemClick(binding.getRoot(), getAdapterPosition(), item);
                 }
             });
 

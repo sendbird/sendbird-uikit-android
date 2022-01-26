@@ -171,13 +171,13 @@ class DialogView extends LinearLayout {
         this.editTextResultListener = editTextResultListener;
     }
 
-    void setItems(DialogListItem[] items, @NonNull OnItemClickListener<Integer> itemClickListener, boolean isLeft) {
+    void setItems(DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean isLeft) {
         if (items == null) return;
         binding.rvSelectView.setAdapter(new DialogListAdapter(items, itemClickListener, isLeft) );
         binding.rvSelectView.setVisibility(VISIBLE);
     }
 
-    void setItems(DialogListItem[] items, @NonNull OnItemClickListener<Integer> itemClickListener, boolean isLeft, @DimenRes int nameMarginLeft) {
+    void setItems(DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean isLeft, @DimenRes int nameMarginLeft) {
         if (items == null) return;
         DialogListAdapter adapter = new DialogListAdapter(items, itemClickListener, isLeft);
         adapter.setNameMarginLeft(nameMarginLeft);

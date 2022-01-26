@@ -2,6 +2,7 @@ package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -13,6 +14,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PendingMessageRepository {
+
+    @NonNull
+    private final List<Observer<BaseMessage>> pendingMessageStatusChanged = new ArrayList<>();
+
+    boolean addPendingMessageStatusChanged(@NonNull Observer<BaseMessage> subscriber) {
+        return pendingMessageStatusChanged.add(subscriber);
+    }
+
+    boolean removePendingMessageStatusObserver(@NonNull Observer<BaseMessage> subscriber) {
+        return pendingMessageStatusChanged.remove(subscriber);
+    }
+
+    private synchronized void notifyPendingMessageStatusChanged(@NonNull BaseMessage message) {
+        for (Observer<BaseMessage> subscriber : pendingMessageStatusChanged) {
+            subscriber.onChanged(message);
+        }
+    }
 
     private PendingMessageRepository() {}
 
@@ -62,6 +80,7 @@ public class PendingMessageRepository {
         }
         pendingMessages.add(0, message);
         pendingMessageMap.put(channelUrl, pendingMessages);
+        notifyPendingMessageStatusChanged(message);
     }
 
     void updatePendingMessage(@NonNull String channelUrl, @Nullable BaseMessage message) {
@@ -79,6 +98,7 @@ public class PendingMessageRepository {
             }
             pendingMessageMap.put(channelUrl, pendingMessages);
         }
+        notifyPendingMessageStatusChanged(message);
     }
 
     boolean removePendingMessage(@NonNull String channelUrl, @NonNull BaseMessage message) {
@@ -103,6 +123,10 @@ public class PendingMessageRepository {
                 }
             }
             pendingMessageMap.put(channelUrl, pendingMessages);
+        }
+
+        if (isRemoved) {
+            notifyPendingMessageStatusChanged(message);
         }
         return isRemoved;
     }

@@ -96,6 +96,7 @@ import com.sendbird.uikit.widgets.PagerRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -118,7 +119,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private static final int PERMISSION_REQUEST_STORAGE = 2006;
 
     private SbFragmentChannelBinding binding;
-    protected ChannelViewModel viewModel;
+    private ChannelViewModel viewModel;
     private MessageListAdapter adapter;
     private String inputHint;
     private boolean anchorDialogShowing = false;
@@ -171,14 +172,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (viewModel != null) {
-            viewModel.onViewDestroyed();
-        }
-    }
-
-    @Override
     public void onDestroy() {
         Logger.i(">> ChannelFragment::onDestroy()");
         super.onDestroy();
@@ -199,7 +192,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initHeaderOnCreated();
-        customizeMessageInput();
         loadingDialogHandler.shouldShowLoadingDialog();
     }
 
@@ -240,8 +232,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         drawChannel(channel);
     }
 
-    protected ChannelViewModel createViewModel(GroupChannel channel) {
-        return new ViewModelProvider(getActivity(), new ViewModelFactory(channel)).get(channel.getUrl(), ChannelViewModel.class);
+    private ChannelViewModel createViewModel(GroupChannel channel) {
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel)).get(channel.getUrl(), ChannelViewModel.class);
     }
 
     private void drawChannel(GroupChannel channel) {
@@ -667,60 +659,56 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         return position;
     }
 
-    private void customizeMessageInput() {
+    private void initMessageInput() {
         Bundle args = getArguments();
-        if (args == null) {
-            return;
-        }
 
         inputHint = getResources().getString(R.string.sb_text_channel_input_text_hint);
+        if (args != null) {
+            if (args.containsKey(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID)) {
+                int inputLeftButtonIconResId = args.getInt(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_add);
+                binding.vgInputBox.setAddImageResource(inputLeftButtonIconResId);
+                binding.vgInputBox.setAddImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_TINT));
+            }
 
-        if (args.containsKey(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID)) {
-            int inputLeftButtonIconResId = args.getInt(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_add);
-            binding.vgInputBox.setAddImageResource(inputLeftButtonIconResId);
-            binding.vgInputBox.setAddImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_LEFT_BUTTON_ICON_TINT));
-        }
+            if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID)) {
+                int inputRightButtonIconResId = args.getInt(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_send);
+                binding.vgInputBox.setSendImageResource(inputRightButtonIconResId);
+                binding.vgInputBox.setSendImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_TINT));
+            }
 
-        if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID)) {
-            int inputRightButtonIconResId = args.getInt(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_send);
-            binding.vgInputBox.setSendImageResource(inputRightButtonIconResId);
-            binding.vgInputBox.setSendImageButtonTint(args.getParcelable(StringSet.KEY_INPUT_RIGHT_BUTTON_ICON_TINT));
-        }
+            if (args.containsKey(StringSet.KEY_INPUT_HINT)) {
+                inputHint = args.getString(StringSet.KEY_INPUT_HINT, getString(R.string.sb_text_channel_input_text_hint));
+                binding.vgInputBox.setInputTextHint(inputHint);
+            }
 
-        if (args.containsKey(StringSet.KEY_INPUT_HINT)) {
-            inputHint = args.getString(StringSet.KEY_INPUT_HINT, getString(R.string.sb_text_channel_input_text_hint));
-            binding.vgInputBox.setInputTextHint(inputHint);
-        }
+            if (args.containsKey(StringSet.KEY_INPUT_TEXT)) {
+                String inputText = args.getString(StringSet.KEY_INPUT_TEXT, "");
+                binding.vgInputBox.setInputText(inputText);
+            }
 
-        if (args.containsKey(StringSet.KEY_INPUT_TEXT)) {
-            String inputText = args.getString(StringSet.KEY_INPUT_TEXT, "");
-            binding.vgInputBox.setInputText(inputText);
-        }
+            if (args.containsKey(StringSet.KEY_KEYBOARD_DISPLAY_TYPE)) {
+                KeyboardDisplayType displayType = (KeyboardDisplayType) args.getSerializable(StringSet.KEY_KEYBOARD_DISPLAY_TYPE);
+                if (displayType != null && getFragmentManager() != null) {
+                    binding.vgInputBox.setKeyboardDisplayType(getFragmentManager(), displayType);
+                }
+            }
 
-        if (args.containsKey(StringSet.KEY_KEYBOARD_DISPLAY_TYPE)) {
-            KeyboardDisplayType displayType = (KeyboardDisplayType) args.getSerializable(StringSet.KEY_KEYBOARD_DISPLAY_TYPE);
-            if (displayType != null && getFragmentManager() != null) {
-                binding.vgInputBox.setKeyboardDisplayType(getFragmentManager(), displayType);
+            if (args.containsKey(StringSet.KEY_USE_INPUT_LEFT_BUTTON)) {
+                boolean useInputLeftButton = args.getBoolean(StringSet.KEY_USE_INPUT_LEFT_BUTTON, true);
+                if (useInputLeftButton) {
+                    binding.vgInputBox.setAddButtonVisibility(View.VISIBLE);
+                } else {
+                    binding.vgInputBox.setAddButtonVisibility(View.GONE);
+                }
+            }
+
+            if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS)) {
+                boolean always = args.getBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, false);
+                if (always) binding.vgInputBox.setSendButtonVisibility(View.VISIBLE);
+                binding.vgInputBox.showSendButtonAlways(always);
             }
         }
 
-        if (args.containsKey(StringSet.KEY_USE_INPUT_LEFT_BUTTON)) {
-            boolean useInputLeftButton = args.getBoolean(StringSet.KEY_USE_INPUT_LEFT_BUTTON, true);
-            if (useInputLeftButton) {
-                binding.vgInputBox.setAddButtonVisibility(View.VISIBLE);
-            } else {
-                binding.vgInputBox.setAddButtonVisibility(View.GONE);
-            }
-        }
-
-        if (args.containsKey(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS)) {
-            boolean always = args.getBoolean(StringSet.KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS, false);
-            if (always) binding.vgInputBox.setSendButtonVisibility(View.VISIBLE);
-            binding.vgInputBox.showSendButtonAlways(always);
-        }
-    }
-
-    private void initMessageInput() {
         binding.vgInputBox.setOnSendClickListener(this::sendMessage);
         binding.vgInputBox.setOnAddClickListener(inputLeftButtonListener == null ? v -> showMediaSelectDialog() : inputLeftButtonListener);
         binding.vgInputBox.setOnEditCancelClickListener(v -> clearInput());
@@ -759,8 +747,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             setInputTextHint(isMuted, isFrozen);
 
             if (MessageInputView.Mode.EDIT == current) {
-                if (targetMessage != null)
-                    binding.vgInputBox.setInputText(targetMessage.getMessage());
+                if (targetMessage != null) binding.vgInputBox.setInputText(targetMessage.getMessage());
                 binding.vgInputBox.showKeyboard();
             } else if (MessageInputView.Mode.QUOTE_REPLY == current) {
                 if (targetMessage != null) binding.vgInputBox.drawMessageToReply(targetMessage);
@@ -804,7 +791,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
         };
         hideKeyboard();
-        DialogUtils.buildItemsBottom(items, (view, position, key) -> {
+        DialogUtils.buildItemsBottom(items, (view, position, item) -> {
+            final int key = item.getKey();
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
                     takeCamera();
@@ -1234,83 +1222,186 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             final BaseMessage.SendingStatus status = message.getSendingStatus();
             if (status == BaseMessage.SendingStatus.PENDING) return;
 
-            MessageType type = MessageViewHolderFactory.getMessageType(message);
-            DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
-            DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
-            DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
-            DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, !MessageUtils.isDeletableMessage(message));
-            DialogListItem reply = new DialogListItem(R.string.sb_text_channel_anchor_reply, R.drawable.icon_reply, false, MessageUtils.hasParentMessage(message));
-            DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
-            DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
-
-            DialogListItem[] actions = null;
-            switch (type) {
-                case VIEW_TYPE_USER_MESSAGE_ME:
-                    if (status == BaseMessage.SendingStatus.SUCCEEDED) {
-                        if (replyType == ReplyType.NONE) {
-                            actions = new DialogListItem[]{copy, edit, delete};
-                        } else {
-                            actions = new DialogListItem[]{copy, edit, delete, reply};
-                        }
-                    } else if (MessageUtils.isFailed(message)) {
-                        actions = new DialogListItem[]{retry, deleteFailed};
-                    }
-                    break;
-                case VIEW_TYPE_USER_MESSAGE_OTHER:
-                    if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{copy};
-                    } else {
-                        actions = new DialogListItem[]{copy, reply};
-                    }
-                    break;
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_ME:
-                    if (MessageUtils.isFailed(message)) {
-                        actions = new DialogListItem[]{retry, deleteFailed};
-                    } else {
-                        if (replyType == ReplyType.NONE) {
-                            actions = new DialogListItem[]{delete, save};
-                        } else {
-                            actions = new DialogListItem[]{delete, save, reply};
-                        }
-                    }
-                    break;
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                    if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{save};
-                    } else {
-                        actions = new DialogListItem[]{save, reply};
-                    }
-                    break;
-                case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
-                    actions = new DialogListItem[]{delete};
-                default:
-                    break;
-            }
-
-            if (actions != null) {
-                if (!ReactionUtils.canSendReaction(viewModel.getChannel())) {
-                    if (getContext() != null) {
-                        MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(itemView, binding.mrvMessageList, actions)
-                                .setOnItemClickListener(createMessageActionListener(message))
-                                .setOnDismissListener(() -> anchorDialogShowing = false)
-                                .build();
-                        messageAnchorDialog.show();
-                        anchorDialogShowing = true;
-                    }
-                } else if (MessageUtils.isUnknownType(message)) {
-                    if (getContext() == null || getFragmentManager() == null) return;
-                    DialogUtils
-                            .buildItemsBottom(actions, createMessageActionListener(message))
-                            .showSingle(getFragmentManager());
-                } else {
-                    showEmojiActionsDialog(message, actions);
-                }
-            }
+            final List<DialogListItem> items = makeMessageContextMenu(message);
+            showMessageContextMenu(itemView, message, items);
         }
+    }
+
+    private void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
+        int size = items.size();
+        final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
+
+        if (!ReactionUtils.canSendReaction(viewModel.getChannel())) {
+            if (getContext() != null) {
+                MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, binding.mrvMessageList, actions)
+                        .setOnItemClickListener(createMessageActionListener(message))
+                        .setOnDismissListener(() -> anchorDialogShowing = false)
+                        .build();
+                messageAnchorDialog.show();
+                anchorDialogShowing = true;
+            }
+        } else if (MessageUtils.isUnknownType(message)) {
+            if (getContext() == null || getFragmentManager() == null) return;
+            DialogUtils
+                    .buildItemsBottom(actions, createMessageActionListener(message))
+                    .showSingle(getFragmentManager());
+        } else {
+            showEmojiActionsDialog(message, actions);
+        }
+    }
+
+    /**
+     * Make context menu items that are shown when the message is long clicked.
+     *
+     * @param message A clicked message.
+     * @return Collection of {@link DialogListItem}
+     * @since 2.2.3
+     */
+    @NonNull
+    protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
+        final List<DialogListItem> items = new ArrayList<>();
+        final BaseMessage.SendingStatus status = message.getSendingStatus();
+        if (status == BaseMessage.SendingStatus.PENDING) return items;
+
+        MessageType type = MessageViewHolderFactory.getMessageType(message);
+        DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
+        DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
+        DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
+        DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, !MessageUtils.isDeletableMessage(message));
+        DialogListItem reply = new DialogListItem(R.string.sb_text_channel_anchor_reply, R.drawable.icon_reply, false, MessageUtils.hasParentMessage(message));
+        DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
+        DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
+
+        DialogListItem[] actions = null;
+        switch (type) {
+            case VIEW_TYPE_USER_MESSAGE_ME:
+                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                    if (replyType == ReplyType.NONE) {
+                        actions = new DialogListItem[]{copy, edit, delete};
+                    } else {
+                        actions = new DialogListItem[]{copy, edit, delete, reply};
+                    }
+                } else if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                }
+                break;
+            case VIEW_TYPE_USER_MESSAGE_OTHER:
+                if (replyType == ReplyType.NONE) {
+                    actions = new DialogListItem[]{copy};
+                } else {
+                    actions = new DialogListItem[]{copy, reply};
+                }
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
+            case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
+            case VIEW_TYPE_FILE_MESSAGE_ME:
+                if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                } else {
+                    if (replyType == ReplyType.NONE) {
+                        actions = new DialogListItem[]{delete, save};
+                    } else {
+                        actions = new DialogListItem[]{delete, save, reply};
+                    }
+                }
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+            case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
+            case VIEW_TYPE_FILE_MESSAGE_OTHER:
+                if (replyType == ReplyType.NONE) {
+                    actions = new DialogListItem[]{save};
+                } else {
+                    actions = new DialogListItem[]{save, reply};
+                }
+                break;
+            case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
+                actions = new DialogListItem[]{delete};
+            default:
+                break;
+        }
+
+        if (actions != null) {
+            items.addAll(Arrays.asList(actions));
+        }
+        return items;
+    }
+
+    /**
+     * It will be called when the message context menu was clicked.
+     *
+     * @param message A clicked message.
+     * @param view The view that was clicked.
+     * @param position The position that was clicked.
+     * @param item {@link DialogListItem} that was clicked.
+     * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
+     * @since 2.2.3
+     */
+    protected boolean onMessageContextMenuItemClicked(@NonNull BaseMessage message, @NonNull View view, int position, @NonNull DialogListItem item) {
+        final int key = item.getKey();
+        if (key == R.string.sb_text_channel_anchor_copy) {
+            copyTextToClipboard(message.getMessage());
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_edit) {
+            targetMessage = message;
+            binding.vgInputBox.setInputMode(MessageInputView.Mode.EDIT);
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_delete) {
+            if (MessageUtils.isFailed(message)) {
+                Logger.dev("delete");
+                deleteMessage(message);
+            } else {
+                showWarningDialog(message);
+            }
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_save) {
+            if (message instanceof FileMessage) {
+                saveFileMessage((FileMessage) message);
+            }
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_reply) {
+            this.targetMessage = message;
+            binding.vgInputBox.setInputMode(MessageInputView.Mode.QUOTE_REPLY);
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_retry) {
+            resendMessage(message);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Download {@link FileMessage} into external storage.
+     * It needs to have a permission.
+     * If current application needs permission, the request of permission will call automatically.
+     * After permission is granted, the download will be also called automatically.
+     *
+     * @param message A file message to download contents.
+     * @since 2.2.3
+     */
+    protected void saveFileMessage(@NonNull FileMessage message) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            download(message);
+        } else {
+            checkPermission(PERMISSION_REQUEST_STORAGE, new PermissionFragment.IPermissionHandler() {
+                @Override
+                @NonNull
+                public String[] getPermissions(int requestCode) {
+                    return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+
+                @Override
+                public void onPermissionGranted(int requestCode) {
+                    download(message);
+                }
+            });
+        }
+    }
+
+    @NonNull
+    private OnItemClickListener<DialogListItem> createMessageActionListener(@NonNull BaseMessage message) {
+        return (view, position, item) -> onMessageContextMenuItemClicked(message, view, position, item);
     }
 
     private void showEmojiActionsDialog(BaseMessage message, DialogListItem[] actions) {
@@ -1389,46 +1480,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         if (getView() != null) {
             SoftInputUtils.hideSoftKeyboard(getView());
         }
-    }
-
-    private OnItemClickListener<Integer> createMessageActionListener(BaseMessage message) {
-        return (view, position, key) -> {
-            if (key == R.string.sb_text_channel_anchor_copy) {
-                copyTextToClipboard(message.getMessage());
-            } else if (key == R.string.sb_text_channel_anchor_edit) {
-                targetMessage = message;
-                binding.vgInputBox.setInputMode(MessageInputView.Mode.EDIT);
-            } else if (key == R.string.sb_text_channel_anchor_delete) {
-                if (MessageUtils.isFailed(message)) {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                } else {
-                    showWarningDialog(message);
-                }
-            } else if (key == R.string.sb_text_channel_anchor_save) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    download((FileMessage) message);
-                } else {
-                    checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
-                        @Override
-                        public String[] getPermissions(int requestCode) {
-                            return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE};
-                        }
-
-                        @Override
-                        public void onPermissionGranted(int requestCode) {
-                            download((FileMessage) message);
-                        }
-                    });
-                }
-            } else if (key == R.string.sb_text_channel_anchor_reply) {
-                this.targetMessage = message;
-                binding.vgInputBox.setInputMode(MessageInputView.Mode.QUOTE_REPLY);
-            } else if (key == R.string.sb_text_channel_anchor_retry) {
-                resendMessage(message);
-            }
-        };
     }
 
     private void download(@NonNull FileMessage fileMessage) {
