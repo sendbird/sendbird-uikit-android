@@ -57,6 +57,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private final GroupChannel channel;
     private final MessageList cachedMessages = new MessageList();
 
+    @Nullable
     private MessageCollection collection;
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
@@ -131,7 +132,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     // If the collection starts with a starting point value, not MAX_VALUE,
     // the message should be requested the newest messages at once because there may be no new messages in the cache
     private void loadLatestMessagesForCache() {
-        if (!needToLoadMessageCache || this.collection.getStartingPoint() == Long.MAX_VALUE) return;
+        if (!needToLoadMessageCache || (this.collection != null && this.collection.getStartingPoint() == Long.MAX_VALUE)) return;
         final MessageCollection syncCollection = new MessageCollection.Builder(channel, new MessageListParams()).build();
         syncCollection.loadPrevious((messages, e) -> {
             if (e == null) {
@@ -189,15 +190,18 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     @Override
     public boolean hasNext() {
+        if (collection == null) return false;
         return collection.hasNext();
     }
 
     @Override
     public boolean hasPrevious() {
+        if (collection == null) return false;
         return collection.hasPrevious();
     }
 
     public long getStartingPoint() {
+        if (collection == null) return Long.MAX_VALUE;
         return collection.getStartingPoint();
     }
 
@@ -211,7 +215,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> ChannelViewModel::notifyDataSetChanged(), size = %s, action=%s", cachedMessages.size(), traceName);
         final List<BaseMessage> copiedList = cachedMessages.toList();
-        if (!hasNext()) {
+        if (!hasNext() && collection != null) {
             copiedList.addAll(0, collection.getPendingMessages());
             copiedList.addAll(0, collection.getFailedMessages());
         }
@@ -449,19 +453,21 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
                 Logger.i("++ deleted message : %s", message);
             });
         } else if (status == BaseMessage.SendingStatus.FAILED) {
-            collection.removeFailedMessages(Collections.singletonList(message), (requestIds, e) -> {
-                if (e != null) {
-                    Logger.e(e);
-                    errorToast.setValue(R.string.sb_text_error_delete_message);
-                    return;
-                }
+            if (collection != null) {
+                collection.removeFailedMessages(Collections.singletonList(message), (requestIds, e) -> {
+                    if (e != null) {
+                        Logger.e(e);
+                        errorToast.setValue(R.string.sb_text_error_delete_message);
+                        return;
+                    }
 
-                Logger.i("++ deleted message : %s", message);
-                notifyDataSetChanged(StringSet.ACTION_FAILED_MESSAGE_REMOVED);
-                if (message instanceof FileMessage) {
-                    PendingMessageRepository.getInstance().clearFileInfo((FileMessage) message);
-                }
-            });
+                    Logger.i("++ deleted message : %s", message);
+                    notifyDataSetChanged(StringSet.ACTION_FAILED_MESSAGE_REMOVED);
+                    if (message instanceof FileMessage) {
+                        PendingMessageRepository.getInstance().clearFileInfo((FileMessage) message);
+                    }
+                });
+            }
         }
     }
 
@@ -491,32 +497,34 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
         messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
         cachedMessages.clear();
-        collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
-            @Override
-            public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendBirdException e) {
-                if (e == null && cachedList != null && cachedList.size() > 0) {
-                    cachedMessages.addAll(cachedList);
-                    notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
+        if (collection != null) {
+            collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
+                @Override
+                public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendBirdException e) {
+                    if (e == null && cachedList != null && cachedList.size() > 0) {
+                        cachedMessages.addAll(cachedList);
+                        notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
+                    }
                 }
-            }
 
-            @Override
-            public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
-                if (e == null && apiResultList != null && apiResultList.size() > 0) {
-                    cachedMessages.clear();
-                    cachedMessages.addAll(apiResultList);
-                    notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                    markAsRead();
+                @Override
+                public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
+                    if (e == null && apiResultList != null && apiResultList.size() > 0) {
+                        cachedMessages.clear();
+                        cachedMessages.addAll(apiResultList);
+                        notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
+                        markAsRead();
+                    }
+                    messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
                 }
-                messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
-            }
-        });
+            });
+        }
     }
 
     @WorkerThread
     @Override
     public List<BaseMessage> loadPrevious() throws Exception  {
-        if (!hasPrevious()) return Collections.emptyList();
+        if (!hasPrevious() || collection == null) return Collections.emptyList();
         Logger.i(">> ChannelViewModel::loadPrevious()");
 
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();
@@ -525,10 +533,12 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
         messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
         collection.loadPrevious((messages, e) -> {
-            Logger.d("++ privious size = %s", messages == null ? 0: messages.size());
+            Logger.d("++ privious size = %s", messages == null ? 0 : messages.size());
             try {
                 if (e == null) {
-                    cachedMessages.addAll(messages);
+                    if (messages != null) {
+                        cachedMessages.addAll(messages);
+                    }
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
                 }
@@ -547,7 +557,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     @WorkerThread
     @Override
     public List<BaseMessage> loadNext() throws Exception {
-        if (!hasNext()) return Collections.emptyList();
+        if (!hasNext() || collection == null) return Collections.emptyList();
 
         Logger.i(">> ChannelViewModel::loadNext()");
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();

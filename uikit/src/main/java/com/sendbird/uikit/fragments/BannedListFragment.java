@@ -49,7 +49,7 @@ public class BannedListFragment extends UserTypeListFragment {
         items = new DialogListItem[]{unbanMember};
 
         DialogUtils.buildItems(user.getNickname(), (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> unbanUser(user.getUserId())).showSingle(getFragmentManager());
+                items, (v, p, item) -> unbanUser(user.getUserId())).showSingle(getFragmentManager());
     }
 
     @Override

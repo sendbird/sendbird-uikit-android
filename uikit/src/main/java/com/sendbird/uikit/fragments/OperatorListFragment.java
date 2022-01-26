@@ -59,7 +59,7 @@ public class OperatorListFragment extends UserTypeListFragment implements Loadin
         items = new DialogListItem[]{removeOperator};
         DialogUtils.buildItems(user.getNickname(),
                 (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> removeOperator(user.getUserId())).showSingle(getFragmentManager());
+                items, (v, p, item) -> removeOperator(user.getUserId())).showSingle(getFragmentManager());
     }
 
     private void removeOperator(@NonNull String userId) {

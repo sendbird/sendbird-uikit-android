@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import com.sendbird.android.BaseChannel;
@@ -40,8 +41,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class OpenChannelViewModel extends BaseViewModel implements LifecycleObserver, PagerRecyclerView.Pageable<List<BaseMessage>> {
     private static final int DEFAULT_MESSAGE_LOAD_SIZE = 40;
-    private final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_OPEN_CHAT" + System.currentTimeMillis();;
-    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_OPEN_CHANNEL_CHAT" + System.currentTimeMillis();;
+    private final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_OPEN_CHAT" + System.currentTimeMillis();
+    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_OPEN_CHANNEL_CHAT" + System.currentTimeMillis();
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<BaseMessage>> messageList = new MutableLiveData<>();
     private final MessageList messageCollection = new MessageList();
@@ -52,19 +53,34 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     private final MutableLiveData<MessageLoadState> messageLoadState = new MutableLiveData<>();
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     private final OpenChannel channel;
+    private final Observer<BaseMessage> pendingStatusObserver;
 
     private boolean hasPrevious = true;
 
     OpenChannelViewModel(@NonNull OpenChannel openChannel, @Nullable MessageListParams params) {
         super();
         this.channel = openChannel;
-        messageListParams = params != null ? params : new MessageListParams();
-        messageListParams.setReverse(true);
-        messageListParams.setNextResultSize(0);
-        messageListParams.setIncludeReactions(ReactionUtils.useReaction(openChannel));
+        this.messageListParams = params != null ? params : new MessageListParams();
+        this.messageListParams.setReverse(true);
+        this.messageListParams.setNextResultSize(0);
+        this.messageListParams.setIncludeReactions(ReactionUtils.useReaction(openChannel));
         if (messageListParams.getPreviousResultSize() <= 0) {
             messageListParams.setPreviousResultSize(DEFAULT_MESSAGE_LOAD_SIZE);
         }
+
+        this.pendingStatusObserver = message -> {
+            Logger.d("__ pending message events, message = %s", message.getMessage());
+            if (message.getChannelUrl().equals(channel.getUrl())) {
+                final BaseMessage.SendingStatus sendingStatus = message.getSendingStatus();
+                Logger.i("__ pending status of message is changed, pending status = %s ", sendingStatus);
+                if (sendingStatus == BaseMessage.SendingStatus.SUCCEEDED) {
+                    messageCollection.add(message);
+                }
+                notifyDataSetChanged();
+            }
+        };
+        PendingMessageRepository.getInstance().addPendingMessageStatusChanged(pendingStatusObserver);
+        registerChannelHandler();
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
@@ -99,8 +115,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
         return messageLoadState;
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private void onCreate() {
+    private void registerChannelHandler() {
         SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
             @Override
             public void onReconnectStarted() {
@@ -295,12 +310,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
         requestChangeLogs(channel);
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    private void onDestroy() {
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
-    }
-
     public void load() {
         worker.execute(() -> {
             try {
@@ -340,8 +349,11 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     @Override
     protected void onCleared() {
         super.onCleared();
-        Logger.dev("-- onCleared ChannelViewModel");
+        Logger.i("-- onCleared ChannelViewModel");
+        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
         worker.shutdownNow();
+        PendingMessageRepository.getInstance().removePendingMessageStatusObserver(pendingStatusObserver);
     }
 
     private void notifyDataSetChanged() {
@@ -415,21 +427,17 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             if (e != null) {
                 Logger.e(e);
                 PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message);
-                notifyDataSetChanged();
                 return;
             }
 
             if (messageListParams.belongsTo(message)) {
                 Logger.i("++ sent message : %s", message);
-                messageCollection.add(message);
                 PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
-                notifyDataSetChanged();
             }
         });
         if (pendingUserMessage != null) {
             if (messageListParams.belongsTo(pendingUserMessage)) {
                 PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingUserMessage);
-                notifyDataSetChanged();
             } else {
                 errorToast.postValue(R.string.sb_text_error_message_filtered);
             }
@@ -444,7 +452,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                 Logger.e(ee);
                 if (message != null) {
                     PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message);
-                    notifyDataSetChanged();
                 }
                 if (ee.getMessage() != null) {
                     errorToast.postValue(R.string.sb_text_error_send_message);
@@ -455,9 +462,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             if (messageListParams.belongsTo(message)) {
                 Logger.i("++ sent message : %s", message);
                 //if (file.exists()) file.deleteOnExit();
-                messageCollection.add(message);
                 PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
-                notifyDataSetChanged();
             }
         });
 
@@ -465,7 +470,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             if (messageListParams.belongsTo(pendingFileMessage)) {
                 PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingFileMessage);
                 PendingMessageRepository.getInstance().addFileInfo(pendingFileMessage, fileInfo);
-                notifyDataSetChanged();
             } else {
                 errorToast.postValue(R.string.sb_text_error_message_filtered);
             }
@@ -480,17 +484,13 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                     Logger.e(e);
                     errorToast.postValue(R.string.sb_text_error_resend_message);
                     PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message12);
-                    notifyDataSetChanged();
                     return;
                 }
 
                 Logger.i("__ resent message : %s", message12);
-                messageCollection.add(message12);
                 PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message12);
-                notifyDataSetChanged();
             });
             PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, pendingMessage);
-            notifyDataSetChanged();
         } else if (message instanceof FileMessage) {
             FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
             Logger.d("++ file info=%s", info);
@@ -500,18 +500,14 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
                     Logger.e(e1);
                     errorToast.postValue(R.string.sb_text_error_resend_message);
                     PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message1);
-                    notifyDataSetChanged();
                     return;
                 }
 
                 Logger.i("__ resent file message : %s", message1);
                 //if (file.exists()) file.deleteOnExit();
-                messageCollection.add(message1);
                 PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message1);
-                notifyDataSetChanged();
             });
             PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, pendingMessage);
-            notifyDataSetChanged();
         }
     }
 
@@ -543,7 +539,6 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
             });
         } else {
             PendingMessageRepository.getInstance().removePendingMessage(message.getChannelUrl(), message);
-            notifyDataSetChanged();
         }
     }
 

@@ -84,7 +84,8 @@ public class MemberListFragment extends MemberTypeListFragment {
                 new DialogListItem[]{promoteOperator, banMember};
         DialogUtils.buildItems(member.getNickname(),
                 (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> {
+                items, (v, p, item) -> {
+                    final int key = item.getKey();
                     if (key == R.string.sb_text_promote_operator) {
                         addOperator(member.getUserId());
                     } else if (key == R.string.sb_text_dismiss_operator) {

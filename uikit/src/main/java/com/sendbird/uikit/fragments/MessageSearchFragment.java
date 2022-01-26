@@ -143,7 +143,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
     }
 
     private void initSearchResultList(@NonNull GroupChannel channel) {
-        viewModel = new ViewModelProvider(getActivity(), new ViewModelFactory(channel, query)).get(channel.getUrl(), SearchViewModel.class);
+        viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel, query)).get(channel.getUrl(), SearchViewModel.class);
         getLifecycle().addObserver(viewModel);
 
         Bundle args = getArguments();

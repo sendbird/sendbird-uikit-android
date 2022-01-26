@@ -205,7 +205,7 @@ public class SendBirdDialogFragment extends DialogFragment {
          * @param iconGravity {@link ItemIconGravity} that will locate an icon for each items.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setItems(DialogListItem[] items, OnItemClickListener<Integer> itemClickListener, ItemIconGravity iconGravity) {
+        public Builder setItems(DialogListItem[] items, OnItemClickListener<DialogListItem> itemClickListener, ItemIconGravity iconGravity) {
             this.params.items = items;
             this.params.itemClickListener = itemClickListener;
             this.params.itemIconGravity = iconGravity;
@@ -333,7 +333,7 @@ public class SendBirdDialogFragment extends DialogFragment {
         private String title;
         private DialogGravity dialogGravity = DialogGravity.CENTER;
         private DialogListItem[] items;
-        private OnItemClickListener<Integer> itemClickListener;
+        private OnItemClickListener<DialogListItem> itemClickListener;
         private ItemIconGravity itemIconGravity;
         private DialogEditTextParams editTextParams;
         private OnEditTextResultListener editTextResultListener;

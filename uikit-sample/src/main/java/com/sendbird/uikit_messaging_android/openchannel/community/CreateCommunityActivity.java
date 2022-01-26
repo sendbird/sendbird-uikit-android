@@ -219,8 +219,9 @@ public class CreateCommunityActivity extends AppCompatActivity {
             items = new DialogListItem[]{delete, camera, gallery};
         }
 
-        DialogUtils.buildItemsBottom(items, (view, position, key) -> {
+        DialogUtils.buildItemsBottom(items, (view, position, item) -> {
             try {
+                final int key = item.getKey();
                 SendBird.setAutoBackgroundDetection(false);
                 if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                     takeCamera();

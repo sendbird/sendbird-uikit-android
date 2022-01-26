@@ -55,7 +55,7 @@ public class MessageInputView extends FrameLayout {
     private OnInputTextChangedListener editModeTextChangedListener;
     private OnInputModeChangedListener inputModeChangedListener;
     private Mode mode;
-    private int addButtonVisibilityBeforeEditMode = VISIBLE;
+    private int addButtonVisibility = VISIBLE;
     private boolean showSendButtonAlways;
 
     public enum Mode {
@@ -185,16 +185,15 @@ public class MessageInputView extends FrameLayout {
         if (Mode.EDIT == mode) {
             setQuoteReplyPanelVisibility(GONE);
             setEditPanelVisibility(VISIBLE);
-            addButtonVisibilityBeforeEditMode = binding.ibtnAdd.getVisibility();
-            setAddButtonVisibility(GONE);
+            binding.ibtnAdd.setVisibility(GONE);
         } else if (Mode.QUOTE_REPLY == mode) {
             setQuoteReplyPanelVisibility(VISIBLE);
             setEditPanelVisibility(GONE);
-            setAddButtonVisibility(addButtonVisibilityBeforeEditMode);
+            setAddButtonVisibility(addButtonVisibility);
         } else {
             setQuoteReplyPanelVisibility(GONE);
             setEditPanelVisibility(GONE);
-            setAddButtonVisibility(addButtonVisibilityBeforeEditMode);
+            setAddButtonVisibility(addButtonVisibility);
         }
 
         if (inputModeChangedListener != null) {
@@ -282,6 +281,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void setAddButtonVisibility(int visibility) {
+        addButtonVisibility = visibility;
         binding.ibtnAdd.setVisibility(visibility);
     }
 

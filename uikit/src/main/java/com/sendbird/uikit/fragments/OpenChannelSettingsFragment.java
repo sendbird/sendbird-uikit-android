@@ -254,7 +254,8 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
             };
 
             if (getContext() == null || getFragmentManager() == null) return;
-            DialogUtils.buildItemsBottom(items, (view, p, key) -> {
+            DialogUtils.buildItemsBottom(items, (view, p, item) -> {
+                final int key = item.getKey();
                 if (key == R.string.sb_text_channel_settings_change_channel_name) {
                     if (getContext() == null || getFragmentManager() == null) return;
 
@@ -310,8 +311,9 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
 
         DialogUtils.buildItems(getString(R.string.sb_text_channel_settings_change_channel_image),
                 (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, key) -> {
+                items, (v, p, item) -> {
                     try {
+                        final int key = item.getKey();
                         SendBird.setAutoBackgroundDetection(false);
                         if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();

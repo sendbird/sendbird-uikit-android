@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.2.3 (Jan 26, 2022) with Core SDK `v3.1.5`
+* Added `List<DialogListItem> makeMessageContextMenu(BaseMessage)`,  `boolean onMessageContextMenuItemClicked(BaseMessage, View, int, DialogListItem)`, `saveFileMessage(FileMessage)` in `ChannelFragment`, `OpenChannelFragment`.
+* Changed `ViewModelStoreOwner` from `Activity` to `Fragment`. 
+* Improved stability.
+
 ### v2.2.2 (Dec 21, 2021) with Core SDK `v3.1.3`
 * Improved stability.
 

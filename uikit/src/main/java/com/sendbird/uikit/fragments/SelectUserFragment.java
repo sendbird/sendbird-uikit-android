@@ -89,7 +89,7 @@ abstract public class SelectUserFragment extends BaseGroupChannelFragment {
      * Draw page with set data.
      */
     protected void onDrawPage() {
-        this.viewModel = new ViewModelProvider(this, new ViewModelFactory(customUserListQueryHandler)).get(SelectableUserInfoListViewModel.class);
+        this.viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory(customUserListQueryHandler)).get(SelectableUserInfoListViewModel.class);
         initHeaderOnReady();
         initUserList();
     }

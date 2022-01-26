@@ -210,7 +210,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
             query.setIncludeEmpty(includeEmpty);
         }
 
-        viewModel = new ViewModelProvider(this, new ViewModelFactory()).get(ChannelListViewModel.class);
+        viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory()).get(ChannelListViewModel.class);
 
         initAdapter();
         binding.rvGroupChannelList.setAdapter(adapter);
@@ -293,7 +293,8 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
                 if (isActive() && getFragmentManager() != null) {
                     DialogUtils.buildItems(ChannelUtils.makeTitleText(getContext(), channel),
                             (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                            items, (v, p, key) -> {
+                            items, (v, p, item) -> {
+                                final int key = item.getKey();
                                 if (key == R.string.sb_text_channel_list_leave) {
                                     Logger.dev("leave channel");
                                     leaveChannel(channel);
