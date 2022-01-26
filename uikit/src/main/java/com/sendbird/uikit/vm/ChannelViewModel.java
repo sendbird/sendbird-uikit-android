@@ -136,13 +136,6 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         }
     }
 
-    public void onViewDestroyed() {
-        if (collection != null) {
-            collection.setMessageCollectionHandler(null);
-            collection.dispose();
-        }
-    }
-
     // If the collection starts with a starting point value, not MAX_VALUE,
     // the message should be requested the newest messages at once because there may be no new messages in the cache
     private void loadLatestMessagesForCache() {
