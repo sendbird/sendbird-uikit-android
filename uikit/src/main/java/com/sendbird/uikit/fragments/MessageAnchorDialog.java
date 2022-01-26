@@ -21,7 +21,7 @@ class MessageAnchorDialog {
     private final View anchorView;
     private final DialogView contentView;
     private final View parent;
-    private OnItemClickListener<Integer> itemClickListener;
+    private OnItemClickListener<DialogListItem> itemClickListener;
     private final PopupWindow window;
     private final Context context;
     private final View.OnLayoutChangeListener layoutChangeListener;
@@ -36,10 +36,10 @@ class MessageAnchorDialog {
         this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         contentView = new DialogView(context);
-        contentView.setItems(items, (view, position, key) -> {
+        contentView.setItems(items, (view, position, item) -> {
             window.dismiss();
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(view, position, key);
+                itemClickListener.onItemClick(view, position, item);
             }
         }, false, R.dimen.sb_size_16);
         contentView.setBackgroundAnchor();
@@ -121,7 +121,7 @@ class MessageAnchorDialog {
         return (parentHeight / 2 > loc[1]-parentLoc[1]);
     }
 
-    void setOnItemClickListener(OnItemClickListener<Integer> itemClickListener) {
+    void setOnItemClickListener(OnItemClickListener<DialogListItem> itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -133,7 +133,7 @@ class MessageAnchorDialog {
         private final View anchorView;
         private final View parent;
         private final DialogListItem[] items;
-        private OnItemClickListener<Integer> itemClickListener;
+        private OnItemClickListener<DialogListItem> itemClickListener;
         private PopupWindow.OnDismissListener dismissListener;
 
         public Builder(View anchorView, View parent, DialogListItem[] items) {
@@ -142,7 +142,7 @@ class MessageAnchorDialog {
             this.items = items;
         }
 
-        public Builder setOnItemClickListener(OnItemClickListener<Integer> itemClickListener) {
+        public Builder setOnItemClickListener(OnItemClickListener<DialogListItem> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
         }

@@ -159,7 +159,7 @@ public class ParticipantsListFragment extends BaseOpenChannelFragment {
     }
 
     private void initParticipantsList(@NonNull OpenChannel channel) {
-        UserTypeListViewModel viewModel = new ViewModelProvider(getActivity(), new ViewModelFactory(channel, new ParticipantsListQuery(channel))).get(channel.getUrl(), UserTypeListViewModel.class);
+        UserTypeListViewModel viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel, new ParticipantsListQuery(channel))).get(channel.getUrl(), UserTypeListViewModel.class);
         getLifecycle().addObserver(viewModel);
         if (adapter == null) {
             adapter = new UserTypeListAdapter();

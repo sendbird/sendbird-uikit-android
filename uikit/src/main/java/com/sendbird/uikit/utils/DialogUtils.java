@@ -35,7 +35,7 @@ public final class DialogUtils {
     public static SendBirdDialogFragment buildItems(String title,
                                                     int dialogWidth,
                                                     DialogListItem[] items,
-                                                    OnItemClickListener<Integer> itemClickListener) {
+                                                    OnItemClickListener<DialogListItem> itemClickListener) {
         return new SendBirdDialogFragment.Builder()
                 .setDialogWidth(dialogWidth)
                 .setTitle(title)
@@ -44,7 +44,7 @@ public final class DialogUtils {
     }
 
     public static SendBirdDialogFragment buildItemsBottom(DialogListItem[] items,
-                                                          OnItemClickListener<Integer> itemClickListener) {
+                                                          OnItemClickListener<DialogListItem> itemClickListener) {
         return new SendBirdDialogFragment.Builder()
                 .setDialogGravity(SendBirdDialogFragment.DialogGravity.BOTTOM)
                 .setItems(items, itemClickListener, SendBirdDialogFragment.ItemIconGravity.START)
@@ -105,7 +105,7 @@ public final class DialogUtils {
 
     public static SendBirdDialogFragment buildContentViewAndItems(View contentView,
                                                                   DialogListItem[] items,
-                                                                  OnItemClickListener<Integer> itemClickListener) {
+                                                                  OnItemClickListener<DialogListItem> itemClickListener) {
         return new SendBirdDialogFragment.Builder()
                 .setDialogGravity(SendBirdDialogFragment.DialogGravity.BOTTOM)
                 .setContentView(contentView)

@@ -534,19 +534,22 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     @WorkerThread
     @Override
-    public List<BaseMessage> loadPrevious() throws Exception {
+    public List<BaseMessage> loadPrevious() throws Exception  {
         if (!hasPrevious() || collection == null) return Collections.emptyList();
         Logger.i(">> ChannelViewModel::loadPrevious()");
 
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();
         final AtomicReference<Exception> error = new AtomicReference<>();
         final CountDownLatch lock = new CountDownLatch(1);
+
         messageLoadState.postValue(MessageLoadState.LOAD_STARTED);
         collection.loadPrevious((messages, e) -> {
-            Logger.d("++ previous size = %s", messages == null ? 0 : messages.size());
+            Logger.d("++ privious size = %s", messages == null ? 0 : messages.size());
             try {
-                if (e == null && messages != null) {
-                    cachedMessages.addAll(messages);
+                if (e == null) {
+                    if (messages != null) {
+                        cachedMessages.addAll(messages);
+                    }
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
                 }
@@ -565,7 +568,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     @WorkerThread
     @Override
     public List<BaseMessage> loadNext() throws Exception {
-        if (!hasNext() || collection != null) return Collections.emptyList();
+        if (!hasNext() || collection == null) return Collections.emptyList();
 
         Logger.i(">> ChannelViewModel::loadNext()");
         final AtomicReference<List<BaseMessage>> result = new AtomicReference<>();

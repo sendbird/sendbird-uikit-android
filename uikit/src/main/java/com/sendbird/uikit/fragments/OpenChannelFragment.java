@@ -78,6 +78,9 @@ import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -205,7 +208,7 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnId
     }
 
     private OpenChannelViewModel createViewModel(OpenChannel channel) {
-        return new ViewModelProvider(getActivity(), new ViewModelFactory(channel, params)).get(channel.getUrl(), OpenChannelViewModel.class);
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel, params)).get(channel.getUrl(), OpenChannelViewModel.class);
     }
 
     private void drawChannel(OpenChannel channel) {
@@ -543,7 +546,8 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnId
                 new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
         };
         hideKeyboard();
-        DialogUtils.buildItemsBottom(items, (view, position, key) -> {
+        DialogUtils.buildItemsBottom(items, (view, position, item) -> {
+            final int key = item.getKey();
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
                     takeCamera();
@@ -905,61 +909,159 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnId
             final BaseMessage.SendingStatus status = message.getSendingStatus();
             if (status == BaseMessage.SendingStatus.PENDING) return;
 
-            MessageType type = MessageViewHolderFactory.getMessageType(message);
-            DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
-            DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
-            DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
-            DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete);
-            DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
-            DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
-
-            DialogListItem[] actions = null;
-            switch (type) {
-                case VIEW_TYPE_USER_MESSAGE_ME:
-                    if (status == BaseMessage.SendingStatus.SUCCEEDED) {
-                        actions = new DialogListItem[]{copy, edit, delete};
-                    } else if (MessageUtils.isFailed(message)) {
-                        actions = new DialogListItem[]{retry, deleteFailed};
-                    }
-                    break;
-                case VIEW_TYPE_USER_MESSAGE_OTHER:
-                    actions = new DialogListItem[]{copy};
-                    break;
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_ME:
-                    if (MessageUtils.isFailed(message)) {
-                        actions = new DialogListItem[]{retry, deleteFailed};
-                    } else {
-                        actions = new DialogListItem[]{delete, save};
-                    }
-                    break;
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                    actions = new DialogListItem[]{save};
-                    break;
-                case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
-                    actions = new DialogListItem[]{delete};
-                default:
-                    break;
-            }
-
-            if (actions != null) {
-                if (MessageUtils.isUnknownType(message)) {
-                    if (getContext() == null || getFragmentManager() == null) return;
-                    DialogUtils
-                            .buildItemsBottom(actions, createMessageActionListener(message))
-                            .showSingle(getFragmentManager());
-                } else {
-                    if (getContext() == null) return;
-                    messageAnchorDialog = new MessageAnchorDialog.Builder(itemView, binding.mrvMessageList, actions)
-                            .setOnItemClickListener(createMessageActionListener(message))
-                            .build();
-                    messageAnchorDialog.show();
-                }
-            }
+            final List<DialogListItem> items = makeMessageContextMenu(message);
+            showMessageContextMenu(itemView, message, items);
         }
+    }
+
+    private void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
+        int size = items.size();
+        final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
+
+        if (MessageUtils.isUnknownType(message)) {
+            if (getContext() == null || getFragmentManager() == null) return;
+            DialogUtils
+                    .buildItemsBottom(actions, createMessageActionListener(message))
+                    .showSingle(getFragmentManager());
+        } else {
+            if (getContext() == null) return;
+            messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, binding.mrvMessageList, actions)
+                    .setOnItemClickListener(createMessageActionListener(message))
+                    .build();
+            messageAnchorDialog.show();
+        }
+    }
+
+    /**
+     * Make context menu items that are shown when the message is long clicked.
+     *
+     * @param message A clicked message.
+     * @return Collection of {@link DialogListItem}
+     * @since 2.2.3
+     */
+    @NonNull
+    protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
+        final List<DialogListItem> items = new ArrayList<>();
+        final BaseMessage.SendingStatus status = message.getSendingStatus();
+        if (status == BaseMessage.SendingStatus.PENDING) return items;
+
+        MessageType type = MessageViewHolderFactory.getMessageType(message);
+        DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
+        DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
+        DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
+        DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete);
+        DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
+        DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
+
+        DialogListItem[] actions = null;
+        switch (type) {
+            case VIEW_TYPE_USER_MESSAGE_ME:
+                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                    actions = new DialogListItem[]{copy, edit, delete};
+                } else if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                }
+                break;
+            case VIEW_TYPE_USER_MESSAGE_OTHER:
+                actions = new DialogListItem[]{copy};
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
+            case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
+            case VIEW_TYPE_FILE_MESSAGE_ME:
+                if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                } else {
+                    actions = new DialogListItem[]{delete, save};
+                }
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+            case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
+            case VIEW_TYPE_FILE_MESSAGE_OTHER:
+                actions = new DialogListItem[]{save};
+                break;
+            case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
+                actions = new DialogListItem[]{delete};
+            default:
+                break;
+        }
+
+        if (actions != null) {
+            items.addAll(Arrays.asList(actions));
+        }
+        return items;
+    }
+
+    /**
+     * It will be called when the message context menu was clicked.
+     *
+     * @param message A clicked message.
+     * @param view The view that was clicked.
+     * @param position The position that was clicked.
+     * @param item {@link DialogListItem} that was clicked.
+     * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
+     * @since 2.2.3
+     */
+    protected boolean onMessageContextMenuItemClicked(@NonNull BaseMessage message, @NonNull View view, int position, @NonNull DialogListItem item) {
+        final int key = item.getKey();
+        if (key == R.string.sb_text_channel_anchor_copy) {
+            copyTextToClipboard(message.getMessage());
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_edit) {
+            editMessage(message);
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_delete) {
+            if (MessageUtils.isFailed(message)) {
+                Logger.dev("delete");
+                deleteMessage(message);
+            } else {
+                showWarningDialog(message);
+            }
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_save) {
+            if (message instanceof FileMessage) {
+                saveFileMessage((FileMessage) message);
+            }
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_retry) {
+            resendMessage(message);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Download {@link FileMessage} into external storage.
+     * It needs to have a permission.
+     * If current application needs permission, the request of permission will call automatically.
+     * After permission is granted, the download will be also called automatically.
+     *
+     * @param message A file message to download contents.
+     * @since 2.2.3
+     */
+    protected void saveFileMessage(@NonNull FileMessage message) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            download(message);
+        } else {
+            checkPermission(PERMISSION_REQUEST_STORAGE, new PermissionFragment.IPermissionHandler() {
+                @Override
+                @NonNull
+                public String[] getPermissions(int requestCode) {
+                    return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+
+                @Override
+                public void onPermissionGranted(int requestCode) {
+                    download(message);
+                }
+            });
+        }
+    }
+
+    @NonNull
+    private OnItemClickListener<DialogListItem> createMessageActionListener(@NonNull BaseMessage message) {
+        return (view, position, item) -> onMessageContextMenuItemClicked(message, view, position, item);
     }
 
     private void clearInput() {
@@ -971,42 +1073,6 @@ public class OpenChannelFragment extends BaseOpenChannelFragment implements OnId
         if (getView() != null) {
             SoftInputUtils.hideSoftKeyboard(getView());
         }
-    }
-
-    private OnItemClickListener<Integer> createMessageActionListener(BaseMessage message) {
-        return (view, position, key) -> {
-            if (key == R.string.sb_text_channel_anchor_copy) {
-                copyTextToClipboard(message.getMessage());
-            } else if (key == R.string.sb_text_channel_anchor_edit) {
-                editMessage(message);
-            } else if (key == R.string.sb_text_channel_anchor_delete) {
-                if (MessageUtils.isFailed(message)) {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                } else {
-                    showWarningDialog(message);
-                }
-            } else if (key == R.string.sb_text_channel_anchor_save) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    download((FileMessage) message);
-                } else {
-                    checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
-                        @Override
-                        public String[] getPermissions(int requestCode) {
-                            return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE};
-                        }
-
-                        @Override
-                        public void onPermissionGranted(int requestCode) {
-                            download((FileMessage) message);
-                        }
-                    });
-                }
-            } else if (key == R.string.sb_text_channel_anchor_retry) {
-                resendMessage(message);
-            }
-        };
     }
 
     private void download(@NonNull FileMessage fileMessage) {
