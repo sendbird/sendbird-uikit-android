@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.2.4 (Fab 17, 2022) with Core SDK `v3.1.7`
+* Added `setUseHeaderProfileImage(boolean)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
+
 ### v2.2.3 (Jan 26, 2022) with Core SDK `v3.1.5`
 * Added `List<DialogListItem> makeMessageContextMenu(BaseMessage)`,  `boolean onMessageContextMenuItemClicked(BaseMessage, View, int, DialogListItem)`, `saveFileMessage(FileMessage)` in `ChannelFragment`, `OpenChannelFragment`.
 * Changed `ViewModelStoreOwner` from `Activity` to `Fragment`. 

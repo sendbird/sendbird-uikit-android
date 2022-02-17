@@ -41,6 +41,7 @@ public class CustomChannelActivity extends ChannelActivity {
                 .setMessageListParams(null)
                 .setUseMessageGroupUI(useMessageGroupUI)
                 .showInputRightButtonAlways()
+                .setUseHeaderProfileImage(false)
                 .build();
     }
 

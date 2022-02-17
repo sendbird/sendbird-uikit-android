@@ -309,9 +309,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private void initHeaderOnReady(GroupChannel channel) {
         Bundle args = getArguments();
         boolean useTypingIndicator = true;
+        boolean useHeaderProfileImage = true;
 
         if (args != null) {
             useTypingIndicator = args.getBoolean(StringSet.KEY_USE_TYPING_INDICATOR, true);
+            useHeaderProfileImage = args.getBoolean(StringSet.KEY_USE_HEADER_PROFILE_IMAGE, true);
         }
 
         if (headerLeftButtonListener != null) {
@@ -327,7 +329,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             });
         }
 
-        binding.chvChannelHeader.getProfileView().setVisibility(View.VISIBLE);
+        binding.chvChannelHeader.getProfileView().setVisibility(useHeaderProfileImage ? View.VISIBLE : View.GONE);
         viewModel.isChannelChanged().observe(this, this::drawChannel);
 
         if (useTypingIndicator) {
@@ -2199,6 +2201,18 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
          */
         public Builder setListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage> itemLongClickListener) {
             this.listItemLongClickListener = itemLongClickListener;
+            return this;
+        }
+
+        /**
+         * Sets whether the profile image of the header is used.
+         *
+         * @param useHeaderProfileImage <code>true</code> if the profile image of the header is used, <code>false</code> otherwise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.2.4
+         */
+        public Builder setUseHeaderProfileImage(boolean useHeaderProfileImage) {
+            bundle.putBoolean(StringSet.KEY_USE_HEADER_PROFILE_IMAGE, useHeaderProfileImage);
             return this;
         }
 

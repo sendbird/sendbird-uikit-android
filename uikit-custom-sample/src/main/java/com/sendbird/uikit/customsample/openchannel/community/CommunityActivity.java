@@ -99,6 +99,7 @@ public class CommunityActivity extends AppCompatActivity {
                 .setUseUserProfile(false)
                 .setLoadingDialogHandler(null)
                 .showInputRightButtonAlways()
+                .setUseHeaderProfileImage(false)
                 .build();
     }
 

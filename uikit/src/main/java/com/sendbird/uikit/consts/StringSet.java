@@ -23,6 +23,7 @@ public class StringSet {
     public final static String KEY_EMPTY_TEXT_RES_ID = "KEY_EMPTY_TEXT_RES_ID";
     public final static String KEY_INPUT_TEXT = "KEY_INPUT_TEXT";
     public final static String KEY_EMOJI_CONTAINER = "KEY_EMOJI_CONTAINER";
+    public final static String KEY_USE_HEADER_PROFILE_IMAGE = "KEY_USE_HEADER_PROFILE_IMAGE";
 
     public final static String KEY_USE_TYPING_INDICATOR = "KEY_TYPING_INDICATOR";
     public final static String KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID = "KEY_INPUT_RIGHT_BUTTON_ICON_RES_ID";
