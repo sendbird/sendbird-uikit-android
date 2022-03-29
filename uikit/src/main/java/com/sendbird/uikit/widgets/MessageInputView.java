@@ -202,7 +202,6 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void showKeyboard() {
-        binding.etInputText.setSelection(getInputText().length());
         if (displayType == KeyboardDisplayType.Dialog) {
             showInputDialog();
         } else {
@@ -336,6 +335,9 @@ public class MessageInputView extends FrameLayout {
 
     public void setInputText(String text) {
         binding.etInputText.setText(text);
+        if (text != null) {
+            binding.etInputText.setSelection(text.length());
+        }
     }
 
     public String getInputText() {

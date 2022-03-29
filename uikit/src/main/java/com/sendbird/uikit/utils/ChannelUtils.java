@@ -112,7 +112,10 @@ public class ChannelUtils {
         if (!isDefaultChannelCover(channel)) {
             urls.add(channel.getCoverUrl());
         } else {
-            String myUserId = SendBird.getCurrentUser().getUserId();
+            String myUserId = "";
+            if (SendBird.getCurrentUser() != null) {
+                myUserId = SendBird.getCurrentUser().getUserId();
+            }
             List<Member> memberList = channel.getMembers();
             int index = 0;
             while (index < memberList.size() && urls.size() < 4) {

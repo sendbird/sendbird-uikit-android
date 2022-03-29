@@ -509,11 +509,13 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
                 @Override
                 public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
-                    if (e == null && apiResultList != null && apiResultList.size() > 0) {
+                    if (e == null && apiResultList != null) {
                         cachedMessages.clear();
                         cachedMessages.addAll(apiResultList);
                         notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                        markAsRead();
+                        if (apiResultList.size() > 0) {
+                            markAsRead();
+                        }
                     }
                     messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
                 }

@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.2.5 (Mar 29, 2022) with Core SDK `v3.1.9`
+* Improved stability.
+
 ### v2.2.4 (Fab 17, 2022) with Core SDK `v3.1.7`
 * Added `setUseHeaderProfileImage(boolean)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
 
