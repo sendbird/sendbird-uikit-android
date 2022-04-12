@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/sb_emoji_reaction_dialog_max_height"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
+        android:id="@+id/tabLayoutPanel"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/sb_emoji_reaction_dialog_max_height">
+        android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/tabLayoutPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:tabIndicatorHeight="@dimen/sb_size_3"
+            app:tabIndicatorFullWidth="false"
+            app:tabMode="scrollable"
+            app:tabGravity="center"/>
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:tabIndicatorHeight="@dimen/sb_size_3"
-                app:tabIndicatorFullWidth="false"
-                app:tabMode="scrollable"
-                app:tabGravity="center"/>
+    </FrameLayout>
 
-        </FrameLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpEmojiReactionUserList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpEmojiReactionUserList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

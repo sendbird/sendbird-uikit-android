@@ -1,13 +1,14 @@
 package com.sendbird.uikit_messaging_android;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.handlers.InitResultHandler;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit_messaging_android.consts.InitState;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
@@ -24,30 +25,36 @@ public class BaseApplication extends MultiDexApplication {
         super.onCreate();
         PreferenceUtils.init(getApplicationContext());
 
-        SendBirdUIKit.init(new SendBirdUIKitAdapter() {
+        SendbirdUIKit.init(new SendbirdUIKitAdapter() {
             @Override
+            @NonNull
             public String getAppId() {
                 return APP_ID;
             }
 
             @Override
+            @NonNull
             public String getAccessToken() {
                 return "";
             }
 
             @Override
+            @NonNull
             public UserInfo getUserInfo() {
                 return new UserInfo() {
+                    @NonNull
                     @Override
                     public String getUserId() {
                         return PreferenceUtils.getUserId();
                     }
 
+                    @NonNull
                     @Override
                     public String getNickname() {
                         return PreferenceUtils.getNickname();
                     }
 
+                    @NonNull
                     @Override
                     public String getProfileUrl() {
                         return PreferenceUtils.getProfileUrl();
@@ -56,6 +63,7 @@ public class BaseApplication extends MultiDexApplication {
             }
 
             @Override
+            @NonNull
             public InitResultHandler getInitResultHandler() {
                 return new InitResultHandler() {
                     @Override
@@ -64,7 +72,7 @@ public class BaseApplication extends MultiDexApplication {
                     }
 
                     @Override
-                    public void onInitFailed(SendBirdException e) {
+                    public void onInitFailed(@NonNull SendBirdException e) {
                         initState.setValue(InitState.FAILED);
                     }
 
@@ -77,12 +85,15 @@ public class BaseApplication extends MultiDexApplication {
         }, this);
 
         boolean useDarkTheme = PreferenceUtils.isUsingDarkTheme();
-        SendBirdUIKit.setDefaultThemeMode(useDarkTheme ? SendBirdUIKit.ThemeMode.Dark : SendBirdUIKit.ThemeMode.Light);
+        SendbirdUIKit.setDefaultThemeMode(useDarkTheme ? SendbirdUIKit.ThemeMode.Dark : SendbirdUIKit.ThemeMode.Light);
         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
-        SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
-        SendBirdUIKit.setUseDefaultUserProfile(true);
+        SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
+        SendbirdUIKit.setUseDefaultUserProfile(true);
+        SendbirdUIKit.setUseChannelListTypingIndicators(true);
+        SendbirdUIKit.setUseChannelListMessageReceiptStatus(true);
     }
 
+    @NonNull
     public static LiveData<InitState> initStateChanges() {
         return initState;
     }

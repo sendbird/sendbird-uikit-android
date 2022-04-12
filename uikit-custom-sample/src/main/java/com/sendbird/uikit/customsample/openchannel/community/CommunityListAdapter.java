@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -23,12 +22,12 @@ public class CommunityListAdapter extends OpenChannelListAdapter<CommunityListAd
     @Override
     public CommunityListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewCommunityListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_community_list_item, parent, false);
+        ViewCommunityListItemBinding binding = ViewCommunityListItemBinding.inflate(inflater, parent, false);
         return new CommunityListViewHolder(binding);
     }
 
     static class CommunityListViewHolder extends OpenChannelListViewHolder {
-        private ViewCommunityListItemBinding binding;
+        private final ViewCommunityListItemBinding binding;
 
         public CommunityListViewHolder(@NonNull ViewCommunityListItemBinding binding) {
             super(binding.getRoot());

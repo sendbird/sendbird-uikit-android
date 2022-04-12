@@ -13,12 +13,15 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.uikit.log.Logger;
 
 class SBLinkMovementMethod extends LinkMovementMethod {
 
-    private OnLinkClickListener onLinkClickListener;
-    private OnLinkLongClickListener onLinkLongClickListener;
+    private final OnLinkClickListener onLinkClickListener;
+    private final OnLinkLongClickListener onLinkLongClickListener;
     private LongPressTimer longPressTimer;
     private BackgroundColorSpan backgroundColorSpan;
     private ForegroundColorSpan foregroundColorSpan;
@@ -34,7 +37,7 @@ class SBLinkMovementMethod extends LinkMovementMethod {
          * @param link     The clicked link.
          * @return True if this click was handled. False to let Android handle the URL.
          */
-        boolean onClick(TextView textView, String link);
+        boolean onClick(@NonNull TextView textView, @NonNull String link);
     }
 
     public interface OnLinkLongClickListener {
@@ -43,7 +46,7 @@ class SBLinkMovementMethod extends LinkMovementMethod {
          * @param link     The long-clicked link.
          * @return True if this long-click was handled. False to let Android handle the URL (as a short-click).
          */
-        boolean onLongClick(TextView textView, String link);
+        boolean onLongClick(@NonNull TextView textView, @NonNull String link);
     }
 
     private static final class LongPressTimer implements Runnable {
@@ -55,18 +58,16 @@ class SBLinkMovementMethod extends LinkMovementMethod {
 
         @Override
         public void run() {
-            onTimerReachedListener.onTimerReached();
+            if (onTimerReachedListener != null) onTimerReachedListener.onTimerReached();
         }
 
-        public void setOnTimerReachedListener(OnTimerReachedListener onTimerReachedListener) {
+        public void setOnTimerReachedListener(@Nullable OnTimerReachedListener onTimerReachedListener) {
             this.onTimerReachedListener = onTimerReachedListener;
         }
     }
 
-    private SBLinkMovementMethod() {}
-
-    private SBLinkMovementMethod(OnLinkClickListener onLinkClickListener,
-                                OnLinkLongClickListener onLinkLongClickListener,
+    private SBLinkMovementMethod(@Nullable OnLinkClickListener onLinkClickListener,
+                                 @Nullable OnLinkLongClickListener onLinkLongClickListener,
                                 int clickedLinkTextColor,
                                 int clickedLinkBackgroundColor) {
         this.onLinkClickListener = onLinkClickListener;
@@ -76,7 +77,7 @@ class SBLinkMovementMethod extends LinkMovementMethod {
     }
 
     @Override
-    public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
+    public boolean onTouchEvent(@NonNull TextView widget, @NonNull Spannable buffer, @NonNull MotionEvent event) {
         if (activateTextViewHashcode != widget.hashCode()) {
             activateTextViewHashcode = widget.hashCode();
             widget.setAutoLinkMask(0);
@@ -164,7 +165,7 @@ class SBLinkMovementMethod extends LinkMovementMethod {
         return false;
     }
 
-    private void drawClickedLink(ClickableSpan clickableSpan, Spannable text) {
+    private void drawClickedLink(@NonNull ClickableSpan clickableSpan, @NonNull Spannable text) {
         int spanStart = text.getSpanStart(clickableSpan);
         int spanEnd = text.getSpanEnd(clickableSpan);
         if (backgroundColorSpan != null) {
@@ -177,13 +178,13 @@ class SBLinkMovementMethod extends LinkMovementMethod {
         Selection.setSelection(text, spanStart, spanEnd);
     }
 
-    private void eraseClickedLink(Spannable text) {
+    private void eraseClickedLink(@NonNull Spannable text) {
         text.removeSpan(backgroundColorSpan);
         text.removeSpan(foregroundColorSpan);
         Selection.removeSelection(text);
     }
 
-    private void clearTouchEvent(TextView widget, Spannable buffer) {
+    private void clearTouchEvent(@NonNull TextView widget, @NonNull Spannable buffer) {
         eraseClickedLink(buffer);
         longPressedRegistered = false;
         widget.removeCallbacks(longPressTimer);
@@ -196,12 +197,12 @@ class SBLinkMovementMethod extends LinkMovementMethod {
         private int clickedLinkTextColor;
         private int clickedLinkBackgroundColor;
 
-        public Builder setOnLinkClickListener(OnLinkClickListener onLinkClickListener) {
+        public Builder setOnLinkClickListener(@Nullable OnLinkClickListener onLinkClickListener) {
             this.onLinkClickListener = onLinkClickListener;
             return this;
         }
 
-        public Builder setOnLinkLongClickListener(OnLinkLongClickListener onLinkLongClickListener) {
+        public Builder setOnLinkLongClickListener(@Nullable OnLinkLongClickListener onLinkLongClickListener) {
             this.onLinkLongClickListener = onLinkLongClickListener;
             return this;
         }

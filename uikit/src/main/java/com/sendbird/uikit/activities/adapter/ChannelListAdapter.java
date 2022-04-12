@@ -1,14 +1,25 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.User;
+import com.sendbird.android.UserMessage;
+import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewChannelPreviewBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -18,17 +29,19 @@ import com.sendbird.uikit.utils.ChannelUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import java.util.Objects;
 
 /**
- * Adapters provide a binding from a {@link GroupChannel} set to views that are displayed
- * within a {@link RecyclerView}.
+ * ChannelListAdapter provides a binding from a {@link GroupChannel} type data set to views that are displayed within a RecyclerView.
  */
 public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder<GroupChannel>> {
+    @NonNull
     private final List<GroupChannel> channelList = new ArrayList<>();
+    @NonNull
     private List<ChannelInfo> cachedChannelList = new ArrayList<>();
+    @Nullable
     private OnItemClickListener<GroupChannel> listener;
+    @Nullable
     private OnItemLongClickListener<GroupChannel> longClickListener;
 
     /**
@@ -43,7 +56,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      *
      * @param listener The listener performing when the {@link ChannelPreviewHolder} is clicked.
      */
-    public ChannelListAdapter(OnItemClickListener<GroupChannel> listener) {
+    public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener) {
         setHasStableIds(true);
         setOnItemClickListener(listener);
     }
@@ -63,7 +76,10 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     @NonNull
     @Override
     public BaseViewHolder<GroupChannel> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChannelPreviewHolder(SbViewChannelPreviewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        final TypedValue values = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
+        final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
+        return new ChannelPreviewHolder(SbViewChannelPreviewBinding.inflate(LayoutInflater.from(contextWrapper), parent, false));
     }
 
     /**
@@ -107,6 +123,17 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     }
 
     /**
+     * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     *
+     * @return {@code OnItemClickListener<GroupChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemClickListener<GroupChannel> getOnItemClickListener() {
+        return listener;
+    }
+
+    /**
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @param listener The callback that will run
@@ -116,13 +143,26 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     }
 
     /**
+     * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
+     *
+     * @return {@code OnItemLongClickListener<GroupChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemLongClickListener<GroupChannel> getOnItemLongClickListener() {
+        return longClickListener;
+    }
+
+    /**
      * Returns the {@link List<GroupChannel>} in the data set held by the adapter.
      *
      * @return The {@link List<GroupChannel>} in this adapter.
      */
+    @SuppressLint("KotlinPropertyAccess")
     @Override
+    @NonNull
     public List<GroupChannel> getItems() {
-        return channelList != null ? Collections.unmodifiableList(channelList) : null;
+        return Collections.unmodifiableList(channelList);
     }
 
     /**
@@ -144,7 +184,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      */
     @Override
     public int getItemCount() {
-        return channelList == null ? 0 : channelList.size();
+        return channelList.size();
     }
 
     /**
@@ -163,61 +203,81 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      *
      * @param channelList list to be displayed
      */
-    public void setItems(List<GroupChannel> channelList) {
-        final ChannelDiffCallback diffCallback = new ChannelDiffCallback(this.cachedChannelList, channelList);
+    public void setItems(@NonNull List<GroupChannel> channelList) {
+        final List<ChannelInfo> newChannelInfo = ChannelInfo.toChannelInfoList(channelList);
+        final ChannelDiffCallback diffCallback = new ChannelDiffCallback(this.cachedChannelList, newChannelInfo);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
         this.channelList.clear();
         this.channelList.addAll(channelList);
-        this.cachedChannelList = ChannelInfo.toChannelInfoList(channelList);
+        this.cachedChannelList = newChannelInfo;
         diffResult.dispatchUpdatesTo(this);
     }
 
     private static class ChannelPreviewHolder extends BaseViewHolder<GroupChannel> {
-
+        @NonNull
         private final SbViewChannelPreviewBinding binding;
 
-        ChannelPreviewHolder(SbViewChannelPreviewBinding binding) {
+        ChannelPreviewHolder(@NonNull SbViewChannelPreviewBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            this.binding.channelPreview.setUseTypingIndicator(SendbirdUIKit.isUsingChannelListTypingIndicators());
+            this.binding.channelPreview.setUseMessageReceiptStatus(SendbirdUIKit.isUsingChannelListMessageReceiptStatus());
         }
 
         @Override
-        public void bind(GroupChannel channel) {
-            binding.setChannel(channel);
-            binding.executePendingBindings();
+        public void bind(@NonNull GroupChannel channel) {
+            binding.channelPreview.drawChannel(channel);
         }
     }
 
     static class ChannelInfo {
+        @NonNull
         private final String channelUrl;
         private final long createdAt;
         private final int memberCount;
-        private final String lastMessage;
+        @Nullable
+        private final BaseMessage lastMessage;
+        @NonNull
         private final String channelName;
+        @Nullable
         private final String coverImageUrl;
         private final int coverImageHash;
+        @Nullable
         private final GroupChannel.PushTriggerOption pushTriggerOption;
         private final int unreadMessageCount;
         private final boolean isFrozen;
+        @NonNull
+        private List<User> typingMembers = new ArrayList<>();
+        private int unReadMemberCount;
+        private int unDeliveredMemberCount;
+
         ChannelInfo(@NonNull GroupChannel channel) {
             this.channelUrl = channel.getUrl();
             this.createdAt = channel.getCreatedAt();
             this.memberCount = channel.getMemberCount();
-            this.lastMessage = channel.getLastMessage() != null ? channel.getLastMessage().getMessage() : "";
-            this.channelName = channel.getName();
+            this.lastMessage = channel.getLastMessage();
+            this.channelName = channel.getName() != null ? channel.getName() : "";
             this.coverImageUrl = channel.getCoverUrl();
             this.pushTriggerOption = channel.getMyPushTriggerOption();
             this.unreadMessageCount = channel.getUnreadMessageCount();
             this.coverImageHash = toUrlsHash(channel);
             this.isFrozen = channel.isFrozen();
+            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+                this.typingMembers = channel.getTypingUsers();
+            }
+            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+                this.unReadMemberCount = channel.getUnreadMemberCount(channel.getLastMessage());
+                this.unDeliveredMemberCount = channel.getUndeliveredMemberCount(channel.getLastMessage());
+            }
         }
 
-        public String getChannelUrl() {
+        @NonNull
+        String getChannelUrl() {
             return channelUrl;
         }
 
-        public long getCreatedAt() {
+        long getCreatedAt() {
             return createdAt;
         }
 
@@ -225,10 +285,12 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             return memberCount;
         }
 
-        String getLastMessage() {
+        @Nullable
+        BaseMessage getLastMessage() {
             return lastMessage;
         }
 
+        @Nullable
         GroupChannel.PushTriggerOption getPushTriggerOption() {
             return pushTriggerOption;
         }
@@ -237,10 +299,12 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             return unreadMessageCount;
         }
 
+        @NonNull
         String getChannelName() {
             return channelName;
         }
 
+        @Nullable
         String getCoverImageUrl() {
             return coverImageUrl;
         }
@@ -249,8 +313,16 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             return coverImageHash;
         }
 
-        public boolean isFrozen() {
+        boolean isFrozen() {
             return isFrozen;
+        }
+
+        int getUnDeliveredMemberCount() {
+            return unDeliveredMemberCount;
+        }
+
+        int getUnReadMemberCount() {
+            return unReadMemberCount;
         }
 
         @Override
@@ -262,47 +334,84 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
 
             if (createdAt != that.createdAt) return false;
             if (memberCount != that.memberCount) return false;
-            if (unreadMessageCount != that.unreadMessageCount) return false;
             if (coverImageHash != that.coverImageHash) return false;
-            if (channelUrl != null && channelUrl.equals(that.channelUrl)) return false;
-            if (lastMessage != null && lastMessage.equals(that.lastMessage)) return false;
-            if (channelName != null && channelName.equals(that.channelName)) return false;
-            if (coverImageUrl != null && coverImageUrl.equals(that.coverImageUrl)) return false;
+            if (unreadMessageCount != that.unreadMessageCount) return false;
             if (isFrozen != that.isFrozen) return false;
-            return pushTriggerOption == that.pushTriggerOption;
+
+            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+                if (unReadMemberCount != that.unReadMemberCount) return false;
+                if (unDeliveredMemberCount != that.unDeliveredMemberCount) return false;
+            }
+            if (!channelUrl.equals(that.channelUrl)) return false;
+            if (!Objects.equals(lastMessage, that.lastMessage))
+                return false;
+            if (!channelName.equals(that.channelName)) return false;
+            if (!Objects.equals(coverImageUrl, that.coverImageUrl))
+                return false;
+            if (pushTriggerOption != that.pushTriggerOption) return false;
+
+            if (lastMessage != null && that.getLastMessage() != null) {
+                if (lastMessage instanceof UserMessage) {
+                    if (!lastMessage.getMessage().equals(that.getLastMessage().getMessage())) {
+                        return false;
+                    }
+                } else if (lastMessage instanceof FileMessage) {
+                    if (!((FileMessage) lastMessage).getName().equals(((FileMessage)that.getLastMessage()).getName())) {
+                        return false;
+                    }
+                }
+            }
+            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+                return typingMembers.equals(that.typingMembers);
+            }
+            return true;
         }
 
         @Override
         public int hashCode() {
-            int result = channelUrl != null ? channelUrl.hashCode() : 0;
+            int result = channelUrl.hashCode();
             result = 31 * result + (int) (createdAt ^ (createdAt >>> 32));
             result = 31 * result + memberCount;
-            result = 31 * result + coverImageHash;
             result = 31 * result + (lastMessage != null ? lastMessage.hashCode() : 0);
-            result = 31 * result + (channelName != null ? channelName.hashCode() : 0);
+            result = 31 * result + channelName.hashCode();
             result = 31 * result + (coverImageUrl != null ? coverImageUrl.hashCode() : 0);
+            result = 31 * result + coverImageHash;
             result = 31 * result + (pushTriggerOption != null ? pushTriggerOption.hashCode() : 0);
             result = 31 * result + unreadMessageCount;
             result = 31 * result + (isFrozen ? 1 : 0);
+
+            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+                result = 31 * result + typingMembers.hashCode();
+            }
+
+            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+                result = 31 * result + unReadMemberCount;
+                result = 31 * result + unDeliveredMemberCount;
+            }
             return result;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "ChannelInfo{" +
                     "channelUrl='" + channelUrl + '\'' +
                     ", createdAt=" + createdAt +
-                    ", coverImageHash=" + coverImageHash +
                     ", memberCount=" + memberCount +
-                    ", lastMessage='" + lastMessage + '\'' +
+                    ", lastMessage=" + lastMessage +
                     ", channelName='" + channelName + '\'' +
                     ", coverImageUrl='" + coverImageUrl + '\'' +
+                    ", coverImageHash=" + coverImageHash +
                     ", pushTriggerOption=" + pushTriggerOption +
                     ", unreadMessageCount=" + unreadMessageCount +
                     ", isFrozen=" + isFrozen +
+                    ", typingMembers=" + typingMembers +
+                    ", unReadMemberCount=" + unReadMemberCount +
+                    ", unDeliveredMemberCount=" + unDeliveredMemberCount +
                     '}';
         }
 
+        @NonNull
         static List<ChannelInfo> toChannelInfoList(@NonNull List<GroupChannel> channelList) {
             List<ChannelInfo> results = new ArrayList<>();
             for (GroupChannel channel : channelList) {

@@ -16,18 +16,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.OpenChannelParams;
 import com.sendbird.android.SendBird;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.modules.components.StateHeaderComponent;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
@@ -54,18 +56,38 @@ public class CreateCommunityActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 2002;
 
     private ActivityCreateCommunityBinding binding;
+    @NonNull
+    private final StateHeaderComponent headerComponent = new StateHeaderComponent();
     private Uri mediaUri;
     private File mediaFile;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
+        int themeResId = SendbirdUIKit.getDefaultThemeMode().getResId();
         setTheme(themeResId);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_community);
-        binding.tbCreateCommunity.setLeftImageButtonClickListener(v -> finish());
-        binding.tbCreateCommunity.getRightTextButton().setEnabled(false);
-        binding.tbCreateCommunity.getRightTextButton().setOnClickListener(v -> createCommunityChannel());
+        binding = ActivityCreateCommunityBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+
+        final boolean isDark = PreferenceUtils.isUsingDarkTheme();
+        binding.background.setBackgroundResource(isDark ? R.color.background_600 : R.color.background_50);
+        binding.ivChannelCover.setBackgroundResource(isDark ? R.drawable.shape_image_view_background_dark : R.drawable.shape_image_view_background_light);
+        binding.titleLayout.setBackgroundResource(isDark ? R.drawable.shape_edit_text_background_dark : R.drawable.shape_edit_text_background_light);
+        binding.etTitle.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.etTitle.setHintTextColor(getResources().getColor(isDark ? R.color.ondark_03 : R.color.onlight_03));
+        binding.clearButton.setBackgroundResource(isDark ? R.drawable.selector_edit_text_clear_button_dark : R.drawable.selector_edit_text_clear_button_light);
+
+        headerComponent.getParams().setTitle(getString(R.string.text_create_community));
+        headerComponent.getParams().setRightButtonText(getString(R.string.text_header_create_button));
+        headerComponent.getParams().setLeftButtonIcon(AppCompatResources.getDrawable(this, R.drawable.icon_arrow_left));
+        final int headerStyle = SendbirdUIKit.isDarkMode() ? R.style.Component_Dark_Header_State : R.style.Component_Header_State;
+        final Context headerThemeContext = new ContextThemeWrapper(this, headerStyle);
+        final View header = headerComponent.onCreateView(headerThemeContext, getLayoutInflater(), binding.headerComponent, savedInstanceState);
+        binding.headerComponent.addView(header);
+
+        headerComponent.setOnLeftButtonClickListener(v -> finish());
+        headerComponent.setOnRightButtonClickListener(v -> createCommunityChannel());
         int iconTint = PreferenceUtils.isUsingDarkTheme() ? R.color.onlight_01 : R.color.ondark_01;
         binding.ivCameraIcon.setImageDrawable(DrawableUtils.setTintList(this, R.drawable.icon_camera, iconTint));
         binding.ivChannelCover.setOnClickListener(v -> {
@@ -85,7 +107,6 @@ public class CreateCommunityActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                binding.tbCreateCommunity.getRightTextButton().setEnabled(!TextUtils.isEmpty(s));
                 binding.clearButton.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
             }
 
@@ -162,7 +183,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
     }
 
     private void updateChannelCover() {
-        Glide.with(binding.getRoot().getContext())
+        Glide.with(binding.background.getContext())
                 .load(mediaUri)
                 .override(binding.ivChannelCover.getWidth(), binding.ivChannelCover.getHeight())
                 .circleCrop()
@@ -190,7 +211,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
                 if (deniedList.size() == 0) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
-                    builder.setMessage(getPermissionGuildeMessage(this, notGranted[0]));
+                    builder.setMessage(getPermissionGuideMessage(this, notGranted[0]));
                     builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -219,7 +240,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
             items = new DialogListItem[]{delete, camera, gallery};
         }
 
-        DialogUtils.buildItemsBottom(items, (view, position, item) -> {
+        DialogUtils.showListBottomDialog(this, items, (view, position, item) -> {
             try {
                 final int key = item.getKey();
                 SendBird.setAutoBackgroundDetection(false);
@@ -233,11 +254,12 @@ public class CreateCommunityActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Logger.e(e);
             }
-        }).showSingle(getSupportFragmentManager());
+        });
     }
 
     private void takeCamera() {
         this.mediaUri = FileUtils.createPictureImageUri(this);
+        if (mediaUri == null) return;
         Intent intent = IntentUtils.getCameraIntent(this, mediaUri);
         if (IntentUtils.hasIntent(this, intent)) {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -255,7 +277,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
         binding.ivChannelCover.setImageResource(0);
     }
 
-    private static String getPermissionGuildeMessage(@NonNull Context context, @NonNull String permission) {
+    private static String getPermissionGuideMessage(@NonNull Context context, @NonNull String permission) {
         int textResId;
         if (Manifest.permission.CAMERA.equals(permission)) {
             textResId = com.sendbird.uikit.R.string.sb_text_need_to_allow_permission_camera;

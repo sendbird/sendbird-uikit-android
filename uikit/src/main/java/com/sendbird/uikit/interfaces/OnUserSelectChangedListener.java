@@ -1,5 +1,7 @@
 package com.sendbird.uikit.interfaces;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -11,8 +13,8 @@ public interface OnUserSelectChangedListener {
     /**
      * Called when a user view holder has been clicked.
      *
-     * @param selectedUsers The list of users who are selected.
+     * @param selectedUserIds The list of user ids who are selected.
      * @param isSelected Whether the view holder is checked or not.
      */
-    void onUserSelectChanged(List<String> selectedUsers, boolean isSelected);
+    void onUserSelectChanged(@NonNull List<String> selectedUserIds, boolean isSelected);
 }

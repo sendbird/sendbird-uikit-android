@@ -22,7 +22,7 @@ public class MessageUtils {
         return isMine(message.getSender().getUserId());
     }
 
-    public static boolean isMine(@NonNull String senderId) {
+    public static boolean isMine(@Nullable String senderId) {
         User currentUser = SendBird.getCurrentUser();
         if (currentUser != null) {
             return currentUser.getUserId().equals(senderId);
@@ -64,6 +64,7 @@ public class MessageUtils {
                 !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt());
     }
 
+    @NonNull
     public static MessageGroupType getMessageGroupType(@Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
         if (!message.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED)) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;

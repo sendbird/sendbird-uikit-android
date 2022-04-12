@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/tools">
-
-    <com.sendbird.uikit.widgets.OpenChannelVideoFileMessageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        bind:message="@{message}"
-        bind:channel="@{channel}"
-        bind:messageGroupType="@{messageGroupType}"
-        />
-
-    <data>
-
-        <variable
-            name="message"
-            type="com.sendbird.android.FileMessage" />
-
-        <variable
-            name="channel"
-            type="com.sendbird.android.OpenChannel" />
-
-        <variable
-            name="messageGroupType"
-            type="com.sendbird.uikit.consts.MessageGroupType" />
-    </data>
-</layout>
+<com.sendbird.uikit.widgets.OpenChannelVideoFileMessageView
+    android:id="@+id/openChannelVideoFileMessageView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

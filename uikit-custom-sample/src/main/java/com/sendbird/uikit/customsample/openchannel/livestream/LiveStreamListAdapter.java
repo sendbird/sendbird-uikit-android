@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,12 +29,12 @@ public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamList
     @Override
     public LiveStreamingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewLiveStreamListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_live_stream_list_item, parent, false);
+        ViewLiveStreamListItemBinding binding = ViewLiveStreamListItemBinding.inflate(inflater, parent, false);
         return new LiveStreamingListViewHolder(binding);
     }
 
     static class LiveStreamingListViewHolder extends OpenChannelListViewHolder {
-        private ViewLiveStreamListItemBinding binding;
+        private final ViewLiveStreamListItemBinding binding;
 
         public LiveStreamingListViewHolder(@NonNull ViewLiveStreamListItemBinding binding) {
             super(binding.getRoot());

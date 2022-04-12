@@ -1,20 +1,58 @@
 package com.sendbird.uikit.activities.viewholder;
 
+import androidx.annotation.NonNull;
+
 /**
  * Represents type of messages.
  */
 public enum MessageType {
+    /**
+     * Type of plain text message sent by the current user.
+     */
     VIEW_TYPE_USER_MESSAGE_ME(0),
+    /**
+     * Type of plain text message sent by users other than the current user.
+     */
     VIEW_TYPE_USER_MESSAGE_OTHER(1),
+    /**
+     * Type of file message sent by the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_ME(2),
+    /**
+     * Type of file message sent by users other than the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_OTHER(3),
+    /**
+     * Type of image message sent by the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_IMAGE_ME(4),
+    /**
+     * Type of image message sent by users other than the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER(5),
+    /**
+     * Type of video message sent by the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_VIDEO_ME(6),
+    /**
+     * Type of video message sent by users other than the current user.
+     */
     VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER(7),
+    /**
+     * Message type sent by the administrator.
+     */
     VIEW_TYPE_ADMIN_MESSAGE(8),
+    /**
+     * Message type that displays the date.
+     */
     VIEW_TYPE_TIME_LINE(9),
+    /**
+     * Type of unknown message sent by the current user.
+     */
     VIEW_TYPE_UNKNOWN_MESSAGE_ME(10),
+    /**
+     * Type of unknown message sent by users other than the current user.
+     */
     VIEW_TYPE_UNKNOWN_MESSAGE_OTHER(11);
 
     int value;
@@ -26,6 +64,7 @@ public enum MessageType {
         return value;
     }
 
+    @NonNull
     public static MessageType from(int value) {
         for (MessageType type : values()) {
             if (type.value == value) {

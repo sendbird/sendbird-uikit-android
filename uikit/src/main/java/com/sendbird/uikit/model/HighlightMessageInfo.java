@@ -21,7 +21,7 @@ public final class HighlightMessageInfo implements Parcelable {
         this.updatedAt = updatedAt;
     }
 
-    protected HighlightMessageInfo(Parcel in) {
+    protected HighlightMessageInfo(@NonNull Parcel in) {
         messageId = in.readLong();
         updatedAt = in.readLong();
     }
@@ -38,10 +38,22 @@ public final class HighlightMessageInfo implements Parcelable {
         }
     };
 
+    /**
+     * Returns the highlighted message ID.
+     *
+     * @return The message ID.
+     * @since 2.1.0
+     */
     public long getMessageId() {
         return messageId;
     }
 
+    /**
+     * Returns message updated time of the highlighted message
+     *
+     * @return Timestamp in milliseconds.
+     * @since 2.1.0
+     */
     public long getUpdatedAt() {
         return updatedAt;
     }
@@ -53,6 +65,7 @@ public final class HighlightMessageInfo implements Parcelable {
      * @return The created HighlightMessageInfo instance.
      * @since 2.1.0
      */
+    @NonNull
     public static HighlightMessageInfo fromMessage(@NonNull BaseMessage message) {
         return new HighlightMessageInfo(message.getMessageId(), message.getUpdatedAt());
     }
@@ -63,7 +76,7 @@ public final class HighlightMessageInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(messageId);
         dest.writeLong(updatedAt);
     }

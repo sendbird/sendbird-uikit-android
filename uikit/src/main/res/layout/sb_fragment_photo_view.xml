@@ -1,102 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/ivPhoto"
+        android:scaleType="fitCenter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/background_700" />
 
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/ivPhoto"
-            android:scaleType="fitCenter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background_700" />
+    <FrameLayout
+        android:id="@+id/vgHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_56"
+        android:background="@color/overlay_01"
+        android:orientation="horizontal">
 
-        <FrameLayout
-            android:id="@+id/vgHeader"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sb_size_56"
-            android:background="@color/overlay_01"
-            android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:textAppearance="@style/SendbirdH2OnDark01"
+                android:textSize="@dimen/sb_text_size_16" />
 
-                <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center_horizontal"
-                    android:textAppearance="@style/SendbirdH2OnDark01"
-                    android:textSize="@dimen/sb_text_size_16" />
+            <TextView
+                android:id="@+id/tvCreatedAt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="0sp"
+                android:textAppearance="@style/SendbirdCaption2OnDark01"
+                android:textColor="@color/ondark_01"
+                android:textSize="@dimen/sb_text_size_12"
+                android:textStyle="normal" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvCreatedAt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center_horizontal"
-                    android:lineSpacingExtra="0sp"
-                    android:textAppearance="@style/SendbirdCaption2OnDark01"
-                    android:textColor="@color/ondark_01"
-                    android:textSize="@dimen/sb_text_size_12"
-                    android:textStyle="normal" />
-            </LinearLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivClose"
+            android:layout_width="@dimen/sb_size_24"
+            android:layout_height="@dimen/sb_size_24"
+            android:scaleType="centerCrop"
+            android:layout_margin="@dimen/sb_size_16"
+            android:src="@drawable/icon_close"
+            android:tint="@color/ondark_01" />
+    </FrameLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivClose"
-                android:layout_width="@dimen/sb_size_24"
-                android:layout_height="@dimen/sb_size_24"
-                android:scaleType="centerCrop"
-                android:layout_margin="@dimen/sb_size_16"
-                android:src="@drawable/icon_close"
-                android:tint="@color/ondark_01" />
-        </FrameLayout>
+    <RelativeLayout
+        android:id="@+id/vgBottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_56"
+        android:layout_alignParentBottom="true"
+        android:background="@color/overlay_01"
+        android:paddingLeft="@dimen/sb_size_16"
+        android:paddingRight="@dimen/sb_size_16">
 
-        <RelativeLayout
-            android:id="@+id/vgBottom"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sb_size_56"
-            android:layout_alignParentBottom="true"
-            android:background="@color/overlay_01"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDownload"
+            android:layout_width="@dimen/sb_size_24"
+            android:layout_height="@dimen/sb_size_24"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/sb_size_16"
+            android:layout_marginBottom="@dimen/sb_size_16"
+            android:src="@drawable/icon_download"
+            android:tint="@color/ondark_01" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivDownload"
-                android:layout_width="@dimen/sb_size_24"
-                android:layout_height="@dimen/sb_size_24"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="@dimen/sb_size_16"
-                android:layout_marginBottom="@dimen/sb_size_16"
-                android:src="@drawable/icon_download"
-                android:tint="@color/ondark_01" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivDelete"
-                android:layout_width="@dimen/sb_size_24"
-                android:layout_height="@dimen/sb_size_24"
-                android:scaleType="centerCrop"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/sb_size_16"
-                android:layout_marginBottom="@dimen/sb_size_16"
-                android:src="@drawable/icon_delete"
-                android:tint="@color/ondark_01" />
-        </RelativeLayout>
-
-        <com.sendbird.uikit.widgets.ProgressView
-            android:id="@+id/loading"
-            android:layout_centerInParent="true"
-            android:layout_width="@dimen/sb_size_60"
-            android:layout_height="@dimen/sb_size_60"
-            android:layout_gravity="center"/>
-
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="@dimen/sb_size_24"
+            android:layout_height="@dimen/sb_size_24"
+            android:scaleType="centerCrop"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/sb_size_16"
+            android:layout_marginBottom="@dimen/sb_size_16"
+            android:src="@drawable/icon_delete"
+            android:tint="@color/ondark_01" />
     </RelativeLayout>
-</layout>
+
+    <com.sendbird.uikit.widgets.ProgressView
+        android:id="@+id/loading"
+        android:layout_centerInParent="true"
+        android:layout_width="@dimen/sb_size_60"
+        android:layout_height="@dimen/sb_size_60"
+        android:layout_gravity="center"/>
+
+</RelativeLayout>

@@ -16,39 +16,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.uikit.R;
 
 public class ThemeableRecyclerView extends RecyclerView {
-    private boolean useDividerLine = true;
-    private DividerItemDecoration dividerDecoration;
+    private final DividerItemDecoration dividerDecoration;
+    private final float dividerMarginRight;
+    private final float dividerMarginLeft;
     private int dividerColor;
     private float dividerHeight;
-    private float dividerMarginLeft;
-    private float dividerMarginRight;
 
     public ThemeableRecyclerView(@NonNull Context context) {
         this(context, null);
     }
 
     public ThemeableRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_recycler_view_style);
+        this(context, attrs, 0);
     }
 
     public ThemeableRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ThemeableRecyclerView, defStyle, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ListComponent, defStyle, 0);
         try {
-            useDividerLine = a.getBoolean(R.styleable.ThemeableRecyclerView_sb_pager_recycler_view_use_divide_line, true);
-            dividerColor = a.getColor(R.styleable.ThemeableRecyclerView_sb_pager_recycler_view_divide_line_color, context.getResources().getColor(R.color.onlight_04));
-            dividerHeight = a.getDimension(R.styleable.ThemeableRecyclerView_sb_pager_recycler_view_divide_line_height, context.getResources().getDimensionPixelSize(R.dimen.sb_size_1));
-            dividerMarginLeft = a.getDimension(R.styleable.ThemeableRecyclerView_sb_pager_recycler_view_divide_margin_left, 0);
-            dividerMarginRight = a.getDimension(R.styleable.ThemeableRecyclerView_sb_pager_recycler_view_divide_margin_right, 0);
+            int backgroundResId = a.getResourceId(R.styleable.ListComponent_sb_pager_recycler_view_background, R.color.background_50);
+            dividerColor = a.getColor(R.styleable.ListComponent_sb_pager_recycler_view_divide_line_color, context.getResources().getColor(R.color.onlight_04));
+            dividerHeight = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_line_height, context.getResources().getDimensionPixelSize(R.dimen.sb_size_1));
+            dividerMarginLeft = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_margin_left, 0);
+            dividerMarginRight = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_margin_right, 0);
 
+            setBackgroundResource(backgroundResId);
             dividerDecoration = new DividerItemDecoration(context, LinearLayout.VERTICAL);
             Drawable divider = createDividerDrawable((int) dividerHeight, dividerColor, (int) dividerMarginLeft, (int) dividerMarginRight);
             dividerDecoration.setDrawable(divider);
-            setUseDivider(useDividerLine);
+            setUseDivider(true);
 
         } finally {
             a.recycle();
@@ -73,9 +69,13 @@ public class ThemeableRecyclerView extends RecyclerView {
 
     public void setDividerColor(int dividerColor) {
         this.dividerColor = dividerColor;
+        Drawable divider = createDividerDrawable((int) dividerHeight, dividerColor, (int) dividerMarginLeft, (int) dividerMarginRight);
+        dividerDecoration.setDrawable(divider);
     }
 
     public void setDividerHeight(float dividerHeight) {
         this.dividerHeight = dividerHeight;
+        Drawable divider = createDividerDrawable((int) dividerHeight, dividerColor, (int) dividerMarginLeft, (int) dividerMarginRight);
+        dividerDecoration.setDrawable(divider);
     }
 }

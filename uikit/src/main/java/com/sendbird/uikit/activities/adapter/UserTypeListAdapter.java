@@ -1,58 +1,70 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.sendbird.android.Member;
 import com.sendbird.android.User;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
-import com.sendbird.uikit.databinding.SbViewMemberPreviewBinding;
+import com.sendbird.uikit.databinding.SbViewUserPreviewBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.widgets.MemberPreview;
+import com.sendbird.uikit.widgets.UserPreview;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 /**
- * Adapters provide a binding from a {@link User} set to views that are displayed
- * within a {@link RecyclerView}.
+ * Adapters provides a binding from a {@link User} set to views that are displayed within a RecyclerView.
  */
-public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>> {
-    private List<User> users;
-    private OnItemClickListener<User> listener;
-    private OnItemLongClickListener<User> longClickListener;
-    private OnItemClickListener<User> actionItemClickListener;
+public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseViewHolder<T>> {
+    @NonNull
+    final private List<T> users = new ArrayList<>();
+    @Nullable
+    private OnItemClickListener<T> listener;
+    @Nullable
+    private OnItemLongClickListener<T> longClickListener;
+    @Nullable
+    private OnItemClickListener<T> actionItemClickListener;
+    @NonNull
     private Member.Role myRole = Member.Role.NONE;
-    private OnItemClickListener<User> profileClickListener;
-
+    @Nullable
+    private OnItemClickListener<T> profileClickListener;
 
     /**
-     * Called when RecyclerView needs a new {@link BaseViewHolder <User>} of the given type to represent
+     * Called when RecyclerView needs a new {@link BaseViewHolder <T>} of the given type to represent
      * an item.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to
      *               an adapter position.
      * @param viewType The view type of the new View.
      *
-     * @return A new {@link BaseViewHolder<User>} that holds a View of the given view type.
+     * @return A new {@link BaseViewHolder<T>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
      */
     @NonNull
     @Override
-    public BaseViewHolder<User> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserPreviewHolder(SbViewMemberPreviewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+    public BaseViewHolder<T> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        final TypedValue values = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
+        final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
+        return new UserPreviewHolder(SbViewUserPreviewBinding.inflate(LayoutInflater.from(contextWrapper), parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder<User> holder, int position) {
+    public void onBindViewHolder(@NonNull BaseViewHolder<T> holder, int position) {
         holder.bind(getItem(position));
     }
 
@@ -63,7 +75,7 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
      */
     @Override
     public int getItemCount() {
-        return users == null ? 0 : users.size();
+        return users.size();
     }
 
     /**
@@ -73,18 +85,20 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
      * @return The {@link User} to retrieve the position of in this adapter.
      */
     @Override
-    public User getItem(int position) {
-        return users != null ? users.get(position) : null;
+    @NonNull
+    public T getItem(int position) {
+        return users.get(position);
     }
 
     /**
-     * Returns the {@link List<User>} in the data set held by the adapter.
+     * Returns the {@link List<T>} in the data set held by the adapter.
      *
-     * @return The {@link List<User>} in this adapter.
+     * @return The {@link List<T>} in this adapter.
      */
     @Override
-    public List<User> getItems() {
-        return users != null ? Collections.unmodifiableList(users) : null;
+    @NonNull
+    public List<T> getItems() {
+        return Collections.unmodifiableList(users);
     }
 
     /**
@@ -103,8 +117,19 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
      *
      * @param listener The callback that will run
      */
-    public void setOnItemClickListener(@Nullable OnItemClickListener<User> listener) {
+    public void setOnItemClickListener(@Nullable OnItemClickListener<T> listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     *
+     * @return {@code OnItemClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemClickListener<T> getOnItemClickListener() {
+        return listener;
     }
 
     /**
@@ -112,12 +137,39 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
      *
      * @param listener The callback that will run
      */
-    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<User> listener) {
+    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> listener) {
         this.longClickListener = listener;
     }
 
-    public void setOnActionItemClickListener(@Nullable OnItemClickListener<User> listener) {
+    /**
+     * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
+     *
+     * @return {@code OnItemLongClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemLongClickListener<T> getOnItemLongClickListener() {
+        return longClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the action view is clicked.
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnActionItemClickListener(@Nullable OnItemClickListener<T> listener) {
         this.actionItemClickListener = listener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the action view is clicked.
+     *
+     * @return {@code OnItemClickListener} to be invoked when the action view is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemClickListener<T> getOnActionItemClickListener() {
+        return actionItemClickListener;
     }
 
     /**
@@ -126,38 +178,52 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
      * @param profileClickListener The callback that will run
      * @since 1.2.2
      */
-    public void setOnProfileClickListener(OnItemClickListener<User> profileClickListener) {
+    public void setOnProfileClickListener(@Nullable OnItemClickListener<T> profileClickListener) {
         this.profileClickListener = profileClickListener;
     }
 
+    /**
+     * Returns a callback to be invoked when the profile view is clicked.
+     *
+     * @return {@code OnItemClickListener} to be invoked when the profile view is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemClickListener<T> getOnProfileClickListener() {
+        return profileClickListener;
+    }
 
     /**
-     * Sets the {@link List<User>} to be displayed.
+     * Sets the {@link List<T>} to be displayed.
      *
      * @param userList list to be displayed
      */
-    public void setItems(List<User> userList, Member.Role myRole) {
-        this.users = userList;
+    public void setItems(@NonNull List<T> userList, @NonNull Member.Role myRole) {
+        final UserTypeDiffCallback<T> diffCallback = new UserTypeDiffCallback<>(this.users, userList, this.myRole, myRole);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.users.clear();
+        this.users.addAll(userList);
         this.myRole = myRole;
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
-    private class UserPreviewHolder extends BaseViewHolder<User> {
-        private final SbViewMemberPreviewBinding binding;
+    private class UserPreviewHolder extends BaseViewHolder<T> {
+        @NonNull
+        private final SbViewUserPreviewBinding binding;
 
-        UserPreviewHolder(@NonNull SbViewMemberPreviewBinding binding) {
+        UserPreviewHolder(@NonNull SbViewUserPreviewBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
 
-            binding.memberViewHolder.setOnClickListener(v -> {
+            binding.userViewHolder.setOnClickListener(v -> {
                 int userPosition = getAdapterPosition();
                 if (userPosition != NO_POSITION && listener != null) {
-                    User user = getItem(userPosition);
-                    listener.onItemClick(v, userPosition, user);
+                    listener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
-            binding.memberViewHolder.setOnLongClickListener(v -> {
+            binding.userViewHolder.setOnLongClickListener(v -> {
                 int userPosition = getAdapterPosition();
                 if (userPosition != NO_POSITION && longClickListener != null) {
                     longClickListener.onItemLongClick(v, userPosition, getItem(userPosition));
@@ -166,28 +232,98 @@ public class UserTypeListAdapter extends BaseAdapter<User, BaseViewHolder<User>>
                 return false;
             });
 
-            binding.memberViewHolder.setOnActionMenuClickListener(v -> {
+            binding.userViewHolder.setOnActionMenuClickListener(v -> {
                 int userPosition = getAdapterPosition();
                 if (userPosition != NO_POSITION && actionItemClickListener != null) {
-                    User user = getItem(userPosition);
-                    actionItemClickListener.onItemClick(v, userPosition, user);
+                    actionItemClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
-            binding.memberViewHolder.setOnProfileClickListener(v -> {
+            binding.userViewHolder.setOnProfileClickListener(v -> {
                 int userPosition = getAdapterPosition();
                 if (userPosition != NO_POSITION && profileClickListener != null) {
-                    User user = getItem(userPosition);
-                    profileClickListener.onItemClick(v, userPosition, user);
+                    profileClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
         }
 
         @Override
-        public void bind(User user) {
-            binding.memberViewHolder.useActionMenu(myRole == Member.Role.OPERATOR && actionItemClickListener != null);
-            MemberPreview.drawMemberFromUser(binding.memberViewHolder, user);
-            binding.executePendingBindings();
+        public void bind(@NonNull T user) {
+            binding.userViewHolder.useActionMenu(myRole == Member.Role.OPERATOR && actionItemClickListener != null);
+            if (user instanceof Member) {
+                UserPreview.drawMember(binding.userViewHolder, (Member) user);
+            } else {
+                UserPreview.drawMemberFromUser(binding.userViewHolder, user);
+            }
+        }
+    }
+
+    private static class UserTypeDiffCallback<T extends User> extends DiffUtil.Callback {
+        @NonNull
+        private final List<T> oldUserList;
+        @NonNull
+        private final List<T> newUserList;
+        @NonNull
+        private final Member.Role oldMyRole;
+        @NonNull
+        private final Member.Role newMyRole;
+
+        UserTypeDiffCallback(@NonNull List<T> oldUserList, @NonNull List<T> newUserList, @NonNull Member.Role oldMyRole, @NonNull Member.Role newMyRole) {
+            this.oldUserList = oldUserList;
+            this.newUserList = newUserList;
+            this.oldMyRole = oldMyRole;
+            this.newMyRole = newMyRole;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldUserList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newUserList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            final T oldUser = oldUserList.get(oldItemPosition);
+            final T newUser = newUserList.get(newItemPosition);
+
+            return oldUser.equals(newUser) && oldMyRole.equals(newMyRole);
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            final T oldUser = oldUserList.get(oldItemPosition);
+            final T newUser = newUserList.get(newItemPosition);
+
+            if (!areItemsTheSame(oldItemPosition, newItemPosition)) {
+                return false;
+            }
+
+            final String oldNickname = oldUser.getNickname();
+            final String newNickname = newUser.getNickname() != null ? newUser.getNickname() : "";
+            if (!newNickname.equals(oldNickname)) {
+                return false;
+            }
+
+            final String oldProfileUrl = oldUser.getProfileUrl();
+            final String newProfileUrl = newUser.getProfileUrl() != null ? newUser.getProfileUrl() : "";
+
+            if (newUser instanceof Member && oldUser instanceof Member) {
+                final Member oldMember = (Member) oldUser;
+                final Member newMember = (Member) newUser;
+                if (oldMember.isMuted() != newMember.isMuted()) {
+                    return false;
+                }
+
+                if (oldMember.getRole() != newMember.getRole()) {
+                    return false;
+                }
+            }
+
+            return newProfileUrl.equals(oldProfileUrl);
         }
     }
 }

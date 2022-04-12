@@ -11,12 +11,15 @@ import android.graphics.drawable.shapes.OvalShape;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.sendbird.uikit.R;
 
+@SuppressWarnings("unused")
 public class DrawableUtils {
+    @NonNull
     public static Drawable createDividerDrawable(int height, int color) {
         GradientDrawable divider = new GradientDrawable();
         divider.setShape(GradientDrawable.RECTANGLE);
@@ -25,6 +28,7 @@ public class DrawableUtils {
         return divider;
     }
 
+    @NonNull
     public static Drawable createRoundedRectangle(float radius, int color) {
         GradientDrawable drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.RECTANGLE);
@@ -33,38 +37,45 @@ public class DrawableUtils {
         return drawable;
     }
 
-    public static Drawable setTintList(Context context, int resId, int colorRes) {
+    @Nullable
+    public static Drawable setTintList(@NonNull Context context, int resId, int colorRes) {
         if (colorRes == 0) {
             return AppCompatResources.getDrawable(context, resId);
         }
         return setTintList(AppCompatResources.getDrawable(context, resId), AppCompatResources.getColorStateList(context, colorRes));
     }
 
-    public static Drawable setTintList(Context context, Drawable drawable, int colorRes) {
+    @Nullable
+    public static Drawable setTintList(@NonNull Context context, @NonNull Drawable drawable, int colorRes) {
         if (colorRes == 0) {
             return drawable;
         }
         return setTintList(drawable, AppCompatResources.getColorStateList(context, colorRes));
     }
 
-    public static Drawable setTintList(Context context, int resId, ColorStateList colorStateList) {
+    @Nullable
+    public static Drawable setTintList(@NonNull Context context, int resId, @Nullable ColorStateList colorStateList) {
         return setTintList(AppCompatResources.getDrawable(context, resId), colorStateList);
     }
 
-    public static Drawable setTintList(Drawable drawable, ColorStateList colorStateList) {
+    @Nullable
+    public static Drawable setTintList(@Nullable Drawable drawable, @Nullable ColorStateList colorStateList) {
         if (drawable == null || colorStateList == null) {
             return drawable;
         }
         drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTintList(drawable, colorStateList);
-        return drawable.mutate();
+        Drawable mutated = drawable.mutate();
+        DrawableCompat.setTintList(mutated, colorStateList);
+        return mutated;
     }
 
+    @NonNull
     public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor,
                                           @DrawableRes int iconRes, @ColorRes int iconTint) {
         return createOvalIcon(context, backgroundColor, 255, iconRes, iconTint);
     }
 
+    @NonNull
     public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor, int backgroundAlpha,
                                           @DrawableRes int iconRes, @ColorRes int iconTint) {
         ShapeDrawable ovalBackground = new ShapeDrawable(new OvalShape());
@@ -75,7 +86,8 @@ public class DrawableUtils {
         return createLayerIcon(ovalBackground, icon, inset);
     }
 
-    public static Drawable createLayerIcon(Drawable background, Drawable icon, int inset) {
+    @NonNull
+    public static Drawable createLayerIcon(@Nullable Drawable background, @Nullable Drawable icon, int inset) {
         Drawable[] layer = {background, icon};
         LayerDrawable layerDrawable = new LayerDrawable(layer);
         layerDrawable.setLayerInset(1, inset, inset, inset, inset);

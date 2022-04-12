@@ -32,6 +32,7 @@ public class FileDownloader {
     }
     private final Set<String> downloadingFileSet = new HashSet<>();
 
+    @NonNull
     private File getDownloadFile(@NonNull Context context, @NonNull FileMessage message) {
         String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
         return FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
@@ -48,6 +49,7 @@ public class FileDownloader {
         return false;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException {
         final String url = message.getUrl();
@@ -82,9 +84,9 @@ public class FileDownloader {
         return downloadingFileSet.contains(url);
     }
 
-    public void saveFile(Context context, @NonNull String url,
+    public void saveFile(@NonNull Context context, @NonNull String url,
                          @NonNull String type, @NonNull String filename) throws Exception {
-        if (downloadingFileSet.contains(url) || context == null) {
+        if (downloadingFileSet.contains(url)) {
             return;
         }
 
@@ -98,6 +100,7 @@ public class FileDownloader {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static boolean downloadFile(@NonNull Context context, @NonNull FileMessage message, @NonNull OnResultHandler<File> handler) {
         boolean isDownloading = FileDownloader.getInstance().isDownloading(message.getUrl());
         Logger.d("++ request download file url=%s", message.getUrl());
@@ -113,12 +116,13 @@ public class FileDownloader {
             }
 
             @Override
-            public void onResultForUiThread(File file, SendBirdException e) {
-                if (e != null) {
+            public void onResultForUiThread(@Nullable File file, @Nullable SendBirdException e) {
+                if (e != null || file == null) {
                     Logger.e(e);
                     handler.onError(e);
                     return;
                 }
+
                 Logger.d("++ file download Complete file path : " + file.getAbsolutePath());
                 handler.onResult(file);
             }

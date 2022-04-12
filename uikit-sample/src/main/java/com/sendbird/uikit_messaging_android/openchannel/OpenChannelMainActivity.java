@@ -4,14 +4,14 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.SettingsFragment;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
@@ -27,15 +27,24 @@ public class OpenChannelMainActivity extends AppCompatActivity {
     private ActivityOpenChannelMainBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
+        int themeResId = SendbirdUIKit.getDefaultThemeMode().getResId();
         setTheme(themeResId);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_open_channel_main);
+        binding = ActivityOpenChannelMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         initPage();
     }
 
     private void initPage() {
+        final boolean isDark = PreferenceUtils.isUsingDarkTheme();
+
+        binding.background.setBackgroundResource(isDark ? R.color.background_600 : R.color.background_50);
+        binding.tbMain.setBackgroundResource(isDark ? R.color.background_500 : R.color.background_50);
+        binding.tbMain.setTitleTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.tvDescription.setTextColor(getResources().getColor(isDark ? R.color.ondark_02 : R.color.onlight_02));
+
         setSupportActionBar(binding.tbMain);
         binding.vpMain.setAdapter(new MainAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
 

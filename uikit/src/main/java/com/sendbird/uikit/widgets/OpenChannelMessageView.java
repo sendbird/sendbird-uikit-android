@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.BindingAdapter;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
@@ -24,10 +23,5 @@ public abstract class OpenChannelMessageView extends BaseMessageView {
         super(context, attrs, defStyleAttr);
     }
 
-    abstract public void drawMessage(OpenChannel channel, BaseMessage message, MessageGroupType messageGroupType);
-
-    @BindingAdapter({"message", "channel", "messageGroupType"})
-    public static void drawOpenChannelMessage(OpenChannelMessageView view, BaseMessage message, OpenChannel channel, MessageGroupType messageGroupType) {
-        view.drawMessage(channel, message, messageGroupType);
-    }
+    abstract public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType);
 }

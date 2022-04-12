@@ -5,18 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
@@ -26,18 +24,10 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
-import com.sendbird.uikit.activities.OpenChannelSettingsActivity;
-import com.sendbird.uikit.activities.ParticipantsListActivity;
-import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.databinding.ActivityLiveStreamBinding;
-import com.sendbird.uikit.customsample.models.CustomMessageType;
 import com.sendbird.uikit.customsample.models.LiveStreamingChannelData;
-import com.sendbird.uikit.customsample.openchannel.CustomOpenChannelFragment;
-import com.sendbird.uikit.customsample.openchannel.CustomOpenChannelMessageListAdapter;
-import com.sendbird.uikit.customsample.openchannel.channelsettings.CustomOpenChannelSettingsActivity;
-import com.sendbird.uikit.customsample.openchannel.participants.CustomParticipantsListActivity;
 import com.sendbird.uikit.fragments.OpenChannelFragment;
 import com.sendbird.uikit.utils.ContextUtils;
 
@@ -54,7 +44,6 @@ public class LiveStreamActivity extends AppCompatActivity {
     private final String CHANNEL_HANDLER_KEY = getClass().getSimpleName() + System.currentTimeMillis();
 
     private ActivityLiveStreamBinding binding;
-    private final CustomOpenChannelFragment customOpenChannelFragment = new CustomOpenChannelFragment();
     private String creatorName;
     private String channelUrl;
     private String inputText;
@@ -63,7 +52,8 @@ public class LiveStreamActivity extends AppCompatActivity {
     private static class HideHandler extends Handler {
         private final WeakReference<LiveStreamActivity> weakReference;
 
-        public HideHandler(LiveStreamActivity activity) {
+        public HideHandler(@NonNull LiveStreamActivity activity) {
+            super(Looper.getMainLooper());
             this.weakReference = new WeakReference<>(activity);
         }
 
@@ -76,6 +66,7 @@ public class LiveStreamActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
         Intent intent = new Intent(context, LiveStreamActivity.class);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -89,10 +80,11 @@ public class LiveStreamActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.SendBird_Custom);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_live_stream);
+        binding = ActivityLiveStreamBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         addChannelHandler();
         binding.ivLive.setVisibility(View.VISIBLE);
         binding.ivLive.setOnClickListener(v -> {
@@ -155,7 +147,11 @@ public class LiveStreamActivity extends AppCompatActivity {
                 updateParticipantCount(openChannel.getParticipantCount());
                 try {
                     LiveStreamingChannelData channelData = new LiveStreamingChannelData(new JSONObject(openChannel.getData()));
-                    creatorName = channelData.getCreator().getNickname();
+                    if (channelData.getCreator() == null) {
+                        creatorName = "";
+                    } else {
+                        creatorName = channelData.getCreator().getNickname();
+                    }
                     Glide.with(binding.getRoot().getContext())
                             .load(channelData.getLiveUrl())
                             .override(binding.ivLive.getMeasuredWidth(), binding.ivLive.getHeight())
@@ -171,7 +167,7 @@ public class LiveStreamActivity extends AppCompatActivity {
                     savedInstanceState.clear();
                 }
 
-                OpenChannelFragment fragment = createOpenChannelFragment(openChannel);
+                OpenChannelFragment fragment = createOpenChannelFragment(openChannel.getUrl());
                 FragmentManager manager = getSupportFragmentManager();
                 manager.popBackStack();
                 manager.beginTransaction()
@@ -230,8 +226,7 @@ public class LiveStreamActivity extends AppCompatActivity {
     }
 
     private void hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-        && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -249,66 +244,15 @@ public class LiveStreamActivity extends AppCompatActivity {
         hideHandler.sendEmptyMessageDelayed(0, 300);
     }
 
-    protected OpenChannelFragment createOpenChannelFragment(@NonNull OpenChannel openChannel) {
-        int themeResId = R.style.CustomMessageListStyle;
-        final boolean useMessageGroupUI = false;
-        final int headerRightButtonIconResId = openChannel.isOperator(SendBird.getCurrentUser()) ?
-                com.sendbird.uikit.R.drawable.icon_info : com.sendbird.uikit.R.drawable.icon_members;
+    @NonNull
+    protected OpenChannelFragment createOpenChannelFragment(@NonNull String channelUrl) {
+        final Bundle args = new Bundle();
+        args.putString("CHANNEL_URL", channelUrl);
+        args.putString("DESCRIPTION", creatorName);
+        args.putString("INPUT_TEXT", inputText);
 
-        OpenChannelFragment.Builder builder = new OpenChannelFragment.Builder(channelUrl, themeResId)
-                .setUseHeader(true)
-                .setHeaderTitle(null)
-                .setHeaderDescription(creatorName)
-                .setKeyboardDisplayType(KeyboardDisplayType.Dialog)
-                .setCustomOpenChannelFragment(customOpenChannelFragment)
-                .setUseHeaderLeftButton(false)
-                .setUseHeaderRightButton(true)
-                .setHeaderLeftButtonIcon(R.drawable.icon_arrow_left, AppCompatResources.getColorStateList(this, R.color.ondark_01))
-                .setHeaderRightButtonIcon(headerRightButtonIconResId, AppCompatResources.getColorStateList(this, R.color.ondark_01))
-                .setInputLeftButtonIconResId(R.drawable.icon_add)
-                .setInputRightButtonIconResId(R.drawable.icon_send)
-                .setInputHint("Type here")
-                .setHeaderLeftButtonListener(null)
-                .setHeaderRightButtonListener(v -> clickHeaderRightButton(openChannel))
-                .setOpenChannelMessageListAdapter(new CustomOpenChannelMessageListAdapter(useMessageGroupUI))
-                .setItemClickListener(null)
-                .setItemLongClickListener(null)
-                .setInputLeftButtonListener(v -> showMessageTypeDialog())
-                .setMessageListParams(null)
-                .setUseMessageGroupUI(true)
-                .setOnProfileClickListener(null)
-                .setUseUserProfile(false)
-                .setLoadingDialogHandler(null)
-                .setInputText(inputText)
-                .setOnInputTextChangedListener((s, start, before, count) -> inputText = s.toString())
-                .showInputRightButtonAlways();
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            builder.useOverlayMode();
-        }
-        return builder.build();
-    }
-
-    private void clickHeaderRightButton(@NonNull OpenChannel openChannel) {
-        Intent intent;
-        if (openChannel.isOperator(SendBird.getCurrentUser())) {
-            intent = OpenChannelSettingsActivity.newIntentFromCustomActivity(LiveStreamActivity.this, CustomOpenChannelSettingsActivity.class, openChannel.getUrl());
-        } else {
-            intent = ParticipantsListActivity.newIntentFromCustomActivity(LiveStreamActivity.this, CustomParticipantsListActivity.class, openChannel.getUrl());
-        }
-        startActivity(intent);
-    }
-
-    private void showMessageTypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick message type")
-                .setMultiChoiceItems(new String[]{com.sendbird.uikit.customsample.consts.StringSet.highlight},
-                        new boolean[]{customOpenChannelFragment.getCustomMessageType().equals(CustomMessageType.HIGHLIGHT)},
-                        (dialog, which, isChecked) -> {
-                            final CustomMessageType type = isChecked ? CustomMessageType.HIGHLIGHT : CustomMessageType.NONE;
-                            customOpenChannelFragment.setCustomMessageType(type);
-                        })
-                .create()
-                .show();
+        LiveStreamChannelFragment fragment = new LiveStreamChannelFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

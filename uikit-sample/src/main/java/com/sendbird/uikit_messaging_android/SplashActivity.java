@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
@@ -14,7 +15,7 @@ import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 public class SplashActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
@@ -30,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
                     WaitingDialog.dismiss();
                     String userId = PreferenceUtils.getUserId();
                     if (!TextUtils.isEmpty(userId)) {
-                        SendBirdUIKit.connect((user, e) -> {
+                        SendbirdUIKit.connect((user, e) -> {
                             startActivity(getNextIntent());
                             finish();
                         });

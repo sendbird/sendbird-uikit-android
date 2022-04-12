@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sendbird.android.SendBird;
 import com.sendbird.uikit.BuildConfig;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.customsample.utils.PushUtils;
@@ -20,7 +21,7 @@ import com.sendbird.uikit.widgets.WaitingDialog;
 public class LoginActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
@@ -49,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             PreferenceUtils.setNickname(userNickname);
 
             WaitingDialog.show(this);
-            SendBirdUIKit.connect((user, e) -> {
+            SendbirdUIKit.connect((user, e) -> {
                 if (e != null) {
                     Logger.e(e);
                     WaitingDialog.dismiss();

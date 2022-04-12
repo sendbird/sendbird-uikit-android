@@ -1,6 +1,7 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -10,8 +11,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,14 +25,15 @@ public class EmojiReactionView extends FrameLayout {
     private SbViewEmojiReactionComponentBinding binding;
 
     private int emojiFailedDrawableRes;
-    private int emojiFailedDrawableResTint;
+    @Nullable
+    private ColorStateList emojiFailedDrawableResTint;
 
     public EmojiReactionView(@NonNull Context context) {
         this(context, null);
     }
 
     public EmojiReactionView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_emoji_reaction_style);
+        this(context, attrs, R.attr.sb_widget_emoji_message);
     }
 
     public EmojiReactionView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -41,15 +42,15 @@ public class EmojiReactionView extends FrameLayout {
     }
 
     private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.EmojiReaction, defStyleAttr, R.style.Widget_SendBird_Emoji);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.EmojiReaction, defStyleAttr, R.style.Widget_Sendbird_Emoji);
 
         try {
-            binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_emoji_reaction_component, this, true);
+            binding = SbViewEmojiReactionComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
 
             int backgroundRes = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_reaction_background, R.drawable.sb_emoji_reaction_background_light);
             int textStyle = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_reaction_text_appearance, R.style.SendbirdCaption4OnLight01);
             emojiFailedDrawableRes = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_failed_src, R.drawable.icon_question);
-            emojiFailedDrawableResTint = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_failed_src_tint, R.color.onlight_03);
+            emojiFailedDrawableResTint = a.getColorStateList(R.styleable.EmojiReaction_sb_emoji_failed_src_tint);
 
             binding.getRoot().setBackgroundResource(backgroundRes);
             binding.tvCount.setTextAppearance(context, textStyle);
@@ -82,46 +83,50 @@ public class EmojiReactionView extends FrameLayout {
         }
     }
 
-    public void setImageDrawable(Drawable drawable) {
+    public void setImageDrawable(@Nullable Drawable drawable) {
         if (binding != null) {
             binding.ivEmoji.setImageDrawable(drawable);
         }
     }
 
-    public void setEmojiUrl(String emojiUrl) {
+    public void setEmojiUrl(@Nullable String emojiUrl) {
         if (binding != null) {
             int overrideSize = getResources()
                     .getDimensionPixelSize(R.dimen.sb_size_38);
+
+            Drawable failedDrawable;
+            if (emojiFailedDrawableResTint != null) {
+                failedDrawable = DrawableUtils.setTintList(getContext(), emojiFailedDrawableRes, emojiFailedDrawableResTint);
+            } else {
+                failedDrawable = AppCompatResources.getDrawable(getContext(), emojiFailedDrawableRes);
+            }
 
             Glide.with(binding.ivEmoji)
                     .load(emojiUrl)
                     .override(overrideSize, overrideSize)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(DrawableUtils.setTintList(getContext(), emojiFailedDrawableRes, emojiFailedDrawableResTint))
-                    .placeholder(DrawableUtils.setTintList(getContext(), emojiFailedDrawableRes, emojiFailedDrawableResTint))
+                    .error(failedDrawable)
+                    .placeholder(failedDrawable)
                     .into(binding.ivEmoji);
         }
     }
 
+    @NonNull
     public View getLayout() {
         return binding.getRoot();
     }
 
+    @NonNull
     public SbViewEmojiReactionComponentBinding getBinding() {
         return binding;
     }
 
-    public void drawReaction(Reaction reaction) {
+    public void drawReaction(@Nullable Reaction reaction) {
         if (reaction == null || reaction.getUserIds() == null) {
             return;
         }
         setCount(reaction.getUserIds().size());
         setEmojiUrl(EmojiManager.getInstance().getEmojiUrl(reaction.getKey()));
-    }
-
-    @BindingAdapter("reaction")
-    public static void drawReaction(@NonNull EmojiReactionView view, Reaction reaction) {
-        view.drawReaction(reaction);
     }
 }

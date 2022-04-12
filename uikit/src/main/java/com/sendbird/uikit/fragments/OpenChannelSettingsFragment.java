@@ -1,316 +1,272 @@
 package com.sendbird.uikit.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.OpenChannelParams;
 import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendBirdException;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.activities.ParticipantsListActivity;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.ParticipantListActivity;
 import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.databinding.SbFragmentOpenChannelSettingsBinding;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
-import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.OpenChannelSettingsModule;
+import com.sendbird.uikit.modules.components.OpenChannelSettingsHeaderComponent;
+import com.sendbird.uikit.modules.components.OpenChannelSettingsInfoComponent;
+import com.sendbird.uikit.modules.components.OpenChannelSettingsMenuComponent;
+import com.sendbird.uikit.tasks.JobResultTask;
+import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
-import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.OpenChannelSettingsView;
+import com.sendbird.uikit.vm.OpenChannelSettingsViewModel;
+import com.sendbird.uikit.vm.ViewModelFactory;
 
 import java.io.File;
 
-import static android.app.Activity.RESULT_OK;
-
 /**
- * Fragment displaying the informations of the channel.
- * When the channel is created this fragment will connect to the Sendbird and also will enter the channel that is taken from the server through set channel url automatically.
- *
- * @since 2.0.0
+ * Fragment displaying the information of {@code OpenChannel}.
  */
-public class OpenChannelSettingsFragment extends BaseOpenChannelFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
+public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelSettingsModule, OpenChannelSettingsViewModel> {
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
-    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_OPEN_CHANNEL_SETTINGS" + System.currentTimeMillis();;
 
-    private SbFragmentOpenChannelSettingsBinding binding;
+    @Nullable
     private Uri mediaUri;
 
-    protected View.OnClickListener headerLeftButtonListener;
-    protected OnMenuItemClickListener<OpenChannelSettingsView.OpenChannelSettingMenu, OpenChannel> menuItemClickListener;
+    @Nullable
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
     private LoadingDialogHandler loadingDialogHandler;
 
-    public OpenChannelSettingsFragment() {}
+    @NonNull
+    @Override
+    protected OpenChannelSettingsModule onCreateModule(@NonNull Bundle args) {
+        return new OpenChannelSettingsModule(requireContext());
+    }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Logger.i(">> OpenChannelSettingsFragment::onCreate()");
-        Bundle args = getArguments();
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
-        if (args != null) {
-            themeResId = args.getInt(StringSet.KEY_THEME_RES_ID);
+    protected void onConfigureParams(@NonNull OpenChannelSettingsModule module, @NonNull Bundle args) {
+        if (loadingDialogHandler != null) module.setOnLoadingDialogHandler(loadingDialogHandler);
+    }
+
+    @NonNull
+    @Override
+    protected OpenChannelSettingsViewModel onCreateViewModel() {
+        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelSettingsViewModel.class);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        SendBird.setAutoBackgroundDetection(true);
+
+        if (resultCode != RESULT_OK) return;
+
+        switch (requestCode) {
+            case CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE:
+                break;
+            case PICK_IMAGE_PERMISSIONS_REQUEST_CODE:
+                if (data != null) {
+                    mediaUri = data.getData();
+                }
+                break;
         }
 
-        if (getActivity() != null) {
-            getActivity().setTheme(themeResId);
-        }
+        if (mediaUri == null) return;
 
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+        final Uri finalMediaUri = mediaUri;
+        TaskQueue.addTask(new JobResultTask<File>() {
             @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
-
-            @Override
-            public void onUserEntered(OpenChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> OpenChannelSettingsFragment::onUserEntered()");
-                    Logger.d("++ joind user : " + user);
-                    OpenChannelSettingsFragment.this.channel = channel;
-                    drawSettingsView();
-                }
+            @Nullable
+            public File call() {
+                if (!isFragmentAlive()) return null;
+                return FileUtils.uriToFile(requireContext(), finalMediaUri);
             }
 
             @Override
-            public void onUserExited(OpenChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> OpenChannelSettingsFragment::onUserLeft()");
-                    Logger.d("++ left user : " + user);
-                    OpenChannelSettingsFragment.this.channel = channel;
-                    drawSettingsView();
+            public void onResultForUiThread(@Nullable File file, @Nullable SendBirdException e) {
+                if (e != null) {
+                    Logger.w(e);
+                    return;
                 }
-            }
-
-            @Override
-            public void onChannelChanged(BaseChannel channel) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> OpenChannelSettingsFragment::onChannelChanged()");
-                    OpenChannelSettingsFragment.this.channel = (OpenChannel) channel;
-                    drawSettingsView();
-                }
-            }
-
-            @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
-                if (isCurrentChannel(channelUrl)) {
-                    Logger.i(">> OpenChannelSettingsFragment::onChannelDeleted()");
-                    Logger.d("++ deleted channel url : " + channelUrl);
-                    // will have to finish activity
-                    finish();
-                }
-            }
-
-            @Override
-            public void onOperatorUpdated(BaseChannel channel) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> OpenChannelSettingsFragment::onOperatorUpdated()");
-                    OpenChannelSettingsFragment.this.channel = (OpenChannel) channel;
-                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendBird.getCurrentUser()));
-                    if (!((OpenChannel) channel).isOperator(SendBird.getCurrentUser())) {
-                        finish();
-                    }
-                }
-            }
-
-            @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                    Logger.i(">> OpenChannelSettingsFragment::onUserBanned()");
-                    finish();
+                if (isFragmentAlive()) {
+                    OpenChannelParams params = new OpenChannelParams().setCoverImage(file);
+                    toastSuccess(R.string.sb_text_toast_success_start_upload_file);
+                    updateOpenChannel(params);
                 }
             }
         });
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.sb_fragment_open_channel_settings, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initHeaderOnCreated();
-    }
-
-    @Override
-    protected void onReadyFailure() {
-        Logger.i(">> OpenChannelSettingsFragment::onReadyFailure()");
-        toastError(R.string.sb_text_error_get_channel);
-    }
-
-    protected void onConfigure() {
-        Logger.i(">> OpenChannelSettingsFragment::doConfigure()");
-    }
-
-    protected void onDrawPage() {
-        Logger.i(">> OpenChannelSettingsFragment::onDrawPage()");
-        String channelUrl = getStringExtra(StringSet.KEY_CHANNEL_URL);
-        if (TextUtils.isEmpty(channelUrl)) {
-            toastError(R.string.sb_text_error_get_channel);
-            finish();
-            return;
-        }
-        initHeaderOnReady(channel);
-        initChannelSetting();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         SendBird.setAutoBackgroundDetection(true);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
-    }
-
-    private boolean isCurrentChannel(@NonNull String channelUrl) {
-        return channelUrl.equals(channel.getUrl());
     }
 
     @Override
-    public String[] getPermissions(int requestCode) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            return new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-        }
-        return new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull OpenChannelSettingsModule module, @NonNull OpenChannelSettingsViewModel viewModel) {
+        Logger.d(">> OpenChannelSettingsFragment::onBeforeReady status=%s", status);
+        final OpenChannel channel = viewModel.getChannel();
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel, channel);
+        onBindSettingsInfoComponent(module.getOpenChannelSettingsInfoComponent(), viewModel, channel);
+        onBindSettingsMenuComponent(module.getOpenChannelSettingsMenuComponent(), viewModel, channel);
     }
 
     @Override
-    public void onPermissionGranted(int requestCode) {
-        showMediaSelectDialog();
-    }
-
-    private void initHeaderOnCreated() {
-        Bundle args = getArguments();
-        String headerTitle = getString(R.string.sb_text_header_channel_settings);
-        boolean useHeader = false;
-        boolean useHeaderLeftButton = true;
-        boolean useHeaderRightButton = true;
-        int headerLeftButtonIconResId = R.drawable.icon_arrow_left;
-        ColorStateList headerLeftButtonIconTint = null;
-
-        if (args != null) {
-            headerTitle = args.getString(StringSet.KEY_HEADER_TITLE, getString(R.string.sb_text_header_channel_settings));
-            useHeader = args.getBoolean(StringSet.KEY_USE_HEADER, false);
-            useHeaderLeftButton = args.getBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, true);
-            useHeaderRightButton = args.getBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, true);
-            headerLeftButtonIconResId = args.getInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_arrow_left);
-            headerLeftButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT);
-        }
-
-        binding.abSettingsHeader.setVisibility(useHeader ? View.VISIBLE : View.GONE);
-        binding.abSettingsHeader.getTitleTextView().setText(headerTitle);
-        binding.abSettingsHeader.setUseLeftImageButton(useHeaderLeftButton);
-        binding.abSettingsHeader.setUseRightButton(useHeaderRightButton);
-
-        binding.abSettingsHeader.setLeftImageButtonResource(headerLeftButtonIconResId);
-        if (args != null && args.containsKey(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID)) {
-            binding.abSettingsHeader.setLeftImageButtonTint(headerLeftButtonIconTint);
-        }
-
-        binding.abSettingsHeader.setLeftImageButtonClickListener(v -> finish());
-    }
-
-    private void initHeaderOnReady(OpenChannel channel) {
-        if (this.loadingDialogHandler == null) {
-            this.loadingDialogHandler = this;
-        }
-
-        if (headerLeftButtonListener != null) {
-            binding.abSettingsHeader.setLeftImageButtonClickListener(headerLeftButtonListener);
-        }
-
-        binding.abSettingsHeader.setRightTextButtonString(getString(R.string.sb_text_button_edit));
-        binding.abSettingsHeader.setRightTextButtonClickListener((v) -> {
-            DialogListItem[] items = {
-                    new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
-                    new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
-            };
-
-            if (getContext() == null || getFragmentManager() == null) return;
-            DialogUtils.buildItemsBottom(items, (view, p, item) -> {
-                final int key = item.getKey();
-                if (key == R.string.sb_text_channel_settings_change_channel_name) {
-                    if (getContext() == null || getFragmentManager() == null) return;
-
-                    Logger.dev("change channel name");
-                    OnEditTextResultListener listener = res -> {
-                        OpenChannelParams params = new OpenChannelParams().setName(res);
-                        updateOpenChannel(params);
-                    };
-
-                    DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
-                    params.setEnableSingleLine(true);
-                    DialogUtils.buildEditText(
-                            getString(R.string.sb_text_channel_settings_change_channel_name),
-                            (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                            params, listener,
-                            getString(R.string.sb_text_button_save), null,
-                            getString(R.string.sb_text_button_cancel), null).showSingle(getFragmentManager());
-                } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
-                    Logger.dev("change channel image");
-                    checkPermission(PICK_IMAGE_PERMISSIONS_REQUEST_CODE, this);
-                }
-            }).showSingle(getFragmentManager());
-        });
-    }
-
-    private void initChannelSetting() {
-        binding.csvSettings.setOnItemClickListener((v, position, menu) -> {
-            Logger.d("OnSettingsItem clicked menu : " + menu);
-            if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, menu, channel)) {
-                return;
+    protected void onReady(@NonNull ReadyStatus status, @NonNull OpenChannelSettingsModule module, @NonNull OpenChannelSettingsViewModel viewModel) {
+        Logger.d(">> OpenChannelSettingsFragment::onReady status=%s", status);
+        final OpenChannel channel = viewModel.getChannel();
+        if (status == ReadyStatus.ERROR || channel == null) {
+            if (isFragmentAlive()) {
+                toastError(R.string.sb_text_error_get_channel);
+                shouldActivityFinish();
             }
+            return;
+        }
+        module.getOpenChannelSettingsInfoComponent().notifyChannelChanged(channel);
+        module.getOpenChannelSettingsMenuComponent().notifyChannelChanged(channel);
+        viewModel.shouldFinish().observe(getViewLifecycleOwner(), finished -> shouldActivityFinish());
+    }
 
-            switch (menu) {
-                case PARTICIPANTS:
-                    Logger.dev("show participants");
-                    Logger.i("++ show participants");
-                    startActivity(ParticipantsListActivity.newIntent(getContext(), channel.getUrl()));
-                    break;
-                case DELETE_CHANNEL:
-                    deleteChannel();
-                    break;
+    /**
+     * Called to bind events to the OpenChannelSettingsHeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, OpenChannelSettingsModule, OpenChannelSettingsViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindHeaderComponent(@NonNull OpenChannelSettingsHeaderComponent headerComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
+        Logger.d(">> OpenChannelSettingsFragment::onBindHeaderComponent()");
+        headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(v -> showChannelInfoEditDialog());
+    }
+
+    /**
+     * Called to bind events to the OpenChannelSettingsInfoComponent. This is called from {@link #onBeforeReady(ReadyStatus, OpenChannelSettingsModule, OpenChannelSettingsViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param infoComponent The component to which the event will be bound
+     * @param viewModel     A view model that provides the data needed for the fragment
+     * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindSettingsInfoComponent(@NonNull OpenChannelSettingsInfoComponent infoComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
+        Logger.d(">> OpenChannelSettingsFragment::onBindHeaderComponent()");
+        viewModel.getChannelUpdated().observe(getViewLifecycleOwner(), infoComponent::notifyChannelChanged);
+    }
+
+    /**
+     * Called to bind events to the OpenChannelSettingsMenuComponent. This is called from {@link #onBeforeReady(ReadyStatus, OpenChannelSettingsModule, OpenChannelSettingsViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param menuComponent The component to which the event will be bound
+     * @param viewModel     A view model that provides the data needed for the fragment
+     * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindSettingsMenuComponent(@NonNull OpenChannelSettingsMenuComponent menuComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
+        Logger.d(">> OpenChannelSettingsFragment::onBindSettingsMenuComponent()");
+
+        menuComponent.setOnMenuClickListener(menuItemClickListener != null ? menuItemClickListener : (view, position, menu) -> {
+            if (menu == OpenChannelSettingsMenuComponent.Menu.PARTICIPANTS) {
+                startParticipantsListActivity();
+            } else if (menu == OpenChannelSettingsMenuComponent.Menu.DELETE_CHANNEL) {
+                deleteChannel();
             }
         });
-        drawSettingsView();
+        viewModel.getChannelUpdated().observe(getViewLifecycleOwner(), menuComponent::notifyChannelChanged);
+    }
+
+    private void startParticipantsListActivity() {
+        if (isFragmentAlive()) {
+            startActivity(ParticipantListActivity.newIntent(requireContext(), getViewModel().getChannelUrl()));
+        }
+    }
+
+    private void showChannelInfoEditDialog() {
+        DialogListItem[] items = {
+                new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
+                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
+        };
+
+        if (getContext() == null) return;
+        DialogUtils.showListBottomDialog(requireContext(), items, (view, p, item) -> {
+            final int key = item.getKey();
+            if (key == R.string.sb_text_channel_settings_change_channel_name) {
+                if (getContext() == null) return;
+
+                Logger.dev("change channel name");
+                OnEditTextResultListener listener = res -> {
+                    OpenChannelParams params = new OpenChannelParams().setName(res);
+                    updateOpenChannel(params);
+                };
+
+                DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
+                params.setEnableSingleLine(true);
+                assert getFragmentManager() != null;
+                DialogUtils.showInputDialog(
+                        requireContext(),
+                        getString(R.string.sb_text_channel_settings_change_channel_name),
+                        params, listener,
+                        getString(R.string.sb_text_button_save), null,
+                        getString(R.string.sb_text_button_cancel), null);
+            } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
+                Logger.dev("change channel image");
+                checkPermission(PICK_IMAGE_PERMISSIONS_REQUEST_CODE, new IPermissionHandler() {
+                    @Override
+                    @NonNull
+                    public String[] getPermissions(int requestCode) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                            return new String[]{Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE};
+                        }
+                        return new String[]{Manifest.permission.CAMERA,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE};
+                    }
+
+                    @Override
+                    public void onPermissionGranted(int requestCode) {
+                        showMediaSelectDialog();
+                    }
+                });
+            }
+        });
     }
 
     private void showMediaSelectDialog() {
-        if (getContext() == null || getFragmentManager() == null) return;
+        if (getContext() == null) return;
 
         DialogListItem[] items = {
                 new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_camera),
                 new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_gallery)};
 
-        DialogUtils.buildItems(getString(R.string.sb_text_channel_settings_change_channel_image),
-                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
+        DialogUtils.showListDialog(getContext(),
+                getString(R.string.sb_text_channel_settings_change_channel_image),
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
@@ -324,13 +280,15 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
                         Logger.e(e);
                         toastError(R.string.sb_text_error_open_camera);
                     }
-                }).showSingle(getFragmentManager());
+                });
     }
 
     private void takeCamera() {
-        this.mediaUri = FileUtils.createPictureImageUri(getContext());
-        Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
-        if (IntentUtils.hasIntent(getContext(), intent)) {
+        if (!isFragmentAlive()) return;
+        mediaUri = FileUtils.createPictureImageUri(requireContext());
+        if (mediaUri == null) return;
+        Intent intent = IntentUtils.getCameraIntent(requireActivity(), mediaUri);
+        if (IntentUtils.hasIntent(requireContext(), intent)) {
             startActivityForResult(intent, CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE);
         }
     }
@@ -338,31 +296,6 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
     private void pickImage() {
         Intent intent = IntentUtils.getGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE:
-                    break;
-                case PICK_IMAGE_PERMISSIONS_REQUEST_CODE:
-                    if (data != null) {
-                        this.mediaUri = data.getData();
-                    }
-                    break;
-            }
-
-            if (this.mediaUri != null && channel != null) {
-                final File file = FileUtils.uriToFile(getContext().getApplicationContext(), mediaUri);
-
-                OpenChannelParams params = new OpenChannelParams().setCoverImage(file);
-                toastSuccess(R.string.sb_text_toast_success_start_upload_file);
-                updateOpenChannel(params);
-            }
-        }
     }
 
     /**
@@ -380,98 +313,70 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
      * @param params Params of channel. Refer to {@link OpenChannelParams}.
      */
     protected void updateOpenChannel(@NonNull OpenChannelParams params) {
-        if (channel != null) {
-            CustomParamsHandler cutsomHandler = SendBirdUIKit.getCustomParamsHandler();
-            if (cutsomHandler != null) {
-                cutsomHandler.onBeforeUpdateOpenChannel(params);
+        CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeUpdateOpenChannel(params);
+        }
+        onBeforeUpdateOpenChannel(params);
+        getViewModel().updateChannel(params, e -> {
+            if (e != null) {
+                Logger.e(e);
+                toastError(R.string.sb_text_error_update_channel);
             }
-            onBeforeUpdateOpenChannel(params);
-            channel.updateChannel(params, (updatedChannel, e) -> {
-                if (e != null) {
-                    Logger.e(e);
-                    toastError(R.string.sb_text_error_update_channel);
-                    return;
-                }
-                Logger.i("++ updated channel name : %s", updatedChannel.getName());
-            });
-        }
-    }
-
-    private void drawSettingsView() {
-        if (isActive() && binding != null && channel != null) {
-            binding.csvSettings.drawSettingsView(channel);
-        }
+        });
     }
 
     /**
      * Leaves this channel.
      */
     protected void deleteChannel() {
-        if (channel != null) {
-            loadingDialogHandler.shouldShowLoadingDialog();
-            channel.delete(e -> {
-                loadingDialogHandler.shouldDismissLoadingDialog();
-                if (e != null) {
-                    Logger.e(e);
-                    toastError(R.string.sb_text_error_delete_channel);
-                    return;
-                }
-                Logger.i("++ leave channel");
-                finish();
-            });
-        }
-    }
-
-    /**
-     * Sets the click listener on the left button of the header.
-     *
-     * @param listener The callback that will run.
-     */
-    protected void setHeaderLeftButtonListener(View.OnClickListener listener) {
-        this.headerLeftButtonListener = listener;
-    }
-
-    /**
-     * Sets the channel setting menu click listener.
-     *
-     * @param listener The callback that will run.
-     */
-    protected void setOnMenuItemClickListener(OnMenuItemClickListener<OpenChannelSettingsView.OpenChannelSettingMenu, OpenChannel> listener) {
-        this.menuItemClickListener = listener;
-    }
-
-    private void setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
-        this.loadingDialogHandler = loadingDialogHandler;
+        shouldShowLoadingDialog();
+        getViewModel().deleteChannel(e -> {
+            shouldDismissLoadingDialog();
+            if (e != null) toastError(R.string.sb_text_error_delete_channel);
+        });
     }
 
     /**
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
+     * @since 1.2.5
      */
-    @Override
     public boolean shouldShowLoadingDialog() {
-        showWaitingDialog();
-        return true;
+        if (!isFragmentAlive()) return false;
+        return getModule().shouldShowLoadingDialog(requireContext());
     }
 
     /**
      * It will be called when the loading dialog needs dismissing.
+     *
+     * @since 1.2.5
      */
-    @Override
     public void shouldDismissLoadingDialog() {
-        dismissWaitingDialog();
+        getModule().shouldDismissLoadingDialog();
     }
 
     /**
-     * This is a Builder that is able to create the OpenChannelSettings fragment.
-     * The builder provides options how the channel is showing and working. Also you can set the event handler what you want to override.
+     * Returns the URL of the channel with the required data to use this fragment.
+     *
+     * @return The URL of a channel this fragment is currently associated with
+     * @since 3.0.0
      */
+    @NonNull
+    protected String getChannelUrl() {
+        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
+        return args.getString(StringSet.KEY_CHANNEL_URL, "");
+    }
+
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private OpenChannelSettingsFragment customFragment;
-        private View.OnClickListener headerLeftButtonListener;
-        private OnMenuItemClickListener<OpenChannelSettingsView.OpenChannelSettingMenu, OpenChannel> menuItemClickListener;
+        @Nullable
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
+        @Nullable
         private LoadingDialogHandler loadingDialogHandler;
 
         /**
@@ -480,25 +385,23 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * @param channelUrl the url of the channel will be implemented.
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendBirdUIKit.getDefaultThemeMode());
+            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
+         * @param themeMode  {@link SendbirdUIKit.ThemeMode}
          */
-        public Builder(@NonNull String channelUrl, SendBirdUIKit.ThemeMode themeMode) {
-            bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, themeMode.getResId());
-            bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
+            this(channelUrl, themeMode.getResId());
         }
 
         /**
          * Constructor
          *
-         * @param channelUrl the url of the channel will be implemented.
+         * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
@@ -508,12 +411,15 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
         }
 
         /**
-         * Sets the custom channel settings fragment. It must inherit {@link OpenChannelSettingsFragment}.
-         * @param fragment custom channel setting fragment.
+         * Sets arguments to this fragment.
+         *
+         * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends OpenChannelSettingsFragment> Builder setCustomOpenChannelSettingsFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -523,7 +429,8 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setHeaderTitle(String title) {
+        @NonNull
+        public Builder setHeaderTitle(@NonNull String title) {
             bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
@@ -534,6 +441,7 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeader(boolean useHeader) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER, useHeader);
             return this;
@@ -545,7 +453,9 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 1.2.3
          */
+        @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
             return this;
@@ -558,6 +468,7 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
             return this;
@@ -569,6 +480,7 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
             return setHeaderLeftButtonIcon(resId, null);
         }
@@ -577,10 +489,11 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          * Sets the icon on the left button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT, tint);
@@ -592,9 +505,11 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
-            this.headerLeftButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerLeftButtonClickListener = listener;
             return this;
         }
 
@@ -603,8 +518,10 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setOnSettingMenuClickListener(OnMenuItemClickListener<OpenChannelSettingsView.OpenChannelSettingMenu, OpenChannel> listener) {
+        @NonNull
+        public Builder setOnMenuClickListener(@NonNull OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> listener) {
             this.menuItemClickListener = listener;
             return this;
         }
@@ -614,8 +531,10 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
+         * @since 1.2.5
          */
-        public Builder setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+        @NonNull
+        public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
             return this;
         }
@@ -626,12 +545,13 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
          *
          * @return The {@link OpenChannelSettingsFragment} applied to the {@link Bundle}.
          */
+        @NonNull
         public OpenChannelSettingsFragment build() {
-            OpenChannelSettingsFragment fragment = customFragment != null ? customFragment : new OpenChannelSettingsFragment();
+            OpenChannelSettingsFragment fragment = new OpenChannelSettingsFragment();
             fragment.setArguments(bundle);
-            fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
-            fragment.setOnMenuItemClickListener(menuItemClickListener);
-            fragment.setLoadingDialogHandler(loadingDialogHandler);
+            fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.menuItemClickListener = menuItemClickListener;
+            fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;
         }
     }

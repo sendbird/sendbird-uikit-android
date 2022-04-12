@@ -1,5 +1,8 @@
 package com.sendbird.uikit.interfaces;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * Interface definition for a information of user.
  */
@@ -9,6 +12,7 @@ public interface UserInfo {
      *
      * @return the identifier of the user.
      */
+    @NonNull
     String getUserId();
 
     /**
@@ -16,6 +20,7 @@ public interface UserInfo {
      *
      * @return the nickname of the user.
      */
+    @Nullable
     String getNickname();
 
     /**
@@ -23,5 +28,6 @@ public interface UserInfo {
      *
      * @return the profile url of the user.
      */
+    @Nullable
     String getProfileUrl();
 }

@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sendbird.android.OpenChannel;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit_messaging_android.R;
@@ -21,6 +20,7 @@ import com.sendbird.uikit_messaging_android.model.LiveStreamingChannelData;
 import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListAdapter;
 import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListViewHolder;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
+import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,16 +32,23 @@ public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamList
     @Override
     public LiveStreamingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewLiveStreamListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_live_stream_list_item, parent, false);
+        ViewLiveStreamListItemBinding binding = ViewLiveStreamListItemBinding.inflate(inflater, parent, false);
         return new LiveStreamingListViewHolder(binding);
     }
 
     static class LiveStreamingListViewHolder extends OpenChannelListViewHolder {
-        private ViewLiveStreamListItemBinding binding;
+        private final ViewLiveStreamListItemBinding binding;
 
         public LiveStreamingListViewHolder(@NonNull ViewLiveStreamListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            Context context = binding.getRoot().getContext();
+            boolean isDark = PreferenceUtils.isUsingDarkTheme();
+            this.binding.background.setBackgroundResource(isDark ? R.drawable.selector_list_background_dark : R.drawable.selector_list_background_light);
+            this.binding.tvLiveTitle.setTextColor(context.getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+            this.binding.tvCreator.setTextColor(context.getResources().getColor(isDark ? R.color.ondark_02 : R.color.onlight_02));
+            this.binding.tvBadge.setTextColor(context.getResources().getColor(isDark ? R.color.ondark_02 : R.color.onlight_02));
+            this.binding.tvBadge.setBackgroundResource(isDark ? R.drawable.shape_live_badge_dark : R.drawable.shape_live_badge_light);
         }
 
         @Override
@@ -86,8 +93,8 @@ public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamList
 
                 binding.ivChannelThumbnail.setVisibility(View.VISIBLE);
 
-                int iconTint = SendBirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
-                int backgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_400 : R.color.background_300;
+                int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+                int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_400 : R.color.background_300;
                 Drawable errorIcon = DrawableUtils.createOvalIcon(context, backgroundTint, R.drawable.icon_channels, iconTint);
                 Glide.with(context)
                         .load(channelData.getThumbnailUrl())

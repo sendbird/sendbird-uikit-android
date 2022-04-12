@@ -8,7 +8,9 @@ import com.sendbird.android.Reaction;
 import java.util.List;
 
 class EmojiReactionDiffCallback extends DiffUtil.Callback {
+    @NonNull
     private final List<Reaction> oldReactionList;
+    @NonNull
     private final List<Reaction> newReactionList;
 
     EmojiReactionDiffCallback(@NonNull List<Reaction> oldReactionList, @NonNull List<Reaction> newReactionList) {

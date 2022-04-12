@@ -2,6 +2,8 @@ package com.sendbird.uikit.interfaces;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.sendbird.android.BaseMessage;
 
 /**
@@ -16,5 +18,5 @@ public interface OnEmojiReactionLongClickListener {
      * @param message The message that was clicked.
      * @param reactionKey The reaction key that was clicked.
      */
-    void onEmojiReactionLongClick(View view, int position, BaseMessage message, String reactionKey);
+    void onEmojiReactionLongClick(@NonNull View view, int position, @NonNull BaseMessage message, @NonNull String reactionKey);
 }

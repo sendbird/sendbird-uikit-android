@@ -10,9 +10,6 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.ImageViewCompat;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -22,7 +19,7 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewMyQuotedMessageBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
@@ -30,42 +27,41 @@ import com.sendbird.uikit.utils.UserUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class MyQuotedMessageView extends BaseQuotedMessageView {
-    SbViewMyQuotedMessageBinding binding;
+    private final SbViewMyQuotedMessageBinding binding;
 
     public MyQuotedMessageView(@NonNull Context context) {
         this(context, null);
     }
 
     public MyQuotedMessageView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_my_quoted_message_style);
+        this(context, attrs, R.attr.sb_widget_my_message);
     }
 
     public MyQuotedMessageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
-
-    private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.QuotedMessageView, defStyleAttr, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyleAttr, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_my_quoted_message, this, true);
-            int backgroundResId = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_background, R.drawable.sb_shape_chat_bubble);
-            int backgroundTintId = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_background_tint, R.color.background_100);
-            int titleIconId = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_title_icon, R.drawable.icon_reply_filled);
-            int titleIconTintId = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_title_icon_tint, R.color.onlight_03);
-            int titleTextAppearance = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_title_text_appearance, R.style.SendbirdCaption1OnLight01);
-            int messageIconTintId = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_file_icon_tint, R.color.onlight_03);
-            int messageTextAppearance = a.getResourceId(R.styleable.QuotedMessageView_sb_quoted_message_text_appearance, R.style.SendbirdCaption2OnLight03);
+            this.binding = SbViewMyQuotedMessageBinding.inflate(LayoutInflater.from(getContext()), this, true);
+            int backgroundResId = a.getResourceId(R.styleable.MessageView_sb_quoted_message_me_background, R.drawable.sb_shape_chat_bubble);
+            ColorStateList backgroundTint = a.getColorStateList(R.styleable.MessageView_sb_quoted_message_me_background_tint);
+            int titleIconId = a.getResourceId(R.styleable.MessageView_sb_quoted_message_me_title_icon, R.drawable.icon_reply_filled);
+            ColorStateList titleIconTint = a.getColorStateList(R.styleable.MessageView_sb_quoted_message_me_title_icon_tint);
+            int titleTextAppearance = a.getResourceId(R.styleable.MessageView_sb_quoted_message_me_title_text_appearance, R.style.SendbirdCaption1OnLight01);
+            ColorStateList messageIconTint = a.getColorStateList(R.styleable.MessageView_sb_quoted_message_me_file_icon_tint);
+            int messageTextAppearance = a.getResourceId(R.styleable.MessageView_sb_quoted_message_me_text_appearance, R.style.SendbirdCaption2OnLight03);
 
-            final ColorStateList backgroundTint = AppCompatResources.getColorStateList(context, backgroundTintId).withAlpha(0x80);
-            binding.quoteReplyMessagePanel.setBackground(DrawableUtils.setTintList(getContext(), backgroundResId, backgroundTint));
+            if (backgroundTint != null) {
+                binding.quoteReplyMessagePanel.setBackground(DrawableUtils.setTintList(context, backgroundResId, backgroundTint.withAlpha(0x80)));
+            } else {
+                binding.quoteReplyMessagePanel.setBackgroundResource(backgroundResId);
+            }
             binding.ivQuoteReplyIcon.setImageResource(titleIconId);
-            ImageViewCompat.setImageTintList(binding.ivQuoteReplyIcon, AppCompatResources.getColorStateList(context, titleIconTintId));
+            binding.ivQuoteReplyIcon.setImageTintList(titleIconTint);
             binding.tvQuoteReplyTitle.setTextAppearance(context, titleTextAppearance);
             binding.tvQuoteReplyMessage.setTextAppearance(context, messageTextAppearance);
-            ImageViewCompat.setImageTintList(binding.ivQuoteReplyMessageIcon, AppCompatResources.getColorStateList(context, messageIconTintId));
+            binding.ivQuoteReplyMessageIcon.setImageTintList(messageIconTint);
 
-            int bg = SendBirdUIKit.isDarkMode() ? R.drawable.sb_shape_quoted_message_thumbnail_background_dark : R.drawable.sb_shape_quoted_message_thumbnail_background;
+            int bg = SendbirdUIKit.isDarkMode() ? R.drawable.sb_shape_quoted_message_thumbnail_background_dark : R.drawable.sb_shape_quoted_message_thumbnail_background;
             binding.ivQuoteReplyThumbnail.setBackgroundResource(bg);
         } finally {
             a.recycle();

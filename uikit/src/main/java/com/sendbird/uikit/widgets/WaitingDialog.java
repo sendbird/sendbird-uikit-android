@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.uikit.R;
 
 
@@ -17,30 +20,30 @@ public class WaitingDialog {
     private static Dialog waitingDialog;
 
 
-    private static Dialog getWaitingDialog(Context context) {
+    private static Dialog getWaitingDialog(@NonNull Context context) {
         synchronized (waitingDialogLock) {
             if (waitingDialog != null) {
                 return waitingDialog;
             }
 
-            waitingDialog = new Dialog(context, R.style.SendBirdProgressDialog);
+            waitingDialog = new Dialog(context, R.style.Widget_Sendbird_SendbirdProgressDialog);
             return waitingDialog;
         }
     }
 
-    public static void show(Context context) {
+    public static void show(@NonNull Context context) {
         show(context, false);
     }
 
-    public static void show(Context context, int layoutResId) {
+    public static void show(@NonNull Context context, int layoutResId) {
         show(context, false, layoutResId, null);
     }
 
-    public static void show(final Context context, final boolean cancelable) {
+    public static void show(@NonNull Context context, final boolean cancelable) {
         show(context, cancelable, 0, null);
     }
 
-    public static void show(final Context context, final boolean cancelable, final int layoutResId, final DialogInterface.OnCancelListener listener) {
+    public static void show(@NonNull Context context, final boolean cancelable, final int layoutResId, @Nullable DialogInterface.OnCancelListener listener) {
         dismiss();
 
         mainHandler.post(() -> {

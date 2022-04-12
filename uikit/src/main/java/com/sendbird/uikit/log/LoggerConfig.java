@@ -2,6 +2,9 @@ package com.sendbird.uikit.log;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Locale;
@@ -11,13 +14,17 @@ class LoggerConfig {
 
     private int printLoggerLevel;
 
-    private Tag defaultTag;
+    @NonNull
+    private Tag defaultTag = Tag.DEFAULT;
 
+    @Nullable
     private String stackPrefix;
 
+    @NonNull
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
 
-    private Set<String> ignoreStackSet;
+    @NonNull
+    private Set<String> ignoreStackSet = new HashSet<>();
 
     static final int DEV = 1;
     static final int VERBOSE = Log.VERBOSE;
@@ -27,12 +34,14 @@ class LoggerConfig {
     static final int ERROR = Log.ERROR;
     static final int ASSERT = Log.ASSERT;
 
+    @Nullable
     private String getTraceInfo() {
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
         return getTraceInfo(stacks);
     }
 
-    private String getTraceInfo(StackTraceElement[] stacks) {
+    @Nullable
+    private String getTraceInfo(@NonNull StackTraceElement[] stacks) {
         StackTraceElement stack = null;
         String loggerName = this.getClass().getCanonicalName();
         String className;
@@ -64,11 +73,13 @@ class LoggerConfig {
         return String.format(Locale.US, "[%s %s:%s():%d]", dateFormat.format(System.currentTimeMillis()), klass[klass.length - 1], method, line);
     }
 
+    @NonNull
     Tag getDefaultTag() {
         return defaultTag;
     }
 
-    private String getMessageWithTrace(String message) {
+    @NonNull
+    private String getMessageWithTrace(@NonNull String message) {
         String traceInfo = getTraceInfo();
         return String.format("%s %s", traceInfo == null ? "" : traceInfo, message);
     }
@@ -81,35 +92,41 @@ class LoggerConfig {
 
         private int printLoggerLevel = DEV;
 
+        @NonNull
         private Tag defaultTag = Tag.DEFAULT;
 
+        @Nullable
         private String stackPrefix;
 
+        @NonNull
         private Set<String> ignoreStackSet = new HashSet<>();
 
-        Builder setDefaultTag(Tag tag) {
+        @NonNull
+        Builder setDefaultTag(@NonNull Tag tag) {
             defaultTag = tag;
             return this;
         }
 
+        @NonNull
         Builder setPrintLoggerLevel(int level) {
             printLoggerLevel = level;
             return this;
-        }
+    }
 
-        Builder setIgnoreSet(Set<String> set) {
-            if (set == null) {
-                return this;
-            }
+        @SuppressWarnings("UnusedReturnValue")
+        @NonNull
+        Builder setIgnoreSet(@NonNull Set<String> set) {
             ignoreStackSet = set;
             return this;
         }
 
-        Builder setStackPrefix(String prefix) {
+        @NonNull
+        Builder setStackPrefix(@NonNull String prefix) {
             stackPrefix = prefix;
             return this;
         }
 
+        @NonNull
         LoggerConfig build() {
             LoggerConfig loggerConfig = new LoggerConfig();
             loggerConfig.defaultTag = defaultTag;
@@ -121,7 +138,8 @@ class LoggerConfig {
     }
 
 
-    String getMessage(boolean withStack, String msg) {
+    @NonNull
+    String getMessage(boolean withStack, @NonNull String msg) {
         return withStack ? getMessageWithTrace(msg) : msg;
     }
 }

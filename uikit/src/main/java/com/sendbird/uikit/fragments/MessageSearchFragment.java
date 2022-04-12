@@ -3,178 +3,139 @@ package com.sendbird.uikit.fragments;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.MessageSearchQuery;
-import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.databinding.SbFragmentMessageSearchBinding;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnSearchEventListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.MessageSearchModule;
+import com.sendbird.uikit.modules.components.MessageSearchHeaderComponent;
+import com.sendbird.uikit.modules.components.MessageSearchListComponent;
+import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.SoftInputUtils;
-import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.vm.SearchViewModel;
+import com.sendbird.uikit.vm.MessageSearchViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.List;
 
-public class MessageSearchFragment extends BaseGroupChannelFragment implements LoadingDialogHandler {
-    private SbFragmentMessageSearchBinding binding;
-    private MessageSearchAdapter adapter;
-    private LoadingDialogHandler loadingDialogHandler;
+/**
+ * Fragment that provides message search
+ */
+public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModule, MessageSearchViewModel> {
+    @Nullable
     private OnSearchEventListener onSearchEventListener;
+    @Nullable
+    private MessageSearchAdapter adapter;
+    @Nullable
     private OnItemClickListener<BaseMessage> itemClickListener;
-    private SearchViewModel viewModel;
+    @Nullable
+    private LoadingDialogHandler loadingDialogHandler;
+    @Nullable
     private MessageSearchQuery query;
 
-    public MessageSearchFragment() {}
-
+    @NonNull
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Logger.i(">> MessageSearchFragment::onCreate()");
-        Bundle args = getArguments();
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
-        if (args != null) {
-            themeResId = args.getInt(StringSet.KEY_THEME_RES_ID);
-        }
-
-        if (getActivity() != null) {
-            getActivity().setTheme(themeResId);
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.sb_fragment_message_search, container, false);
-        return binding.getRoot();
+    protected MessageSearchModule onCreateModule(@NonNull Bundle args) {
+        return new MessageSearchModule(requireContext());
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onConfigureParams(@NonNull MessageSearchModule module, @NonNull Bundle args) {
+        if (loadingDialogHandler != null) module.setOnLoadingDialogHandler(loadingDialogHandler);
+    }
+
+    @NonNull
+    @Override
+    public MessageSearchViewModel onCreateViewModel() {
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl(), query)).get(getChannelUrl(), MessageSearchViewModel.class);
+    }
+
+    @Override
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull MessageSearchModule module, @NonNull MessageSearchViewModel viewModel) {
+        Logger.d(">> MessageSearchFragment::onBeforeReady()");
+        module.getMessageListComponent().setPagedDataLoader(viewModel);
+        if (adapter != null) {
+            module.getMessageListComponent().setAdapter(adapter);
+        }
+
+        final GroupChannel channel = viewModel.getChannel();
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel, channel);
+        onBindMessageSearchListComponent(module.getMessageListComponent(), viewModel, channel);
+        onBindStatusComponent(module.getStatusComponent(), viewModel, channel);
+    }
+
+    @Override
+    protected void onReady(@NonNull ReadyStatus status, @NonNull MessageSearchModule module, @NonNull MessageSearchViewModel viewModel) {
+        Logger.d(">> MessageSearchFragment::onReady(ReadyStatus=%s)", status);
     }
 
     /**
-     * It will be called when the loading dialog needs displaying.
+     * Called to bind events to the MessageSearchHeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, MessageSearchModule, MessageSearchViewModel)} regardless of the value of {@link ReadyStatus}.
      *
-     * @return True if the callback has consumed the event, false otherwise.
-     * @since 2.1.0
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
      */
-    @Override
-    public boolean shouldShowLoadingDialog() {
-        showWaitingDialog();
-        return true;
-    }
+    protected void onBindHeaderComponent(@NonNull MessageSearchHeaderComponent headerComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MessageSearchFragment::onBindHeaderComponent()");
 
-    /**
-     * It will be called when the loading dialog needs dismissing.
-     *
-     * @since 2.1.0
-     */
-    @Override
-    public void shouldDismissLoadingDialog() {
-        dismissWaitingDialog();
-    }
-
-    @Override
-    protected void onReadyFailure() {
-        Logger.i(">> MessageSearchFragment::onReadyFailure()");
-        setErrorFrame();
-    }
-
-    @Override
-    protected void onConfigure() {
-    }
-
-    @Override
-    protected void onDrawPage() {
-        if (!containsExtra(StringSet.KEY_CHANNEL_URL)) {
-            setErrorFrame();
-            return;
-        }
-
-        initSearchBar();
-        initSearchResultList(channel);
-    }
-
-    private void initSearchBar() {
-        binding.searchBar.setOnSearchEventListener(keyword -> {
+        headerComponent.setOnSearchEventListener(onSearchEventListener != null ? onSearchEventListener : keyword -> {
             Logger.d("++ request search keyword : %s", keyword);
-            if (TextUtils.isEmpty(keyword.trim())) return;
-            if (onSearchEventListener != null) {
-                onSearchEventListener.onSearchRequested(keyword);
-                return;
-            }
             hideKeyboard();
             search(keyword);
         });
-
-        Bundle args = getArguments();
-        boolean useSearchBar = args != null && args.getBoolean(StringSet.KEY_USE_SEARCH_BAR, true);
-        binding.searchBar.setVisibility(useSearchBar ? View.VISIBLE : View.GONE);
-
-        if (useSearchBar) {
-            final String searchText = args != null && args.containsKey(StringSet.KEY_SEARCH_BAR_BUTTON_TEXT) ? args.getString(StringSet.KEY_SEARCH_BAR_BUTTON_TEXT) : getString(R.string.sb_text_button_search);
-            binding.searchBar.getSearchButton().setText(searchText);
-            binding.searchBar.getSearchButton().setEnabled(false);
-            binding.searchBar.setOnInputTextChangedListener((s, start, before, count) -> binding.searchBar.getSearchButton().setEnabled(s.length() > 0));
-        }
     }
 
-    private void initSearchResultList(@NonNull GroupChannel channel) {
-        viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory(channel, query)).get(channel.getUrl(), SearchViewModel.class);
-        getLifecycle().addObserver(viewModel);
-
-        Bundle args = getArguments();
-        if (args != null && args.containsKey(StringSet.KEY_EMPTY_ICON_RES_ID)) {
-            int emptyIconResId = args.getInt(StringSet.KEY_EMPTY_ICON_RES_ID, R.drawable.icon_chat);
-            binding.statusFrame.setEmptyIcon(emptyIconResId);
-            ColorStateList emptyIconTint = args.getParcelable(StringSet.KEY_EMPTY_ICON_TINT);
-            binding.statusFrame.setIconTint(emptyIconTint);
-        }
-        if (args != null && args.containsKey(StringSet.KEY_EMPTY_TEXT_RES_ID)) {
-            int emptyTextResId = args.getInt(StringSet.KEY_EMPTY_TEXT_RES_ID, R.string.sb_text_channel_message_empty);
-            binding.statusFrame.setEmptyText(emptyTextResId);
-        }
-
-        if (adapter == null) adapter = new MessageSearchAdapter();
-        if (loadingDialogHandler == null) loadingDialogHandler = this;
-
-        adapter.setOnItemClickListener(itemClickListener != null ? itemClickListener : this::onItemClicked);
-
-        binding.searchResultList.setAdapter(adapter);
-        binding.searchResultList.setHasFixedSize(true);
-        binding.searchResultList.setPager(viewModel);
-        binding.searchResultList.setThreshold(5);
-        binding.searchResultList.setUseDivider(false);
-
-        viewModel.getSearchResultList().observe(this, searchResults -> {
+    /**
+     * Called to bind events to the MessageSearchListComponent. This is called from {@link #onBeforeReady(ReadyStatus, MessageSearchModule, MessageSearchViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param listComponent The component to which the event will be bound
+     * @param viewModel     A view model that provides the data needed for the fragment
+     * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindMessageSearchListComponent(@NonNull MessageSearchListComponent listComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MessageSearchFragment::onBindMessageSearchListComponent()");
+        listComponent.setOnItemClickListener(itemClickListener != null ? itemClickListener : this::onItemClicked);
+        viewModel.getSearchResultList().observe(getViewLifecycleOwner(), searchResults -> {
             Logger.dev("++ search result size : %s", searchResults.size());
             onSearchResultReceived(searchResults);
         });
+    }
 
-        SoftInputUtils.showSoftKeyboard(binding.searchBar.getBinding().etInputText);
+    /**
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, MessageSearchModule, MessageSearchViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param statusComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MessageSearchFragment::onBindStatusComponent()");
+        statusComponent.setOnActionButtonClickListener(v -> {
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
+            shouldAuthenticate();
+        });
     }
 
     private void hideKeyboard() {
@@ -184,22 +145,41 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
     }
 
     /**
+     * It will be called when the loading dialog needs displaying.
+     *
+     * @return True if the callback has consumed the event, false otherwise.
+     * @since 2.1.0
+     */
+    public boolean shouldShowLoadingDialog() {
+        if (getContext() != null) {
+            getModule().shouldShowLoadingDialog(getContext());
+        }
+        return true;
+    }
+
+    /**
+     * It will be called when the loading dialog needs dismissing.
+     *
+     * @since 2.1.0
+     */
+    public void shouldDismissLoadingDialog() {
+        getModule().shouldDismissLoadingDialog();
+    }
+
+    /**
      * It called when the search request occurs with the written keyword.
      *
-     * @param keyword The keyword to search of message.
+     * @param keyword Keyword to search for messages
      * @since 2.1.0
      */
     protected void search(@NonNull String keyword) {
-        if (viewModel != null) {
-            loadingDialogHandler.shouldShowLoadingDialog();
-            viewModel.search(keyword, (result, e) -> {
-                loadingDialogHandler.shouldDismissLoadingDialog();
-                if (e != null) {
-                    binding.statusFrame.setVisibility(View.VISIBLE);
-                    binding.statusFrame.setStatus(StatusFrameView.Status.ERROR);
-                }
-            });
-        }
+        shouldShowLoadingDialog();
+        getViewModel().search(keyword, (result, e) -> {
+            shouldDismissLoadingDialog();
+            if (e != null) {
+                getModule().getStatusComponent().notifyStatusChanged(StatusFrameView.Status.ERROR);
+            }
+        });
     }
 
     /**
@@ -208,14 +188,14 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
      * @param searchResults The search results.
      * @since 2.1.0
      */
-    protected void onSearchResultReceived(List<BaseMessage> searchResults) {
-        loadingDialogHandler.shouldDismissLoadingDialog();
-        binding.statusFrame.setVisibility(View.GONE);
-        adapter.setItems(searchResults);
+    protected void onSearchResultReceived(@NonNull List<BaseMessage> searchResults) {
+        final MessageSearchModule module = getModule();
+        shouldDismissLoadingDialog();
+        module.getStatusComponent().notifyStatusChanged(StatusFrameView.Status.NONE);
+        module.getMessageListComponent().notifyDataSetChanged(searchResults);
 
         if (searchResults.isEmpty()) {
-            binding.statusFrame.setStatus(StatusFrameView.Status.EMPTY);
-            binding.statusFrame.setVisibility(View.VISIBLE);
+            module.getStatusComponent().notifyStatusChanged(StatusFrameView.Status.EMPTY);
         }
     }
 
@@ -227,51 +207,43 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
      * @param message  The user data that was clicked.
      * @since 2.1.0
      */
-    protected void onItemClicked(View view, int position, BaseMessage message) {
+    protected void onItemClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         Logger.d(">> MessageSearchFragment::onItemClicked(position=%s)", position);
-        Intent intent = new ChannelActivity.IntentBuilder(getContext(), channel.getUrl())
-                .setStartingPoint(message.getCreatedAt())
-                .setHighlightMessageInfo(HighlightMessageInfo.fromMessage(message))
-                .build();
-        intent.putExtra(StringSet.KEY_FROM_SEARCH_RESULT, false);
-        startActivity(intent);
+        if (getContext() != null) {
+            final String channelUrl = getViewModel().getChannel() == null ? "" : getViewModel().getChannel().getUrl();
+            Intent intent = new ChannelActivity.IntentBuilder(getContext(), channelUrl)
+                    .setStartingPoint(message.getCreatedAt())
+                    .setHighlightMessageInfo(HighlightMessageInfo.fromMessage(message))
+                    .build();
+            intent.putExtra(StringSet.KEY_FROM_SEARCH_RESULT, true);
+            startActivity(intent);
+        }
     }
 
-    protected void setErrorFrame() {
-        binding.statusFrame.setStatus(StatusFrameView.Status.CONNECTION_ERROR);
-        binding.statusFrame.setOnActionEventListener(v -> {
-            binding.statusFrame.setStatus(StatusFrameView.Status.LOADING);
-            connect();
-        });
-    }
-
-    private void setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
-        this.loadingDialogHandler = loadingDialogHandler;
-    }
-
-    private void setMessageSearchAdapter(MessageSearchAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    private void setItemClickListener(OnItemClickListener<BaseMessage> itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    private void setOnSearchEventListener(OnSearchEventListener rightButtonListener) {
-        this.onSearchEventListener = rightButtonListener;
-    }
-
-    private void setMessageSearchQuery(MessageSearchQuery customQueryHandler) {
-        this.query = customQueryHandler;
+    /**
+     * Returns the URL of the channel with the required data to use this fragment.
+     *
+     * @return The URL of a channel this fragment is currently associated with
+     * @since 3.0.0
+     */
+    @NonNull
+    protected String getChannelUrl() {
+        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
+        return args.getString(StringSet.KEY_CHANNEL_URL, "");
     }
 
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private MessageSearchFragment customFragment;
+        @Nullable
         private OnSearchEventListener onSearchEventListener;
+        @Nullable
         private MessageSearchAdapter adapter;
+        @Nullable
         private OnItemClickListener<BaseMessage> itemClickListener;
+        @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
         private MessageSearchQuery query;
 
         /**
@@ -281,24 +253,24 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @since 2.1.0
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendBirdUIKit.getDefaultThemeMode());
+            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
+         * @param themeMode  {@link SendbirdUIKit.ThemeMode}
          * @since 2.1.0
          */
-        public Builder(@NonNull String channelUrl, SendBirdUIKit.ThemeMode themeMode) {
+        public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
         }
 
         /**
          * Constructor
          *
-         * @param channelUrl the url of the channel will be implemented.
+         * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
          * @since 2.1.0
          */
@@ -309,14 +281,15 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
         }
 
         /**
-         * Sets the custom message search fragment. It must inherit {@link MessageSearchFragment}.
-         * @param fragment custom message search fragment.
-         * @return This Builder object to allow for chaining of calls to set methods.
+         * Sets arguments to this fragment.
          *
-         * @since 2.1.0
+         * @param args the arguments supplied when the fragment was instantiated.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends MessageSearchFragment> Builder setCustomMessageSearchFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -327,8 +300,9 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setUseSearchBar(boolean useSearchBar) {
-            bundle.putBoolean(StringSet.KEY_USE_SEARCH_BAR, useSearchBar);
+            bundle.putBoolean(StringSet.KEY_USE_HEADER, useSearchBar);
             return this;
         }
 
@@ -339,6 +313,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setSearchBarButtonText(@NonNull String text) {
             bundle.putString(StringSet.KEY_SEARCH_BAR_BUTTON_TEXT, text);
             return this;
@@ -351,6 +326,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
             return setEmptyIcon(resId, null);
         }
@@ -359,10 +335,11 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
@@ -376,6 +353,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setEmptyText(@StringRes int resId) {
             bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
             return this;
@@ -388,7 +366,8 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
-        public Builder setOnSearchEventListener(OnSearchEventListener listener) {
+        @NonNull
+        public Builder setOnSearchEventListener(@NonNull OnSearchEventListener listener) {
             this.onSearchEventListener = listener;
             return this;
         }
@@ -400,6 +379,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public <T extends MessageSearchAdapter> Builder setMessageSearchAdapter(T adapter) {
             this.adapter = adapter;
             return this;
@@ -410,9 +390,10 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * @since 3.0.0
          */
-        public Builder setItemClickListener(OnItemClickListener<BaseMessage> itemClickListener) {
+        @NonNull
+        public Builder setOnItemClickListener(@NonNull OnItemClickListener<BaseMessage> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
         }
@@ -424,7 +405,8 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @see LoadingDialogHandler
          * @since 2.1.0
          */
-        public Builder setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+        @NonNull
+        public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
             return this;
         }
@@ -437,6 +419,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setMessageSearchQuery(@NonNull MessageSearchQuery query) {
             this.query = query;
             return this;
@@ -448,14 +431,15 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
          *
          * @return The {@link MessageSearchFragment} applied to the {@link Bundle}.
          */
+        @NonNull
         public MessageSearchFragment build() {
-            MessageSearchFragment fragment = customFragment != null ? customFragment : new MessageSearchFragment();
+            MessageSearchFragment fragment = new MessageSearchFragment();
             fragment.setArguments(bundle);
-            fragment.setOnSearchEventListener(onSearchEventListener);
-            fragment.setItemClickListener(itemClickListener);
-            fragment.setMessageSearchAdapter(adapter);
-            fragment.setLoadingDialogHandler(loadingDialogHandler);
-            fragment.setMessageSearchQuery(query);
+            fragment.onSearchEventListener = onSearchEventListener;
+            fragment.adapter = adapter;
+            fragment.itemClickListener = itemClickListener;
+            fragment.loadingDialogHandler = loadingDialogHandler;
+            fragment.query = query;
             return fragment;
         }
     }

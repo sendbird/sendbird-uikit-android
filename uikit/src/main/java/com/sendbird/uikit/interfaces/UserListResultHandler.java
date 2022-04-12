@@ -1,5 +1,7 @@
 package com.sendbird.uikit.interfaces;
 
+import androidx.annotation.Nullable;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,8 @@ public interface UserListResultHandler {
      * Called when a result of a list of user is loaded.
      *
      * @param userList The list of user that was loaded.
-     * @param e The exception that was loaded.
+     * @param e The exception when the request fails.
+     * @see UserInfo
      */
-    void onResult(List<? extends UserInfo> userList, Exception e);
+    void onResult(@Nullable List<? extends UserInfo> userList, @Nullable Exception e);
 }

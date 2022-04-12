@@ -1,0 +1,56 @@
+package com.sendbird.uikit.vm;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.sendbird.android.GroupChannel;
+import com.sendbird.android.GroupChannelParams;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.interfaces.PagedQueryHandler;
+import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.vm.queries.DefaultUserListQuery;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * ViewModel preparing and managing data related with the list of users when creating a channel
+ *
+ * @since 3.0.0
+ */
+public class CreateChannelViewModel extends UserViewModel<UserInfo> {
+    private final AtomicBoolean isCreatingChannel = new AtomicBoolean();
+
+    public CreateChannelViewModel(@Nullable PagedQueryHandler<UserInfo> queryHandler) {
+        super("", queryHandler);
+    }
+
+    /**
+     * Creates a channel.
+     *
+     * @param params Params to be applied when creating a channel
+     * @param handler Callback notifying the result of authentication
+     */
+    public void createChannel(@NonNull GroupChannelParams params, @Nullable GroupChannel.GroupChannelCreateHandler handler) {
+        Logger.dev("++ createGroupChannel isCreatingChannel : " + isCreatingChannel.get());
+        if (isCreatingChannel.compareAndSet(false, true)) {
+            GroupChannel.createChannel(params, (channel, e) -> {
+                isCreatingChannel.set(false);
+                if (handler != null) handler.onResult(channel, e);
+            });
+        }
+    }
+
+    /**
+     * Creates user list query.
+     *
+     * @return {@code PagedQueryHandler<UserInfo>} to retrieve the list of users to create {@code GroupChannel}
+     * @since 3.0.0
+     */
+    @NonNull
+    @Override
+    protected PagedQueryHandler<UserInfo> createQueryHandler(@Nullable String channelUrl) {
+        final PagedQueryHandler<UserInfo> customHandler = SendbirdUIKit.getCustomUserListQueryHandler();
+        return customHandler != null ? customHandler : new DefaultUserListQuery();
+    }
+}

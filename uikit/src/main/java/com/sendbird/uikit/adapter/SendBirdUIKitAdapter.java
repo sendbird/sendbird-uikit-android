@@ -2,19 +2,24 @@ package com.sendbird.uikit.adapter;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.android.handlers.InitResultHandler;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 
 /**
- * Adapters provide a binding from a {@link com.sendbird.android.SendBird} set to a connection
- * within a {@link com.sendbird.uikit.SendBirdUIKit#init(SendBirdUIKitAdapter, Context)}.
+ * Adapters provides a binding from a {@link com.sendbird.android.SendBird} set to a connection
+ * within a {@link SendbirdUIKit#init(SendbirdUIKitAdapter, Context)}.
  */
-public interface SendBirdUIKitAdapter {
+public interface SendbirdUIKitAdapter {
     /**
      * Provides the identifier of an app.
      *
      * @return the identifier of an app.
      */
+    @NonNull
     String getAppId();
 
     /**
@@ -22,6 +27,7 @@ public interface SendBirdUIKitAdapter {
      *
      * @return the access token.
      */
+    @Nullable
     String getAccessToken();
 
     /**
@@ -29,12 +35,15 @@ public interface SendBirdUIKitAdapter {
      *
      * @return the current user.
      */
+    @NonNull
     UserInfo getUserInfo();
 
     /**
+     * Provides the {@link InitResultHandler} to initialize SendBird Chat SDK.
      *
-     * @return
+     * @return the handler of SendBird Chat SDK initialization.
      * @since 2.2.0
      */
+    @NonNull
     InitResultHandler getInitResultHandler();
 }

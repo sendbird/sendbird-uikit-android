@@ -18,6 +18,7 @@ public class IntentUtils {
         return intent.resolveActivity(context.getPackageManager()) != null;
     }
 
+    @NonNull
     public static Intent getCameraIntent(@NonNull Context context, @NonNull Uri uri) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
@@ -31,20 +32,18 @@ public class IntentUtils {
         return intent;
     }
 
+    @NonNull
     public static Intent getGalleryIntent() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        if ( Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ) {
-            intent.setType("*/*");
-            String[] mimetypes = {"image/*", "video/*"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        } else {
-            intent.setType("image/*|video/*");
-        }
+        intent.setType("*/*");
+        String[] mimetypes = {"image/*", "video/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return Intent.createChooser(intent, null);
     }
 
+    @NonNull
     public static Intent getFileChooserIntent() {
         Intent intent = new Intent();
         intent.setType("*/*");
@@ -54,6 +53,7 @@ public class IntentUtils {
         return intent;
     }
 
+    @NonNull
     public static Intent getFileViewerIntent(@NonNull Uri uri, @NonNull String mimeType) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeType);
@@ -63,7 +63,7 @@ public class IntentUtils {
         return Intent.createChooser(intent, null);
     }
 
-    private static void grantWritePermission(Context context, Intent intent, Uri uri) {
+    private static void grantWritePermission(@NonNull Context context, @NonNull Intent intent, @NonNull Uri uri) {
         List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         for (ResolveInfo resolveInfo : resInfoList) {
             String packageName = resolveInfo.activityInfo.packageName;
@@ -71,6 +71,7 @@ public class IntentUtils {
         }
     }
 
+    @NonNull
     public static Intent getWebViewerIntent(@NonNull String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;

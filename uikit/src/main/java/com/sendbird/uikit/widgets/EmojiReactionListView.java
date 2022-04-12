@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.sendbird.android.Reaction;
@@ -30,7 +29,7 @@ public class EmojiReactionListView extends FrameLayout {
     }
 
     public EmojiReactionListView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_emoji_reaction_style);
+        this(context, attrs, R.attr.sb_widget_emoji_message);
     }
 
     public EmojiReactionListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -39,7 +38,8 @@ public class EmojiReactionListView extends FrameLayout {
     }
 
     private void init() {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_emoji_reaction_list, this, true);
+        binding = SbViewEmojiReactionListBinding.inflate(LayoutInflater.from(getContext()), this, true);
+        binding.rvEmojiReactionList.setUseDivider(false);
         layoutManager = new GridLayoutManager(getContext(), MAX_SPAN_SIZE);
         binding.rvEmojiReactionList.setLayoutManager(layoutManager);
         binding.rvEmojiReactionList.setHasFixedSize(true);
@@ -47,7 +47,7 @@ public class EmojiReactionListView extends FrameLayout {
         binding.rvEmojiReactionList.setAdapter(adapter);
     }
 
-    public void setReactionList(List<Reaction> reactionList) {
+    public void setReactionList(@NonNull List<Reaction> reactionList) {
         if (adapter != null) {
             adapter.setReactionList(reactionList);
             resetSpanSize();
@@ -95,7 +95,7 @@ public class EmojiReactionListView extends FrameLayout {
     public void refresh() {
         if (adapter != null) {
             resetSpanSize();
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemRangeChanged(0, adapter.getItemCount());
         }
     }
 
@@ -115,10 +115,12 @@ public class EmojiReactionListView extends FrameLayout {
         }
     }
 
+    @NonNull
     public EmojiReactionListView getLayout() {
         return this;
     }
 
+    @NonNull
     public SbViewEmojiReactionListBinding getBinding() {
         return binding;
     }

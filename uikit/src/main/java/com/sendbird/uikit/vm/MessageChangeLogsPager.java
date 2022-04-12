@@ -1,6 +1,7 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -20,8 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 class MessageChangeLogsPager {
     interface MessageChangeLogsResultHandler {
-        void onError(SendBirdException e);
-        void onResult(List<BaseMessage> addedMessageList, List<BaseMessage> updatedMessageList, List<Long> deletedMessageIdList);
+        void onError(@NonNull SendBirdException e);
+        void onResult(@NonNull List<BaseMessage> addedMessageList, @NonNull List<BaseMessage> updatedMessageList, @NonNull List<Long> deletedMessageIdList);
     }
 
     private final BaseChannel channel;
@@ -37,11 +38,11 @@ class MessageChangeLogsPager {
         this.messageListParams.setNextResultSize(100);
     }
 
-    void load(final MessageChangeLogsResultHandler handler) {
+    void load(@Nullable final MessageChangeLogsResultHandler handler) {
         load(true, handler);
     }
 
-    void load(boolean fetchAll, final MessageChangeLogsResultHandler handler) {
+    void load(boolean fetchAll, @Nullable final MessageChangeLogsResultHandler handler) {
         Executors.newSingleThreadExecutor().execute(() -> {
             final List<BaseMessage> updatedMessageList = new ArrayList<>();
             final List<BaseMessage> addedMessageList = new ArrayList<>();

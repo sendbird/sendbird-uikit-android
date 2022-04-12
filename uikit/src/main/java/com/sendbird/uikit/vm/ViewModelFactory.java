@@ -1,47 +1,74 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.BaseChannel;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.GroupChannelListQuery;
+import com.sendbird.android.Member;
 import com.sendbird.android.MessageListParams;
 import com.sendbird.android.MessageSearchQuery;
-import com.sendbird.android.OpenChannel;
 import com.sendbird.android.User;
-import com.sendbird.uikit.interfaces.CustomMemberListQueryHandler;
-import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
+import com.sendbird.uikit.interfaces.PagedQueryHandler;
+import com.sendbird.uikit.interfaces.UserInfo;
 
 import java.util.Objects;
 
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    @Nullable
     private final Object[] params;
 
     public ViewModelFactory() {
         this.params = null;
     }
 
-    public ViewModelFactory(Object... params) {
+    public ViewModelFactory(@Nullable Object... params) {
         this.params = params;
-    }
+    }   
 
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ChannelViewModel.class)) {
-            return (T) new ChannelViewModel((GroupChannel) Objects.requireNonNull(params)[0]);
+            return (T) new ChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
         } else if (modelClass.isAssignableFrom(ChannelListViewModel.class)) {
-            return (T) new ChannelListViewModel();
-        } else if (modelClass.isAssignableFrom(SelectableUserInfoListViewModel.class)) {
-            return (T) new SelectableUserInfoListViewModel(params != null ? (CustomUserListQueryHandler) params[0] : null);
-        } else if (modelClass.isAssignableFrom(UserTypeListViewModel.class)) {
-            return (T) new UserTypeListViewModel((BaseChannel) Objects.requireNonNull(params)[0], (CustomMemberListQueryHandler<User>) params[1]);
+            return (T) new ChannelListViewModel(params != null && params.length > 0 ? (GroupChannelListQuery) params[0] : null);
         } else if (modelClass.isAssignableFrom(OpenChannelViewModel.class)) {
-            return (T) new OpenChannelViewModel((OpenChannel) Objects.requireNonNull(params)[0], (MessageListParams) params[1]);
-        } else if (modelClass.isAssignableFrom(SearchViewModel.class)) {
-            return (T) new SearchViewModel((GroupChannel) Objects.requireNonNull(params)[0], (MessageSearchQuery) Objects.requireNonNull(params)[1]);
+            return (T) new OpenChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
+        } else if (modelClass.isAssignableFrom(OpenChannelSettingsViewModel.class)) {
+            return (T) new OpenChannelSettingsViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(MessageSearchViewModel.class)) {
+            return (T) new MessageSearchViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageSearchQuery) params[1] : null);
+        } else if (modelClass.isAssignableFrom(ChannelSettingsViewModel.class)) {
+            return (T) new ChannelSettingsViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(ModerationViewModel.class)) {
+            return (T) new ModerationViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(ParticipantViewModel.class)) {
+            return (T) new ParticipantViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<User>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(BannedUserListViewModel.class)) {
+            return (T) new BannedUserListViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (BaseChannel.ChannelType) params[1] : null);
+        } else if (modelClass.isAssignableFrom(CreateChannelViewModel.class)) {
+            return (T) new CreateChannelViewModel(params != null && params.length > 0 ? (PagedQueryHandler<UserInfo>) params[0] : null);
+        } else if (modelClass.isAssignableFrom(InviteUserViewModel.class)) {
+            return (T) new InviteUserViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<UserInfo>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(MemberListViewModel.class)) {
+            return (T) new MemberListViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(MutedMemberListViewModel.class)) {
+            return (T) new MutedMemberListViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<Member>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(OperatorListViewModel.class)) {
+            switch (Objects.requireNonNull(params).length) {
+                case 2:
+                    return (T) new OperatorListViewModel((String) params[0], (BaseChannel.ChannelType) params[1], null);
+                case 3:
+                    return (T) new OperatorListViewModel((String) params[0], (BaseChannel.ChannelType) params[1], (PagedQueryHandler<User>) params[2]);
+                default:
+                    return (T) new OperatorListViewModel((String) params[0], null, null);
+            }
+        } else if (modelClass.isAssignableFrom(PromoteOperatorViewModel.class)) {
+            return (T) new PromoteOperatorViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<Member>) params[1] : null);
         } else {
             return super.create(modelClass);
         }

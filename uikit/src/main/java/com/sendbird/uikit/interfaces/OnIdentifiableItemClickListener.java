@@ -2,6 +2,9 @@ package com.sendbird.uikit.interfaces;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 
 /**
@@ -19,5 +22,5 @@ public interface OnIdentifiableItemClickListener<T> {
      * @see ClickableViewIdentifier
      * @since 2.2.0
      */
-    void onIdentifiableItemClick(View view, String identifier, int position, T data);
+    void onIdentifiableItemClick(@NonNull View view, @NonNull String identifier, int position, @Nullable T data);
 }

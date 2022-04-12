@@ -1,6 +1,7 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -10,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.BindingAdapter;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -24,24 +26,25 @@ import com.sendbird.uikit.utils.ViewUtils;
 
 public class MessagePreview extends FrameLayout {
     private SbViewMessagePreviewBinding binding;
-    private int metaPhorTintColor;
+    @Nullable
+    private ColorStateList metaphorTintColor;
     private int messageTextAppearance;
     private int messageFileTextAppearance;
 
-    public MessagePreview(Context context) {
+    public MessagePreview(@NonNull Context context) {
         this(context, null);
     }
 
-    public MessagePreview(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_message_preview_style);
+    public MessagePreview(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_message_preview);
     }
 
-    public MessagePreview(Context context, AttributeSet attrs, int defStyle) {
+    public MessagePreview(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
+    private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessagePreview, defStyle, 0);
         try {
             this.binding = SbViewMessagePreviewBinding.inflate(LayoutInflater.from(getContext()));
@@ -53,8 +56,8 @@ public class MessagePreview extends FrameLayout {
             messageFileTextAppearance = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_message_file_text_appearance, R.style.SendbirdBody3OnLight01);
             int sentAtTextAppearance = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_sent_at_text_appearance, R.style.SendbirdCaption2OnLight02);
             int dividerColor = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_divider_color, R.color.onlight_04);
-            int metaphorBackgroundColor = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_message_metaphor_background_color, R.color.background_100);
-            this.metaPhorTintColor = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_message_metaphor_icon_tint_color, R.color.primary_300);
+            int metaphorBackgroundColor = a.getResourceId(R.styleable.MessagePreview_sb_message_preview_message_metaphor_background_color, 0);
+            this.metaphorTintColor = a.getColorStateList(R.styleable.MessagePreview_sb_message_preview_message_metaphor_icon_tint_color);
 
             binding.root.setBackgroundResource(background);
             binding.tvUserName.setTextAppearance(context, userNameAppearance);
@@ -80,7 +83,11 @@ public class MessagePreview extends FrameLayout {
             this.binding.tvMessage.setMaxLines(1);
             this.binding.tvMessage.setEllipsize(TextUtils.TruncateAt.MIDDLE);
             this.binding.tvMessage.setTextAppearance(context, messageFileTextAppearance);
-            this.binding.ivIcon.setImageDrawable(DrawableUtils.setTintList(binding.ivIcon.getContext(), icon, metaPhorTintColor));
+            if (metaphorTintColor != null) {
+                this.binding.ivIcon.setImageDrawable(DrawableUtils.setTintList(binding.ivIcon.getContext(), icon, metaphorTintColor));
+            } else {
+                this.binding.ivIcon.setImageDrawable(AppCompatResources.getDrawable(binding.ivIcon.getContext(), icon));
+            }
             this.binding.ivIcon.setImageResource(icon);
             this.binding.ivIcon.setVisibility(View.VISIBLE);
             this.binding.tvMessage.setText(fileMessage.getName());
@@ -92,11 +99,6 @@ public class MessagePreview extends FrameLayout {
             this.binding.tvMessage.setText(message.getMessage());
             this.binding.ivIcon.setVisibility(View.GONE);
         }
-    }
-
-    @BindingAdapter("message")
-    public static void drawMessage(MessagePreview view, BaseMessage message) {
-        view.drawMessage(message);
     }
 
     private int getIconDrawable(@NonNull String mimeType) {

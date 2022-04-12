@@ -8,48 +8,41 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewMyMessageStatusBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
 
 public class MyMessageStatusView extends FrameLayout {
-    private SbViewMyMessageStatusBinding binding;
+    private final SbViewMyMessageStatusBinding binding;
 
     public MyMessageStatusView(@NonNull Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     public MyMessageStatusView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     public MyMessageStatusView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(Context context) {
-        this.binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.sb_view_my_message_status, this, true);
+        this.binding = SbViewMyMessageStatusBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     public void drawError() {
         setProgress(false);
-        int alertColor = SendBirdUIKit.isDarkMode() ? R.color.error_200 : R.color.error_300;
+        final int errorColor = SendbirdUIKit.getDefaultThemeMode().getErrorColorResId();
         this.binding.ivStatus.setImageDrawable(DrawableUtils.setTintList(getContext(),
-                R.drawable.icon_error, alertColor));
+                R.drawable.icon_error, errorColor));
     }
 
     public void drawRead() {
         setProgress(false);
-        int readColor = SendBirdUIKit.getDefaultThemeMode().getSecondaryTintResId();
+        int readColor = SendbirdUIKit.getDefaultThemeMode().getSecondaryTintResId();
         this.binding.ivStatus.setImageDrawable(DrawableUtils.setTintList(getContext(),
                 R.drawable.icon_done_all, readColor));
     }
@@ -57,13 +50,13 @@ public class MyMessageStatusView extends FrameLayout {
     public void drawSent() {
         setProgress(false);
         this.binding.ivStatus.setImageDrawable(DrawableUtils.setTintList(getContext(),
-                R.drawable.icon_done, SendBirdUIKit.getDefaultThemeMode().getMonoTintResId()));
+                R.drawable.icon_done, SendbirdUIKit.getDefaultThemeMode().getMonoTintResId()));
     }
 
     public void drawDelivered() {
         setProgress(false);
         this.binding.ivStatus.setImageDrawable(DrawableUtils.setTintList(getContext(),
-                R.drawable.icon_done_all, SendBirdUIKit.getDefaultThemeMode().getMonoTintResId()));
+                R.drawable.icon_done_all, SendbirdUIKit.getDefaultThemeMode().getMonoTintResId()));
     }
 
     public void drawProgress() {
@@ -81,12 +74,8 @@ public class MyMessageStatusView extends FrameLayout {
         }
     }
 
-    public void drawStatus(BaseMessage message, BaseChannel channel) {
-        if (message == null) {
-            return;
-        }
-
-        BaseMessage.SendingStatus status = message.getSendingStatus();
+    public void drawStatus(@NonNull BaseMessage message, @NonNull BaseChannel channel) {
+        final BaseMessage.SendingStatus status = message.getSendingStatus();
 
         switch (status) {
             case CANCELED:

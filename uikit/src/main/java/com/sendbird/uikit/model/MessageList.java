@@ -21,9 +21,11 @@ public class MessageList {
         ;
     }
 
+    @NonNull
     private final Order order;
     @NonNull
     private final TreeSet<BaseMessage> messages;
+    @NonNull
     private final Map<String, BaseMessage> timelineMap = new ConcurrentHashMap<>();
 
     private static BaseMessage createTimelineMessage(@NonNull BaseMessage anchorMessage) {
@@ -46,6 +48,7 @@ public class MessageList {
         });
     }
 
+    @NonNull
     public List<BaseMessage> toList() {
         return new ArrayList<>(messages);
     }
@@ -115,9 +118,9 @@ public class MessageList {
             }
 
             // check above item.
-            final BaseMessage higer = messages.higher(message);
-            if (higer != null && DateUtils.hasSameDate(createdAt, higer.getCreatedAt())) {
-                if (!timeline.equals(higer)) {
+            final BaseMessage higher = messages.higher(message);
+            if (higher != null && DateUtils.hasSameDate(createdAt, higher.getCreatedAt())) {
+                if (!timeline.equals(higher)) {
                     return true;
                 }
             }
@@ -138,6 +141,7 @@ public class MessageList {
         }
     }
 
+    @Nullable
     public synchronized BaseMessage deleteByMessageId(long msgId) {
         BaseMessage removedMessage = null;
         if (messages.size() > 0) {
@@ -166,6 +170,7 @@ public class MessageList {
         return deleted;
     }
 
+    @Nullable
     public synchronized BaseMessage deleteByRequestId(@NonNull String requestId) {
         BaseMessage removedMessage = null;
         if (messages.size() > 0) {
@@ -213,6 +218,7 @@ public class MessageList {
         return order == Order.DESC ? messages.last() : messages.first();
     }
 
+    @Nullable
     public synchronized BaseMessage getById(long messageId) {
         for (BaseMessage message : messages) {
             if (message.getMessageId() == messageId) {
@@ -222,6 +228,7 @@ public class MessageList {
         return null;
     }
 
+    @NonNull
     public synchronized List<BaseMessage> getByCreatedAt(long createdAt) {
         if (createdAt == 0L) return Collections.emptyList();
 

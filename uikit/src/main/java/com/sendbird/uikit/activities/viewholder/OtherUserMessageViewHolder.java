@@ -3,14 +3,15 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Reaction;
-import com.sendbird.uikit.BR;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
@@ -21,30 +22,31 @@ import java.util.Map;
 
 public final class OtherUserMessageViewHolder extends GroupChannelMessageViewHolder {
     private final EmojiReactionListView emojiReactionListView;
+    @NonNull
+    private final OtherUserMessageView otherUserMessageView;
 
-    OtherUserMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
-        emojiReactionListView = ((OtherUserMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
-
-        final OtherUserMessageView root = ((OtherUserMessageView) binding.getRoot());
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanel);
-        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), root.getBinding().ivProfileView);
-        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
+    OtherUserMessageViewHolder(@NonNull SbViewOtherUserMessageBinding binding, boolean useMessageGroupUI) {
+        super(binding.getRoot(), useMessageGroupUI);
+        otherUserMessageView = binding.otherMessageView;
+        emojiReactionListView = otherUserMessageView.getBinding().rvEmojiReactionList;
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), otherUserMessageView.getBinding().contentPanel);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), otherUserMessageView.getBinding().ivProfileView);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), otherUserMessageView.getBinding().quoteReplyPanel);
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
-        binding.setVariable(BR.channel, channel);
-        binding.setVariable(BR.message, message);
-        binding.setVariable(BR.messageGroupType, messageGroupType);
-        binding.setVariable(BR.highlightInfo, highlight);
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        otherUserMessageView.setHighlightMessageInfo(highlight);
+        if (channel instanceof GroupChannel) {
+            otherUserMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);
+        }
     }
 
     @Override
-    public void setEmojiReaction(List<Reaction> reactionList,
-                                 OnItemClickListener<String> emojiReactionClickListener,
-                                 OnItemLongClickListener<String> emojiReactionLongClickListener,
-                                 View.OnClickListener moreButtonClickListener) {
+    public void setEmojiReaction(@NonNull List<Reaction> reactionList,
+                                 @Nullable OnItemClickListener<String> emojiReactionClickListener,
+                                 @Nullable OnItemLongClickListener<String> emojiReactionLongClickListener,
+                                 @Nullable View.OnClickListener moreButtonClickListener) {
         emojiReactionListView.setReactionList(reactionList);
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
@@ -52,6 +54,7 @@ public final class OtherUserMessageViewHolder extends GroupChannelMessageViewHol
     }
 
     @Override
+    @NonNull
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;
     }

@@ -1,73 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <FrameLayout
-        android:id="@+id/frameParentPanel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<FrameLayout
+    android:id="@+id/frameParentPanel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <LinearLayout
-            android:id="@+id/alertPanel"
-            android:orientation="vertical"
+    <LinearLayout
+        android:id="@+id/alertPanel"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivAlertIcon"
+            android:minWidth="@dimen/sb_size_48"
+            android:minHeight="@dimen/sb_size_48"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ivAlertText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/sb_size_20"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/actionPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/sb_size_8"
             android:gravity="center">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivAlertIcon"
-                android:minWidth="@dimen/sb_size_48"
-                android:minHeight="@dimen/sb_size_48"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:id="@+id/ivAction"
+                android:layout_width="@dimen/sb_size_20"
+                android:layout_height="@dimen/sb_size_20"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_refresh"/>
+
+            <View
+                android:layout_width="@dimen/sb_size_12"
+                android:layout_height="@dimen/sb_size_0"/>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/ivAlertText"
+                android:id="@+id/tvAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/sb_size_20"
-                android:gravity="center"/>
-
-            <LinearLayout
-                android:id="@+id/actionPanel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/sb_size_8"
-                android:gravity="center">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivAction"
-                    android:layout_width="@dimen/sb_size_20"
-                    android:layout_height="@dimen/sb_size_20"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/icon_refresh"/>
-
-                <View
-                    android:layout_width="@dimen/sb_size_12"
-                    android:layout_height="@dimen/sb_size_0"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center" />
-
-            </LinearLayout>
+                android:gravity="center" />
 
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/progressPanel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    </LinearLayout>
 
-            <com.sendbird.uikit.widgets.ProgressView
-                android:id="@+id/progress"
-                android:layout_gravity="center"
-                android:layout_width="@dimen/sb_size_60"
-                android:layout_height="@dimen/sb_size_60"/>
+    <FrameLayout
+        android:id="@+id/progressPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        </FrameLayout>
+        <com.sendbird.uikit.widgets.ProgressView
+            android:id="@+id/progress"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/sb_size_60"
+            android:layout_height="@dimen/sb_size_60"/>
+
     </FrameLayout>
-</layout>
+</FrameLayout>

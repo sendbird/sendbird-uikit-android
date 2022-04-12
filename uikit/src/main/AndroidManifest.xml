@@ -33,7 +33,7 @@
 
     <application>
         <activity
-            android:name=".activities.InviteChannelActivity"
+            android:name=".activities.InviteUserActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
@@ -65,7 +65,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.PromoteOperatorsActivity"
+            android:name=".activities.PromoteOperatorActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
@@ -73,7 +73,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.BannedListActivity"
+            android:name=".activities.BannedUserListActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
@@ -85,7 +85,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.ParticipantsListActivity"
+            android:name=".activities.ParticipantListActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity android:name=".activities.MessageSearchActivity"

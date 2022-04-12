@@ -1,5 +1,8 @@
 package com.sendbird.uikit.customsample.models;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.interfaces.UserInfo;
 
@@ -17,7 +20,7 @@ public class LiveStreamingChannelData {
     private final String thumbnailUrl;
     private final String liveUrl;
 
-    public LiveStreamingChannelData(JSONObject jsonObject) throws JSONException {
+    public LiveStreamingChannelData(@NonNull JSONObject jsonObject) throws JSONException {
         this.name = jsonObject.optString(StringSet.name);
         this.creator = jsonObject.has(StringSet.creator_info) ? new Creator(jsonObject.getJSONObject(StringSet.creator_info)) : null;
         JSONArray tagsJsonArray = jsonObject.optJSONArray(StringSet.tags);
@@ -31,22 +34,27 @@ public class LiveStreamingChannelData {
         this.liveUrl = jsonObject.optString(StringSet.live_channel_url);
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
 
+    @Nullable
     public List<String> getTags() {
         return tags;
     }
 
+    @Nullable
     public UserInfo getCreator() {
         return creator;
     }
 
+    @Nullable
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
 
+    @Nullable
     public String getLiveUrl() {
         return liveUrl;
     }
@@ -62,6 +70,7 @@ public class LiveStreamingChannelData {
             profileUrl = jsonObject.optString(StringSet.profile_url);
         }
 
+        @NonNull
         @Override
         public String getUserId() {
             return userId;
@@ -91,11 +100,7 @@ public class LiveStreamingChannelData {
                 return false;
             }
 
-            if (!profileUrl.equals(creator.profileUrl)) {
-                return false;
-            }
-
-            return true;
+            return profileUrl.equals(creator.profileUrl);
         }
 
         @Override
@@ -107,6 +112,7 @@ public class LiveStreamingChannelData {
             return result;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Creator{" +
@@ -139,24 +145,21 @@ public class LiveStreamingChannelData {
             return false;
         }
 
-        if (!liveUrl.equals(that.liveUrl)) {
-            return false;
-        }
-
-        return true;
+        return liveUrl.equals(that.liveUrl);
     }
 
     @Override
     public int hashCode() {
         int result = 17;
         result = result * 31 + (name != null ? name.hashCode() : 0);
-        result = result * 31 + (tags != null ? tags.hashCode() : 0);
+        result = result * 31 + tags.hashCode();
         result = result * 31 + (creator != null ? creator.hashCode() : 0);
         result = result * 31 + (thumbnailUrl != null ? thumbnailUrl.hashCode() : 0);
         result = result * 31 + (liveUrl != null ? liveUrl.hashCode() : 0);
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "LiveStreamingChannelData{" +

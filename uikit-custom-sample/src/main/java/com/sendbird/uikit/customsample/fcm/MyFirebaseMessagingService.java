@@ -1,21 +1,6 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.sendbird.uikit.customsample.fcm;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -29,6 +14,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -56,7 +42,7 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
     }
 
     @Override
-    public void onNewToken(String token) {
+    public void onNewToken(@Nullable String token) {
         Log.i(TAG, "onNewToken(" + token + ")");
         pushToken.set(token);
     }
@@ -67,7 +53,8 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     @Override
-    public void onMessageReceived(Context context, RemoteMessage remoteMessage) {
+    public void onMessageReceived(@Nullable Context context, @Nullable RemoteMessage remoteMessage) {
+        if (context == null || remoteMessage == null) return;
         Logger.d("From: " + remoteMessage.getFrom());
         if (remoteMessage.getData().size() > 0) {
             Logger.d( "Message data payload: " + remoteMessage.getData());
@@ -82,7 +69,9 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
             if (remoteMessage.getData().containsKey(StringSet.sendbird)) {
                 String jsonStr = remoteMessage.getData().get(StringSet.sendbird);
                 SendBird.markAsDelivered(remoteMessage.getData());
-                sendNotification(context, new JSONObject(jsonStr));
+                if (jsonStr != null) {
+                    sendNotification(context, new JSONObject(jsonStr));
+                }
             }
         } catch (JSONException e) {
             Logger.e(e);
@@ -115,7 +104,7 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
 
         Intent intent = GroupChannelMainActivity.newRedirectToChannelIntent(context, channelUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)

@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.FileMessage;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.PhotoViewFragment;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -21,6 +21,7 @@ import com.sendbird.uikit.utils.MessageUtils;
  * Activity displays a image file.
  */
 public class PhotoViewActivity extends AppCompatActivity {
+    @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull BaseChannel.ChannelType channelType, @NonNull FileMessage message) {
         Intent intent = new Intent(context, PhotoViewActivity.class);
         intent.putExtra(StringSet.KEY_MESSAGE_ID, message.getMessageId());
@@ -39,7 +40,7 @@ public class PhotoViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
+        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
         setContentView(R.layout.sb_activity);
 
 
@@ -57,7 +58,7 @@ public class PhotoViewActivity extends AppCompatActivity {
 
         final PhotoViewFragment fragment = new PhotoViewFragment.Builder(senderId, fileName,
                 channelUrl, url, mimeType, senderNickname, createdAt,
-                messageId, channelType, SendBirdUIKit.getDefaultThemeMode(), isDeletable)
+                messageId, channelType, SendbirdUIKit.getDefaultThemeMode(), isDeletable)
                 .build();
 
         final FragmentManager manager = getSupportFragmentManager();

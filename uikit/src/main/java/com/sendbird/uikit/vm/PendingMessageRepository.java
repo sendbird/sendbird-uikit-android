@@ -15,7 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PendingMessageRepository {
 
-    @NonNull
+    private PendingMessageRepository() {}
+
+    private static class PendingMessageManagerHolder {
+        static final PendingMessageRepository INSTANCE = new PendingMessageRepository();
+    }
+    public static PendingMessageRepository getInstance() {
+        return PendingMessageManagerHolder.INSTANCE;
+    }
+
+    private final Map<String, List<BaseMessage>> pendingMessageMap = new ConcurrentHashMap<>();
+    private final Map<String, FileInfo> cachedFileInfos = new ConcurrentHashMap<>();
     private final List<Observer<BaseMessage>> pendingMessageStatusChanged = new ArrayList<>();
 
     boolean addPendingMessageStatusChanged(@NonNull Observer<BaseMessage> subscriber) {
@@ -31,18 +41,6 @@ public class PendingMessageRepository {
             subscriber.onChanged(message);
         }
     }
-
-    private PendingMessageRepository() {}
-
-    private static class PendingMessageManagerHolder {
-        static final PendingMessageRepository INSTANCE = new PendingMessageRepository();
-    }
-    public static PendingMessageRepository getInstance() {
-        return PendingMessageManagerHolder.INSTANCE;
-    }
-
-    private final Map<String, List<BaseMessage>> pendingMessageMap = new ConcurrentHashMap<>();
-    private final Map<String, FileInfo> cachedFileInfos = new ConcurrentHashMap<>();
 
     @Nullable
     public FileInfo getFileInfo(@NonNull BaseMessage message) {
@@ -81,6 +79,7 @@ public class PendingMessageRepository {
         pendingMessages.add(0, message);
         pendingMessageMap.put(channelUrl, pendingMessages);
         notifyPendingMessageStatusChanged(message);
+
     }
 
     void updatePendingMessage(@NonNull String channelUrl, @Nullable BaseMessage message) {
@@ -124,7 +123,6 @@ public class PendingMessageRepository {
             }
             pendingMessageMap.put(channelUrl, pendingMessages);
         }
-
         if (isRemoved) {
             notifyPendingMessageStatusChanged(message);
         }

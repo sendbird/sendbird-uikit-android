@@ -1,5 +1,7 @@
 package com.sendbird.uikit_messaging_android.openchannel.livestream;
 
+import androidx.annotation.Nullable;
+
 import com.sendbird.android.OpenChannel;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListFragment;
@@ -11,7 +13,7 @@ public class LiveStreamListFragment extends OpenChannelListFragment {
     }
 
     @Override
-    protected void clickOpenChannelItem(OpenChannel openChannel) {
+    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
         if (getContext() == null || openChannel == null) return;
         startActivity(LiveStreamActivity.newIntent(getContext(), openChannel.getUrl()));
     }

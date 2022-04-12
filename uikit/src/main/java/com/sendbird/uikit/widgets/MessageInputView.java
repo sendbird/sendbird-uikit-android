@@ -1,14 +1,18 @@
 package com.sendbird.uikit.widgets;
 
-import android.app.Dialog;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,19 +23,16 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.ImageViewCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewMessageInputBinding;
-import com.sendbird.uikit.fragments.SendBirdDialogFragment;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.log.Logger;
@@ -44,7 +45,6 @@ import java.lang.reflect.Field;
 public class MessageInputView extends FrameLayout {
     private SbViewMessageInputBinding binding;
 
-    private FragmentManager fragmentManager;
     private KeyboardDisplayType displayType = KeyboardDisplayType.Plane;
     private OnClickListener sendClickListener;
     private OnClickListener addClickListener;
@@ -54,12 +54,26 @@ public class MessageInputView extends FrameLayout {
     private OnInputTextChangedListener inputTextChangedListener;
     private OnInputTextChangedListener editModeTextChangedListener;
     private OnInputModeChangedListener inputModeChangedListener;
-    private Mode mode;
+    private Mode mode = Mode.DEFAULT;
     private int addButtonVisibility = VISIBLE;
     private boolean showSendButtonAlways;
+    private boolean useOverlay = false;
 
     public enum Mode {
-        DEFAULT, EDIT, QUOTE_REPLY
+        /**
+         * A mode to be able to send a message normally.
+         */
+        DEFAULT,
+
+        /**
+         * A mode to edit current message.
+         */
+        EDIT,
+
+        /**
+         * A mode to send a reply message about current message.
+         */
+        QUOTE_REPLY
     }
 
     public MessageInputView(@NonNull Context context) {
@@ -67,45 +81,46 @@ public class MessageInputView extends FrameLayout {
     }
 
     public MessageInputView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_message_input_style);
+        this(context, attrs, 0);
     }
 
     public MessageInputView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageInput, defStyleAttr, 0);
+        final TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageInputComponent, defStyleAttr, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_message_input, this, true);
-            int backgroundId = a.getResourceId(R.styleable.MessageInput_sb_message_input_background, R.color.background_50);
-            int textBackgroundId = a.getResourceId(R.styleable.MessageInput_sb_message_input_text_background, R.drawable.sb_message_input_text_background_light);
-            int textAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_text_appearance, R.style.SendbirdBody3OnLight01);
-            ColorStateList hintColor = a.getColorStateList(R.styleable.MessageInput_sb_message_input_text_hint_color);
-            int textCursorDrawable = a.getResourceId(R.styleable.MessageInput_sb_message_input_text_cursor_drawable, R.drawable.sb_message_input_cursor_light);
-            boolean isEnabled = a.getBoolean(R.styleable.MessageInput_sb_message_input_enable, true);
+            this.binding = SbViewMessageInputBinding.inflate(LayoutInflater.from(getContext()), this, true);
+            int backgroundId = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_background, R.color.background_50);
+            int textBackgroundId = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_background, R.drawable.sb_message_input_text_background_light);
+            int textAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_appearance, R.style.SendbirdBody3OnLight01);
+            String hint = a.getString(R.styleable.MessageInputComponent_sb_message_input_text_hint);
+            ColorStateList hintColor = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_text_hint_color);
+            int textCursorDrawable = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_cursor_drawable, R.drawable.sb_message_input_cursor_light);
 
-            int leftButtonTint = a.getResourceId(R.styleable.MessageInput_sb_message_input_left_button_tint, R.color.sb_selector_input_add_color_light);
-            int leftButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_left_button_background, R.drawable.sb_button_uncontained_background_light);
-            int rightButtonTint = a.getResourceId(R.styleable.MessageInput_sb_message_input_right_button_tint, R.color.primary_300);
-            int rightButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_right_button_background, R.drawable.sb_button_uncontained_background_light);
-            int editSaveButtonTextAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_save_button_text_appearance, R.style.SendbirdButtonOnDark01);
-            int editSaveButtonTextColor = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_save_button_text_color, R.color.sb_button_contained_text_color_light);
-            int editSaveButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_save_button_background, R.drawable.sb_button_contained_background_light);
-            int editCancelButtonTextAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_cancel_button_text_appearance, R.style.SendbirdButtonPrimary300);
-            int editCancelButtonTextColor = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_cancel_button_text_color, R.color.sb_button_uncontained_text_color_light);
-            int editCancelButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_edit_cancel_button_background, R.drawable.sb_button_uncontained_background_light);
+            int leftButtonIcon = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_left_button_icon, R.drawable.icon_add);
+            ColorStateList leftButtonTint = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_left_button_tint);
+            int leftButtonBackground = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_left_button_background, R.drawable.sb_button_uncontained_background_light);
+            int rightButtonIcon = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_right_button_icon, R.drawable.icon_send);
+            ColorStateList rightButtonTint = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_right_button_tint);
+            int rightButtonBackground = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_right_button_background, R.drawable.sb_button_uncontained_background_light);
+            int editSaveButtonTextAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_edit_save_button_text_appearance, R.style.SendbirdButtonOnDark01);
+            ColorStateList editSaveButtonTextColor = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_edit_save_button_text_color);
+            int editSaveButtonBackground = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_edit_save_button_background, R.drawable.sb_button_contained_background_light);
+            int editCancelButtonTextAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_edit_cancel_button_text_appearance, R.style.SendbirdButtonPrimary300);
+            ColorStateList editCancelButtonTextColor = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_edit_cancel_button_text_color);
+            int editCancelButtonBackground = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_edit_cancel_button_background, R.drawable.sb_button_uncontained_background_light);
 
-            int replyTitleAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_title_text_appearance, R.style.SendbirdCaption1OnLight01);
-            int replyMessageAppearance = a.getResourceId(R.styleable.MessageInput_sb_message_input_quoted_message_text_appearance, R.style.SendbirdCaption2OnLight03);
-            int replyRightButtonIcon = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon, R.drawable.icon_close);
-            int replyRightButtonTint = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon_tint, R.color.onlight_02);
-            int replyRightButtonBackground = a.getResourceId(R.styleable.MessageInput_sb_message_input_quote_reply_right_icon_background, R.drawable.sb_button_uncontained_background_light);
+            int replyTitleAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_quote_reply_title_text_appearance, R.style.SendbirdCaption1OnLight01);
+            int replyMessageAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_quoted_message_text_appearance, R.style.SendbirdCaption2OnLight03);
+            int replyRightButtonIcon = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_quote_reply_right_icon, R.drawable.icon_close);
+            ColorStateList replyRightButtonTint = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_quote_reply_right_icon_tint);
+            int replyRightButtonBackground = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_quote_reply_right_icon_background, R.drawable.sb_button_uncontained_background_light);
 
             binding.messageInputParent.setBackgroundResource(backgroundId);
             binding.etInputText.setBackgroundResource(textBackgroundId);
             binding.etInputText.setTextAppearance(context, textAppearance);
+            if (hint != null) {
+                setInputTextHint(hint);
+            }
             if (hintColor != null) {
                 binding.etInputText.setHintTextColor(hintColor);
             }
@@ -118,30 +133,34 @@ public class MessageInputView extends FrameLayout {
                 f.set(binding.etInputText, textCursorDrawable);
             }
 
-            setEnabled(isEnabled);
+            setEnabled(true);
 
             binding.ibtnAdd.setBackgroundResource(leftButtonBackground);
-            ImageViewCompat.setImageTintList(binding.ibtnAdd, AppCompatResources.getColorStateList(context, leftButtonTint));
+            setAddImageResource(leftButtonIcon);
+            binding.ibtnAdd.setImageTintList(leftButtonTint);
             binding.ibtnSend.setBackgroundResource(rightButtonBackground);
-            ImageViewCompat.setImageTintList(binding.ibtnSend, AppCompatResources.getColorStateList(context, rightButtonTint));
+            setSendImageResource(rightButtonIcon);
+            binding.ibtnSend.setImageTintList(rightButtonTint);
             binding.btnSave.setTextAppearance(context, editSaveButtonTextAppearance);
-            binding.btnSave.setTextColor(AppCompatResources.getColorStateList(context, editSaveButtonTextColor));
+            if (editSaveButtonTextColor != null) {
+                binding.btnSave.setTextColor(editSaveButtonTextColor);
+            }
             binding.btnSave.setBackgroundResource(editSaveButtonBackground);
             binding.btnCancel.setTextAppearance(context, editCancelButtonTextAppearance);
-            binding.btnCancel.setTextColor(AppCompatResources.getColorStateList(context, editCancelButtonTextColor));
+            if (editCancelButtonTextColor != null) {
+                binding.btnCancel.setTextColor(editCancelButtonTextColor);
+            }
             binding.btnCancel.setBackgroundResource(editCancelButtonBackground);
 
             binding.ivQuoteReplyMessageImage.setRadius(getResources().getDimensionPixelSize(R.dimen.sb_size_8));
             binding.tvQuoteReplyTitle.setTextAppearance(context, replyTitleAppearance);
             binding.tvQuoteReplyMessage.setTextAppearance(context, replyMessageAppearance);
             binding.ivQuoteReplyClose.setImageResource(replyRightButtonIcon);
-            ImageViewCompat.setImageTintList(binding.ivQuoteReplyClose, AppCompatResources.getColorStateList(context, replyRightButtonTint));
+            binding.ivQuoteReplyClose.setImageTintList(replyRightButtonTint);
             binding.ivQuoteReplyClose.setBackgroundResource(replyRightButtonBackground);
-            final int dividerColor = SendBirdUIKit.isDarkMode() ? R.color.ondark_04 : R.color.onlight_04;
+            final int dividerColor = SendbirdUIKit.isDarkMode() ? R.color.ondark_04 : R.color.onlight_04;
             binding.ivReplyDivider.setBackgroundColor(getResources().getColor(dividerColor));
-            binding.etInputText.setOnClickListener(v -> {
-                showKeyboard();
-            });
+            binding.etInputText.setOnClickListener(v -> showKeyboard());
 
             binding.etInputText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -172,6 +191,7 @@ public class MessageInputView extends FrameLayout {
                     }
                 }
             });
+            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         } catch (Exception e) {
             Logger.e(e);
         } finally {
@@ -241,10 +261,12 @@ public class MessageInputView extends FrameLayout {
         binding.tvQuoteReplyMessage.setText(displayMessage);
     }
 
+    @NonNull
     public SbViewMessageInputBinding getBinding() {
         return binding;
     }
 
+    @NonNull
     public View getLayout() {
         return this;
     }
@@ -262,7 +284,7 @@ public class MessageInputView extends FrameLayout {
         binding.ibtnSend.setVisibility(visibility);
     }
 
-    public void setOnSendClickListener(OnClickListener sendClickListener) {
+    public void setOnSendClickListener(@Nullable OnClickListener sendClickListener) {
         this.sendClickListener = sendClickListener;
         binding.ibtnSend.setOnClickListener(sendClickListener);
     }
@@ -271,8 +293,12 @@ public class MessageInputView extends FrameLayout {
         binding.ibtnSend.setImageResource(sendImageResource);
     }
 
-    public void setSendImageButtonTint(ColorStateList tint) {
-        ImageViewCompat.setImageTintList(binding.ibtnSend, tint);
+    public void setSendImageDrawable(@Nullable Drawable drawable) {
+        binding.ibtnSend.setImageDrawable(drawable);
+    }
+
+    public void setSendImageButtonTint(@Nullable ColorStateList tint) {
+        binding.ibtnSend.setImageTintList(tint);
     }
 
     public void showSendButtonAlways(boolean always) {
@@ -288,7 +314,7 @@ public class MessageInputView extends FrameLayout {
         this.inputModeChangedListener = inputModeChangedListener;
     }
 
-    public void setOnAddClickListener(OnClickListener addClickListener) {
+    public void setOnAddClickListener(@Nullable OnClickListener addClickListener) {
         this.addClickListener = addClickListener;
         binding.ibtnAdd.setOnClickListener(addClickListener);
     }
@@ -297,8 +323,12 @@ public class MessageInputView extends FrameLayout {
         binding.ibtnAdd.setImageResource(addImageResource);
     }
 
-    public void setAddImageButtonTint(ColorStateList tint) {
-        ImageViewCompat.setImageTintList(binding.ibtnAdd, tint);
+    public void setAddImageDrawable(@Nullable Drawable drawable) {
+        binding.ibtnAdd.setImageDrawable(drawable);
+    }
+
+    public void setAddImageButtonTint(@Nullable ColorStateList tint) {
+        binding.ibtnAdd.setImageTintList(tint);
     }
 
     public void setEditPanelVisibility(int visibility) {
@@ -310,77 +340,81 @@ public class MessageInputView extends FrameLayout {
         binding.ivReplyDivider.setVisibility(visibility);
     }
 
-    public void setOnEditCancelClickListener(OnClickListener editCancelClickListener) {
+    public void setOnEditCancelClickListener(@Nullable OnClickListener editCancelClickListener) {
         this.editCancelClickListener = editCancelClickListener;
         binding.btnCancel.setOnClickListener(editCancelClickListener);
     }
 
-    public void setOnEditSaveClickListener(OnClickListener editSaveClickListener) {
+    public void setOnEditSaveClickListener(@Nullable OnClickListener editSaveClickListener) {
         this.editSaveClickListener = editSaveClickListener;
         binding.btnSave.setOnClickListener(editSaveClickListener);
     }
 
-    public void setOnReplyCloseClickListener(OnClickListener replyCloseButtonClickListener) {
+    public void setOnReplyCloseClickListener(@Nullable OnClickListener replyCloseButtonClickListener) {
         this.replyCloseButtonClickListener = replyCloseButtonClickListener;
         binding.ivQuoteReplyClose.setOnClickListener(replyCloseButtonClickListener);
     }
 
-    public void setOnInputTextChangedListener(OnInputTextChangedListener inputTextChangedListener) {
+    public void setOnInputTextChangedListener(@Nullable OnInputTextChangedListener inputTextChangedListener) {
         this.inputTextChangedListener = inputTextChangedListener;
     }
 
-    public void setOnEditModeTextChangedListener(OnInputTextChangedListener inputTextChangedListener) {
+    public void setOnEditModeTextChangedListener(@Nullable OnInputTextChangedListener inputTextChangedListener) {
         this.editModeTextChangedListener = inputTextChangedListener;
     }
 
-    public void setInputText(String text) {
+    public void setInputText(@Nullable String text) {
         binding.etInputText.setText(text);
         if (text != null) {
             binding.etInputText.setSelection(text.length());
         }
     }
 
+    public void setUseOverlay(boolean useOverlay) {
+        this.useOverlay = useOverlay;
+    }
+
+    @Nullable
     public String getInputText() {
         Editable editable = binding.etInputText.getText();
         return editable != null ? editable.toString().trim() : null;
     }
 
-    public void setInputTextHint(String hint) {
+    public void setInputTextHint(@Nullable String hint) {
         binding.etInputText.setHint(hint);
     }
 
+    @NonNull
     public EditText getInputEditText() {
         return binding.etInputText;
     }
 
-    public void setKeyboardDisplayType(@NonNull FragmentManager fragmentManager, KeyboardDisplayType displayType) {
-        this.fragmentManager = fragmentManager;
+    public void setKeyboardDisplayType(@NonNull KeyboardDisplayType displayType) {
         this.displayType = displayType;
-        if (displayType == KeyboardDisplayType.Dialog) {
-            binding.etInputText.setInputType(InputType.TYPE_NULL);
-        } else {
-            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        }
     }
 
-    /**
-     * @deprecated As of 2.2.0xx, replaced by {@link MessageInputView#getInputMode()}
-     */
-    @Deprecated
-    public boolean isEditMode() {
-        return Mode.EDIT == this.mode;
-    }
-
+    @NonNull
     public Mode getInputMode() {
         return this.mode;
     }
 
     private void showInputDialog() {
-        final SendBirdDialogFragment.Builder builder = new SendBirdDialogFragment.Builder();
         MessageInputView messageInputView = createDialogInputView();
-        builder.setContentView(messageInputView)
-                .setDialogGravity(SendBirdDialogFragment.DialogGravity.BOTTOM);
-        SendBirdDialogFragment dialogFragment = builder.create();
+
+        int themeResId;
+        if (useOverlay) {
+            themeResId = R.style.Widget_Sendbird_Overlay_DialogView;
+        } else {
+            themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
+        }
+        final Context themeWrapperContext = new ContextThemeWrapper(getContext(), themeResId);
+        final DialogView dialogView = new DialogView(themeWrapperContext);
+        dialogView.setContentView(messageInputView);
+        dialogView.setBackgroundBottom();
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.Sendbird_Dialog_Bottom);
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
 
         final Context context = messageInputView.getContext();
         final int prevSoftInputMode = SoftInputUtils.getSoftInputMode(context);
@@ -388,7 +422,7 @@ public class MessageInputView extends FrameLayout {
 
         if (sendClickListener != null) {
             messageInputView.setOnSendClickListener(v -> {
-                dialogFragment.dismiss();
+                dialog.dismiss();
                 binding.ibtnSend.postDelayed(() -> {
                     sendClickListener.onClick(binding.ibtnSend);
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
@@ -398,7 +432,7 @@ public class MessageInputView extends FrameLayout {
 
         if (addClickListener != null) {
             messageInputView.setOnAddClickListener(v -> {
-                dialogFragment.dismiss();
+                dialog.dismiss();
                 binding.ibtnAdd.postDelayed(() -> {
                     addClickListener.onClick(binding.ibtnAdd);
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
@@ -409,7 +443,7 @@ public class MessageInputView extends FrameLayout {
         if (editSaveClickListener != null) {
             messageInputView.setOnEditSaveClickListener(v -> {
                 setInputText(messageInputView.getInputText());
-                dialogFragment.dismiss();
+                dialog.dismiss();
                 binding.btnSave.postDelayed(() -> {
                     editSaveClickListener.onClick(binding.btnSave);
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
@@ -419,7 +453,7 @@ public class MessageInputView extends FrameLayout {
 
         if (editCancelClickListener != null) {
             messageInputView.setOnEditCancelClickListener(v -> {
-                dialogFragment.dismiss();
+                dialog.dismiss();
                 binding.btnCancel.postDelayed(() -> {
                     editCancelClickListener.onClick(binding.btnCancel);
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
@@ -429,7 +463,7 @@ public class MessageInputView extends FrameLayout {
 
         if (replyCloseButtonClickListener != null) {
             messageInputView.setOnReplyCloseClickListener(v -> {
-                dialogFragment.dismiss();
+                dialog.dismiss();
                 binding.ivQuoteReplyClose.postDelayed(() -> {
                     replyCloseButtonClickListener.onClick(binding.ivQuoteReplyClose);
                     SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
@@ -449,21 +483,20 @@ public class MessageInputView extends FrameLayout {
             }
         });
 
-        dialogFragment.showSingle(fragmentManager);
-        messageInputView.showKeyboard();
+        dialog.setOnCancelListener(dialog1 -> {
+            setInputMode(Mode.DEFAULT);
+            binding.getRoot().postDelayed(() -> SoftInputUtils.setSoftInputMode(context, prevSoftInputMode), 200);
+        });
 
-        final Dialog dialog = dialogFragment.getDialog();
-        if (dialog != null) {
-            dialog.setOnDismissListener(d -> {
-                dialogFragment.dismiss();
-                setInputMode(Mode.DEFAULT);
-                binding.getRoot().postDelayed(() -> {
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode);
-                }, 200);
-            });
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+            dialog.getWindow().setLayout(MATCH_PARENT, WRAP_CONTENT);
         }
+        messageInputView.showKeyboard();
     }
 
+    @NonNull
     private MessageInputView createDialogInputView() {
         final MessageInputView messageInputView = new MessageInputView(getContext());
         if (showSendButtonAlways) messageInputView.setSendButtonVisibility(VISIBLE);

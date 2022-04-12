@@ -5,16 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
@@ -24,14 +24,13 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.fragments.OpenChannelFragment;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.databinding.ActivityLiveStreamBinding;
 import com.sendbird.uikit_messaging_android.model.LiveStreamingChannelData;
+import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +54,7 @@ public class LiveStreamActivity extends AppCompatActivity {
         private final WeakReference<LiveStreamActivity> weakReference;
 
         public HideHandler(LiveStreamActivity activity) {
+            super(Looper.getMainLooper());
             this.weakReference = new WeakReference<>(activity);
         }
 
@@ -67,6 +67,7 @@ public class LiveStreamActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
         Intent intent = new Intent(context, LiveStreamActivity.class);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -80,10 +81,19 @@ public class LiveStreamActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_live_stream);
+        binding = ActivityLiveStreamBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.sbFragmentContainer.setBackgroundResource(android.R.color.transparent);
+        } else {
+            boolean isDark = PreferenceUtils.isUsingDarkTheme();
+            binding.sbFragmentContainer.setBackgroundResource(isDark ? R.color.background_600 : R.color.background_50);
+        }
+        
         addChannelHandler();
         binding.ivLive.setVisibility(View.VISIBLE);
         binding.ivLive.setOnClickListener(v -> {
@@ -146,7 +156,11 @@ public class LiveStreamActivity extends AppCompatActivity {
                 updateParticipantCount(openChannel.getParticipantCount());
                 try {
                     LiveStreamingChannelData channelData = new LiveStreamingChannelData(new JSONObject(openChannel.getData()));
-                    creatorName = channelData.getCreator().getNickname();
+                    if (channelData.getCreator() == null) {
+                        creatorName = "";
+                    } else {
+                        creatorName = channelData.getCreator().getNickname();
+                    }
                     Glide.with(binding.getRoot().getContext())
                             .load(channelData.getLiveUrl())
                             .override(binding.ivLive.getMeasuredWidth(), binding.ivLive.getHeight())
@@ -221,8 +235,7 @@ public class LiveStreamActivity extends AppCompatActivity {
     }
 
     private void hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-        && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -240,17 +253,15 @@ public class LiveStreamActivity extends AppCompatActivity {
         hideHandler.sendEmptyMessageDelayed(0, 300);
     }
 
+    @NonNull
     protected OpenChannelFragment createOpenChannelFragment(@NonNull String channelUrl) {
-        OpenChannelFragment.Builder builder = new OpenChannelFragment.Builder(channelUrl)
-                .setUseHeader(true)
-                .setHeaderDescription(creatorName)
-                .setKeyboardDisplayType(KeyboardDisplayType.Dialog)
-                .setInputText(inputText)
-                .setOnInputTextChangedListener((s, start, before, count) -> inputText = s.toString());
+        final Bundle args = new Bundle();
+        args.putString("CHANNEL_URL", channelUrl);
+        args.putString("DESCRIPTION", creatorName);
+        args.putString("INPUT_TEXT", inputText);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            builder.useOverlayMode();
-        }
-        return builder.build();
+        LiveStreamChannelFragment fragment = new LiveStreamChannelFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

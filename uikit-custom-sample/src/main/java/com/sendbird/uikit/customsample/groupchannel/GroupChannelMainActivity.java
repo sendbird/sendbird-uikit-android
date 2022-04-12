@@ -1,13 +1,15 @@
 package com.sendbird.uikit.customsample.groupchannel;
 
+import static com.sendbird.uikit.customsample.consts.StringSet.PUSH_REDIRECT_CHANNEL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -17,36 +19,30 @@ import com.google.android.material.tabs.TabLayout;
 import com.sendbird.android.GroupChannelTotalUnreadMessageCountParams;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.SettingsFragment;
-import com.sendbird.uikit.customsample.groupchannel.activities.CustomChannelActivity;
-import com.sendbird.uikit.customsample.groupchannel.activities.adapters.CustomChannelListAdapter;
-import com.sendbird.uikit.customsample.groupchannel.fragments.CustomChannelListFragment;
 import com.sendbird.uikit.customsample.widgets.CustomTabView;
-import com.sendbird.uikit.fragments.ChannelListFragment;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.sendbird.uikit.customsample.consts.StringSet.PUSH_REDIRECT_CHANNEL;
-
 public class GroupChannelMainActivity extends AppCompatActivity {
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY";
     private CustomTabView unreadCountTab;
+    private ViewPager mainPage;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initPage();
     }
 
     private void initPage() {
-        Toolbar toolbar = findViewById(R.id.tbMain);
-        setSupportActionBar(toolbar);
-
-        ViewPager mainPage = findViewById(R.id.vpMain);
+        mainPage = findViewById(R.id.vpMain);
         mainPage.setAdapter(new MainAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
 
         TabLayout tabLayout = findViewById(R.id.tlMain);
@@ -111,11 +107,12 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@Nullable Intent intent) {
         super.onNewIntent(intent);
         redirectChannelIfNeeded(intent);
     }
 
+    @NonNull
     public static Intent newRedirectToChannelIntent(@NonNull Context context, @NonNull String channelUrl) {
         Intent intent = new Intent(context, GroupChannelMainActivity.class);
         intent.putExtra(PUSH_REDIRECT_CHANNEL, channelUrl);
@@ -130,17 +127,18 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra(PUSH_REDIRECT_CHANNEL)) {
             String channelUrl = intent.getStringExtra(PUSH_REDIRECT_CHANNEL);
-            showCustomChannelActivity(channelUrl);
+            if (channelUrl != null) {
+                startActivity(ChannelActivity.newIntent(this, channelUrl));
+            }
             intent.removeExtra(PUSH_REDIRECT_CHANNEL);
         }
     }
 
-    private void showCustomChannelActivity(String channelUrl) {
-        Intent intent = CustomChannelActivity.newIntentFromCustomActivity(GroupChannelMainActivity.this, CustomChannelActivity.class, channelUrl);
-        startActivity(intent);
+    public void moveToSettings() {
+        mainPage.setCurrentItem(1);
     }
 
-    private class MainAdapter extends FragmentPagerAdapter {
+    private static class MainAdapter extends FragmentPagerAdapter {
         private static final int PAGE_SIZE = 2;
 
         public MainAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -151,21 +149,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new ChannelListFragment.Builder(R.style.CustomChannelListStyle)
-                        .setCustomChannelListFragment(new CustomChannelListFragment())
-                        .setUseHeader(false)
-                        .setHeaderTitle(null)
-                        .setUseHeaderLeftButton(true)
-                        .setUseHeaderRightButton(true)
-                        .setHeaderLeftButtonIconResId(R.drawable.icon_arrow_left)
-                        .setHeaderRightButtonIconResId(R.drawable.icon_create)
-                        .setHeaderLeftButtonListener(null)
-                        .setHeaderRightButtonListener(null)
-                        .setChannelListAdapter(new CustomChannelListAdapter())
-                        .setItemClickListener((view, i, channel) -> showCustomChannelActivity(channel.getUrl()))
-                        .setItemLongClickListener(null)
-                        .setGroupChannelListQuery(null)
-                        .build();
+                return SendbirdUIKit.getFragmentFactory().newChannelListFragment(new Bundle());
             } else {
                 return new SettingsFragment();
             }

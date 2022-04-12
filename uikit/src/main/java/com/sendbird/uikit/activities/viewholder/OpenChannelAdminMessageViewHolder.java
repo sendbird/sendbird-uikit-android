@@ -3,25 +3,30 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
-import com.sendbird.uikit.BR;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageBinding;
+import com.sendbird.uikit.widgets.OpenChannelAdminMessageView;
 
 import java.util.Map;
 
 public final class OpenChannelAdminMessageViewHolder extends MessageViewHolder {
-    OpenChannelAdminMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
+    @NonNull
+    private final OpenChannelAdminMessageView openChannelAdminMessageView;
+
+    OpenChannelAdminMessageViewHolder(@NonNull SbViewOpenChannelAdminMessageBinding binding, boolean useMessageGroupUI) {
+        super(binding.getRoot(), useMessageGroupUI);
+        openChannelAdminMessageView = binding.openChannelAdminMessageView;
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
-        binding.setVariable(BR.message, message);
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        openChannelAdminMessageView.drawMessage(message);
     }
 
+    @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;

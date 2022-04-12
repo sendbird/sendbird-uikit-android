@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -24,7 +23,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewOpenChannelOgtagBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ImageUtils;
@@ -32,36 +31,33 @@ import com.sendbird.uikit.utils.TextUtils;
 
 public class OpenChannelOgtagView extends FrameLayout {
 
-    private SbViewOpenChannelOgtagBinding binding;
+    private final SbViewOpenChannelOgtagBinding binding;
 
     public OpenChannelOgtagView(@NonNull Context context) {
         this(context, null);
     }
 
     public OpenChannelOgtagView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_open_channel_message_user_style);
+        this(context, attrs, R.attr.sb_widget_ogtag);
     }
 
     public OpenChannelOgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, null);
     }
 
+    @NonNull
     public static OpenChannelOgtagView inflate(@NonNull Context context, @Nullable ViewGroup parent) {
-        return new OpenChannelOgtagView(context, null, R.attr.sb_open_channel_message_user_style, parent);
+        return new OpenChannelOgtagView(context, null, R.attr.sb_widget_ogtag, parent);
     }
 
-    private OpenChannelOgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
+    private OpenChannelOgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, @Nullable ViewGroup parent) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, parent);
-    }
-
-    private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyleAttr, 0);
         try {
             if (parent == null) {
                 parent = this;
             }
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_open_channel_ogtag, parent, true);
+            this.binding = SbViewOpenChannelOgtagBinding.inflate(LayoutInflater.from(getContext()), parent, true);
             int ogtagTitleAppearence = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_title_appearance, R.style.SendbirdBody3OnLight01);
             int ogtagDescAppearence = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_description_appearance, R.style.SendbirdCaption2OnLight01);
             int ogtagUrlAppearence = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_url_appearance, R.style.SendbirdCaption2OnLight02);
@@ -90,7 +86,7 @@ public class OpenChannelOgtagView extends FrameLayout {
                 ogImageUrl = metaData.getOGImage().getUrl();
             }
 
-            int thumbnailIconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+            int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
 
             RequestBuilder<Drawable> builder = Glide.with(getContext())
                     .asDrawable()

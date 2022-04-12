@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -25,15 +26,15 @@ public class RoundCornerView extends ViewGroup {
     private float radius;
     private final AppCompatImageView child;
 
-    public RoundCornerView(Context context) {
+    public RoundCornerView(@NonNull Context context) {
         this(context, null);
     }
 
-    public RoundCornerView(Context context, @Nullable AttributeSet attrs) {
+    public RoundCornerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RoundCornerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public RoundCornerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         roundingPaint.setAntiAlias(true);
         roundingPaint.setFilterBitmap(true);
@@ -58,7 +59,7 @@ public class RoundCornerView extends ViewGroup {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(@NonNull Canvas canvas) {
         int width = getWidth();
         int height = getHeight();
         if (isInEditMode()) {

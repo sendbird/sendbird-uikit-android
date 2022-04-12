@@ -8,7 +8,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.GroupChannelTotalUnreadMessageCountParams;
 import com.sendbird.android.SendBird;
@@ -16,7 +15,7 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.SendBirdPushHelper;
 import com.sendbird.android.User;
 import com.sendbird.uikit.BuildConfig;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.databinding.ActivityHomeBinding;
 import com.sendbird.uikit.customsample.groupchannel.GroupChannelMainActivity;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelMainActivity;
@@ -35,7 +34,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendBird.getSDKVersion());
         binding.tvVersionInfo.setText(sdkVersion);
 
@@ -104,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
         PushUtils.unregisterPushHandler(new SendBirdPushHelper.OnPushRequestCompleteListener() {
             @Override
             public void onComplete(boolean isActive, String token) {
-                SendBirdUIKit.disconnect(() -> {
+                SendbirdUIKit.disconnect(() -> {
                     WaitingDialog.dismiss();
                     PreferenceUtils.clearAll();
                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

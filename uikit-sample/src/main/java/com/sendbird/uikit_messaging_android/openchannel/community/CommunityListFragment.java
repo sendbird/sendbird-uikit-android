@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.uikit.log.Logger;
@@ -33,8 +34,11 @@ public class CommunityListFragment extends OpenChannelListFragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         final MenuItem createMenuItem = menu.findItem(R.id.action_create_channel);
         ViewCustomMenuIconButtonBinding binding = ViewCustomMenuIconButtonBinding.inflate(getLayoutInflater());
-        int iconTint = PreferenceUtils.isUsingDarkTheme() ? R.color.primary_200 : R.color.primary_300;
+        boolean isDark = PreferenceUtils.isUsingDarkTheme();
+        int iconTint = isDark ? R.color.primary_200 : R.color.primary_300;
+        if (getContext() == null) return;
         binding.icon.setImageDrawable(DrawableUtils.setTintList(getContext(), R.drawable.icon_create, iconTint));
+        binding.icon.setBackgroundResource(isDark ? R.drawable.sb_button_uncontained_background_dark : R.drawable.sb_button_uncontained_background_light);
         View rootView = binding.getRoot();
         rootView.setOnClickListener(v -> onOptionsItemSelected(createMenuItem));
         createMenuItem.setActionView(rootView);
@@ -58,7 +62,7 @@ public class CommunityListFragment extends OpenChannelListFragment {
     }
 
     @Override
-    protected void clickOpenChannelItem(OpenChannel openChannel) {
+    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
         if (getContext() == null || openChannel == null) return;
         startActivity(CommunityActivity.newIntent(getContext(), openChannel.getUrl()));
     }

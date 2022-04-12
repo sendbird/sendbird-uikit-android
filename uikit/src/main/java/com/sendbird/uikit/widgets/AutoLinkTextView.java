@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.sendbird.uikit.R;
@@ -17,15 +19,15 @@ public class AutoLinkTextView extends AppCompatTextView {
     private int clickedLinkTextColor;
     private int linkifyMask = Linkify.ALL;
 
-    public AutoLinkTextView(Context context) {
+    public AutoLinkTextView(@NonNull Context context) {
         this(context, null);
     }
 
-    public AutoLinkTextView(Context context, AttributeSet attrs) {
+    public AutoLinkTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AutoLinkTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AutoLinkTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AutoLinkTextView, defStyleAttr, 0);
         try {
@@ -40,7 +42,7 @@ public class AutoLinkTextView extends AppCompatTextView {
     }
 
     @Override
-    public void setText(CharSequence text, BufferType type) {
+    public void setText(@NonNull CharSequence text, @NonNull BufferType type) {
         super.setText(text, type);
         try {
             Linkify.addLinks(this, linkifyMask);
@@ -55,11 +57,11 @@ public class AutoLinkTextView extends AppCompatTextView {
         }
     }
 
-    public void setOnLinkClickListener(SBLinkMovementMethod.OnLinkClickListener onLinkClickListener) {
+    public void setOnLinkClickListener(@Nullable SBLinkMovementMethod.OnLinkClickListener onLinkClickListener) {
         this.onLinkClickListener = onLinkClickListener;
     }
 
-    public void setOnLinkLongClickListener(SBLinkMovementMethod.OnLinkLongClickListener onLinkLongClickListener) {
+    public void setOnLinkLongClickListener(@Nullable SBLinkMovementMethod.OnLinkLongClickListener onLinkLongClickListener) {
         this.onLinkLongClickListener = onLinkLongClickListener;
     }
 

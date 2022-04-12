@@ -3,10 +3,10 @@ package com.sendbird.uikit.activities.viewholder;
 import androidx.annotation.NonNull;
 
 import com.sendbird.android.Emoji;
-import com.sendbird.uikit.BR;
 import com.sendbird.uikit.databinding.SbViewEmojiBinding;
 
 public class EmojiViewHolder extends BaseViewHolder<Emoji> {
+    @NonNull
     private final SbViewEmojiBinding binding;
 
     public EmojiViewHolder(@NonNull SbViewEmojiBinding binding) {
@@ -15,8 +15,7 @@ public class EmojiViewHolder extends BaseViewHolder<Emoji> {
     }
 
     @Override
-    public void bind(Emoji item) {
-        binding.setVariable(BR.emoji, item);
-        binding.executePendingBindings();
+    public void bind(@NonNull Emoji item) {
+        binding.emojiView.drawEmoji(item);
     }
 }

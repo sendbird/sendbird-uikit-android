@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -19,26 +18,22 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 
 public class UserProfile extends FrameLayout {
 
-    private SbViewUserProfileBinding binding;
+    private final SbViewUserProfileBinding binding;
     private OnItemClickListener<User> listener;
 
-    public UserProfile(Context context) {
+    public UserProfile(@NonNull Context context) {
         this(context, null);
     }
 
-    public UserProfile(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_user_profile_style);
+    public UserProfile(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public UserProfile(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public UserProfile(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserProfile, defStyle, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserProfile, defStyleAttr, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_user_profile, this, true);
+            this.binding = SbViewUserProfileBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int background = a.getResourceId(R.styleable.UserProfile_sb_user_profile_background, R.color.background_50);
             int userNameAppearance = a.getResourceId(R.styleable.UserProfile_sb_user_profile_user_name_text_appearance, R.style.SendbirdH1OnLight01);
             int singleMessageButtonBg = a.getResourceId(R.styleable.UserProfile_sb_user_profile_button_background, R.drawable.selector_button_default_light);
@@ -54,12 +49,12 @@ public class UserProfile extends FrameLayout {
             this.binding.ivDivider.setBackgroundResource(dividerColor);
             this.binding.tvTitleUserId.setTextAppearance(context, infoTitleTextAppearance);
             this.binding.tvUserId.setTextAppearance(context, infoContentTextAppearance);
-        } catch (Exception e) {
+        } finally {
             a.recycle();
         }
     }
 
-    public void setOnItemClickListener(OnItemClickListener<User> listener) {
+    public void setOnItemClickListener(@Nullable OnItemClickListener<User> listener) {
         this.listener = listener;
     }
 

@@ -2,6 +2,8 @@ package com.sendbird.uikit.utils;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.sendbird.uikit.R;
 
 import java.text.SimpleDateFormat;
@@ -12,14 +14,15 @@ import java.util.Locale;
  * A class with static util methods.
  */
 
+@SuppressWarnings("unused")
 public class DateUtils {
 
     // This class should not be initialized
     private DateUtils() {
 
     }
-
-    public static String formatTime(Context context, long timeInMillis) {
+    @NonNull
+    public static String formatTime(@NonNull Context context, long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_SHOW_TIME;
         return android.text.format.DateUtils.formatDateTime(context, timeInMillis, flags);
     }
@@ -30,7 +33,8 @@ public class DateUtils {
      * @param timeInMillis  The time to convert, in milliseconds.
      * @return  The time or date.
      */
-    public static String formatDateTime(Context context, long timeInMillis) {
+    @NonNull
+    public static String formatDateTime(@NonNull Context context, long timeInMillis) {
         if(isToday(timeInMillis)) {
             return formatTime(context, timeInMillis);
         } else if (isYesterday(timeInMillis)) {
@@ -43,6 +47,7 @@ public class DateUtils {
     /**
      * Formats timestamp to 'date month' format (e.g. 'Wed, 19 Dec').
      */
+    @NonNull
     public static String formatDate(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
                 | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
@@ -55,6 +60,7 @@ public class DateUtils {
     /**
      * Formats timestamp to 'date month' format (e.g. '19 Dec').
      */
+    @NonNull
     public static String formatDate2(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
                 | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
@@ -71,16 +77,17 @@ public class DateUtils {
 
     public static boolean isYesterday(long timeInMillis) {
         Calendar now = Calendar.getInstance();
-        Calendar cdate = Calendar.getInstance();
-        cdate.setTimeInMillis(timeInMillis);
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(timeInMillis);
 
         now.add(Calendar.DATE,-1);
 
-        return now.get(Calendar.YEAR) == cdate.get(Calendar.YEAR)
-                && now.get(Calendar.MONTH) == cdate.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) == cdate.get(Calendar.DATE);
+        return now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+                && now.get(Calendar.MONTH) == date.get(Calendar.MONTH)
+                && now.get(Calendar.DATE) == date.get(Calendar.DATE);
     }
 
+    @NonNull
     public static String getDateString(long dateMillis) {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         return dateFormat.format(dateMillis);
@@ -115,6 +122,7 @@ public class DateUtils {
      * Date shows 'date month' format (e.g. '19 Dec').
      * Minimum resolution is 1 minute.
      */
+    @NonNull
     public static String getTimeDiff(long time) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
                 | android.text.format.DateUtils.FORMAT_ABBREV_MONTH

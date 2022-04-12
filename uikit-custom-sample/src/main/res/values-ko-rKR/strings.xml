@@ -25,7 +25,6 @@
     <string name="sb_text_channel_message_badge_edited">&#160;(편집됨)</string>
     <string name="sb_text_channel_tooltip">새 메시지 %d개</string>
     <string name="sb_text_channel_tooltip_with_count">새 메시지 %d개</string>
-    <string name="sb_text_channel_tooltip_with_count_over_10">10개 이상</string>
     <string name="sb_text_channel_anchor_copy">복사</string>
     <string name="sb_text_channel_anchor_save">저장</string>
     <string name="sb_text_channel_anchor_edit">편집</string>
@@ -43,7 +42,7 @@
     <!-- Channel Settings -->
     <string name="sb_text_channel_settings_moderations">관리</string>
     <string name="sb_text_channel_settings_notification">알림</string>
-    <string name="sb_text_channel_settings_members">멤버 %d명</string>
+    <string name="sb_text_channel_settings_members">멤버</string>
     <string name="sb_text_channel_settings_leave_channel">채널 나가기</string>
     <string name="sb_text_channel_settings_change_channel_name">채널 이름 변경</string>
     <string name="sb_text_channel_settings_change_channel_name_hint">채널 이름을 입력하세요</string>
@@ -149,12 +148,9 @@
     <string name="text_settings_header_title">설정</string>
     <string name="text_settings_header_edit_button">편집</string>
     <string name="text_settings_user_id_badge">아이디</string>
-    <string name="text_settings_theme_title">어두운 테마</string>
     <string name="text_settings_disturb_title">방해 금지 모드</string>
-    <string name="text_settings_sign_out_title">로그아웃</string>
     <string name="text_settings_home_title">홈으로 나가기</string>
     <string name="text_settings_change_user_nickname">닉네임 변경</string>
-    <string name="text_settings_change_user_nickname_hint">닉네임 입력</string>
     <string name="text_settings_change_user_profile_image">프로필 이미지 변경</string>
 
     <string name="text_tab_channels">채널</string>
@@ -170,4 +166,24 @@
     <string name="text_remove_photo">사진 삭제</string>
     <string name="text_live">라이브</string>
     <string name="text_participants">%s명</string>
+
+    <!--  Custom sample  -->
+    <string name="text_dialog_leave_channel_title">채널을 나가시겠습니까?</string>
+    <string name="text_confirm">확인</string>
+    <string name="text_select_count">%d명 선택</string>
+
+    <string name="app_name">SendbirdUIKitCustomSample</string>
+    <string name="text_title_login_activity">Sendbird UIKit Sample</string>
+
+    <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
+    <string name="text_hint_user_id">사용자 ID</string>
+    <string name="text_hint_nickname">사용자 닉네임</string>
+    <string name="text_sign_in">SIGN IN</string>
+
+    <string name="text_sign_out">SIGN OUT</string>
+    <string name="text_home">Home</string>
+    <string name="text_group_channel">Group channel</string>
+    <string name="text_open_channel">Open channel</string>
+    <string name="text_group_channel_description">1 on 1, Group chat with members</string>
+    <string name="text_open_channel_description">Live streams, Open community chat</string>
 </resources>

@@ -1,8 +1,10 @@
 package com.sendbird.uikit.activities.viewholder;
 
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.R;
@@ -18,8 +20,8 @@ public class EmojiReactionMoreViewHolder extends BaseViewHolder<Reaction> {
                 .getTheme()
                 .obtainStyledAttributes(null,
                         R.styleable.EmojiReaction,
-                        R.attr.sb_emoji_reaction_style,
-                        R.style.Widget_SendBird_Emoji);
+                        R.attr.sb_widget_emoji_message,
+                        R.style.Widget_Sendbird_Emoji);
 
         try {
             int backgroundRes = a.getResourceId(
@@ -27,11 +29,14 @@ public class EmojiReactionMoreViewHolder extends BaseViewHolder<Reaction> {
                     R.drawable.sb_emoji_reaction_background_light);
             int moreRes = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_reaction_more_button_src,
                     R.drawable.icon_emoji_more);
-            int moreResTint = a.getResourceId(R.styleable.EmojiReaction_sb_emoji_reaction_more_button_src_tint,
-                    R.color.onlight_03);
+            ColorStateList moreResTint = a.getColorStateList(R.styleable.EmojiReaction_sb_emoji_reaction_more_button_src_tint);
 
             view.setBackgroundResource(backgroundRes);
-            view.setImageDrawable(DrawableUtils.setTintList(view.getContext(), moreRes, moreResTint));
+            if (moreResTint != null) {
+                view.setImageDrawable(DrawableUtils.setTintList(view.getContext(), moreRes, moreResTint));
+            } else {
+                view.setImageDrawable(AppCompatResources.getDrawable(view.getContext(), moreRes));
+            }
             view.setCount(0);
         } finally {
             a.recycle();
@@ -39,5 +44,5 @@ public class EmojiReactionMoreViewHolder extends BaseViewHolder<Reaction> {
     }
 
     @Override
-    public void bind(Reaction item) {}
+    public void bind(@NonNull Reaction item) {}
 }

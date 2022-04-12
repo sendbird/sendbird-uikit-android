@@ -23,5 +23,5 @@ public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
      *
      * @param item Data used for as item view.
      */
-    public abstract void bind(T item);
+    public abstract void bind(@NonNull T item);
 }

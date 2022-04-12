@@ -11,8 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
 
@@ -42,7 +43,7 @@ public class CustomTabView extends FrameLayout {
         iconView = view.findViewById(R.id.ivIcon);
         titleView = view.findViewById(R.id.tvTitle);
 
-        boolean isDarkMode = SendBirdUIKit.isDarkMode();
+        boolean isDarkMode = SendbirdUIKit.isDarkMode();
         tintColorRedId = isDarkMode ? R.color.selector_tab_tint_dark : R.color.selector_tab_tint;
 
         int badgeTextAppearance = isDarkMode ? R.style.SendbirdCaption3OnLight01 : R.style.SendbirdCaption3OnDark01;
@@ -52,14 +53,14 @@ public class CustomTabView extends FrameLayout {
         badgeView.setTextAppearance(context, badgeTextAppearance);
         badgeView.setBackgroundResource(badgeBackgroundRes);
         titleView.setTextAppearance(context, titleTextAppearance);
-        titleView.setTextColor(context.getResources().getColorStateList(tintColorRedId));
+        titleView.setTextColor(AppCompatResources.getColorStateList(context, tintColorRedId));
     }
 
     public void setBadgeVisibility(int visibility) {
         badgeView.setVisibility(visibility);
     }
 
-    public void setBadgeCount(String countString) {
+    public void setBadgeCount(@Nullable String countString) {
         badgeView.setText(countString);
     }
 
@@ -67,7 +68,7 @@ public class CustomTabView extends FrameLayout {
         iconView.setImageDrawable(DrawableUtils.setTintList(getContext(), iconResId, tintColorRedId));
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@Nullable String title) {
         titleView.setText(title);
     }
 }

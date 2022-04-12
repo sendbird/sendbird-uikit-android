@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.consts.CreateableChannelType;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.fragments.CreateChannelFragment;
 
 /**
  * Activity displays a list of users and provide a current user to create a channel.
@@ -24,6 +25,7 @@ public class CreateChannelActivity extends AppCompatActivity {
      * @param context A Context of the application package implementing this class.
      * @return CreateChannelActivity Intent.
      */
+    @NonNull
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, CreateChannelActivity.class);
     }
@@ -32,12 +34,13 @@ public class CreateChannelActivity extends AppCompatActivity {
      * Create an intent for a {@link CreateChannelActivity}.
      *
      * @param context A Context of the application package implementing this class.
-     * @param type The createable channel type. see the {@link CreateableChannelType}.
+     * @param type The creatable channel type. see the {@link CreatableChannelType}.
      * @return CreateChannelActivity Intent.
      *
      * @since 1.2.0
      */
-    public static Intent newIntent(@NonNull Context context, @NonNull CreateableChannelType type) {
+    @NonNull
+    public static Intent newIntent(@NonNull Context context, @NonNull CreatableChannelType type) {
         return newIntentFromCustomActivity(context, CreateChannelActivity.class, type);
     }
 
@@ -46,29 +49,24 @@ public class CreateChannelActivity extends AppCompatActivity {
      *
      * @param context A Context of the application package implementing this class.
      * @param cls The activity class that is to be used for the intent.
-     * @param type The createable channel type. see the {@link CreateableChannelType}.
+     * @param type The creatable channel type. see the {@link CreatableChannelType}.
      * @return Returns a newly created Intent that can be used to launch the activity.
      * @since 1.2.0
      */
-    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends CreateChannelActivity> cls, @NonNull CreateableChannelType type) {
+    @NonNull
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends CreateChannelActivity> cls, @NonNull CreatableChannelType type) {
         Intent intent = new Intent(context, cls);
         intent.putExtra(StringSet.KEY_SELECTED_CHANNEL_TYPE, type);
         return intent;
     }
 
-    private CreateableChannelType channelType = CreateableChannelType.Normal;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
+        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
         setContentView(R.layout.sb_activity);
 
-        if (getIntent().hasExtra(StringSet.KEY_SELECTED_CHANNEL_TYPE)) {
-            this.channelType = (CreateableChannelType) getIntent().getSerializableExtra(StringSet.KEY_SELECTED_CHANNEL_TYPE);
-        }
-        CreateChannelFragment fragment = createCreateChannelFragment();
-
+        Fragment fragment = createFragment();
         FragmentManager manager = getSupportFragmentManager();
         manager.popBackStack();
         manager.beginTransaction()
@@ -77,27 +75,20 @@ public class CreateChannelActivity extends AppCompatActivity {
     }
 
     /**
-     * It will be called when the CreateChannelActiviy is being created.
-     * @return a new create channel fragment.
+     * It will be called when the {@link CreateChannelActivity} is being created.
+     * The data contained in Intent is delivered to Fragment's Bundle.
      *
-     * @since 1.0.4
+     * @return {@link com.sendbird.uikit.fragments.CreateChannelFragment}
+     * @since 3.0.0
      */
-    protected CreateChannelFragment createCreateChannelFragment() {
-        return createCreateChannelFragment(channelType);
-    }
-
-    /**
-     * It will be called when the CreateChannelActiviy is being created.
-     * @param type The createable channel type. see the {@link CreateableChannelType}.
-     * @return a new create channel fragment.
-     *
-     * @since 1.2.0
-     */
-    protected CreateChannelFragment createCreateChannelFragment(CreateableChannelType type) {
-        return new CreateChannelFragment.Builder(type)
-                .setUseHeader(true)
-                .setHeaderTitle(getString(R.string.sb_text_header_create_channel))
-                .setCreateButtonText(getString(R.string.sb_text_button_create))
-                .build();
+    @NonNull
+    protected Fragment createFragment() {
+        final Bundle args = getIntent() != null && getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle();
+        CreatableChannelType creatableChannelType = CreatableChannelType.Normal;
+        if (args.containsKey(StringSet.KEY_SELECTED_CHANNEL_TYPE)) {
+            creatableChannelType = (CreatableChannelType) args.getSerializable(StringSet.KEY_SELECTED_CHANNEL_TYPE);
+            if (creatableChannelType == null) creatableChannelType = CreatableChannelType.Normal;
+        }
+        return SendbirdUIKit.getFragmentFactory().newCreateChannelFragment(creatableChannelType, args);
     }
 }

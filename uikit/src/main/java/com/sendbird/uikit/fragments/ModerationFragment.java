@@ -2,32 +2,31 @@ package com.sendbird.uikit.fragments;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
-import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.activities.BannedListActivity;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.BannedUserListActivity;
 import com.sendbird.uikit.activities.MutedMemberListActivity;
 import com.sendbird.uikit.activities.OperatorListActivity;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.databinding.SbFragmentModerationsBinding;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.ModerationModule;
+import com.sendbird.uikit.modules.components.HeaderComponent;
+import com.sendbird.uikit.modules.components.ModerationListComponent;
+import com.sendbird.uikit.vm.ModerationViewModel;
+import com.sendbird.uikit.vm.ViewModelFactory;
 
 /**
  * Fragment displaying the menu list to control the channel.
@@ -35,267 +34,130 @@ import com.sendbird.uikit.log.Logger;
  *
  * @since 1.2.0
  */
-public class ModerationFragment extends BaseGroupChannelFragment implements LoadingDialogHandler {
-    private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_MODERATION" + System.currentTimeMillis();;
-
+public class ModerationFragment extends BaseModuleFragment<ModerationModule, ModerationViewModel> {
+    @Nullable
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> menuItemClickListener;
+    @Nullable
     private LoadingDialogHandler loadingDialogHandler;
 
+    @NonNull
+    @Override
+    protected ModerationModule onCreateModule(@NonNull Bundle args) {
+        return new ModerationModule(requireContext());
+    }
+
+    @Override
+    protected void onConfigureParams(@NonNull ModerationModule module, @NonNull Bundle args) {
+        if (loadingDialogHandler != null) module.setOnLoadingDialogHandler(loadingDialogHandler);
+    }
+
+    @NonNull
+    @Override
+    protected ModerationViewModel onCreateViewModel() {
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), ModerationViewModel.class);
+    }
+
+    @Override
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull ModerationModule module, @NonNull ModerationViewModel viewModel) {
+        Logger.d(">> ModerationFragment::onBeforeReady()");
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel, viewModel.getChannel());
+        onBindModerationListComponent(module.getModerationListComponent(), viewModel, viewModel.getChannel());
+    }
+
+    @Override
+    protected void onReady(@NonNull ReadyStatus status, @NonNull ModerationModule module, @NonNull ModerationViewModel viewModel) {
+        Logger.d(">> ModerationFragment::onReady status=%s", status);
+
+        final ModerationListComponent moderationListComponent = getModule().getModerationListComponent();
+
+        final GroupChannel channel = viewModel.getChannel();
+        if (channel != null) {
+            moderationListComponent.notifyChannelChanged(channel);
+        }
+
+        viewModel.getMyMemberStateChanges().observe(getViewLifecycleOwner(), memberState -> {
+            if (memberState == Member.MemberState.NONE) shouldActivityFinish();
+        });
+        viewModel.getMyRoleChanges().observe(getViewLifecycleOwner(), role -> {
+            if (role != Member.Role.OPERATOR) shouldActivityFinish();
+        });
+
+        viewModel.getIsChannelDeleted().observe(getViewLifecycleOwner(), s -> shouldActivityFinish());
+        viewModel.getIsBanned().observe(getViewLifecycleOwner(), banned -> shouldActivityFinish());
+        viewModel.getIsShowLoadingDialog().observe(getViewLifecycleOwner(), shouldShow -> {
+            if (isFragmentAlive()) {
+                if (shouldShow) {
+                    shouldShowLoadingDialog();
+                } else {
+                    shouldDismissLoadingDialog();
+                }
+            }
+        });
+    }
+
     /**
-     * Represents all moderation menus.
+     * Called to bind events to the HeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, ModerationModule, ModerationViewModel)} regardless of the value of {@link ReadyStatus}.
      *
-     * @since 1.2.0
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
      */
-    public enum ModerationMenu {
-        OPERATORS, MUTED_MEMBERS, BANNED_MEMBERS, FREEZE_CHANNEL
+    protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ModerationViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> ModerationFragment::onBindHeaderComponent()");
+        headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
     }
 
-    private SbFragmentModerationsBinding binding;
-    protected View.OnClickListener headerLeftButtonListener;
-    protected OnMenuItemClickListener<ModerationMenu, BaseChannel> menuItemClickListener;
+    /**
+     * Called to bind events to the ModerationListComponent. This is called from {@link #onBeforeReady(ReadyStatus, ModerationModule, ModerationViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param moderationListComponent The component to which the event will be bound
+     * @param viewModel               A view model that provides the data needed for the fragment
+     * @param channel                 The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindModerationListComponent(@NonNull ModerationListComponent moderationListComponent, @NonNull ModerationViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> ModerationFragment::onBindBannedUserListComponent()");
 
-    public ModerationFragment() {}
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Logger.i(">> ModerationFragment::onCreate()");
-        Bundle args = getArguments();
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
-        if (args != null) {
-            themeResId = args.getInt(StringSet.KEY_THEME_RES_ID);
-        }
-
-        if (getActivity() != null) {
-            getActivity().setTheme(themeResId);
-        }
-
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
-            @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
-
-            @Override
-            public void onUserLeft(GroupChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> ModerationFragment::onUserLeft()");
-                    Logger.d("++ left user : " + user);
-                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
-                        finish();
-                    }
-                }
+        if (channel == null) return;
+        moderationListComponent.setOnMenuItemClickListener((view, menu, data) -> {
+            Logger.dev("++ %s item clicked", menu.name());
+            if (menuItemClickListener != null) {
+                return menuItemClickListener.onMenuItemClicked(view, menu, channel);
             }
-
-            @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
-                if (isCurrentChannel(channelUrl)) {
-                    Logger.i(">> ModerationFragment::onChannelDeleted()");
-                    Logger.d("++ deleted channel url : " + channelUrl);
-                    // will have to finish activity
-                    finish();
-                }
+            if (getContext() == null) return false;
+            switch (menu) {
+                case OPERATORS:
+                    startActivity(OperatorListActivity.newIntent(getContext(), channel.getUrl()));
+                    break;
+                case MUTED_MEMBERS:
+                    startActivity(MutedMemberListActivity.newIntent(getContext(), channel.getUrl()));
+                    break;
+                case BANNED_MEMBERS:
+                    startActivity(BannedUserListActivity.newIntent(getContext(), channel.getUrl()));
+                    break;
+                case FREEZE_CHANNEL:
+                    freezeOrUnFreezeChannel(channel);
+                    break;
+                default:
+                    return false;
             }
-
-            @Override
-            public void onChannelFrozen(BaseChannel channel) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> ModerationFragment::onChannelFrozen(%s)", channel.isFrozen());
-                    ModerationFragment.this.channel = (GroupChannel) channel;
-                    binding.freezeChannelItem.setChecked(true);
-                }
-            }
-
-            @Override
-            public void onChannelUnfrozen(BaseChannel channel) {
-                if (isCurrentChannel(channel.getUrl())) {
-                    Logger.i(">> ModerationFragment::onChannelUnfrozen(%s)", channel.isFrozen());
-                    ModerationFragment.this.channel = (GroupChannel) channel;
-                    binding.freezeChannelItem.setChecked(false);
-                }
-            }
-
-            @Override
-            public void onOperatorUpdated(BaseChannel channel) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        ((GroupChannel) channel).getMyRole() != Member.Role.OPERATOR) {
-                    Logger.i(">> ModerationFragment::onOperatorUpdated()");
-                    ModerationFragment.this.channel = (GroupChannel) channel;
-                    Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
-                    finish();
-                }
-            }
-
-            @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-                    Logger.i(">> ModerationFragment::onUserBanned()");
-                    finish();
-                }
-            }
+            return true;
         });
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.sb_fragment_moderations, container, false);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initHeaderOnCreated();
-    }
-
-    @Override
-    protected void onReadyFailure() {}
-
-    @Override
-    protected void onConfigure() {
-        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
-    }
-
-    @Override
-    protected void onDrawPage() {
-        initHeaderOnReady();
-        initModerations(channel);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
-    }
-
-    private boolean isCurrentChannel(@NonNull String channelUrl) {
-        return channelUrl.equals(channel.getUrl());
-    }
-
-    private void initHeaderOnCreated() {
-        Bundle args = getArguments();
-        String headerTitle = getString(R.string.sb_text_channel_settings_moderations);
-        boolean useHeader = false;
-        boolean useHeaderLeftButton = true;
-        int headerLeftButtonIconResId = R.drawable.icon_arrow_left;
-        ColorStateList headerLeftButtonIconTint = null;
-
-        if (args != null) {
-            headerTitle = args.getString(StringSet.KEY_HEADER_TITLE, getString(R.string.sb_text_channel_settings_moderations));
-            useHeader = args.getBoolean(StringSet.KEY_USE_HEADER, false);
-            useHeaderLeftButton = args.getBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, true);
-            headerLeftButtonIconResId = args.getInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_arrow_left);
-            headerLeftButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT);
-        }
-
-        binding.abSettingsHeader.setVisibility(useHeader ? View.VISIBLE : View.GONE);
-
-        binding.abSettingsHeader.getTitleTextView().setText(headerTitle);
-
-        binding.abSettingsHeader.setUseRightButton(false);
-        binding.abSettingsHeader.setUseLeftImageButton(useHeaderLeftButton);
-        binding.abSettingsHeader.setLeftImageButtonResource(headerLeftButtonIconResId);
-        if (args != null && args.containsKey(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID)) {
-            binding.abSettingsHeader.setLeftImageButtonTint(headerLeftButtonIconTint);
-        }
-        binding.abSettingsHeader.setLeftImageButtonClickListener(v -> finish());
-    }
-
-    private void initHeaderOnReady() {
-        if (headerLeftButtonListener != null) {
-            binding.abSettingsHeader.setLeftImageButtonClickListener(headerLeftButtonListener);
-        }
-    }
-
-    private void initModerations(@NonNull final GroupChannel channel) {
-        if (this.loadingDialogHandler == null) {
-            this.loadingDialogHandler = this;
-        }
-
-        binding.vgContent.setBackgroundResource(SendBirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50);
-        binding.operatorsItem.setOnClickListener(v -> {
-            Logger.dev("++ operation item clicked");
-            if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, ModerationMenu.OPERATORS, channel)) {
-                return;
-            }
-            startActivity(OperatorListActivity.newIntent(getContext(), channel.getUrl()));
-        });
-
-        binding.freezeChannelItem.setChecked(channel.isFrozen());
-        binding.mutedMembersItem.setOnClickListener(v -> {
-            Logger.dev("++ muted item clicked");
-            if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, ModerationMenu.MUTED_MEMBERS, channel)) {
-                return;
-            }
-            startActivity(MutedMemberListActivity.newIntent(getContext(), channel.getUrl()));
-        });
-        binding.bannedMembersItem.setOnClickListener(v -> {
-            Logger.dev("++ banned item clicked");
-            if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, ModerationMenu.BANNED_MEMBERS, channel)) {
-                return;
-            }
-            startActivity(BannedListActivity.newIntent(getContext(), channel.getUrl()));
-        });
-
-        if (channel instanceof GroupChannel) {
-            boolean isBroadcast = ((GroupChannel)channel).isBroadcast();
-            binding.mutedMembersItem.setVisibility(isBroadcast ? View.GONE : View.VISIBLE);
-            binding.freezeChannelItem.setVisibility(isBroadcast ? View.GONE : View.VISIBLE);
-
-            binding.freezeChannelItem.setOnClickListener(v -> {
-                Logger.dev("++ freeze item clicked");
-                if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, ModerationMenu.FREEZE_CHANNEL, channel)) {
-                    return;
-                }
-                freezeOrUnFreezeChannel((GroupChannel) channel);
-            });
-            binding.freezeChannelItem.setOnActionMenuClickListener(v -> {
-                Logger.dev("++ menu action clicked");
-                if (menuItemClickListener != null && menuItemClickListener.onMenuItemClicked(v, ModerationMenu.FREEZE_CHANNEL, channel)) {
-                    return;
-                }
-                freezeOrUnFreezeChannel((GroupChannel) channel);
-            });
-        } else {
-            binding.freezeChannelItem.setVisibility(View.GONE);
-        }
+        viewModel.getFrozenStateChanges().observe(getViewLifecycleOwner(), baseChannel -> moderationListComponent.notifyChannelChanged((GroupChannel) baseChannel));
     }
 
     private void freezeOrUnFreezeChannel(@NonNull GroupChannel channel) {
         boolean isFrozen = channel.isFrozen();
-        loadingDialogHandler.shouldShowLoadingDialog();
-        if (isFrozen) {
-            channel.unfreeze(e -> {
-                loadingDialogHandler.shouldDismissLoadingDialog();
-            });
-        } else {
-            channel.freeze(e -> {
-                loadingDialogHandler.shouldDismissLoadingDialog();
-            });
+        if (getContext() != null) {
+            if (isFrozen) {
+                getViewModel().unfreezeChannel();
+            } else {
+                getViewModel().freezeChannel();
+            }
         }
-    }
-
-    private void setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
-        this.loadingDialogHandler = loadingDialogHandler;
-    }
-
-    /**
-     * Sets the click listener on the left button of the header.
-     *
-     * @param listener The callback that will run.
-     * @since 1.2.0
-     */
-    protected void setHeaderLeftButtonListener(View.OnClickListener listener) {
-        this.headerLeftButtonListener = listener;
-    }
-
-    /**
-     * Sets the moderation menu click listener.
-     *
-     * @param listener The callback that will run.
-     * @since 1.2.0
-     */
-    protected void setOnMenuItemClickListener(OnMenuItemClickListener<ModerationMenu, BaseChannel> listener) {
-        this.menuItemClickListener = listener;
     }
 
     /**
@@ -304,10 +166,11 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
      * @return True if the callback has consumed the event, false otherwise.
      * @since 1.2.5
      */
-    @Override
-    public boolean shouldShowLoadingDialog() {
-        showWaitingDialog();
-        return true;
+    protected boolean shouldShowLoadingDialog() {
+        if (getContext() != null) {
+            return getModule().shouldShowLoadingDialog(requireContext());
+        }
+        return false;
     }
 
     /**
@@ -315,49 +178,58 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
      *
      * @since 1.2.5
      */
-    @Override
-    public void shouldDismissLoadingDialog() {
-        dismissWaitingDialog();
+    protected void shouldDismissLoadingDialog() {
+        getModule().shouldDismissLoadingDialog();
+    }
+
+    /**
+     * Returns the URL of the channel with the required data to use this fragment.
+     *
+     * @return The URL of a channel this fragment is currently associated with
+     * @since 3.0.0
+     */
+    @NonNull
+    protected String getChannelUrl() {
+        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
+        return args.getString(StringSet.KEY_CHANNEL_URL, "");
     }
 
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private ModerationFragment customFragment;
-        private View.OnClickListener headerLeftButtonListener;
-        private OnMenuItemClickListener<ModerationMenu, BaseChannel> menuItemClickListener;
+        @Nullable
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> menuItemClickListener;
+        @Nullable
         private LoadingDialogHandler loadingDialogHandler;
 
         /**
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         *
          * @since 1.2.0
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendBirdUIKit.getDefaultThemeMode());
+            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
-         *
+         * @param themeMode  {@link SendbirdUIKit.ThemeMode}
          * @since 1.2.0
          */
-        public Builder(@NonNull String channelUrl, SendBirdUIKit.ThemeMode themeMode) {
-            bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, themeMode.getResId());
-            bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
+            this(channelUrl, themeMode.getResId());
         }
 
         /**
          * Constructor
          *
-         * @param channelUrl the url of the channel will be implemented.
+         * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         *
          * @since 1.2.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
@@ -367,14 +239,15 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
         }
 
         /**
-         * Sets the custom moderation fragment. It must inherit {@link ModerationFragment}.
-         * @param fragment custom moderation fragment.
-         * @return This Builder object to allow for chaining of calls to set methods.
+         * Sets arguments to this fragment.
          *
-         * @since 1.2.0
+         * @param args the arguments supplied when the fragment was instantiated.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends ModerationFragment> Builder setCustomModerationFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -383,10 +256,10 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.2.0
          */
-        public Builder setHeaderTitle(String title) {
+        @NonNull
+        public Builder setHeaderTitle(@NonNull String title) {
             bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
@@ -396,9 +269,9 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.2.0
          */
+        @NonNull
         public Builder setUseHeader(boolean useHeader) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER, useHeader);
             return this;
@@ -410,9 +283,9 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.2.0
          */
+        @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
             return this;
@@ -423,9 +296,9 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.2.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
             return setHeaderLeftButtonIcon(resId, null);
         }
@@ -434,10 +307,11 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          * Sets the icon on the left button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT, tint);
@@ -449,11 +323,11 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
-         * @since 1.2.0
+         * @since 3.0.0
          */
-        public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
-            this.headerLeftButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerLeftButtonClickListener = listener;
             return this;
         }
 
@@ -462,10 +336,10 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.2.0
          */
-        public Builder setOnMenuItemClickListener(OnMenuItemClickListener<ModerationMenu, BaseChannel> listener) {
+        @NonNull
+        public Builder setOnMenuItemClickListener(@NonNull OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> listener) {
             this.menuItemClickListener = listener;
             return this;
         }
@@ -477,7 +351,8 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
          * @see LoadingDialogHandler
          * @since 1.2.5
          */
-        public Builder setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+        @NonNull
+        public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
             return this;
         }
@@ -485,16 +360,17 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
         /**
          * Creates an {@link ModerationFragment} with the arguments supplied to this
          * builder.
-         * @return The {@link ModerationFragment} applied to the {@link Bundle}.
          *
+         * @return The {@link ModerationFragment} applied to the {@link Bundle}.
          * @since 1.2.0
          */
+        @NonNull
         public ModerationFragment build() {
-            ModerationFragment fragment = customFragment != null ? customFragment : new ModerationFragment();
+            ModerationFragment fragment = new ModerationFragment();
             fragment.setArguments(bundle);
-            fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
-            fragment.setOnMenuItemClickListener(menuItemClickListener);
-            fragment.setLoadingDialogHandler(loadingDialogHandler);
+            fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.menuItemClickListener = menuItemClickListener;
+            fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;
         }
     }

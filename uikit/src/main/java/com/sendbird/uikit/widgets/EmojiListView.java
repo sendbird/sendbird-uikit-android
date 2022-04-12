@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.Emoji;
 import com.sendbird.android.Reaction;
@@ -28,7 +27,7 @@ public class EmojiListView extends FrameLayout {
     }
 
     public EmojiListView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_emoji_reaction_style);
+        this(context, attrs, R.attr.sb_widget_emoji_message);
     }
 
     public EmojiListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -37,7 +36,8 @@ public class EmojiListView extends FrameLayout {
     }
 
     public void init(@NonNull Context context) {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.sb_view_emoji_list, this, true);
+        binding = SbViewEmojiListBinding.inflate(LayoutInflater.from(context), this, true);
+        binding.rvEmojiList.setUseDivider(false);
         maxHeight = (int) context.getResources().getDimension(R.dimen.sb_emoji_reaction_dialog_max_height);
     }
 
@@ -68,13 +68,13 @@ public class EmojiListView extends FrameLayout {
         binding.rvEmojiList.setAdapter(adapter);
     }
 
-    public void setEmojiClickListener(OnItemClickListener<String> emojiClickListener) {
+    public void setEmojiClickListener(@Nullable OnItemClickListener<String> emojiClickListener) {
         if (adapter != null) {
             adapter.setEmojiClickListener(emojiClickListener);
         }
     }
 
-    public void setMoreButtonClickListener(OnClickListener moreButtonClickListener) {
+    public void setMoreButtonClickListener(@Nullable OnClickListener moreButtonClickListener) {
         if (adapter != null) {
             adapter.setMoreButtonClickListener(moreButtonClickListener);
         }
@@ -83,16 +83,16 @@ public class EmojiListView extends FrameLayout {
     public static class Builder {
         Params params;
 
-        public Builder(Context context) {
+        public Builder(@NonNull Context context) {
             params = new Params(context);
         }
 
-        public Builder setReactionList(List<Reaction> reactionList) {
+        public Builder setReactionList(@Nullable List<Reaction> reactionList) {
             params.reactionList = reactionList;
             return this;
         }
 
-        public Builder setEmojiList(List<Emoji> emojiList) {
+        public Builder setEmojiList(@Nullable List<Emoji> emojiList) {
             params.emojiList = emojiList;
             return this;
         }
@@ -102,6 +102,7 @@ public class EmojiListView extends FrameLayout {
             return this;
         }
 
+        @NonNull
         public EmojiListView create() {
             EmojiListView emojiListView = new EmojiListView(params.context);
             emojiListView.initAdapter(params);
@@ -115,7 +116,7 @@ public class EmojiListView extends FrameLayout {
         List<Reaction> reactionList;
         boolean showMoreButton;
 
-        Params(Context context) {
+        Params(@NonNull Context context) {
             this.context = context;
         }
     }

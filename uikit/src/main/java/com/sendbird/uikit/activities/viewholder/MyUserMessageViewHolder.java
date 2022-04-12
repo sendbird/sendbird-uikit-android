@@ -3,14 +3,15 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Reaction;
-import com.sendbird.uikit.BR;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.databinding.SbViewMyUserMessageBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
@@ -20,35 +21,39 @@ import java.util.List;
 import java.util.Map;
 
 public final class MyUserMessageViewHolder extends GroupChannelMessageViewHolder {
+    @NonNull
     private final EmojiReactionListView emojiReactionListView;
+    @NonNull
+    private final MyUserMessageView myUserMessageView;
 
-    MyUserMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
-        emojiReactionListView = ((MyUserMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
-        final MyUserMessageView root = (MyUserMessageView) binding.getRoot();
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanel);
-        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
+    MyUserMessageViewHolder(@NonNull SbViewMyUserMessageBinding binding, boolean useMessageGroupUI) {
+        super(binding.getRoot(), useMessageGroupUI);
+        myUserMessageView = binding.myUserMessage;
+        emojiReactionListView = myUserMessageView.getBinding().rvEmojiReactionList;
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), myUserMessageView.getBinding().contentPanel);
+        clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), myUserMessageView.getBinding().quoteReplyPanel);
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
-        binding.setVariable(BR.channel, channel);
-        binding.setVariable(BR.message, message);
-        binding.setVariable(BR.messageGroupType, messageGroupType);
-        binding.setVariable(BR.highlightInfo, highlight);
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        myUserMessageView.setHighlightMessageInfo(highlight);
+        if (channel instanceof GroupChannel) {
+            myUserMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);
+        }
     }
 
     @Override
-    public void setEmojiReaction(List<Reaction> reactionList,
-                                 OnItemClickListener<String> emojiReactionClickListener,
-                                 OnItemLongClickListener<String> emojiReactionLongClickListener,
-                                 View.OnClickListener moreButtonClickListener) {
+    public void setEmojiReaction(@NonNull List<Reaction> reactionList,
+                                 @Nullable OnItemClickListener<String> emojiReactionClickListener,
+                                 @Nullable OnItemLongClickListener<String> emojiReactionLongClickListener,
+                                 @Nullable View.OnClickListener moreButtonClickListener) {
         emojiReactionListView.setReactionList(reactionList);
         emojiReactionListView.setEmojiReactionClickListener(emojiReactionClickListener);
         emojiReactionListView.setEmojiReactionLongClickListener(emojiReactionLongClickListener);
         emojiReactionListView.setMoreButtonClickListener(moreButtonClickListener);
     }
 
+    @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;

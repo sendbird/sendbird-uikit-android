@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -33,14 +32,12 @@ import com.sendbird.android.GroupChannel;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.Sender;
-import com.sendbird.android.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbFragmentPhotoViewBinding;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.tasks.JobResultTask;
 import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.DateUtils;
@@ -48,7 +45,8 @@ import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 
-public class PhotoViewFragment extends BaseFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
+public class PhotoViewFragment extends PermissionFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
+    @NonNull
     private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private SbFragmentPhotoViewBinding binding;
@@ -56,71 +54,39 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
 
     private boolean loadComplete = false;
 
-    private String senderId;
+    @Nullable
     private String fileName;
+    @Nullable
     private String channelUrl;
+    @Nullable
     private String url;
+    @Nullable
     private String mimeType;
+    @Nullable
     private String senderNickname;
     private long createdAt;
     private long messageId;
     private boolean isDeletableMessage;
+    @Nullable
     private BaseChannel.ChannelType channelType = BaseChannel.ChannelType.GROUP;
+    @Nullable
     private LoadingDialogHandler loadingDialogHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.sb_fragment_photo_view, container, false);
+        binding = SbFragmentPhotoViewBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Logger.d("PhotoViewFragment::onViewCreated()");
-        super.onViewCreated(view, savedInstanceState);
-        binding.ivClose.setOnClickListener(v -> finish());
-    }
+        binding.ivClose.setOnClickListener(v -> shouldActivityFinish());
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.background_700));
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LOW_PROFILE |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
-    @Override
-    public void onReady(User user, ReadyStatus status) {
-        onConfigure();
-
-        if (channelType == BaseChannel.ChannelType.GROUP) {
-            GroupChannel.getChannel(channelUrl, (channel, e) -> {
-                PhotoViewFragment.this.channel = channel;
-                onDrawPage();
-            });
-        } else {
-            OpenChannel.getChannel(channelUrl, (channel, e) -> {
-                PhotoViewFragment.this.channel = channel;
-                onDrawPage();
-            });
-        }
-    }
-
-    protected void onConfigure() {
-        Logger.d("PhotoViewFragment::onConfigure()");
         Bundle args = getArguments();
         if (args != null) {
-            senderId = args.getString(StringSet.KEY_SENDER_ID);
+            String senderId = args.getString(StringSet.KEY_SENDER_ID);
             fileName = args.getString(StringSet.KEY_MESSAGE_FILENAME);
             channelUrl = args.getString(StringSet.KEY_CHANNEL_URL);
             url = args.getString(StringSet.KEY_IMAGE_URL);
@@ -138,6 +104,31 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         if (loadingDialogHandler == null) {
             loadingDialogHandler = this;
         }
+
+        if (channelType == BaseChannel.ChannelType.GROUP) {
+            GroupChannel.getChannel(channelUrl, (channel, e) -> {
+                PhotoViewFragment.this.channel = channel;
+                onDrawPage();
+            });
+        } else {
+            OpenChannel.getChannel(channelUrl, (channel, e) -> {
+                PhotoViewFragment.this.channel = channel;
+                onDrawPage();
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isFragmentAlive()) return;
+        requireActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(requireContext(), R.color.background_700));
+        requireActivity().getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LOW_PROFILE |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     private <T> RequestBuilder<T> makeRequestBuilder(@NonNull String url, @NonNull Class<T> clazz) {
@@ -146,15 +137,15 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).thumbnail(0.5f).listener(new RequestListener<T>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<T> target, boolean isFirstResource) {
-                if (!isActive()) return false;
-                getActivity().runOnUiThread(() -> loading.setVisibility(View.GONE));
+                if (!isFragmentAlive()) return false;
+                requireActivity().runOnUiThread(() -> loading.setVisibility(View.GONE));
                 return false;
             }
 
             @Override
             public boolean onResourceReady(T resource, Object model, Target<T> target, DataSource dataSource, boolean isFirstResource) {
-                if (!isActive()) return false;
-                getActivity().runOnUiThread(() -> {
+                if (!isFragmentAlive()) return false;
+                requireActivity().runOnUiThread(() -> {
                     loadComplete = true;
                     loading.setVisibility(View.GONE);
                 });
@@ -164,6 +155,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     protected void onDrawPage() {
+        if (!isFragmentAlive()) return;
         Logger.d("PhotoViewFragment::onDrawPage() - nickname:" + senderNickname);
         final ImageView ivPhoto = binding.ivPhoto;
         final ImageView ivDelete = binding.ivDelete;
@@ -174,37 +166,37 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         final String url = this.url;
 
         tvTitle.setText(senderNickname);
-        tvCreatedAt.setText(DateUtils.formatTime(getContext(), this.createdAt));
+        tvCreatedAt.setText(DateUtils.formatTime(requireContext(), this.createdAt));
         loading.setVisibility(View.VISIBLE);
 
-        if (mimeType.toLowerCase().contains(StringSet.gif)) {
-            makeRequestBuilder(url, GifDrawable.class).into(ivPhoto);
-        } else {
-            makeRequestBuilder(url, Bitmap.class).into(ivPhoto);
+        if (url != null) {
+            if (mimeType != null && mimeType.toLowerCase().contains(StringSet.gif)) {
+                makeRequestBuilder(url, GifDrawable.class).into(ivPhoto);
+            } else {
+                makeRequestBuilder(url, Bitmap.class).into(ivPhoto);
+            }
         }
 
         if (channel != null && isDeletableMessage) {
             ivDelete.setVisibility(View.VISIBLE);
             ivDelete.setOnClickListener(v -> {
-                        if (!loadComplete || getContext() == null || getFragmentManager() == null) return;
+                        if (!loadComplete || getContext() == null) return;
 
-                        DialogUtils.buildWarning(
+                        DialogUtils.showWarningDialog(
+                                requireContext(),
                                 getString(R.string.sb_text_dialog_delete_file_message),
-                                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                                 getString(R.string.sb_text_button_delete),
                                 v1 -> channel.deleteMessage(createDummyMessage(), e -> {
                                     if (e != null) {
                                         toastError(R.string.sb_text_error_delete_message);
                                         return;
                                     }
-                                    if (isActive()) {
-                                        finish();
+                                    if (isFragmentAlive()) {
+                                        shouldActivityFinish();
                                     }
                                 }),
                                 getString(R.string.sb_text_button_cancel),
-                                cancel -> {
-                                    Logger.dev("cancel");
-                                }).showSingle(getFragmentManager());
+                                cancel -> Logger.dev("cancel"));
                     }
             );
         } else {
@@ -217,14 +209,12 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 download();
             } else {
-                checkPermission(0, this);
+                checkPermission(0, (IPermissionHandler) this);
             }
         });
 
         PhotoViewAttacher attacher = new PhotoViewAttacher(ivPhoto);
-        attacher.setOnPhotoTapListener((view, x, y) -> {
-            togglePhotoActionBar();
-        });
+        attacher.setOnPhotoTapListener((view, x, y) -> togglePhotoActionBar());
     }
 
     private void togglePhotoActionBar() {
@@ -281,6 +271,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     @Override
+    @NonNull
     public String[] getPermissions(int requestCode) {
         return REQUIRED_PERMISSIONS;
     }
@@ -291,18 +282,26 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     private void download() {
-        loadingDialogHandler.shouldShowLoadingDialog();
+        if (loadingDialogHandler != null) {
+            loadingDialogHandler.shouldShowLoadingDialog();
+        }
         TaskQueue.addTask(new JobResultTask<Boolean>() {
             @Override
+            @Nullable
             public Boolean call() throws Exception {
-                FileDownloader.getInstance().saveFile(getContext(), url, mimeType, fileName);
+                if (!isFragmentAlive()) return null;
+                if (url == null || mimeType == null || fileName == null) return null;
+                FileDownloader.getInstance().saveFile(requireContext(), url, mimeType, fileName);
                 Logger.dev("++ file name : %s", fileName);
                 return true;
             }
 
             @Override
-            public void onResultForUiThread(Boolean result, SendBirdException e) {
-                loadingDialogHandler.shouldDismissLoadingDialog();
+            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendBirdException e) {
+                if (loadingDialogHandler != null) {
+                    loadingDialogHandler.shouldDismissLoadingDialog();
+                }
+
                 if (e != null) {
                     Logger.e(e);
                 }
@@ -315,7 +314,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         });
     }
 
-    private void setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+    private void setLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
     }
 
@@ -365,32 +364,9 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         private final Bundle bundle = new Bundle();
         private LoadingDialogHandler loadingDialogHandler;
 
-        /**
-         * Constructor
-         *
-         * @param senderId sender user id
-         * @param fileName the file name
-         * @param channelUrl
-         * @param url
-         * @param mimeType
-         * @param senderNickname
-         * @param createdAt
-         * @param messageId
-         * @param channelType
-         * @param themeMode
-         *
-         * @deprecated As of 2.2.0, replaced by {@link Builder(String, String, String, String, String, String, long, long, SendBirdUIKit.ThemeMode, boolean)}
-         */
-        @Deprecated
-        public Builder(String senderId, String fileName, String channelUrl,
-                       String url, String mimeType, String senderNickname, long createdAt,
-                       long messageId, BaseChannel.ChannelType channelType, SendBirdUIKit.ThemeMode themeMode) {
-            this(senderId, fileName, channelUrl, url, mimeType, senderNickname, createdAt, messageId, channelType, themeMode, MessageUtils.isMine(senderId));
-        }
-
-        public Builder(String senderId, String fileName, String channelUrl,
-                       String url, String mimeType, String senderNickname, long createdAt,
-                       long messageId, BaseChannel.ChannelType channelType, SendBirdUIKit.ThemeMode themeMode, boolean isDeletableMessage) {
+        public Builder(@Nullable String senderId, @Nullable String fileName, @Nullable String channelUrl,
+                       @Nullable String url, @Nullable String mimeType, @Nullable String senderNickname, long createdAt,
+                       long messageId, @Nullable BaseChannel.ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode  themeMode, boolean isDeletableMessage) {
             bundle.putString(StringSet.KEY_SENDER_ID, senderId);
             bundle.putString(StringSet.KEY_MESSAGE_FILENAME, fileName);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -410,11 +386,13 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
          * @see LoadingDialogHandler
          * @since 1.2.5
          */
-        public Builder setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+        @NonNull
+        public Builder setLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
             return this;
         }
 
+        @NonNull
         public PhotoViewFragment build() {
             PhotoViewFragment fragment = new PhotoViewFragment();
             fragment.setArguments(bundle);

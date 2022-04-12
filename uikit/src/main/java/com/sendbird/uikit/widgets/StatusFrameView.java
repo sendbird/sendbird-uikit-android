@@ -3,31 +3,35 @@ package com.sendbird.uikit.widgets;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.databinding.SbViewStatusFrameBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
 
 public class StatusFrameView extends FrameLayout {
 
-    private SbViewStatusFrameBinding binding;
-    private ColorStateList iconTint;
-    private int errorIcon;
-    private int errorText;
-    private int emptyIcon;
-    private int emptyText;
-    private boolean showAction;
+    private final SbViewStatusFrameBinding binding;
+    private ColorStateList errorIconTint;
+    private ColorStateList emptyIconTint;
+    private ColorStateList actionIconTint;
+    @Nullable
+    private Drawable errorIcon;
+    @Nullable
+    private String errorText;
+    @Nullable
+    private Drawable emptyIcon;
+    @Nullable
+    private String emptyText;
+    private boolean showAction = false;
     private int actionText;
 
     public StatusFrameView(@NonNull Context context) {
@@ -35,32 +39,28 @@ public class StatusFrameView extends FrameLayout {
     }
 
     public StatusFrameView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_status_frame_style);
+        this(context, attrs, 0);
     }
 
     public StatusFrameView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.StatusFrameView, defStyle, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.StatusComponent, defStyleAttr, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_status_frame, this, true);
-            int background = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_background, R.color.primary_100);
-            int alertTextAppearance = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_text_appearance, R.style.SendbirdBody3OnLight03);
-            iconTint = a.getColorStateList(R.styleable.StatusFrameView_sb_status_frame_icon_tint);
-            errorIcon = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_error_icon, R.drawable.icon_error);
-            errorText = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_error_text, R.string.sb_text_error_unknown);
-            emptyIcon = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_empty_icon, R.drawable.icon_chat);
-            emptyText = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_empty_text, R.string.sb_text_error_unknown);
+            this.binding = SbViewStatusFrameBinding.inflate(LayoutInflater.from(getContext()), this, true);
+            int background = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_background, R.color.background_50);
+            int alertTextAppearance = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_text_appearance, R.style.SendbirdBody3OnLight03);
+            actionIconTint = a.getColorStateList(R.styleable.StatusComponent_sb_status_frame_action_icon_tint);
+            errorIconTint = a.getColorStateList(R.styleable.StatusComponent_sb_status_frame_error_icon_tint);
+            emptyIconTint = a.getColorStateList(R.styleable.StatusComponent_sb_status_frame_empty_icon_tint);
+            errorIcon = a.getDrawable(R.styleable.StatusComponent_sb_status_frame_error_icon);
+            errorText = a.getString(R.styleable.StatusComponent_sb_status_frame_error_text);
+            emptyIcon = a.getDrawable(R.styleable.StatusComponent_sb_status_frame_empty_icon);
+            emptyText = a.getString(R.styleable.StatusComponent_sb_status_frame_empty_text);
 
-            actionText = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_action_text, R.string.sb_text_button_retry);
-            int actionBackground = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_action_background, R.drawable.selector_button_retry_light);
-            int actionIcon = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_action_icon, R.drawable.icon_refresh);
-            int actionTextAppearance = a.getResourceId(R.styleable.StatusFrameView_sb_status_frame_action_text_appearance, R.style.SendbirdButtonPrimary300);
-            int actionIconTint = SendBirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
-            showAction = a.getBoolean(R.styleable.StatusFrameView_sb_status_frame_show_action, false);
+            actionText = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_action_text, R.string.sb_text_button_retry);
+            int actionBackground = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_action_background, R.drawable.selector_button_retry_light);
+            int actionIcon = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_action_icon, R.drawable.icon_refresh);
+            int actionTextAppearance = a.getResourceId(R.styleable.StatusComponent_sb_status_frame_action_text_appearance, R.style.SendbirdButtonPrimary300);
 
             binding.ivAlertText.setTextAppearance(getContext(), alertTextAppearance);
 
@@ -82,24 +82,30 @@ public class StatusFrameView extends FrameLayout {
         LOADING, CONNECTION_ERROR, ERROR, EMPTY, NONE
     }
 
-    public void setErrorText(@StringRes int text) {
+    public void setErrorText(@Nullable String text) {
         this.errorText = text;
     }
-
-    public void setErrorIcon(@DrawableRes int errorIcon) {
+    public void setErrorIcon(@Nullable Drawable errorIcon) {
         this.errorIcon = errorIcon;
     }
-
-    public void setEmptyText(@StringRes int emptyText) {
+    public void setEmptyText(@Nullable String emptyText) {
         this.emptyText = emptyText;
     }
 
-    public void setEmptyIcon(@DrawableRes int emptyIcon) {
+    public void setEmptyIcon(@Nullable Drawable emptyIcon) {
         this.emptyIcon = emptyIcon;
     }
 
-    public void setIconTint(@Nullable ColorStateList iconTint) {
-        this.iconTint = iconTint;
+    public void setErrorIconTint(@Nullable ColorStateList iconTint) {
+        this.errorIconTint = iconTint;
+    }
+
+    public void setEmptyIconTint(@Nullable ColorStateList emptyIconTint) {
+        this.emptyIconTint = emptyIconTint;
+    }
+
+    public void setActionIconTint(@Nullable ColorStateList actionIconTint) {
+        this.actionIconTint = actionIconTint;
     }
 
     public void setShowAction(boolean showAction) {
@@ -110,7 +116,7 @@ public class StatusFrameView extends FrameLayout {
         this.actionText = actionText;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(@NonNull Status status) {
         this.setVisibility(VISIBLE);
         binding.progressPanel.setVisibility(GONE);
 
@@ -120,17 +126,16 @@ public class StatusFrameView extends FrameLayout {
                 break;
             case CONNECTION_ERROR:
                 setActionText(R.string.sb_text_button_retry);
-                setErrorText(R.string.sb_text_error_retry_request);
                 setShowAction(true);
-                setAlert(errorText, errorIcon);
+                setAlert(getContext().getString(R.string.sb_text_error_retry_request), errorIcon, errorIconTint);
                 break;
             case ERROR:
                 setShowAction(false);
-                setAlert(errorText, errorIcon);
+                setAlert(errorText, errorIcon, errorIconTint);
                 break;
             case EMPTY:
                 setShowAction(false);
-                setAlert(emptyText, emptyIcon);
+                setAlert(emptyText, emptyIcon, emptyIconTint);
                 break;
             case NONE:
             default:
@@ -142,11 +147,15 @@ public class StatusFrameView extends FrameLayout {
         binding.actionPanel.setOnClickListener(listener);
     }
 
-    private void setAlert(@StringRes int text, @DrawableRes int iconResId) {
+    private void setAlert(@Nullable String text, @Nullable Drawable icon, @Nullable ColorStateList iconTint) {
         this.setVisibility(VISIBLE);
-        binding.ivAlertIcon.setImageDrawable(DrawableUtils.setTintList(getContext(), iconResId, iconTint));
+        binding.ivAlertIcon.setImageDrawable(DrawableUtils.setTintList(icon, iconTint));
         binding.ivAlertText.setText(text);
         binding.tvAction.setText(actionText);
         binding.actionPanel.setVisibility(showAction ? View.VISIBLE : View.GONE);
+        if (showAction) {
+            final Drawable actionIcon = binding.ivAction.getDrawable();
+            binding.ivAction.setImageDrawable(DrawableUtils.setTintList(actionIcon, actionIconTint));
+        }
     }
 }

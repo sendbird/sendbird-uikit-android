@@ -4,7 +4,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.BaseChannel;
@@ -14,7 +13,6 @@ import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,8 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
  */
 public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
-    protected ViewDataBinding binding;
+    @Nullable
     protected HighlightMessageInfo highlight;
+    @NonNull
     protected Map<String, View> clickableViewMap = new ConcurrentHashMap<>();
     private boolean isNewDate = false;
     private boolean isMine = false;
@@ -35,17 +34,16 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      *
      * @param view View to be displayed.
      */
-    public MessageViewHolder(View view) {
+    public MessageViewHolder(@NonNull View view) {
         super(view);
     }
 
-    MessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding.getRoot());
-        this.binding = binding;
+    MessageViewHolder(@NonNull View view, boolean useMessageGroupUI) {
+        super(view);
         this.useMessageGroupUI = useMessageGroupUI;
     }
 
-    public void onBindViewHolder(BaseChannel channel, @Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
+    public void onBindViewHolder(@NonNull BaseChannel channel, @Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
         if (prevMessage != null) {
             this.isNewDate = !DateUtils.hasSameDate(message.getCreatedAt(), prevMessage.getCreatedAt());
         } else {
@@ -58,11 +56,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
         bind(channel, message, useMessageGroupUI ?
                 MessageUtils.getMessageGroupType(prevMessage, message, nextMessage) :
                 MessageGroupType.GROUPING_TYPE_SINGLE);
-
-        if (binding != null) {
-            binding.executePendingBindings();
-            binding.getRoot().requestLayout();
-        }
+        itemView.requestLayout();
     }
 
     /**
@@ -111,7 +105,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * @param messageGroupType The type of message group UI.
      * @since 1.2.1
      */
-    abstract public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType);
+    abstract public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType);
 
     /**
      * Returns a Map containing views to register a click event with an identifier.
@@ -119,6 +113,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * @return A Map containing views to register a click event with an identifier.
      * @since 2.2.0
      */
+    @NonNull
     abstract public Map<String, View> getClickableViewMap();
 }
 

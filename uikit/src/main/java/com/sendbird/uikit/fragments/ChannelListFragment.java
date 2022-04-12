@@ -1,261 +1,217 @@
 package com.sendbird.uikit.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.databinding.DataBindingUtil;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.CreateChannelActivity;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
-import com.sendbird.uikit.consts.CreateableChannelType;
+import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.databinding.SbFragmentChannelListBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.ChannelListModule;
+import com.sendbird.uikit.modules.components.ChannelListComponent;
+import com.sendbird.uikit.modules.components.HeaderComponent;
+import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.utils.ChannelUtils;
+import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ChannelListViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.SelectChannelTypeView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
+import java.util.Objects;
+
 /**
  * Fragment displaying the list of channels.
  */
-public class ChannelListFragment extends BaseGroupChannelFragment {
-    private SbFragmentChannelListBinding binding;
-    private ChannelListViewModel viewModel;
-
-    private View.OnClickListener headerLeftButtonListener;
-    private View.OnClickListener headerRightButtonListener;
-    private ChannelListAdapter adapter;
-    private GroupChannelListQuery query;
-    private OnItemClickListener<GroupChannel> itemClickListener;
-    private OnItemLongClickListener<GroupChannel> itemLongClickListener;
-
-    public ChannelListFragment(){}
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Logger.i(">> ChannelListFragment::onCreate()");
-        Bundle args = getArguments();
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
-        if (args != null) {
-            themeResId = args.getInt(StringSet.KEY_THEME_RES_ID, SendBirdUIKit.getDefaultThemeMode().getResId());
-        }
-
-        if (getActivity() != null) {
-            getActivity().setTheme(themeResId);
-        }
-    }
+public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, ChannelListViewModel> {
 
     @Nullable
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private ChannelListAdapter adapter;
+    @Nullable
+    private OnItemClickListener<GroupChannel> itemClickListener;
+    @Nullable
+    private OnItemLongClickListener<GroupChannel> itemLongClickListener;
+    @Nullable
+    private GroupChannelListQuery query;
+
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.sb_fragment_channel_list, container, false);
-        return binding.getRoot();
+    protected ChannelListModule onCreateModule(@NonNull Bundle args) {
+        return new ChannelListModule(requireContext());
+    }
+
+    @Override
+    protected void onConfigureParams(@NonNull ChannelListModule module, @NonNull Bundle args) {
+    }
+
+    @NonNull
+    @Override
+    protected ChannelListViewModel onCreateViewModel() {
+        return new ViewModelProvider(this, new ViewModelFactory(query)).get(ChannelListViewModel.class);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        binding.statusFrame.setStatus(StatusFrameView.Status.LOADING);
-        initHeaderOnCreated();
+        getModule().getStatusComponent().notifyStatusChanged(StatusFrameView.Status.LOADING);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (adapter != null) adapter.notifyDataSetChanged();
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull ChannelListModule module, @NonNull ChannelListViewModel viewModel) {
+        Logger.d(">> ChannelListFragment::initModule()");
+        module.getChannelListComponent().setPagedDataLoader(viewModel);
+        if (this.adapter != null) {
+            module.getChannelListComponent().setAdapter(adapter);
+        }
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel);
+        onBindChannelListComponent(module.getChannelListComponent(), viewModel);
+        onBindStatusComponent(module.getStatusComponent(), viewModel);
     }
 
     @Override
-    protected void onReadyFailure() {
-        setErrorFrame();
+    protected void onReady(@NonNull ReadyStatus status, @NonNull ChannelListModule module, @NonNull ChannelListViewModel viewModel) {
+        Logger.d(">> ChannelListFragment::onReady status=%s", status);
+        if (status != ReadyStatus.READY) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
+        viewModel.loadInitial();
     }
 
-    @Override
-    protected void onConfigure() {
+    /**
+     * Called to bind events to the HeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelListModule, ChannelListViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ChannelListViewModel viewModel) {
+        Logger.d(">> ChannelListFragment::setupHeaderComponent()");
+        headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> showChannelTypeSelectDialog());
     }
 
-    @Override
-    protected void onDrawPage() {
-        Logger.i(">> ChannelListFragment::onDrawPage()");
-        initHeaderOnReady();
-        initChannelList();
+    /**
+     * Called to bind events to the ChannelListComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelListModule, ChannelListViewModel)}.
+     *
+     * @param channelListComponent The component to which the event will be bound
+     * @param viewModel            A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindChannelListComponent(@NonNull ChannelListComponent channelListComponent, @NonNull ChannelListViewModel viewModel) {
+        Logger.d(">> ChannelListFragment::setupChannelListComponent()");
+        channelListComponent.setOnItemClickListener(itemClickListener != null ? itemClickListener : (view, position, channel) -> startChannelActivity(channel.getUrl()));
+        channelListComponent.setOnItemLongClickListener(itemLongClickListener != null ? itemLongClickListener : (view, position, channel) -> showListContextMenu(channel));
+        viewModel.getChannelList().observe(getViewLifecycleOwner(), channelListComponent::notifyDataSetChanged);
     }
 
-    protected void setErrorFrame() {
-        binding.statusFrame.setStatus(StatusFrameView.Status.CONNECTION_ERROR);
-        binding.statusFrame.setOnActionEventListener(v -> {
-            binding.statusFrame.setStatus(StatusFrameView.Status.LOADING);
-            connect();
+    /**
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelListModule, ChannelListViewModel)}.
+     *
+     * @param statusComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ChannelListViewModel viewModel) {
+        Logger.d(">> ChannelListFragment::setupStatusComponent()");
+        statusComponent.setOnActionButtonClickListener(v -> {
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
+            shouldAuthenticate();
         });
+
+        viewModel.getChannelList().observe(getViewLifecycleOwner(), channels -> statusComponent.notifyStatusChanged(channels.isEmpty() ? StatusFrameView.Status.EMPTY : StatusFrameView.Status.NONE));
     }
 
-    private void initHeaderOnCreated() {
-        Bundle args = getArguments();
-        String headerTitle = getString(R.string.sb_text_header_channel_list);
-        boolean useHeader = false;
-        boolean useHeaderLeftButton = true;
-        boolean useHeaderRightButton = true;
-        int headerLeftButtonIconResId = R.drawable.icon_arrow_left;
-        int headerRightButtonIconResId = R.drawable.icon_create;
-        ColorStateList headerLeftButtonIconTint = null;
-        ColorStateList headerRightButtonIconTint = null;
-
-        if (args != null) {
-            headerTitle = args.getString(StringSet.KEY_HEADER_TITLE, getString(R.string.sb_text_header_channel_list));
-            useHeader = args.getBoolean(StringSet.KEY_USE_HEADER, false);
-            useHeaderLeftButton = args.getBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, true);
-            useHeaderRightButton = args.getBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, true);
-            headerLeftButtonIconResId = args.getInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, R.drawable.icon_arrow_left);
-            headerRightButtonIconResId = args.getInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_create);
-            headerLeftButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT);
-            headerRightButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT);
-        }
-
-        binding.abvChannelList.setVisibility(useHeader ? View.VISIBLE : View.GONE);
-
-        binding.abvChannelList.getTitleTextView().setText(headerTitle);
-
-        binding.abvChannelList.setUseLeftImageButton(useHeaderLeftButton);
-        binding.abvChannelList.setUseRightButton(useHeaderRightButton);
-
-        binding.abvChannelList.setLeftImageButtonResource(headerLeftButtonIconResId);
-        if (args != null && args.containsKey(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID)) {
-            binding.abvChannelList.setLeftImageButtonTint(headerLeftButtonIconTint);
-        }
-        binding.abvChannelList.setRightImageButtonResource(headerRightButtonIconResId);
-        if (args != null && args.containsKey(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID)) {
-            binding.abvChannelList.setRightImageButtonTint(headerRightButtonIconTint);
-        }
-        binding.abvChannelList.setLeftImageButtonClickListener(v -> finish());
-    }
-
-    private void initHeaderOnReady() {
-        if (headerLeftButtonListener != null) {
-            binding.abvChannelList.setLeftImageButtonClickListener(headerLeftButtonListener);
-        }
-
-        if (headerRightButtonListener != null) {
-            binding.abvChannelList.setRightImageButtonClickListener(headerRightButtonListener);
-        } else {
-            binding.abvChannelList.setRightImageButtonClickListener(v -> {
-                if (getContext() != null && getFragmentManager() != null) {
-                    if (Available.isSupportSuper() || Available.isSupportBroadcast()) {
-                        final SelectChannelTypeView layout = new SelectChannelTypeView(getContext());
-                        layout.canCreateSuperGroupChannel(Available.isSupportSuper());
-                        layout.canCreateBroadcastGroupChannel(Available.isSupportBroadcast());
-                        SendBirdDialogFragment dialogFragment = DialogUtils.buildContentViewTop(layout);
-                        layout.setOnItemClickListener((view, position, channelType) -> {
-                            if (dialogFragment != null) {
-                                dialogFragment.dismiss();
-                            }
-                            Logger.dev("++ channelType : " + channelType);
-                            if (isActive()) {
-                                onSelectedChannelType(channelType);
-                            }
-                        });
-                        dialogFragment.showSingle(getFragmentManager());
-                    } else {
-                        if (isActive()) {
-                            onSelectedChannelType(CreateableChannelType.Normal);
-                        }
-                    }
+    private void showChannelTypeSelectDialog() {
+        if (getContext() == null) return;
+        if (Available.isSupportSuper() || Available.isSupportBroadcast()) {
+            final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_header);
+            final SelectChannelTypeView layout = new SelectChannelTypeView(contextThemeWrapper);
+            layout.canCreateSuperGroupChannel(Available.isSupportSuper());
+            layout.canCreateBroadcastGroupChannel(Available.isSupportBroadcast());
+            final AlertDialog dialog = DialogUtils.showContentTopDialog(requireContext(), layout);
+            layout.setOnItemClickListener((itemView, position, channelType) -> {
+                dialog.dismiss();
+                Logger.dev("++ channelType : " + channelType);
+                if (isFragmentAlive()) {
+                    onSelectedChannelType(channelType);
                 }
             });
+        } else {
+            if (isFragmentAlive()) {
+                onSelectedChannelType(CreatableChannelType.Normal);
+            }
+        }
+    }
+
+    private void startChannelActivity(@NonNull String channelUrl) {
+        if (isFragmentAlive()) {
+            startActivity(ChannelActivity.newIntent(requireContext(), channelUrl));
+        }
+    }
+
+    private void showListContextMenu(@NonNull GroupChannel channel) {
+        DialogListItem pushOnOff = new DialogListItem(ChannelUtils.isChannelPushOff(channel) ? R.string.sb_text_channel_list_push_on : R.string.sb_text_channel_list_push_off);
+        DialogListItem leaveChannel = new DialogListItem(R.string.sb_text_channel_list_leave);
+        DialogListItem[] items = {pushOnOff, leaveChannel};
+
+        if (isFragmentAlive()) {
+            DialogUtils.showListDialog(requireContext(),
+                    ChannelUtils.makeTitleText(requireContext(), channel),
+                    items, (v, p, item) -> {
+                        final int key = item.getKey();
+                        if (key == R.string.sb_text_channel_list_leave) {
+                            Logger.dev("leave channel");
+                            leaveChannel(channel);
+                        } else {
+                            Logger.dev("change push notifications");
+                            final boolean enable = ChannelUtils.isChannelPushOff(channel);
+                            getViewModel().setPushNotification(channel, ChannelUtils.isChannelPushOff(channel), e -> {
+                                if (e != null) {
+                                    int message = enable ? R.string.sb_text_error_push_notification_on : R.string.sb_text_error_push_notification_off;
+                                    toastError(message);
+                                }
+                            });
+                        }
+                    });
         }
     }
 
     /**
      * A callback that selected channel types.
      *
-     * @param channelType selected channel type. see this {@link CreateableChannelType}
+     * @param channelType selected channel type.
+     * @see CreatableChannelType
      * @since 1.2.0
      */
-    protected void onSelectedChannelType(@NonNull CreateableChannelType channelType) {
-        startActivity(CreateChannelActivity.newIntent(getContext(), channelType));
-    }
-
-    private void initChannelList() {
-        Bundle args = getArguments();
-        boolean includeEmpty = false;
-        if (args != null) {
-            includeEmpty = args.getBoolean(StringSet.KEY_INCLUDE_EMPTY, false);
-        }
-
-        // if a query exists, includeEmpty property has to ignore. if don't the two values will be conflicted.
-        if (query == null) {
-            query = GroupChannel.createMyGroupChannelListQuery();
-            query.setIncludeEmpty(includeEmpty);
-        }
-
-        viewModel = new ViewModelProvider(getViewModelStore(), new ViewModelFactory()).get(ChannelListViewModel.class);
-
-        initAdapter();
-        binding.rvGroupChannelList.setAdapter(adapter);
-        binding.rvGroupChannelList.setHasFixedSize(true);
-        binding.rvGroupChannelList.setPager(viewModel);
-        binding.rvGroupChannelList.setItemAnimator(new ItemAnimator());
-        binding.rvGroupChannelList.setThreshold(5);
-
-        if (args != null && args.containsKey(StringSet.KEY_EMPTY_ICON_RES_ID)) {
-            int emptyIconResId = args.getInt(StringSet.KEY_EMPTY_ICON_RES_ID, R.drawable.icon_chat);
-            binding.statusFrame.setEmptyIcon(emptyIconResId);
-            ColorStateList emptyIconTint = args.getParcelable(StringSet.KEY_EMPTY_ICON_TINT);
-            binding.statusFrame.setIconTint(emptyIconTint);
-        }
-        if (args != null && args.containsKey(StringSet.KEY_EMPTY_TEXT_RES_ID)) {
-            int emptyTextResId = args.getInt(StringSet.KEY_EMPTY_TEXT_RES_ID, R.string.sb_text_channel_list_empty);
-            binding.statusFrame.setEmptyText(emptyTextResId);
-        }
-        viewModel.getStatusFrame().observe(this, binding.statusFrame::setStatus);
-        viewModel.getChannelList().observe(this, groupChannels -> {
-            adapter.setItems(groupChannels);
-        });
-        viewModel.getErrorToast().observe(this, this::toastError);
-        viewModel.loadInitial(query);
-
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-                if (toPosition == 0 && adapter != null) {
-                    if (binding.rvGroupChannelList.findFirstVisibleItemPosition() == 0) {
-                        binding.rvGroupChannelList.scrollToPosition(0);
-                    }
-                }
-            }
-
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                if (positionStart == 0 && adapter != null) {
-                    if (binding.rvGroupChannelList.findFirstVisibleItemPosition() == 0) {
-                        binding.rvGroupChannelList.scrollToPosition(0);
-                    }
-                }
-            }
-        });
+    protected void onSelectedChannelType(@NonNull CreatableChannelType channelType) {
+        startActivity(CreateChannelActivity.newIntent(Objects.requireNonNull(getContext()), channelType));
     }
 
     /**
@@ -264,101 +220,41 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
      * @since 1.0.4
      */
     protected void leaveChannel(@NonNull GroupChannel channel) {
-        if (viewModel != null) {
-            viewModel.leaveChannel(channel);
-        }
-    }
-
-    private void initAdapter() {
-        if (adapter == null) {
-            adapter = new ChannelListAdapter();
-        }
-
-        if (itemClickListener == null) {
-            itemClickListener = (view, position, channel) -> {
-                Logger.d("++ ChannelListFragment::onItemClicked()");
-                if (isActive()) {
-                    startActivity(ChannelActivity.newIntent(getContext(), channel.getUrl()));
-                }
-            };
-        }
-
-        if (itemLongClickListener == null) {
-            itemLongClickListener = (view1, position, channel) -> {
-                Logger.d("++ ChannelListFragment::onItemLongClicked()");
-                DialogListItem pushOnOff = new DialogListItem(ChannelUtils.isChannelPushOff(channel) ? R.string.sb_text_channel_list_push_on : R.string.sb_text_channel_list_push_off);
-                DialogListItem leaveChannel = new DialogListItem(R.string.sb_text_channel_list_leave);
-                DialogListItem[] items = {pushOnOff, leaveChannel};
-
-                if (isActive() && getFragmentManager() != null) {
-                    DialogUtils.buildItems(ChannelUtils.makeTitleText(getContext(), channel),
-                            (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                            items, (v, p, item) -> {
-                                final int key = item.getKey();
-                                if (key == R.string.sb_text_channel_list_leave) {
-                                    Logger.dev("leave channel");
-                                    leaveChannel(channel);
-                                } else {
-                                    Logger.dev("change push notifications");
-                                    viewModel.setPushNotification(channel, ChannelUtils.isChannelPushOff(channel));
-                                }
-                            }).showSingle(getFragmentManager());
-                }
-            };
-        }
-        adapter.setOnItemClickListener(itemClickListener);
-        adapter.setOnItemLongClickListener(itemLongClickListener);
-    }
-
-    private void setHeaderLeftButtonListener(View.OnClickListener listener) {
-        this.headerLeftButtonListener = listener;
-    }
-
-    private void setHeaderRightButtonListener(View.OnClickListener listener) {
-        this.headerRightButtonListener = listener;
-    }
-
-    private void setChannelListAdapter(ChannelListAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    private void setItemClickListener(OnItemClickListener<GroupChannel> itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    private void setItemLongClickListener(OnItemLongClickListener<GroupChannel> itemLongClickListener) {
-        this.itemLongClickListener = itemLongClickListener;
-    }
-
-    private void setGroupChannelListQuery(GroupChannelListQuery query) {
-        this.query = query;
+        getViewModel().leaveChannel(channel, e -> {
+            if (e != null) toastError(R.string.sb_text_error_leave_channel);
+        });
     }
 
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private ChannelListFragment customFragment;
-        private View.OnClickListener headerLeftButtonListener;
-        private View.OnClickListener headerRightButtonListener;
+        @Nullable
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
         private ChannelListAdapter adapter;
+        @Nullable
         private OnItemClickListener<GroupChannel> itemClickListener;
+        @Nullable
         private OnItemLongClickListener<GroupChannel> itemLongClickListener;
+        @Nullable
         private GroupChannelListQuery query;
 
         /**
          * Constructor
          */
         public Builder() {
-            this(SendBirdUIKit.getDefaultThemeMode());
+            this(SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
+         * @param themeMode {@link SendbirdUIKit.ThemeMode}
          */
-        public Builder(SendBirdUIKit.ThemeMode themeMode) {
-            bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, themeMode.getResId());
+        public Builder(@NonNull SendbirdUIKit.ThemeMode themeMode) {
+            this(themeMode.getResId());
         }
 
         /**
@@ -372,14 +268,15 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
         }
 
         /**
-         * Sets the custom channel fragment. It must inherit {@link ChannelListFragment}.
-         * @param fragment custom channel list fragment.
-         * @return This Builder object to allow for chaining of calls to set methods.
+         * Sets arguments to this fragment.
          *
-         * @since 1.0.4
+         * @param args the arguments supplied when the fragment was instantiated.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends ChannelListFragment> Builder setCustomChannelListFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -389,7 +286,8 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setHeaderTitle(String title) {
+        @NonNull
+        public Builder setHeaderTitle(@NonNull String title) {
             bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
@@ -400,6 +298,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeader(boolean useHeader) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER, useHeader);
             return this;
@@ -412,6 +311,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
             return this;
@@ -424,6 +324,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
             return this;
@@ -435,6 +336,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
             return setHeaderLeftButtonIcon(resId, null);
         }
@@ -443,10 +345,11 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * Sets the icon on the left button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT, tint);
@@ -459,6 +362,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
             return setHeaderRightButtonIcon(resId, null);
         }
@@ -467,27 +371,14 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * Sets the icon on the right button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT, tint);
-            return this;
-        }
-
-        /**
-         * Sets the includeEmpty when getting the channel list.
-         *
-         * @param isIncludeEmpty Flag to include empty channels.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         *
-         * @deprecated As of 1.0.5, replaced by {@link GroupChannelListQuery#setIncludeEmpty(boolean)} )}. If the GroupChannelListQuery was set, this value will be ignored.
-         */
-        @Deprecated
-        public Builder setIsIncludeEmpty(boolean isIncludeEmpty) {
-            bundle.putBoolean(StringSet.KEY_INCLUDE_EMPTY, isIncludeEmpty);
             return this;
         }
 
@@ -496,9 +387,11 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
-            this.headerLeftButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerLeftButtonClickListener = listener;
             return this;
         }
 
@@ -507,9 +400,11 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderRightButtonListener(View.OnClickListener listener) {
-            this.headerRightButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
             return this;
         }
 
@@ -519,7 +414,8 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @param adapter the adapter for the channel list.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setChannelListAdapter(ChannelListAdapter adapter) {
+        @NonNull
+        public Builder setChannelListAdapter(@NonNull ChannelListAdapter adapter) {
             this.adapter = adapter;
             return this;
         }
@@ -529,8 +425,10 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setItemClickListener(OnItemClickListener<GroupChannel> itemClickListener) {
+        @NonNull
+        public Builder setOnItemClickListener(@NonNull OnItemClickListener<GroupChannel> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
         }
@@ -540,20 +438,23 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setItemLongClickListener(OnItemLongClickListener<GroupChannel> itemLongClickListener) {
+        @NonNull
+        public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<GroupChannel> itemLongClickListener) {
             this.itemLongClickListener = itemLongClickListener;
             return this;
         }
 
         /**
          * Sets the query instance to get <code>GroupChannel</code>s the current <code>User</code> has joined.
+         *
          * @param query The GroupChannelListQuery instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         *
          * @since 1.0.5
          */
-        public Builder setGroupChannelListQuery(GroupChannelListQuery query) {
+        @NonNull
+        public Builder setGroupChannelListQuery(@NonNull GroupChannelListQuery query) {
             this.query = query;
             return this;
         }
@@ -565,6 +466,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.0.2
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
             return setEmptyIcon(resId, null);
         }
@@ -573,10 +475,11 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
@@ -590,6 +493,7 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.0.2
          */
+        @NonNull
         public Builder setEmptyText(@StringRes int resId) {
             bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
             return this;
@@ -601,15 +505,16 @@ public class ChannelListFragment extends BaseGroupChannelFragment {
          *
          * @return The {@link ChannelListFragment} applied to the {@link Bundle}.
          */
+        @NonNull
         public ChannelListFragment build() {
-            ChannelListFragment fragment = customFragment != null ? customFragment : new ChannelListFragment();
+            final ChannelListFragment fragment = new ChannelListFragment();
             fragment.setArguments(bundle);
-            fragment.setChannelListAdapter(adapter);
-            fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
-            fragment.setHeaderRightButtonListener(headerRightButtonListener);
-            fragment.setItemClickListener(itemClickListener);
-            fragment.setItemLongClickListener(itemLongClickListener);
-            fragment.setGroupChannelListQuery(query);
+            fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.adapter = adapter;
+            fragment.itemClickListener = itemClickListener;
+            fragment.itemLongClickListener = itemLongClickListener;
+            fragment.query = query;
             return fragment;
         }
     }

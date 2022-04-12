@@ -1,5 +1,7 @@
 package com.sendbird.uikit.customsample;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,14 +18,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sendbird.android.SendBird;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.customsample.consts.StringSet;
+import com.sendbird.uikit.customsample.utils.DrawableUtils;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.log.Logger;
@@ -37,16 +41,12 @@ import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.ChannelCoverView;
 import com.sendbird.uikit.widgets.WaitingDialog;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment {
     private String[] REQUIRED_PERMISSIONS;
@@ -56,7 +56,7 @@ public class SettingsFragment extends Fragment {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 2002;
 
-    private ChannelCoverView profileImageView;
+    private AppCompatImageView profileImageView;
     private TextView nicknameTextView;
     private SwitchCompat disturbSwitch;
     private Uri mediaUri;
@@ -64,45 +64,13 @@ public class SettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_settings, container, false);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() != null) {
-            getActivity().setTitle(getString(R.string.text_tab_settings));
-        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initPage(view);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.settings_menu, menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        final MenuItem editMenuItem = menu.findItem(R.id.action_edit_profile);
-        View rootView = editMenuItem.getActionView();
-        rootView.setOnClickListener(v -> onOptionsItemSelected(editMenuItem));
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_edit_profile) {
-            Logger.d("++ edit button clicked");
-            showEditProfileDialog();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -118,6 +86,7 @@ public class SettingsFragment extends Fragment {
         if (resultCode != RESULT_OK) return;
 
         if (requestCode == PERMISSION_SETTINGS_REQUEST_ID) {
+            if (getContext() == null) return;
             final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
             if (hasPermission) {
                 showMediaSelectDialog();
@@ -155,12 +124,13 @@ public class SettingsFragment extends Fragment {
             if (isAllGranted) {
                 showMediaSelectDialog();
             } else {
-                String[] notGranted = PermissionUtils.getNotGrantedPermissions(getContext(), permissions);
+                if (getActivity() == null) return;
+                String[] notGranted = PermissionUtils.getNotGrantedPermissions(getActivity(), permissions);
                 List<String> deniedList = PermissionUtils.getShowRequestPermissionRationale(getActivity(), permissions);
                 if (deniedList.size() == 0 && getActivity() != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getActivity().getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
-                    builder.setMessage(getPermissionGuildeMessage(getActivity(), notGranted[0]));
+                    builder.setMessage(getPermissionGuideMessage(getActivity(), notGranted[0]));
                     builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -172,7 +142,9 @@ public class SettingsFragment extends Fragment {
                     });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), com.sendbird.uikit.R.color.secondary_300));
+                    if (getActivity() != null) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity(), com.sendbird.uikit.R.color.secondary_300));
+                    }
                 }
             }
         }
@@ -182,6 +154,14 @@ public class SettingsFragment extends Fragment {
         if (getContext() == null) {
             return;
         }
+
+        Toolbar toolbar = view.findViewById(R.id.tbSettings);
+        toolbar.inflateMenu(R.menu.settings_menu);
+        toolbar.getMenu().findItem(R.id.action_edit_profile)
+                .getActionView().setOnClickListener(v -> {
+            Logger.d("++ edit button clicked");
+            showEditProfileDialog();
+        });
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
@@ -198,7 +178,7 @@ public class SettingsFragment extends Fragment {
         }
 
         profileImageView = view.findViewById(R.id.ivProfileView);
-        profileImageView.loadImages(Collections.singletonList(PreferenceUtils.getProfileUrl()));
+        loadUserProfileUrl(PreferenceUtils.getProfileUrl());
         TextView userIdTextView = view.findViewById(R.id.tvUserId);
         userIdTextView.setText(PreferenceUtils.getUserId());
         nicknameTextView = view.findViewById(R.id.tvNickname);
@@ -240,7 +220,7 @@ public class SettingsFragment extends Fragment {
                 new DialogListItem(R.string.text_settings_change_user_profile_image)
         };
 
-        DialogUtils.buildItemsBottom(items, (v, p, item) -> {
+        DialogUtils.showListBottomDialog(requireContext(), items, (v, p, item) -> {
             final int key = item.getKey();
             if (key == R.string.text_settings_change_user_nickname) {
                 Logger.dev("change user nickname");
@@ -253,15 +233,16 @@ public class SettingsFragment extends Fragment {
 
                 DialogEditTextParams params = new DialogEditTextParams(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
-                DialogUtils.buildEditText(
+                DialogUtils.showInputDialog(
+                        requireContext(),
                         getString(R.string.text_settings_change_user_nickname),
-                        (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                         params, listener,
                         getString(com.sendbird.uikit.R.string.sb_text_button_save), null,
-                        getString(com.sendbird.uikit.R.string.sb_text_button_cancel), null).showSingle(getFragmentManager());
+                        getString(com.sendbird.uikit.R.string.sb_text_button_cancel), null);
             } else if (key == R.string.text_settings_change_user_profile_image) {
                 Logger.dev("change user profile");
 
+                if (getContext() == null) return;
                 final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
                 if (hasPermission) {
                     showMediaSelectDialog();
@@ -270,12 +251,13 @@ public class SettingsFragment extends Fragment {
 
                 requestPermissions(REQUIRED_PERMISSIONS, STORAGE_PERMISSIONS_REQUEST_CODE);
             }
-        }).showSingle(getFragmentManager());
+        });
     }
 
     private void updateUserNickname(@NonNull String nickname) {
+        if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        SendBirdUIKit.updateUserInfo(nickname, SendBirdUIKit.getAdapter().getUserInfo().getProfileUrl(), e -> {
+        SendbirdUIKit.updateUserInfo(nickname, null, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
@@ -288,8 +270,9 @@ public class SettingsFragment extends Fragment {
     }
 
     private void updateUserProfileImage(@NonNull File profileImage) {
+        if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        SendBird.updateCurrentUserInfoWithProfileImage(SendBirdUIKit.getAdapter().getUserInfo().getNickname(), profileImage, e -> {
+        SendBird.updateCurrentUserInfoWithProfileImage(null, profileImage, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
@@ -298,7 +281,7 @@ public class SettingsFragment extends Fragment {
 
             String profileUrl = SendBird.getCurrentUser().getProfileUrl();
             PreferenceUtils.setProfileUrl(profileUrl);
-            profileImageView.loadImages(Collections.singletonList(profileUrl));
+            loadUserProfileUrl(profileUrl);
         });
     }
 
@@ -316,13 +299,13 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showMediaSelectDialog() {
-        if (getContext() == null || getFragmentManager() == null) return;
+        if (getContext() == null) return;
         DialogListItem[] items = {
                 new DialogListItem(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera),
                 new DialogListItem(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery)};
 
-        DialogUtils.buildItems(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image),
-                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
+        DialogUtils.showListDialog(requireContext(),
+                getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image),
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
@@ -335,7 +318,7 @@ public class SettingsFragment extends Fragment {
                     } catch (Exception e) {
                         Logger.e(e);
                     }
-                }).showSingle(getFragmentManager());
+                });
     }
 
     private void takeCamera() {
@@ -355,7 +338,7 @@ public class SettingsFragment extends Fragment {
         startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
-    private static String getPermissionGuildeMessage(@NonNull Context context, @NonNull String permission) {
+    private static String getPermissionGuideMessage(@NonNull Context context, @NonNull String permission) {
         int textResId;
         if (Manifest.permission.CAMERA.equals(permission)) {
             textResId = com.sendbird.uikit.R.string.sb_text_need_to_allow_permission_camera;
@@ -363,5 +346,16 @@ public class SettingsFragment extends Fragment {
             textResId = com.sendbird.uikit.R.string.sb_text_need_to_allow_permission_storage;
         }
         return String.format(Locale.US, context.getString(textResId), ContextUtils.getApplicationName(context));
+    }
+
+    private void loadUserProfileUrl(final String url) {
+        if (getContext() != null) {
+            Glide.with(requireContext())
+                    .load(url)
+                    .circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(DrawableUtils.setTintList(requireContext(), R.drawable.icon_user, SendbirdUIKit.getDefaultThemeMode().getMonoTintResId()))
+                    .into(profileImageView);
+        }
     }
 }

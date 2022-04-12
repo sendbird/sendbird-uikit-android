@@ -5,14 +5,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.OpenChannel;
 import com.sendbird.android.UserMessage;
 import com.sendbird.uikit.activities.adapter.OpenChannelMessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
-import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
+import com.sendbird.uikit.customsample.databinding.ViewOpenChannelHighlightMessageHolderBinding;
 import com.sendbird.uikit.utils.MessageUtils;
 
 public class CustomOpenChannelMessageListAdapter extends OpenChannelMessageListAdapter {
@@ -20,8 +20,8 @@ public class CustomOpenChannelMessageListAdapter extends OpenChannelMessageListA
     public static final int VIEW_MAP_MESSAGE_ME_TYPE = 1001;
     public static final int VIEW_MAP_MESSAGE_OTHER_TYPE = 1002;
 
-    public CustomOpenChannelMessageListAdapter(boolean useMessageGroupUI) {
-        super(null, null, null, useMessageGroupUI);
+    public CustomOpenChannelMessageListAdapter(@NonNull OpenChannel channel, boolean useMessageGroupUI) {
+        super(channel, useMessageGroupUI);
     }
 
     @NonNull
@@ -31,7 +31,7 @@ public class CustomOpenChannelMessageListAdapter extends OpenChannelMessageListA
         // Create your custom ViewHolder or call super.onCreateViewHolder() if you want to use the default.
         if (viewType == VIEW_MAP_MESSAGE_ME_TYPE || viewType == VIEW_MAP_MESSAGE_OTHER_TYPE) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return new HighlightOpenChannelMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.view_open_channel_highlight_message_holder, parent, false));
+            return new HighlightOpenChannelMessageViewHolder(ViewOpenChannelHighlightMessageHolderBinding.inflate(inflater, parent, false));
         } else {
             return super.onCreateViewHolder(parent, viewType);
         }

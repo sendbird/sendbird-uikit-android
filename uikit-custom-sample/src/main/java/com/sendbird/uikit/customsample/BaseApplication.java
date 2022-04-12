@@ -15,8 +15,8 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessageParams;
 import com.sendbird.android.handlers.InitResultHandler;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.customsample.consts.InitState;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit.customsample.models.CustomUser;
@@ -24,8 +24,8 @@ import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.customsample.utils.PushUtils;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
+import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
-import com.sendbird.uikit.interfaces.UserListResultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,8 @@ public class BaseApplication extends MultiDexApplication {
         super.onCreate();
         PreferenceUtils.init(getApplicationContext());
 
-        SendBirdUIKit.init(new SendBirdUIKitAdapter() {
+        SendbirdUIKit.init(new SendbirdUIKitAdapter() {
+            @NonNull
             @Override
             public String getAppId() {
                 return APP_ID;
@@ -51,9 +52,11 @@ public class BaseApplication extends MultiDexApplication {
                 return "";
             }
 
+            @NonNull
             @Override
             public UserInfo getUserInfo() {
                 return new UserInfo() {
+                    @NonNull
                     @Override
                     public String getUserId() {
                         return PreferenceUtils.getUserId();
@@ -71,6 +74,7 @@ public class BaseApplication extends MultiDexApplication {
                 };
             }
 
+            @NonNull
             @Override
             public InitResultHandler getInitResultHandler() {
                 return new InitResultHandler() {
@@ -80,16 +84,16 @@ public class BaseApplication extends MultiDexApplication {
                     }
 
                     @Override
-                    public void onInitFailed(SendBirdException e) {
+                    public void onInitFailed(@NonNull SendBirdException e) {
                         initState.setValue(InitState.FAILED);
                     }
 
                     @Override
                     public void onInitSucceed() {
                         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
-                        SendBirdUIKit.setDefaultThemeMode(SendBirdUIKit.ThemeMode.Light);
-                        SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
-                        SendBirdUIKit.setUseDefaultUserProfile(false);
+                        SendbirdUIKit.setDefaultThemeMode(SendbirdUIKit.ThemeMode.Light);
+                        SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
+                        SendbirdUIKit.setUseDefaultUserProfile(false);
 
                         initState.setValue(InitState.SUCCEED);
                     }
@@ -97,7 +101,7 @@ public class BaseApplication extends MultiDexApplication {
             }
         }, this);
 
-        SendBirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
+        SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
             @Override
             public void onBeforeCreateGroupChannel(@NonNull GroupChannelParams groupChannelParams) {
                 // You can set GroupChannelParams globally before creating a channel.
@@ -128,24 +132,30 @@ public class BaseApplication extends MultiDexApplication {
                 // You can set OpenChannelParams globally before updating a channel.
             }
         });
+
+        SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
+        SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
     }
 
+    @NonNull
     public static LiveData<InitState> initStateChanges() {
         return initState;
     }
 
+    @NonNull
     public static CustomUserListQueryHandler getCustomUserListQuery() {
         final ApplicationUserListQuery userListQuery = SendBird.createApplicationUserListQuery();
         return new CustomUserListQueryHandler() {
+
             @Override
-            public void loadInitial(UserListResultHandler handler) {
+            public void loadInitial(@NonNull OnListResultHandler<UserInfo> handler) {
                 userListQuery.setLimit(5);
                 userListQuery.next((list, e) -> {
                     if (e != null) {
                         return;
                     }
 
-                    List<CustomUser> customUserList = new ArrayList<>();
+                    final List<UserInfo> customUserList = new ArrayList<>();
                     for (User user : list) {
                         customUserList.add(new CustomUser(user));
                     }
@@ -154,13 +164,13 @@ public class BaseApplication extends MultiDexApplication {
             }
 
             @Override
-            public void loadNext(UserListResultHandler handler) {
+            public void loadMore(@NonNull OnListResultHandler<UserInfo> handler) {
                 userListQuery.next((list, e) -> {
                     if (e != null) {
                         return;
                     }
 
-                    List<CustomUser> customUserList = new ArrayList<>();
+                    List<UserInfo> customUserList = new ArrayList<>();
                     for (User user : list) {
                         customUserList.add(new CustomUser(user));
                     }

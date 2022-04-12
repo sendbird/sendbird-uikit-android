@@ -8,14 +8,15 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageComponentBinding;
@@ -24,39 +25,37 @@ import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class OpenChannelFileMessageView extends OpenChannelMessageView {
-    private SbViewOpenChannelFileMessageComponentBinding binding;
-    private int nicknameAppearance;
-    private int operatorAppearance;
-    private int marginLeftEmpty;
-    private int marginLeftNor;
+    private final SbViewOpenChannelFileMessageComponentBinding binding;
+    private final int nicknameAppearance;
+    private final int operatorAppearance;
+    private final int marginLeftEmpty;
+    private final int marginLeftNor;
 
+    @NonNull
     @Override
     public SbViewOpenChannelFileMessageComponentBinding getBinding() {
         return binding;
     }
 
+    @NonNull
     @Override
     public View getLayout() {
         return binding.getRoot();
     }
 
-    public OpenChannelFileMessageView(Context context) {
+    public OpenChannelFileMessageView(@NonNull Context context) {
         this(context, null);
     }
 
-    public OpenChannelFileMessageView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_open_channel_message_file_style);
+    public OpenChannelFileMessageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_file_message);
     }
 
-    public OpenChannelFileMessageView(Context context, AttributeSet attrs, int defStyle) {
+    public OpenChannelFileMessageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyle, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_open_channel_file_message_component, this, true);
+            this.binding = SbViewOpenChannelFileMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int timeAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
             int contentBackground = a.getResourceId(R.styleable.MessageView_sb_message_background, R.drawable.selector_open_channel_message_bg_light);
             int messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
@@ -77,7 +76,7 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
     }
 
     @Override
-    public void drawMessage(OpenChannel channel, BaseMessage message, MessageGroupType messageGroupType) {
+    public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
         final FileMessage fileMessage = (FileMessage) message;
 
         binding.tvFileName.setText(fileMessage.getName());
@@ -88,8 +87,8 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
             binding.tvNickname.setTextAppearance(getContext(), nicknameAppearance);
         }
 
-        int backgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
-        int iconTint = SendBirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
+        int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
+        int iconTint = SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
         int inset = (int) getContext().getResources().getDimension(R.dimen.sb_size_12);
         if ((fileMessage.getType().toLowerCase().startsWith(StringSet.audio))) {
             Drawable background = DrawableUtils.setTintList(getContext(), R.drawable.sb_rounded_rectangle_corner_24, backgroundTint);
@@ -116,7 +115,7 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
         } else {
             binding.ivProfileView.setVisibility(View.GONE);
             binding.tvNickname.setVisibility(View.GONE);
-            binding.tvSentAt.setVisibility(View.GONE);
+            binding.tvSentAt.setVisibility(View.INVISIBLE);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.contentPanel.getLayoutParams();
             params.leftMargin = marginLeftEmpty;

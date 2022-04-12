@@ -2,6 +2,9 @@ package com.sendbird.uikit.interfaces;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * Interface definition for a callback to be invoked when a item is clicked.
  *
@@ -16,5 +19,6 @@ public interface OnMenuItemClickListener<T, R> {
      * @param data The data that was clicked.
      * @return true if the callback consumed the menu item click, false otherwise.
      */
-    boolean onMenuItemClicked(View view, T menu, R data);
+    @SuppressWarnings("UnusedReturnValue")
+    boolean onMenuItemClicked(@NonNull View view, @NonNull T menu, @Nullable R data);
 }

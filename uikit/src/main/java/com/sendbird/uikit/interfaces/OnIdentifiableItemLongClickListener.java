@@ -2,6 +2,8 @@ package com.sendbird.uikit.interfaces;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 
 /**
@@ -19,5 +21,5 @@ public interface OnIdentifiableItemLongClickListener<T> {
      * @see ClickableViewIdentifier
      * @since 2.2.0
      */
-    void onIdentifiableItemLongClick(View view, String identifier, int position, T data);
+    void onIdentifiableItemLongClick(@NonNull View view, @NonNull String identifier, int position, T data);
 }

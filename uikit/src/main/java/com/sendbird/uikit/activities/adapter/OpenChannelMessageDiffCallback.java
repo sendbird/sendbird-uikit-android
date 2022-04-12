@@ -3,6 +3,7 @@ package com.sendbird.uikit.activities.adapter;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.sendbird.android.BaseMessage;
@@ -13,13 +14,17 @@ import com.sendbird.uikit.utils.MessageUtils;
 import java.util.List;
 
 class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
+    @NonNull
     private final List<BaseMessage> oldMessageList;
+    @NonNull
     private final List<BaseMessage> newMessageList;
+    @Nullable
     private final OpenChannel oldChannel;
+    @NonNull
     private final OpenChannel newChannel;
     private final boolean useMessageGroupUI;
 
-    public OpenChannelMessageDiffCallback(@NonNull OpenChannel oldChannel, @NonNull OpenChannel newChannel, @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList, boolean useMessageGroupUI) {
+    public OpenChannelMessageDiffCallback(@Nullable OpenChannel oldChannel, @NonNull OpenChannel newChannel, @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList, boolean useMessageGroupUI) {
         this.oldChannel = oldChannel;
         this.newChannel = newChannel;
         this.oldMessageList = oldMessageList;
@@ -48,6 +53,7 @@ class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        if (oldChannel == null) return false;
         BaseMessage oldMessage = oldMessageList.get(oldItemPosition);
         BaseMessage newMessage = newMessageList.get(newItemPosition);
 
@@ -81,13 +87,13 @@ class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
             MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage);
             MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage);
 
-            if (oldMessageGroupType != newMessageGroupType) {
-                return false;
-            }
+            return oldMessageGroupType == newMessageGroupType;
         }
 
         return true;
     }
+
+    @NonNull
     private String getItemId(@NonNull BaseMessage item) {
         if (TextUtils.isEmpty(item.getRequestId())) {
             return String.valueOf(item.getMessageId());

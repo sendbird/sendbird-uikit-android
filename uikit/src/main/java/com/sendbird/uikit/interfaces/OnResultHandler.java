@@ -1,5 +1,8 @@
 package com.sendbird.uikit.interfaces;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.android.SendBirdException;
 
 /**
@@ -11,12 +14,12 @@ public interface OnResultHandler<T> {
      *
      * @param result The object of result.
      */
-    void onResult(T result);
+    void onResult(@NonNull T result);
 
     /**
      * Called when a error has been invoked.
      *
      * @param e The object of exception.
      */
-    void onError(SendBirdException e);
+    void onError(@Nullable SendBirdException e);
 }

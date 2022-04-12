@@ -1,5 +1,7 @@
 package com.sendbird.uikit.interfaces;
 
+import androidx.annotation.NonNull;
+
 /**
  * Interface definition for a callback to be invoked when a text of message input is changed.
  * @since 2.0.1
@@ -12,5 +14,5 @@ public interface OnInputTextChangedListener {
      * It is an error to attempt to make changes to <code>s</code> from
      * this callback.
      */
-    void onInputTextChanged(CharSequence s, int start, int before, int count);
+    void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count);
 }

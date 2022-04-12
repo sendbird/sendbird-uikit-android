@@ -4,21 +4,20 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.SettingsFragment;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.databinding.ActivityOpenChannelMainBinding;
 import com.sendbird.uikit.customsample.openchannel.community.CommunityListFragment;
 import com.sendbird.uikit.customsample.openchannel.livestream.LiveStreamListFragment;
-import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.customsample.widgets.CustomTabView;
 
 import java.util.Objects;
@@ -27,11 +26,13 @@ public class OpenChannelMainActivity extends AppCompatActivity {
     private ActivityOpenChannelMainBinding binding;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int themeResId = SendBirdUIKit.getDefaultThemeMode().getResId();
+        int themeResId = SendbirdUIKit.getDefaultThemeMode().getResId();
         setTheme(themeResId);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_open_channel_main);
+        binding = ActivityOpenChannelMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         initPage();
     }
 
@@ -76,12 +77,18 @@ public class OpenChannelMainActivity extends AppCompatActivity {
                     binding.tvDescription.setVisibility(View.VISIBLE);
                     binding.tvDescription.setText(R.string.text_live_streaming_description);
                     setActionBarTitle(getString(R.string.text_live_streams));
+                    binding.tbMain.setVisibility(View.VISIBLE);
+                    binding.tbBorder.setVisibility(View.VISIBLE);
                 } else if (position == 1) {
                     binding.tvDescription.setVisibility(View.GONE);
                     setActionBarTitle(getString(R.string.text_community));
+                    binding.tbMain.setVisibility(View.VISIBLE);
+                    binding.tbBorder.setVisibility(View.VISIBLE);
                 } else {
                     binding.tvDescription.setVisibility(View.GONE);
                     setActionBarTitle(getString(R.string.text_tab_settings));
+                    binding.tbMain.setVisibility(View.GONE);
+                    binding.tbBorder.setVisibility(View.GONE);
                 }
             }
 

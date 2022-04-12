@@ -32,10 +32,10 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     private final int operatorAppearance;
     private final int nicknameAppearance;
 
-    public HighlightOpenChannelMessageViewHolder(ViewOpenChannelHighlightMessageHolderBinding binding) {
+    public HighlightOpenChannelMessageViewHolder(@NonNull ViewOpenChannelHighlightMessageHolderBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
-        TypedArray a = binding.getRoot().getContext().getTheme().obtainStyledAttributes(null, com.sendbird.uikit.R.styleable.MessageView, com.sendbird.uikit.R.attr.sb_open_channel_message_user_style, 0);
+        TypedArray a = binding.getRoot().getContext().getTheme().obtainStyledAttributes(null, com.sendbird.uikit.R.styleable.MessageView, 0, 0);
         try {
             nicknameAppearance = a.getResourceId(com.sendbird.uikit.R.styleable.MessageView_sb_message_sender_name_text_appearance, com.sendbird.uikit.R.style.SendbirdCaption1OnLight02);
             operatorAppearance = a.getResourceId(com.sendbird.uikit.R.styleable.MessageView_sb_message_operator_name_text_appearance, com.sendbird.uikit.R.style.SendbirdCaption1Secondary300);
@@ -47,7 +47,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
         OpenChannel openChannel;
         if (channel instanceof OpenChannel) {
             openChannel = (OpenChannel) channel;
@@ -94,6 +94,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         binding.tvMessage.setText(message.getMessage());
     }
 
+    @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;

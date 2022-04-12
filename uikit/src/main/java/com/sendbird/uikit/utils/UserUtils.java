@@ -12,18 +12,22 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.interfaces.UserInfo;
 
 public class UserUtils {
+    @NonNull
     public static <T extends User> UserInfo toUserInfo(@NonNull T user) {
         return new UserInfo() {
+            @NonNull
             @Override
             public String getUserId() {
                 return user.getUserId();
             }
 
+            @Nullable
             @Override
             public String getNickname() {
                 return user.getNickname();
             }
 
+            @Nullable
             @Override
             public String getProfileUrl() {
                 return user.getProfileUrl();
@@ -36,7 +40,8 @@ public class UserUtils {
         String nickname = context.getString(R.string.sb_text_channel_list_title_unknown);
         if (user == null) return nickname;
 
-        if (user.getUserId() != null && user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+        if (user.getUserId() != null && SendBird.getCurrentUser() != null &&
+                user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
             nickname = context.getString(R.string.sb_text_you);
         } else if (!TextUtils.isEmpty(user.getNickname())) {
             nickname = user.getNickname();

@@ -1,6 +1,7 @@
 package com.sendbird.uikit.customsample.openchannel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 abstract public class OpenChannelListAdapter<VH extends OpenChannelListViewHolder> extends RecyclerView.Adapter<VH> {
+    @NonNull
     protected List<OpenChannel> openChannelList = new ArrayList<>();
     private List<ChannelInfo> cachedOpenChannelList = new ArrayList<>();
+    @Nullable
     protected OnItemClickListener<OpenChannel> itemClickListener;
 
     public OpenChannelListAdapter() {
@@ -42,7 +45,7 @@ abstract public class OpenChannelListAdapter<VH extends OpenChannelListViewHolde
         return openChannelList.get(position);
     }
 
-    public void setItems(List<OpenChannel> items) {
+    public void setItems(@NonNull List<OpenChannel> items) {
         final OpenChannelDiffCallback diffCallback = new OpenChannelDiffCallback(this.cachedOpenChannelList, items);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
@@ -52,7 +55,7 @@ abstract public class OpenChannelListAdapter<VH extends OpenChannelListViewHolde
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void setOnItemClickListener(OnItemClickListener<OpenChannel> itemClickListener) {
+    public void setOnItemClickListener(@Nullable OnItemClickListener<OpenChannel> itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 

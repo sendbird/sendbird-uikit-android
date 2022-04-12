@@ -8,6 +8,9 @@ public interface DialogProvider {
     void dismissWaitingDialog();
 
     void toastError(@StringRes int messageRes);
+    void toastError(@StringRes int messageRes, boolean useOverlay);
     void toastError(@NonNull String message);
-    void toastSuccess(@NonNull int messageRes);
+    void toastError(@NonNull String message, boolean useOverlay);
+    void toastSuccess(int messageRes);
+    void toastSuccess(int messageRes, boolean useOverlay);
 }

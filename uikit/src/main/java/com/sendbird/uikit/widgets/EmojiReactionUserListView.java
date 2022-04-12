@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
@@ -26,6 +25,7 @@ import com.sendbird.uikit.databinding.SbViewEmojiReactionUserListBinding;
 import com.sendbird.uikit.model.EmojiManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class EmojiReactionUserListView extends FrameLayout {
     }
 
     public EmojiReactionUserListView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_emoji_reaction_style);
+        this(context, attrs, R.attr.sb_widget_emoji_message);
     }
 
     public EmojiReactionUserListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -46,10 +46,10 @@ public class EmojiReactionUserListView extends FrameLayout {
     }
 
     public void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.EmojiReactionCountList, defStyleAttr, R.style.Widget_SendBird_Emoji);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.EmojiReactionCountList, defStyleAttr, R.style.Widget_Sendbird_Emoji);
 
         try {
-            binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.sb_view_emoji_reaction_user_list, this, true);
+            binding = SbViewEmojiReactionUserListBinding.inflate(LayoutInflater.from(context), this, true);
             int tabLayoutBackgroundResId = a.getResourceId(R.styleable.EmojiReactionCountList_sb_emoji_reaction_count_tab_layout_background, R.drawable.sb_tab_layout_border_background_light);
             int indicatorColor = a.getColor(R.styleable.EmojiReactionCountList_sb_emoji_reaction_count_tab_indicator_color, context.getResources().getColor(R.color.primary_300));
             binding.tabLayoutPanel.setBackgroundResource(tabLayoutBackgroundResId);
@@ -59,8 +59,8 @@ public class EmojiReactionUserListView extends FrameLayout {
         }
     }
 
-    public void setEmojiReactionUserData(Fragment fragment, int currentPosition, List<Reaction> reactionList, Map<Reaction, List<User>> reactionUserInfo) {
-        UserListPagerAdapter pagerAdapter = new UserListPagerAdapter(fragment, reactionList, reactionUserInfo);
+    public void setEmojiReactionUserData(@NonNull Fragment fragment, int currentPosition, @NonNull List<Reaction> reactionList, @NonNull Map<Reaction, List<User>> reactionUserInfo) {
+        UserListPagerAdapter pagerAdapter = new UserListPagerAdapter(getContext(), fragment, reactionList, reactionUserInfo);
         binding.vpEmojiReactionUserList.setAdapter(pagerAdapter);
         new TabLayoutMediator(binding.tabLayout, binding.vpEmojiReactionUserList,
                 (tab, position) -> {
@@ -84,12 +84,15 @@ public class EmojiReactionUserListView extends FrameLayout {
         private final int itemCount;
         private final List<Fragment> fragmentList = new ArrayList<>();
 
-        UserListPagerAdapter(@NonNull Fragment fragment, @NonNull List<Reaction> reactionList, @NonNull Map<Reaction, List<User>> reactionUserInfo) {
+        UserListPagerAdapter(@NonNull Context context,
+                             @NonNull Fragment fragment,
+                             @NonNull List<Reaction> reactionList,
+                             @NonNull Map<Reaction, List<User>> reactionUserInfo) {
             super(fragment);
             this.itemCount = reactionUserInfo.size();
             for (Reaction reaction: reactionList) {
-                List<User> userList = reactionUserInfo.get(reaction);
-                fragmentList.add(new UserListFragment(userList));
+                final List<User> userList = reactionUserInfo.get(reaction);
+                fragmentList.add(new UserListFragment(context, userList == null ? Collections.emptyList(): userList));
             }
         }
 
@@ -106,17 +109,21 @@ public class EmojiReactionUserListView extends FrameLayout {
     }
 
     public static class UserListFragment extends Fragment {
+        private final Context context;
         private SbFragmentUserListBinding binding;
         private final List<User> userList;
 
-        UserListFragment(List<User> userList) {
+        UserListFragment(@NonNull Context context, @NonNull List<User> userList) {
+            this.context = context;
             this.userList = new ArrayList<>(userList);
         }
 
         @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            binding = SbFragmentUserListBinding.inflate(inflater);
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                                 @Nullable Bundle savedInstanceState) {
+            LayoutInflater themeInflater = inflater.cloneInContext(context);
+            binding = SbFragmentUserListBinding.inflate(themeInflater);
+            binding.rvUserList.setUseDivider(false);
             return binding.getRoot();
         }
 

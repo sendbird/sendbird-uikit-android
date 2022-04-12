@@ -3,6 +3,7 @@ package com.sendbird.uikit.utils;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -22,7 +23,8 @@ import java.util.Locale;
 
 public class ChannelUtils {
 
-    public static String makeTitleText(@NonNull Context context, GroupChannel channel) {
+    @NonNull
+    public static String makeTitleText(@NonNull Context context, @NonNull GroupChannel channel) {
         String channelName = channel.getName();
         if (!TextUtils.isEmpty(channelName) && !channelName.equals(StringSet.GROUP_CHANNEL)) {
             return channelName;
@@ -70,7 +72,8 @@ public class ChannelUtils {
         return result;
     }
 
-    public static String getLastMessage(Context context, GroupChannel channel) {
+    @NonNull
+    public static String getLastMessage(@NonNull Context context, @NonNull GroupChannel channel) {
         // Bind last message text according to the type of message. Specifically, if
         // the last message is a File Message, there must be special formatting.
 
@@ -87,13 +90,15 @@ public class ChannelUtils {
         return lastMessage.getMessage();
     }
 
-    public static void loadImage(ChannelCoverView coverView, String url) {
+    public static void loadImage(@NonNull ChannelCoverView coverView, @Nullable String url) {
         List<String> urls = new ArrayList<>();
-        urls.add(url);
+        if (TextUtils.isNotEmpty(url)) {
+            urls.add(url);
+        }
         coverView.loadImages(urls);
     }
 
-    public static void loadChannelCover(ChannelCoverView coverView, BaseChannel channel) {
+    public static void loadChannelCover(@NonNull ChannelCoverView coverView, @NonNull BaseChannel channel) {
         if (channel instanceof GroupChannel) {
             GroupChannel groupChannel = (GroupChannel) channel;
             if (groupChannel.isBroadcast() && isDefaultChannelCover(channel)) {
@@ -107,7 +112,8 @@ public class ChannelUtils {
         }
     }
 
-    public static List<String> makeProfileUrlsFromChannel(GroupChannel channel) {
+    @NonNull
+    public static List<String> makeProfileUrlsFromChannel(@NonNull GroupChannel channel) {
         List<String> urls = new ArrayList<>();
         if (!isDefaultChannelCover(channel)) {
             urls.add(channel.getCoverUrl());
@@ -130,11 +136,12 @@ public class ChannelUtils {
         return urls;
     }
 
-    private static boolean isDefaultChannelCover(BaseChannel channel) {
+    private static boolean isDefaultChannelCover(@NonNull BaseChannel channel) {
         return TextUtils.isEmpty(channel.getCoverUrl()) || channel.getCoverUrl().contains(StringSet.DEFAULT_CHANNEL_COVER_URL);
     }
 
-    public static String makeTypingText(Context context, List<? extends User> typingUsers) {
+    @NonNull
+    public static String makeTypingText(@NonNull Context context, @NonNull List<? extends User> typingUsers) {
         if (typingUsers.size() == 1) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_single),
                     typingUsers.get(0).getNickname());
@@ -146,10 +153,11 @@ public class ChannelUtils {
         }
     }
 
-    public static boolean isChannelPushOff(GroupChannel channel) {
+    public static boolean isChannelPushOff(@NonNull GroupChannel channel) {
         return channel.getMyPushTriggerOption() == GroupChannel.PushTriggerOption.OFF;
     }
 
+    @NonNull
     public static CharSequence makeMemberCountText(int memberCount) {
         String text = String.valueOf(memberCount);
         if (memberCount > 1000) {

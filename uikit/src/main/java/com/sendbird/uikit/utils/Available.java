@@ -1,11 +1,14 @@
 package com.sendbird.uikit.utils;
 
+import androidx.annotation.NonNull;
+
 import com.sendbird.android.AppInfo;
 import com.sendbird.android.SendBird;
 import com.sendbird.uikit.consts.StringSet;
 
+@SuppressWarnings("unused")
 public class Available {
-    private static boolean isAvailable(String key) {
+    private static boolean isAvailable(@NonNull String key) {
         final AppInfo appInfo = SendBird.getAppInfo();
         return appInfo != null && (appInfo.getAttributesInUse().contains(key) || appInfo.getPremiumFeatureList().contains(key));
     }

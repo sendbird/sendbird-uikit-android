@@ -9,61 +9,204 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelMemberListQuery;
 import com.sendbird.android.Member;
+import com.sendbird.android.SendBird;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.activities.adapter.MemberListAdapter;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.PromoteOperatorActivity;
+import com.sendbird.uikit.activities.adapter.MutedMemberListAdapter;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.interfaces.CustomMemberListQueryHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.interfaces.OnListResultHandler;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.MutedMemberListModule;
+import com.sendbird.uikit.modules.components.HeaderComponent;
+import com.sendbird.uikit.modules.components.MutedMemberListComponent;
+import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.DialogUtils;
+import com.sendbird.uikit.vm.MutedMemberListViewModel;
+import com.sendbird.uikit.vm.ViewModelFactory;
+import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
- * Fragment displaying the muted member list in the channel.
+ * Fragment displaying the operators of the channel.
  *
  * @since 1.2.0
  */
-public class MutedMemberListFragment extends MemberTypeListFragment implements LoadingDialogHandler {
+public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListModule, MutedMemberListViewModel> {
 
+    @Nullable
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private MutedMemberListAdapter adapter;
+    @Nullable
+    private OnItemClickListener<Member> itemClickListener;
+    @Nullable
+    private OnItemLongClickListener<Member> itemLongClickListener;
+    @Nullable
+    private OnItemClickListener<Member> actionItemClickListener;
+    @Nullable
+    private OnItemClickListener<Member> profileClickListener;
+    @Nullable
+    private LoadingDialogHandler loadingDialogHandler;
+
+    @NonNull
     @Override
-    protected void onConfigure() {
-        super.onConfigure();
-        if (channel.getMyRole() != Member.Role.OPERATOR) finish();
-        if (customQueryHandler == null) {
-            setCustomQueryHandler(new MutedMembersQueryHandler(channel));
-        }
+    protected MutedMemberListModule onCreateModule(@NonNull Bundle args) {
+        return new MutedMemberListModule(requireContext());
     }
 
     @Override
-    protected void onActionItemClicked(View view, int position, Member member) {
-        if (getContext() == null || getFragmentManager() == null) return;
+    protected void onConfigureParams(@NonNull MutedMemberListModule module, @NonNull Bundle args) {
+        if (loadingDialogHandler != null) module.setOnLoadingDialogHandler(loadingDialogHandler);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        getModule().getStatusComponent().notifyStatusChanged(StatusFrameView.Status.LOADING);
+    }
+
+    @NonNull
+    @Override
+    public MutedMemberListViewModel onCreateViewModel() {
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), MutedMemberListViewModel.class);
+    }
+
+    @Override
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull MutedMemberListModule module, @NonNull MutedMemberListViewModel viewModel) {
+        Logger.d(">> MutedMemberListFragment::onBeforeReady()");
+        module.getMutedMemberListComponent().setPagedDataLoader(viewModel);
+        if (this.adapter != null) {
+            module.getMutedMemberListComponent().setAdapter(adapter);
+        }
+        final GroupChannel channel = viewModel.getChannel();
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel, channel);
+        onBindMutedMemberListComponent(module.getMutedMemberListComponent(), viewModel, channel);
+        onBindStatusComponent(module.getStatusComponent(), viewModel, channel);
+    }
+
+    @Override
+    protected void onReady(@NonNull ReadyStatus status, @NonNull MutedMemberListModule module, @NonNull MutedMemberListViewModel viewModel) {
+        Logger.d(">> MutedMemberListFragment::onReady(ReadyStatus=%s)", status);
+        final GroupChannel channel = viewModel.getChannel();
+        if (channel != null && channel.getMyRole() != Member.Role.OPERATOR) shouldActivityFinish();
+        viewModel.getOperatorDismissed().observe(getViewLifecycleOwner(), isDismissed -> {
+            if (isDismissed) shouldActivityFinish();
+        });
+        viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
+            if (isDeleted) shouldActivityFinish();
+        });
+        viewModel.loadInitial();
+    }
+
+    /**
+     * Called to bind events to the HeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, MutedMemberListModule, MutedMemberListViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull MutedMemberListViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MutedMemberListFragment::onBindHeaderComponent()");
+
+        headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
+            if (isFragmentAlive() && getContext() != null && channel != null) {
+                startActivity(PromoteOperatorActivity.newIntent(getContext(), channel.getUrl()));
+            }
+        });
+    }
+
+    /**
+     * Called to bind events to the MutedMemberListComponent. This is called from {@link #onBeforeReady(ReadyStatus, MutedMemberListModule, MutedMemberListViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param listComponent The component to which the event will be bound
+     * @param viewModel     A view model that provides the data needed for the fragment
+     * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindMutedMemberListComponent(@NonNull MutedMemberListComponent listComponent, @NonNull MutedMemberListViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MutedMemberListFragment::onBindMutedMemberListComponent()");
+
+        listComponent.setOnItemClickListener(itemClickListener);
+        listComponent.setOnItemLongClickListener(itemLongClickListener);
+        listComponent.setOnActionItemClickListener(actionItemClickListener != null ? actionItemClickListener : this::onActionItemClicked);
+        listComponent.setOnProfileClickListener(profileClickListener != null ? profileClickListener : this::onProfileClicked);
+
+        viewModel.getUserList().observe(getViewLifecycleOwner(), users -> {
+            Logger.dev("++ observing result members size : %s", users.size());
+            if (channel != null) {
+                listComponent.notifyDataSetChanged(users, channel.getMyRole());
+            }
+        });
+    }
+
+    /**
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, MutedMemberListModule, MutedMemberListViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param statusComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
+     * @since 3.0.0
+     */
+    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull MutedMemberListViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> MutedMemberListFragment::onBindStatusComponent()");
+        statusComponent.setOnActionButtonClickListener(v -> {
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
+            shouldAuthenticate();
+        });
+
+        viewModel.getStatusFrame().observe(getViewLifecycleOwner(), statusComponent::notifyStatusChanged);
+    }
+
+    /**
+     * Called when the action has been clicked.
+     *
+     * @param view     The view that was clicked.
+     * @param position The position that was clicked.
+     * @param user     The member data that was clicked.
+     */
+    protected void onActionItemClicked(@NonNull View view, int position, @NonNull Member user) {
+        if (getContext() == null) return;
+        Logger.d(">> MutedMemberListFragment::onActionItemClicked()");
         DialogListItem[] items;
         DialogListItem unMute = new DialogListItem(R.string.sb_text_unmute_member);
         items = new DialogListItem[]{unMute};
-        DialogUtils.buildItems(member.getNickname(), (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                items, (v, p, item) -> unmuteUser(member.getUserId())).showSingle(getFragmentManager());
+        DialogUtils.showListDialog(getContext(), user.getNickname(),
+                items,
+                (v, p, key) -> {
+                    shouldShowLoadingDialog();
+                    getViewModel().unmuteUser(user.getUserId(), e -> {
+                        shouldDismissLoadingDialog();
+                        if (e != null) {
+                            toastError(R.string.sb_text_error_unmute_member);
+                        }
+                    });
+                }
+        );
     }
 
-    @Override
-    protected void onOperatorDismissed() {
-        finish();
-    }
-
-    private void unmuteUser(@NonNull String userId) {
-        loadingDialogHandler.shouldShowLoadingDialog();
-        channel.unmuteUserWithUserId(userId, e -> {
-            loadingDialogHandler.shouldDismissLoadingDialog();
-            if (e != null) {
-                toastError(R.string.sb_text_error_unmute_member);
-            }
-        });
+    /**
+     * Called when the user profile has been clicked.
+     *
+     * @param view     The view that was clicked.
+     * @param position The position that was clicked.
+     * @param user     The member data that was clicked.
+     * @since 1.2.2
+     */
+    protected void onProfileClicked(@NonNull View view, int position, @NonNull Member user) {
+        if (getContext() == null) return;
+        boolean useChannelCreateButton = !user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        DialogUtils.showUserProfileDialog(getContext(), user, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
 
     /**
@@ -72,10 +215,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
      * @return True if the callback has consumed the event, false otherwise.
      * @since 1.2.5
      */
-    @Override
-    public boolean shouldShowLoadingDialog() {
-        showWaitingDialog();
-        return true;
+    protected boolean shouldShowLoadingDialog() {
+        if (getContext() != null) {
+            return getModule().shouldShowLoadingDialog(getContext());
+        }
+        return false;
     }
 
     /**
@@ -83,48 +227,40 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
      *
      * @since 1.2.5
      */
-    @Override
-    public void shouldDismissLoadingDialog() {
-        dismissWaitingDialog();
+    protected void shouldDismissLoadingDialog() {
+        getModule().shouldDismissLoadingDialog();
     }
 
-    private static class MutedMembersQueryHandler implements CustomMemberListQueryHandler<Member> {
-        private final GroupChannel channel;
-        private GroupChannelMemberListQuery query;
-
-        MutedMembersQueryHandler(@NonNull GroupChannel channel) {
-            this.channel = channel;
-        }
-
-        @Override
-        public void loadInitial(OnListResultHandler<Member> handler) {
-            this.query = channel.createMemberListQuery();
-            this.query.setLimit(30);
-            this.query.setMutedMemberFilter(GroupChannelMemberListQuery.MutedMemberFilter.MUTED);
-            load(handler);
-        }
-
-        @Override
-        public void load(OnListResultHandler<Member> handler) {
-            this.query.next(handler::onResult);
-        }
-
-        @Override
-        public boolean hasMore() {
-            return this.query.hasNext();
-        }
+    /**
+     * Returns the URL of the channel with the required data to use this fragment.
+     *
+     * @return The URL of a channel this fragment is currently associated with
+     * @since 3.0.0
+     */
+    @NonNull
+    protected String getChannelUrl() {
+        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
+        return args.getString(StringSet.KEY_CHANNEL_URL, "");
     }
 
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private MutedMemberListFragment customFragment;
-        private View.OnClickListener headerLeftButtonListener;
-        private View.OnClickListener headerRightButtonListener;
-        private MemberListAdapter adapter;
+        @Nullable
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
+        private MutedMemberListAdapter adapter;
+        @Nullable
         private OnItemClickListener<Member> itemClickListener;
+        @Nullable
         private OnItemLongClickListener<Member> itemLongClickListener;
+        @Nullable
         private OnItemClickListener<Member> actionItemClickListener;
+        @Nullable
         private OnItemClickListener<Member> profileClickListener;
+        @Nullable
         private LoadingDialogHandler loadingDialogHandler;
 
         /**
@@ -133,23 +269,23 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param channelUrl the url of the channel will be implemented.
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendBirdUIKit.getDefaultThemeMode());
+            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
+         * @param themeMode  {@link SendbirdUIKit.ThemeMode}
          */
-        public Builder(@NonNull String channelUrl, SendBirdUIKit.ThemeMode themeMode) {
+        public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
         }
 
         /**
          * Constructor
          *
-         * @param channelUrl the url of the channel will be implemented.
+         * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
@@ -159,14 +295,15 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
         }
 
         /**
-         * Sets the custom muted member list fragment. It must inherit {@link MutedMemberListFragment}.
-         * @param fragment custom muted member list fragment.
-         * @return This Builder object to allow for chaining of calls to set methods.
+         * Sets arguments to this fragment.
          *
-         * @since 1.2.0
+         * @param args the arguments supplied when the fragment was instantiated.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends MutedMemberListFragment> Builder setCustomMutedMemberFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -176,7 +313,8 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setHeaderTitle(String title) {
+        @NonNull
+        public Builder setHeaderTitle(@NonNull String title) {
             bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
@@ -187,6 +325,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeader(boolean useHeader) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER, useHeader);
             return this;
@@ -199,6 +338,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
             return this;
@@ -211,6 +351,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
             return this;
@@ -222,6 +363,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
             return setHeaderLeftButtonIcon(resId, null);
         }
@@ -230,10 +372,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * Sets the icon on the left button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT, tint);
@@ -246,6 +389,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
             return setHeaderRightButtonIcon(resId, null);
         }
@@ -254,10 +398,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * Sets the icon on the right button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT, tint);
@@ -270,6 +415,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
             return setEmptyIcon(resId, null);
         }
@@ -278,10 +424,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
@@ -294,6 +441,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setEmptyText(@StringRes int resId) {
             bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
             return this;
@@ -304,9 +452,11 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
-            this.headerLeftButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerLeftButtonClickListener = listener;
             return this;
         }
 
@@ -315,19 +465,23 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderRightButtonListener(View.OnClickListener listener) {
-            this.headerRightButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
             return this;
         }
 
         /**
-         * Sets the channel user list adapter.
+         * Sets the muted member list adapter
          *
-         * @param adapter the adapter for the channel user list.
+         * @param adapter the adapter for the channel's muted member list.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public <T extends MemberListAdapter> Builder setMemberListAdpater(T adapter) {
+        @NonNull
+        public <T extends MutedMemberListAdapter> Builder setMutedMemberListAdapter(T adapter) {
             this.adapter = adapter;
             return this;
         }
@@ -337,8 +491,10 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setItemClickListener(OnItemClickListener<Member> itemClickListener) {
+        @NonNull
+        public Builder setOnItemClickListener(@NonNull OnItemClickListener<Member> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
         }
@@ -348,8 +504,10 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setItemLongClickListener(OnItemLongClickListener<Member> itemLongClickListener) {
+        @NonNull
+        public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<Member> itemLongClickListener) {
             this.itemLongClickListener = itemLongClickListener;
             return this;
         }
@@ -359,8 +517,10 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @param actionItemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setActionItemClickListener(OnItemClickListener<Member> actionItemClickListener) {
+        @NonNull
+        public Builder setOnActionItemClickListener(@NonNull OnItemClickListener<Member> actionItemClickListener) {
             this.actionItemClickListener = actionItemClickListener;
             return this;
         }
@@ -372,7 +532,8 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 1.2.2
          */
-        public Builder setOnProfileClickListener(OnItemClickListener<Member> profileClickListener) {
+        @NonNull
+        public Builder setOnProfileClickListener(@NonNull OnItemClickListener<Member> profileClickListener) {
             this.profileClickListener = profileClickListener;
             return this;
         }
@@ -384,6 +545,7 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 1.2.2
          */
+        @NonNull
         public Builder setUseUserProfile(boolean useUserProfile) {
             bundle.putBoolean(StringSet.KEY_USE_USER_PROFILE, useUserProfile);
             return this;
@@ -396,7 +558,8 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          * @see LoadingDialogHandler
          * @since 1.2.5
          */
-        public Builder setLoadingDialogHandler(LoadingDialogHandler loadingDialogHandler) {
+        @NonNull
+        public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
             return this;
         }
@@ -407,17 +570,18 @@ public class MutedMemberListFragment extends MemberTypeListFragment implements L
          *
          * @return The {@link MutedMemberListFragment} applied to the {@link Bundle}.
          */
+        @NonNull
         public MutedMemberListFragment build() {
-            MutedMemberListFragment fragment = customFragment != null ? customFragment : new MutedMemberListFragment();
+            MutedMemberListFragment fragment = new MutedMemberListFragment();
             fragment.setArguments(bundle);
-            fragment.setMemberListAdapter(adapter);
-            fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
-            fragment.setHeaderRightButtonListener(headerRightButtonListener);
-            fragment.setItemClickListener(itemClickListener);
-            fragment.setItemLongClickListener(itemLongClickListener);
-            fragment.setActionItemClickListener(actionItemClickListener);
-            fragment.setOnProfileClickListener(profileClickListener);
-            fragment.setLoadingDialogHandler(loadingDialogHandler);
+            fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.adapter = adapter;
+            fragment.itemClickListener = itemClickListener;
+            fragment.itemLongClickListener = itemLongClickListener;
+            fragment.actionItemClickListener = actionItemClickListener;
+            fragment.profileClickListener = profileClickListener;
+            fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;
         }
     }

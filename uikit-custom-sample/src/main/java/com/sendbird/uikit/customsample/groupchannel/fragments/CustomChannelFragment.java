@@ -1,105 +1,111 @@
 package com.sendbird.uikit.customsample.groupchannel.fragments;
 
-import android.net.Uri;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessageParams;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.UserMessageParams;
-import com.sendbird.uikit.customsample.R;
+import com.sendbird.uikit.activities.MessageSearchActivity;
+import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.customsample.groupchannel.components.CustomChannelHeaderComponent;
+import com.sendbird.uikit.customsample.groupchannel.components.CustomMessageInputComponent;
+import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomMessageListAdapter;
+import com.sendbird.uikit.customsample.groupchannel.viewmodels.CustomChannelViewModel;
+import com.sendbird.uikit.customsample.groupchannel.viewmodels.ViewModelFactory;
 import com.sendbird.uikit.customsample.models.CustomMessageType;
 import com.sendbird.uikit.fragments.ChannelFragment;
-
-import java.util.Locale;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.ChannelModule;
+import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
+import com.sendbird.uikit.modules.components.MessageInputComponent;
+import com.sendbird.uikit.vm.ChannelViewModel;
+import com.sendbird.uikit.widgets.MessageInputView;
 
 public class CustomChannelFragment extends ChannelFragment {
+    @NonNull
     private CustomMessageType customMessageType = CustomMessageType.NONE;
+
+    @NonNull
+    @Override
+    protected ChannelModule onCreateModule(@NonNull Bundle args) {
+        ChannelModule module = super.onCreateModule(args);
+        module.setHeaderComponent(new CustomChannelHeaderComponent());
+        module.setInputComponent(new CustomMessageInputComponent());
+        return module;
+    }
+
+    @NonNull
+    @Override
+    protected ChannelViewModel onCreateViewModel() {
+        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
+        final String channelUrl = args.getString(StringSet.KEY_CHANNEL_URL, "");
+        return new ViewModelProvider(this, new ViewModelFactory(channelUrl)).get(channelUrl, CustomChannelViewModel.class);
+    }
 
     @Override
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
         super.onBeforeSendUserMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMentionType(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null)
-                .setTranslationTargetLanguages(null);
+        params.setCustomType(customMessageType.getValue());
     }
 
     @Override
     protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
         super.onBeforeSendFileMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMentionType(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null);
+        params.setCustomType(customMessageType.getValue());
     }
 
     @Override
     protected void onBeforeUpdateUserMessage(@NonNull UserMessageParams params) {
         super.onBeforeUpdateUserMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMentionType(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null)
-                .setTranslationTargetLanguages(null);
+        params.setCustomType(customMessageType.getValue());
     }
 
     @Override
-    protected void sendUserMessage(@NonNull UserMessageParams params) {
-        super.sendUserMessage(params);
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull ChannelModule module, @NonNull ChannelViewModel viewModel) {
+        super.onBeforeReady(status, module, viewModel);
+
+        final GroupChannel channel = viewModel.getChannel();
+        if (channel == null) return;
+        module.getMessageListComponent().setAdapter(new CustomMessageListAdapter(channel, true));
     }
 
     @Override
-    protected void sendFileMessage(@NonNull Uri uri) {
-        super.sendFileMessage(uri);
-    }
+    protected void onBindMessageInputComponent(@NonNull MessageInputComponent inputComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
+        super.onBindMessageInputComponent(inputComponent, viewModel, channel);
 
-    @Override
-    protected void updateUserMessage(long messageId, @NonNull UserMessageParams params) {
-        super.updateUserMessage(messageId, params);
-    }
-
-    @Override
-    protected void deleteMessage(@NonNull BaseMessage message) {
-        super.deleteMessage(message);
-    }
-
-    @Override
-    protected void resendMessage(@NonNull BaseMessage message) {
-        super.resendMessage(message);
-    }
-
-    @Override
-    protected String getTooltipMessage(int count) {
-        String result = "";
-        if (count <= 1) {
-            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip), count);
-        } else if (count <= 9) {
-            result = String.format(Locale.US, getString(R.string.sb_text_channel_tooltip_with_count), count);
-        } else {
-            result = getString(R.string.sb_text_channel_tooltip_with_count_over_10);
+        if (inputComponent instanceof CustomMessageInputComponent) {
+            CustomMessageInputComponent customInput = (CustomMessageInputComponent) getModule().getMessageInputComponent();
+            customInput.setMenuCameraClickListener(v -> takeCamera());
+            customInput.setMenuPhotoClickListener(v -> takePhoto());
+            customInput.setMenuFileClickListener(v -> takeFile());
+            customInput.setHighlightCheckedListener((buttonView, isChecked) ->
+                    customMessageType = isChecked ? CustomMessageType.HIGHLIGHT : CustomMessageType.NONE);
+            customInput.setEmojiClickListener((view, position, url) -> {
+                final UserMessageParams params = new UserMessageParams();
+                params.setMessage(url);
+                customMessageType = CustomMessageType.EMOJI;
+                sendUserMessage(params);
+                customInput.requestInputMode(MessageInputView.Mode.DEFAULT);
+                customMessageType = CustomMessageType.NONE;
+            });
         }
-        return result;
     }
 
-    public void setCustomMessageType(CustomMessageType customMessageType) {
-        this.customMessageType = customMessageType;
-    }
+    @Override
+    protected void onBindChannelHeaderComponent(@NonNull ChannelHeaderComponent headerComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
+        super.onBindChannelHeaderComponent(headerComponent, viewModel, channel);
 
-    public CustomMessageType getCustomMessageType() {
-        return customMessageType;
+        if (headerComponent instanceof CustomChannelHeaderComponent) {
+            CustomChannelHeaderComponent customHeader = (CustomChannelHeaderComponent) getModule().getHeaderComponent();
+            customHeader.setSearchButtonClickListener(v -> {
+                if (isFragmentAlive() && channel != null) {
+                    startActivity(MessageSearchActivity.newIntent(requireContext(), channel.getUrl()));
+                }
+            });
+        }
     }
 }

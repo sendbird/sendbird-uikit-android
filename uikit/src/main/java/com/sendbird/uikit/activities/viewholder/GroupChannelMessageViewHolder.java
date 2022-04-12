@@ -3,7 +3,7 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -15,12 +15,12 @@ import java.util.List;
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
  */
 public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
-    public GroupChannelMessageViewHolder(View view) {
+    public GroupChannelMessageViewHolder(@NonNull View view) {
         super(view);
     }
 
-    GroupChannelMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
+    GroupChannelMessageViewHolder(@NonNull View view, boolean useMessageGroupUI) {
+        super(view, useMessageGroupUI);
     }
 
     /**
@@ -32,9 +32,9 @@ public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
      * @param moreButtonClickListener The callback to be invoked when the emoji reaction more button is clicked and held.
      * @since 1.1.0
      */
-    abstract public void setEmojiReaction(List<Reaction> reactionList,
-                                          OnItemClickListener<String> emojiReactionClickListener,
-                                          OnItemLongClickListener<String> emojiReactionLongClickListener,
-                                          View.OnClickListener moreButtonClickListener);
+    abstract public void setEmojiReaction(@NonNull List<Reaction> reactionList,
+                                          @Nullable OnItemClickListener<String> emojiReactionClickListener,
+                                          @Nullable OnItemLongClickListener<String> emojiReactionLongClickListener,
+                                          @Nullable View.OnClickListener moreButtonClickListener);
 }
 
