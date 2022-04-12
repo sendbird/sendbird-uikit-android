@@ -4,6 +4,8 @@
 
 ## Introduction
 
+The new version of the Sendbird UIKit is now available as the beta. Compared to UIKit v2, UIKit v3 beta features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](https://github.com/sendbird/sendbird-uikit-android/blob/v3-beta/changelogs/MIGRATIONGUIDE_V3.md) and go visit the [v3 branch](https://github.com/sendbird/sendbird-uikit-android/tree/v3-beta) here.
+
 Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
 
 - **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
