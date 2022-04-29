@@ -24,6 +24,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewUserListItemBinding;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.utils.ChannelUtils;
+import com.sendbird.uikit.utils.UserUtils;
 
 public class SelectUserPreview extends FrameLayout {
     private final SbViewUserListItemBinding binding;
@@ -131,7 +132,7 @@ public class SelectUserPreview extends FrameLayout {
     }
 
     public void drawUser(@NonNull UserInfo userInfo, boolean isSelected, boolean isEnabled) {
-        String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? getContext().getString(R.string.sb_text_channel_list_title_unknown) : userInfo.getNickname();
+        final String nickname = UserUtils.getDisplayName(getContext(), userInfo);
         binding.tvNickname.setText(nickname);
         ChannelUtils.loadImage(binding.ivUserCover, userInfo.getProfileUrl());
 

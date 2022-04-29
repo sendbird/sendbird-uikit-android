@@ -1,9 +1,12 @@
 package com.sendbird.uikit.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.AttrRes;
@@ -105,5 +108,17 @@ public class ContextUtils {
         }
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         return new ToastView(themeWrapperContext);
+    }
+
+    @Nullable
+    public static Window getWindow(@NonNull Context context) {
+        try {
+            while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+                context = ((ContextWrapper) context).getBaseContext();
+            }
+            if (!(context instanceof Activity)) throw new Exception();
+            return ((Activity) context).getWindow();
+        } catch (Throwable ignore) {}
+        return null;
     }
 }

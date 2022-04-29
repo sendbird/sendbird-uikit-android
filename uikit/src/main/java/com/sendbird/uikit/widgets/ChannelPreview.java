@@ -36,6 +36,7 @@ public class ChannelPreview extends FrameLayout {
     private TextView tvMemberCount;
     private TextView tvUpdatedAt;
     private TextView tvLastMessage;
+    private TextView tvUnreadMentionCount;
     private TextView tvUnreadCount;
     private ImageView ivPushEnabled;
     private ImageView ivBroadcast;
@@ -44,6 +45,7 @@ public class ChannelPreview extends FrameLayout {
 
     private boolean useTypingIndicator = false;
     private boolean useMessageReceiptStatus = false;
+    private boolean useUnreadMentionCount = false;
 
     public ChannelPreview(@NonNull Context context) {
         this(context, null);
@@ -70,6 +72,7 @@ public class ChannelPreview extends FrameLayout {
             this.ivPushEnabled = layout.findViewById(R.id.ivPushEnabledIcon);
             this.tvUpdatedAt = layout.findViewById(R.id.tvUpdatedAt);
             this.tvLastMessage = layout.findViewById(R.id.tvLastMessage);
+            this.tvUnreadMentionCount = layout.findViewById(R.id.tvUnreadMentionCount);
             this.tvUnreadCount = layout.findViewById(R.id.tvUnreadCount);
             this.ivBroadcast = layout.findViewById(R.id.ivBroadcastIcon);
             this.ivFrozen = layout.findViewById(R.id.ivFrozenIcon);
@@ -80,12 +83,14 @@ public class ChannelPreview extends FrameLayout {
             int memberCountAppearance = a.getResourceId(R.styleable.ChannelPreview_sb_channel_preview_member_count_appearance, R.style.SendbirdCaption1OnLight02);
             int updatedAtAppearance = a.getResourceId(R.styleable.ChannelPreview_sb_channel_preview_updated_at_appearance, R.style.SendbirdCaption2OnLight02);
             int unReadCountAppearance = a.getResourceId(R.styleable.ChannelPreview_sb_channel_preview_unread_count_appearance, R.style.SendbirdCaption1OnDark01);
+            int unReadMentionCountAppearance = a.getResourceId(R.styleable.ChannelPreview_sb_channel_preview_unread_mention_count_appearance, R.style.SendbirdH2Primary300);
             int lastMessageAppearance = a.getResourceId(R.styleable.ChannelPreview_sb_channel_preview_last_message_appearance, R.style.SendbirdBody3OnLight03);
 
             this.layout.findViewById(R.id.root).setBackgroundResource(background);
             this.tvTitle.setTextAppearance(context, titleAppearance);
             this.tvMemberCount.setTextAppearance(context, memberCountAppearance);
             this.tvUpdatedAt.setTextAppearance(context, updatedAtAppearance);
+            this.tvUnreadMentionCount.setTextAppearance(context, unReadMentionCountAppearance);
             this.tvUnreadCount.setTextAppearance(context, unReadCountAppearance);
             this.tvLastMessage.setTextAppearance(context, lastMessageAppearance);
         } finally {
@@ -97,6 +102,7 @@ public class ChannelPreview extends FrameLayout {
         Context context = getContext();
         final BaseMessage lastMessage = channel.getLastMessage();
         final int unreadMessageCount = channel.getUnreadMessageCount();
+        final int unreadMentionCount = channel.getUnreadMentionCount();
         ivPushEnabled.setVisibility(ChannelUtils.isChannelPushOff(channel) ? View.VISIBLE : View.GONE);
         int pushEnabledTint = SendbirdUIKit.getDefaultThemeMode().getMonoTintResId();
         ivPushEnabled.setImageDrawable(DrawableUtils.setTintList(context, R.drawable.icon_notifications_off_filled, pushEnabledTint));
@@ -143,6 +149,13 @@ public class ChannelPreview extends FrameLayout {
                 ivLastMessageStatus.setVisibility(View.GONE);
             }
         }
+
+        if (useUnreadMentionCount) {
+            tvUnreadMentionCount.setText(SendbirdUIKit.getUserMentionConfig().getTrigger());
+            tvUnreadMentionCount.setVisibility(unreadMentionCount > 0 ? View.VISIBLE : View.GONE);
+        } else {
+            tvUnreadMentionCount.setVisibility(View.GONE);
+        }
     }
 
     public void setUseMessageReceiptStatus(boolean useMessageReceiptStatus) {
@@ -151,6 +164,10 @@ public class ChannelPreview extends FrameLayout {
 
     public void setUseTypingIndicator(boolean useTypingIndicator) {
         this.useTypingIndicator = useTypingIndicator;
+    }
+
+    public void setUseUnreadMentionCount(boolean useUnreadMentionCount) {
+        this.useUnreadMentionCount = useUnreadMentionCount;
     }
 
     @NonNull

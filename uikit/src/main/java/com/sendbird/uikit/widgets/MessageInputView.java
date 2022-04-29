@@ -191,7 +191,9 @@ public class MessageInputView extends FrameLayout {
                     }
                 }
             });
-            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            binding.etInputText.setInputType(InputType.TYPE_CLASS_TEXT
+                    | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         } catch (Exception e) {
             Logger.e(e);
         } finally {
@@ -254,9 +256,7 @@ public class MessageInputView extends FrameLayout {
             binding.ivQuoteReplyMessageImage.setVisibility(GONE);
         }
         if (null != message.getSender()) {
-            binding.tvQuoteReplyTitle.setText(
-                    String.format(getContext().getString(R.string.sb_text_reply_to),
-                            message.getSender().getNickname()));
+            binding.tvQuoteReplyTitle.setText(String.format(getContext().getString(R.string.sb_text_reply_to), message.getSender().getNickname()));
         }
         binding.tvQuoteReplyMessage.setText(displayMessage);
     }
@@ -363,7 +363,7 @@ public class MessageInputView extends FrameLayout {
         this.editModeTextChangedListener = inputTextChangedListener;
     }
 
-    public void setInputText(@Nullable String text) {
+    public void setInputText(@Nullable CharSequence text) {
         binding.etInputText.setText(text);
         if (text != null) {
             binding.etInputText.setSelection(text.length());
@@ -380,7 +380,7 @@ public class MessageInputView extends FrameLayout {
         return editable != null ? editable.toString().trim() : null;
     }
 
-    public void setInputTextHint(@Nullable String hint) {
+    public void setInputTextHint(@Nullable CharSequence hint) {
         binding.etInputText.setHint(hint);
     }
 

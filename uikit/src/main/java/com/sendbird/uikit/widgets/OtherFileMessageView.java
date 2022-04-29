@@ -20,11 +20,12 @@ import com.sendbird.uikit.databinding.SbViewOtherFileMessageComponentBinding;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.MessageUtils;
-import com.sendbird.uikit.utils.SpannableStringBuilder;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class OtherFileMessageView extends GroupChannelMessageView {
     private final SbViewOtherFileMessageComponentBinding binding;
+    private final int searchedTextBackground;
+    private final int searchedMessageAppearance;
 
     @NonNull
     @Override
@@ -57,8 +58,8 @@ public class OtherFileMessageView extends GroupChannelMessageView {
             int messageBackground = a.getResourceId(R.styleable.MessageView_File_sb_message_other_background, R.drawable.sb_shape_chat_bubble);
             ColorStateList messageBackgroundTint = a.getColorStateList(R.styleable.MessageView_File_sb_message_other_background_tint);
             int emojiReactionListBackground = a.getResourceId(R.styleable.MessageView_File_sb_message_emoji_reaction_list_background, R.drawable.sb_shape_chat_bubble_reactions_light);
-            this.highlightBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_background_color, R.color.highlight);
-            this.highlightForegroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_foreground_color, R.color.background_600);
+            this.searchedTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_searched_text_background, R.color.highlight);
+            this.searchedMessageAppearance = a.getResourceId(R.styleable.MessageView_File_sb_message_searched_text_appearance, R.style.SendbirdSearchedMessage);
 
             binding.tvFileName.setTextAppearance(context, messageAppearance);
             binding.tvFileName.setPaintFlags(binding.tvFileName.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
@@ -86,10 +87,9 @@ public class OtherFileMessageView extends GroupChannelMessageView {
         binding.tvSentAt.setVisibility((sendingState && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) ? View.VISIBLE : View.INVISIBLE);
         binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
         CharSequence text = fileMessage.getName();
-        if (highlightMessageInfo != null && highlightMessageInfo.getMessageId() == message.getMessageId() && highlightMessageInfo.getUpdatedAt() == message.getUpdatedAt()) {
-            SpannableStringBuilder builder = new SpannableStringBuilder(getContext(), text);
-            builder.addHighlightTextSpan(text.toString(), text.toString(), highlightBackgroundColor, highlightForegroundColor);
-            text = builder.build();
+
+        if (messageUIConfig != null) {
+            messageUIConfig.getSearchedTextUIConfig().mergeFromTextAppearance(getContext(), searchedMessageAppearance, searchedTextBackground);
         }
         binding.tvFileName.setText(text);
 

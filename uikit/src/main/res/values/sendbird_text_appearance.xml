@@ -1380,4 +1380,45 @@
     <item name="android:lineSpacingExtra">1sp</item>
     <item name="android:textColor">@color/onlight_03</item>
   </style>
+
+  <style name="SendbirdMentionLightMe">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:lineSpacingExtra">6sp</item>
+    <item name="android:textColor">@color/ondark_01</item>
+  </style>
+
+  <style name="SendbirdMentionLightOther">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:lineSpacingExtra">6sp</item>
+    <item name="android:textColor">@color/onlight_01</item>
+  </style>
+
+  <style name="SendbirdMentionDarkMe">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:lineSpacingExtra">6sp</item>
+    <item name="android:textColor">@color/onlight_01</item>
+  </style>
+
+  <style name="SendbirdMentionDarkOther">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:lineSpacingExtra">6sp</item>
+    <item name="android:textColor">@color/ondark_01</item>
+  </style>
+
+  <style name="SendbirdSearchedMessage">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:lineSpacingExtra">6sp</item>
+    <item name="android:textColor">@color/background_600</item>
+    <item name="android:background">@color/highlight</item>
+  </style>
 </resources>

@@ -17,9 +17,11 @@ import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.DialogListAdapter;
@@ -177,15 +179,21 @@ public class DialogView extends LinearLayout {
         this.editTextResultListener = editTextResultListener;
     }
 
-    public void setItems(@Nullable DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean isLeft) {
-        if (items == null) return;
-        binding.rvSelectView.setAdapter(new DialogListAdapter(items, isLeft, itemClickListener) );
+    public void setAdapter(@NonNull RecyclerView.Adapter<?> adapter) {
+        binding.rvSelectView.setAdapter(adapter);
         binding.rvSelectView.setVisibility(VISIBLE);
     }
 
-    public void setItems(@Nullable DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean isLeft, @DimenRes int nameMarginLeft) {
+
+    public void setItems(@Nullable DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean useLeftIcon) {
         if (items == null) return;
-        DialogListAdapter adapter = new DialogListAdapter(items, isLeft, itemClickListener);
+        binding.rvSelectView.setAdapter(new DialogListAdapter(items, useLeftIcon, itemClickListener) );
+        binding.rvSelectView.setVisibility(VISIBLE);
+    }
+
+    public void setItems(@Nullable DialogListItem[] items, @NonNull OnItemClickListener<DialogListItem> itemClickListener, boolean useLeftIcon, @DimenRes int nameMarginLeft) {
+        if (items == null) return;
+        DialogListAdapter adapter = new DialogListAdapter(items, useLeftIcon, itemClickListener);
         adapter.setNameMarginLeft(nameMarginLeft);
         binding.rvSelectView.setAdapter(adapter);
         binding.rvSelectView.setVisibility(VISIBLE);
@@ -242,6 +250,10 @@ public class DialogView extends LinearLayout {
 
     public void setBackgroundAnchor() {
         binding.sbParentPanel.setBackgroundResource(backgroundAnchorId);
+    }
+
+    public void setBackground(@DrawableRes int background) {
+        binding.sbParentPanel.setBackgroundResource(background);
     }
 
     @NonNull

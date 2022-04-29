@@ -10,6 +10,7 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 
@@ -22,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     protected HighlightMessageInfo highlight;
+    @Nullable
+    protected MessageUIConfig messageUIConfig;
     @NonNull
     protected Map<String, View> clickableViewMap = new ConcurrentHashMap<>();
     private boolean isNewDate = false;
@@ -67,6 +70,17 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      */
     public void setHighlightInfo(@Nullable HighlightMessageInfo highlightInfo) {
         this.highlight = highlightInfo;
+    }
+
+    /**
+     * Sets the configurations of the message's properties to highlight text.
+     *
+     * @param messageUIConfig the configurations of the message's properties to highlight text.
+     * @see com.sendbird.uikit.model.TextUIConfig
+     * @since 3.0.0
+     */
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
     }
 
     /**

@@ -12,11 +12,11 @@
     <style name="Component.Overlay"/>
 
     <style name="Component.Overlay.List">
-        <item name="sb_pager_recycler_view_background">@color/background_600</item>
-        <item name="sb_pager_recycler_view_divide_line_color">@color/ondark_04</item>
-        <item name="sb_pager_recycler_view_divide_line_height">@dimen/sb_size_1</item>
-        <item name="sb_pager_recycler_view_divide_margin_left">0dp</item>
-        <item name="sb_pager_recycler_view_divide_margin_right">0dp</item>
+        <item name="sb_recycler_view_background">@color/background_600</item>
+        <item name="sb_recycler_view_divide_line_color">@color/ondark_04</item>
+        <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
+        <item name="sb_recycler_view_divide_margin_left">0dp</item>
+        <item name="sb_recycler_view_divide_margin_right">0dp</item>
     </style>
     <style name="Component.Overlay.Header">
         <item name="sb_appbar_background">@android:color/transparent</item>
@@ -150,8 +150,6 @@
         <item name="sb_message_time_text_appearance">@style/SendbirdCaption4OnDark03</item>
         <item name="sb_message_sender_name_text_appearance">@style/SendbirdCaption1OnDark02</item>
         <item name="sb_message_operator_name_text_appearance">@style/SendbirdCaption1Primary200</item>
-        <item name="sb_message_highlight_background_color">@color/highlight</item>
-        <item name="sb_message_highlight_foreground_color">@color/background_600</item>
     </style>
     <style name="Widget.Sendbird.Overlay.OpenChannel.Message.User">
         <item name="sb_message_background">@drawable/selector_rectangle_onlight_02</item>
@@ -178,8 +176,8 @@
     <style name="Widget.Sendbird.Overlay.Message">
         <item name="sb_message_time_text_appearance">@style/SendbirdCaption4OnDark03</item>
         <item name="sb_message_sender_name_text_appearance">@style/SendbirdCaption1OnDark02</item>
-        <item name="sb_message_highlight_background_color">@color/highlight</item>
-        <item name="sb_message_highlight_foreground_color">@color/background_600</item>
+        <item name="sb_message_searched_text_appearance">@style/SendbirdSearchedMessage</item>
+        <item name="sb_message_searched_text_background">@color/highlight</item>
     </style>
 
     <style name="Widget.Sendbird.Overlay.Message.Timeline">

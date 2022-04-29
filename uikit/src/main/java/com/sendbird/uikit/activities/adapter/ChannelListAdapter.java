@@ -223,6 +223,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             this.binding = binding;
             this.binding.channelPreview.setUseTypingIndicator(SendbirdUIKit.isUsingChannelListTypingIndicators());
             this.binding.channelPreview.setUseMessageReceiptStatus(SendbirdUIKit.isUsingChannelListMessageReceiptStatus());
+            this.binding.channelPreview.setUseUnreadMentionCount(SendbirdUIKit.isUsingUserMention());
         }
 
         @Override
@@ -246,6 +247,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         @Nullable
         private final GroupChannel.PushTriggerOption pushTriggerOption;
         private final int unreadMessageCount;
+        private final int unreadMentionCount;
         private final boolean isFrozen;
         @NonNull
         private List<User> typingMembers = new ArrayList<>();
@@ -261,6 +263,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             this.coverImageUrl = channel.getCoverUrl();
             this.pushTriggerOption = channel.getMyPushTriggerOption();
             this.unreadMessageCount = channel.getUnreadMessageCount();
+            this.unreadMentionCount = channel.getUnreadMentionCount();
             this.coverImageHash = toUrlsHash(channel);
             this.isFrozen = channel.isFrozen();
             if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
@@ -297,6 +300,10 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
 
         int getUnreadMessageCount() {
             return unreadMessageCount;
+        }
+
+        int getUnreadMentionCount() {
+            return unreadMentionCount;
         }
 
         @NonNull
@@ -336,6 +343,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             if (memberCount != that.memberCount) return false;
             if (coverImageHash != that.coverImageHash) return false;
             if (unreadMessageCount != that.unreadMessageCount) return false;
+            if (unreadMentionCount != that.unreadMentionCount) return false;
             if (isFrozen != that.isFrozen) return false;
 
             if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
@@ -378,6 +386,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             result = 31 * result + coverImageHash;
             result = 31 * result + (pushTriggerOption != null ? pushTriggerOption.hashCode() : 0);
             result = 31 * result + unreadMessageCount;
+            result = 31 * result + unreadMentionCount;
             result = 31 * result + (isFrozen ? 1 : 0);
 
             if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
@@ -404,6 +413,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
                     ", coverImageHash=" + coverImageHash +
                     ", pushTriggerOption=" + pushTriggerOption +
                     ", unreadMessageCount=" + unreadMessageCount +
+                    ", unreadMentionCount=" + unreadMentionCount +
                     ", isFrozen=" + isFrozen +
                     ", typingMembers=" + typingMembers +
                     ", unReadMemberCount=" + unReadMemberCount +

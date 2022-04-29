@@ -22,7 +22,10 @@ import com.sendbird.uikit.utils.ViewUtils;
 
 public class OtherUserMessageView extends GroupChannelMessageView {
     private final SbViewOtherUserMessageComponentBinding binding;
+    private final int searchedTextBackground;
     private final int editedAppearance;
+    private final int mentionAppearance;
+    private final int searchedMessageAppearance;
 
     @NonNull
     @Override
@@ -53,9 +56,10 @@ public class OtherUserMessageView extends GroupChannelMessageView {
             ColorStateList ogtagBackgroundTint = a.getColorStateList(R.styleable.MessageView_User_sb_message_other_ogtag_background_tint);
             ColorStateList linkTextColor = a.getColorStateList(R.styleable.MessageView_User_sb_message_other_link_text_color);
             int clickedLinkBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_other_clicked_link_background_color, R.color.primary_100);
-            editedAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_other_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
-            this.highlightBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_background_color, R.color.highlight);
-            this.highlightForegroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_foreground_color, R.color.background_600);
+            this.searchedTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_searched_text_background, R.color.highlight);
+            this.editedAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_other_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
+            this.mentionAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_other_mentioned_text_appearance, R.style.SendbirdMentionLightOther);
+            this.searchedMessageAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_searched_text_appearance, R.style.SendbirdSearchedMessage);
 
             binding.tvMessage.setTextAppearance(context, messageAppearance);
             binding.tvMessage.setLinkTextColor(linkTextColor);
@@ -99,8 +103,13 @@ public class OtherUserMessageView extends GroupChannelMessageView {
         binding.tvSentAt.setVisibility((sendingState && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) ? View.VISIBLE : View.INVISIBLE);
         binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
 
+        if (messageUIConfig != null) {
+            messageUIConfig.getOtherEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+            messageUIConfig.getOtherMentionUIConfig().mergeFromTextAppearance(getContext(), mentionAppearance);
+            messageUIConfig.getSearchedTextUIConfig().mergeFromTextAppearance(getContext(), searchedMessageAppearance, searchedTextBackground);
+        }
+        ViewUtils.drawTextMessage(binding.tvMessage, message, highlightMessageInfo, messageUIConfig);
         ViewUtils.drawNickname(binding.tvNickname, message);
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance, highlightMessageInfo, highlightBackgroundColor, highlightForegroundColor);
         ViewUtils.drawOgtag(binding.ovOgtag, message.getOgMetaData());
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
         ViewUtils.drawProfile(binding.ivProfileView, message);

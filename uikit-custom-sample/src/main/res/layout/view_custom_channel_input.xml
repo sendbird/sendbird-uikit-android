@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toTopOf="@id/menuPanel"
         />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.sendbird.uikit.widgets.MentionEditText
         android:id="@+id/input"
         android:layout_width="0dp"
         android:layout_height="@dimen/sb_size_56"

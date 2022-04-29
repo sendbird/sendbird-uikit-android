@@ -38,6 +38,7 @@ import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
+import com.sendbird.uikit.model.MentionSuggestion;
 import com.sendbird.uikit.model.MessageList;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.widgets.StatusFrameView;
@@ -91,6 +92,8 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     @Nullable
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
+    @NonNull
+    private final MemberFinder memberFinder;
 
     /**
      * Class that holds message data in a channel.
@@ -142,6 +145,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         this.channelUrl = channelUrl;
         this.messageListParams = messageListParams == null ? createMessageListParams() : messageListParams;
         this.messageListParams.setReverse(true);
+        this.memberFinder = new MemberFinder(channelUrl, SendbirdUIKit.getUserMentionConfig());
 
         SendBird.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new SendBird.ChannelHandler() {
             @Override
@@ -475,6 +479,17 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     }
 
     /**
+     * Returns LiveData that can be observed for suggested information from mention.
+     *
+     * @return LiveData holding {@link MentionSuggestion} for this view model
+     * @since 3.0.0
+     */
+    @NonNull
+    public LiveData<MentionSuggestion> getMentionSuggestion() {
+        return memberFinder.getMentionSuggestion();
+    }
+
+    /**
      * Returns LiveData that can be observed for the status of the result of fetching the message list.
      * When the message list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
@@ -558,6 +573,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         disposeMessageCollection();
         SendBird.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
         SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        memberFinder.dispose();
         worker.shutdownNow();
     }
 
@@ -899,5 +915,15 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                     .build());
         }
         return messageListParams;
+    }
+
+    /**
+     * Loads the list of members whose nickname starts with startWithFilter.
+     *
+     * @param startWithFilter The filter to be used to load a list of members with nickname that starts with a specific text.
+     * @since 3.0.0
+     */
+    public synchronized void loadMemberList(@Nullable String startWithFilter) {
+        memberFinder.find(startWithFilter);
     }
 }

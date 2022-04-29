@@ -96,8 +96,6 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:paddingTop="@dimen/sb_size_10"
-        android:paddingBottom="@dimen/sb_size_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -105,8 +103,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/inputPanel"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/sb_size_8"
-            android:paddingRight="@dimen/sb_size_16"
             android:paddingStart="@dimen/sb_size_8"
             android:paddingEnd="@dimen/sb_size_16"
             android:layout_width="match_parent"
@@ -118,8 +114,6 @@
                 android:layout_height="@dimen/sb_size_40"
                 android:src="@drawable/icon_add"
                 android:padding="@dimen/sb_size_8"
-                android:layout_marginRight="@dimen/sb_size_4"
-                android:layout_marginLeft="@dimen/sb_size_0"
                 android:layout_marginEnd="@dimen/sb_size_4"
                 android:layout_marginStart="@dimen/sb_size_0"
                 android:scaleType="centerCrop"
@@ -128,12 +122,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.sendbird.uikit.widgets.MentionEditText
                 android:id="@+id/etInputText"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="wrap_content"
                 android:hint="@string/sb_text_channel_input_text_hint"
                 android:maxLines="3"
+                android:layout_marginTop="@dimen/sb_size_10"
+                android:layout_marginBottom="@dimen/sb_size_10"
                 android:paddingLeft="@dimen/sb_size_20"
                 android:paddingRight="@dimen/sb_size_20"
                 android:imeOptions="flagNoExtractUi"
@@ -144,15 +140,13 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <requestFocus />
-            </androidx.appcompat.widget.AppCompatEditText>
+            </com.sendbird.uikit.widgets.MentionEditText>
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ibtnSend"
                 android:src="@drawable/icon_send"
                 android:layout_width="@dimen/sb_size_24"
                 android:layout_height="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_0"
-                android:layout_marginLeft="@dimen/sb_size_12"
                 android:layout_marginEnd="@dimen/sb_size_0"
                 android:layout_marginStart="@dimen/sb_size_12"
                 android:visibility="gone"

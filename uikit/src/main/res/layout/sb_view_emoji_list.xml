@@ -7,7 +7,7 @@
     android:scrollbars="vertical"
     android:scrollbarStyle="outsideOverlay"
     android:clipToPadding="false"
-    app:sb_pager_recycler_view_background="@android:color/transparent"
+    app:sb_recycler_view_background="@android:color/transparent"
     app:spanCount="6"
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     xmlns:android="http://schemas.android.com/apk/res/android"

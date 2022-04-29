@@ -3,6 +3,7 @@ package com.sendbird.uikit.modules.components;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,13 +18,23 @@ import androidx.core.content.ContextCompat;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
+import com.sendbird.android.User;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
+import com.sendbird.uikit.interfaces.OnMentionEventListener;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.MessageUIConfig;
+import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.UserMentionConfig;
+import com.sendbird.uikit.utils.ViewUtils;
+import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
+
+import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the message input area in Sendbird UIKit.
@@ -148,6 +159,43 @@ public class MessageInputComponent {
         this.messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
 
         return messageInputView;
+    }
+
+    /**
+     * Binds the mention configuration and the event listener to the input component.
+     *
+     * @param mentionConfig The configuration to be applied for the mention in this input component.
+     * @param handler The handler to be invoked when the mention text is detected in this input component.
+     * @since 3.0.0
+     */
+    public void bindUserMention(@NonNull UserMentionConfig mentionConfig, @NonNull OnMentionEventListener handler) {
+        if (getEditTextView() instanceof MentionEditText) {
+            ((MentionEditText) getEditTextView()).bindUserMention(mentionConfig, params.messageUIConfig.getMyMentionUIConfig(), handler);
+        }
+    }
+
+    /**
+     * Sets the adapter for suggested mention list.
+     *
+     * @param adapter The adapter to be used in suggested mention list.
+     * @since 3.0.0
+     */
+    public void setSuggestedMentionListAdapter(@NonNull SuggestedMentionListAdapter adapter) {
+        if (getEditTextView() instanceof MentionEditText) {
+            ((MentionEditText) getEditTextView()).setSuggestedMentionListAdapter(adapter);
+        }
+    }
+
+    /**
+     * Sets whether to use divider in suggested mention list.
+     *
+     * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
+     * @since 3.0.0
+     */
+    public void setUseSuggestedMentionListDivider(boolean useDivider) {
+        if (getEditTextView() instanceof MentionEditText) {
+            ((MentionEditText) getEditTextView()).setUseSuggestedMentionListDivider(useDivider);
+        }
     }
 
     /**
@@ -280,8 +328,9 @@ public class MessageInputComponent {
      * @since 3.0.0
      */
     protected void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count) {
-        if (inputTextChangedListener != null)
+        if (inputTextChangedListener != null) {
             inputTextChangedListener.onInputTextChanged(s, start, before, count);
+        }
     }
 
     /**
@@ -371,7 +420,10 @@ public class MessageInputComponent {
 
         final MessageInputView.Mode mode = inputView.getInputMode();
         if (MessageInputView.Mode.EDIT == mode) {
-            if (message != null) inputView.setInputText(message.getMessage());
+            if (message != null) {
+                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig);
+                inputView.setInputText(text);
+            }
             inputView.showKeyboard();
         } else if (MessageInputView.Mode.QUOTE_REPLY == mode) {
             if (message != null) inputView.drawMessageToReply(message);
@@ -385,6 +437,19 @@ public class MessageInputComponent {
         }
 
         setHintMessageText(inputView, channel);
+    }
+
+    /**
+     * Notifies changes of suggested mention list.
+     *
+     * @param suggestedMentionList The updated suggested mention list.
+     * @since 3.0.0
+     */
+    public void notifySuggestedMentionDataChanged(@NonNull List<User> suggestedMentionList) {
+        Logger.d(">> MessageInputComponent::notifySuggestedMentionDataChanged()");
+        if (getEditTextView() instanceof MentionEditText) {
+            ((MentionEditText) getEditTextView()).notifySuggestedMentionDataChanged(suggestedMentionList);
+        }
     }
 
     /**
@@ -449,12 +514,17 @@ public class MessageInputComponent {
         @NonNull
         private KeyboardDisplayType keyboardDisplayType = KeyboardDisplayType.Plane;
 
+        @NonNull
+        private final MessageUIConfig messageUIConfig;
+
         /**
          * Constructor
          *
          * @since 3.0.0
          */
         protected Params() {
+            this.messageUIConfig = new MessageUIConfig();
+            this.messageUIConfig.getMyMentionUIConfig().apply(new TextUIConfig(-1, Typeface.BOLD));
         }
 
         /**
@@ -646,6 +716,19 @@ public class MessageInputComponent {
         }
 
         /**
+         * Sets the UI configuration of mentioned text.
+         *
+         * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
+         * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
+         * @since 3.0.0
+         */
+        public void setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null) this.messageUIConfig.getMyMentionUIConfig().apply(configSentFromMe);
+            if (configSentFromOthers != null) this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
+        }
+
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_RES_ID} is mapped to {@link #setLeftButtonIcon(Drawable)}
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_TINT} is mapped to {@link #setLeftButtonIconTint(ColorStateList)}
@@ -656,6 +739,7 @@ public class MessageInputComponent {
          * {@code KEY_USE_INPUT_LEFT_BUTTON} is mapped to {@link #setUseLeftButton(boolean)}
          * {@code KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS} is mapped to {@link #showInputRightButtonAlways()}
          * {@code KEY_KEYBOARD_DISPLAY_TYPE} is mapped to {@link #setKeyboardDisplayType(KeyboardDisplayType)}
+         * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -696,6 +780,7 @@ public class MessageInputComponent {
                     setKeyboardDisplayType(displayType);
                 }
             }
+            setMentionUIConfig(args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS));
             return this;
         }
     }

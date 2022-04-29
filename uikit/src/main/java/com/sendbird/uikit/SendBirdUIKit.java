@@ -26,6 +26,7 @@ import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
+import com.sendbird.uikit.model.UserMentionConfig;
 import com.sendbird.uikit.tasks.JobResultTask;
 import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.FileUtils;
@@ -200,8 +201,10 @@ public class SendbirdUIKit {
     private static ReplyType replyType = ReplyType.QUOTE_REPLY;
     @NonNull
     private static UIKitFragmentFactory fragmentFactory = new UIKitFragmentFactory();
-    private static boolean useChannelListTypingIndicators = false;
-    private static boolean useChannelListMessageReceiptStatus = false;
+    private static volatile boolean useChannelListTypingIndicators = false;
+    private static volatile boolean useChannelListMessageReceiptStatus = false;
+    private static volatile boolean useMention = false;
+    private static UserMentionConfig userMentionConfig = new UserMentionConfig.Builder().build();
 
     static void clearAll() {
         SendbirdUIKit.customUserListQueryHandler = null;
@@ -403,6 +406,48 @@ public class SendbirdUIKit {
     }
 
     /**
+     * Sets whether the user mention is used on the channel screen.
+     *
+     * @param useMention If <code>true</code> the mention will be used at the channel, <code>false</code> other wise.
+     * @since 3.0.0
+     */
+    public static void setUseUserMention(boolean useMention) {
+        SendbirdUIKit.useMention = useMention;
+    }
+
+    /**
+     * Sets the user mention configuration.
+     *
+     * @param config The configuration to be applied for the mention
+     * @see UserMentionConfig
+     * @since 3.0.0
+     */
+    public static void setMentionConfig(@NonNull UserMentionConfig config) {
+        SendbirdUIKit.userMentionConfig = config;
+    }
+
+    /**
+     * Returns the user mention configuration.
+     *
+     * @return The configuration applied for the user mention
+     * @since 3.0.0
+     */
+    @NonNull
+    public static UserMentionConfig getUserMentionConfig() {
+        return userMentionConfig;
+    }
+
+    /**
+     * Returns set value whether the user mention is used on the channel screen.
+     *
+     * @return The value whether the user mention is used on the channel screen.
+     * @since 3.0.0
+     */
+    public static boolean isUsingUserMention() {
+        return SendbirdUIKit.useMention;
+    }
+
+    /**
      * Connects to Sendbird with given <code>UserInfo</code>.
      *
      * @param handler Callback handler.
@@ -414,14 +459,12 @@ public class SendbirdUIKit {
                 User user = connect();
                 if (SendBird.getConnectionState() == SendBird.ConnectionState.OPEN && user != null) {
                     UserInfo userInfo = adapter.getUserInfo();
-                    if (userInfo != null) {
-                        String userId = userInfo.getUserId();
-                        String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
-                        if (TextUtils.isEmpty(nickname)) nickname = userId;
-                        String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
-                        if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
-                            updateUserInfoBlocking(nickname, profileUrl);
-                        }
+                    String userId = userInfo.getUserId();
+                    String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
+                    if (TextUtils.isEmpty(nickname)) nickname = userId;
+                    String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
+                    if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
+                        updateUserInfoBlocking(nickname, profileUrl);
                     }
 
                     Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
@@ -452,7 +495,7 @@ public class SendbirdUIKit {
         AtomicReference<SendBirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
         UserInfo userInfo = adapter.getUserInfo();
-        String userId = userInfo == null ? null : userInfo.getUserId();
+        String userId = userInfo.getUserId();
         String accessToken = adapter.getAccessToken();
 
         SendBird.connect(userId, accessToken, (user, e) -> {

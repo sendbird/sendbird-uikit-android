@@ -14,6 +14,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.customsample.groupchannel.components.CustomChannelHeaderComponent;
 import com.sendbird.uikit.customsample.groupchannel.components.CustomMessageInputComponent;
 import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomMessageListAdapter;
+import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomSuggestedMentionListAdapter;
 import com.sendbird.uikit.customsample.groupchannel.viewmodels.CustomChannelViewModel;
 import com.sendbird.uikit.customsample.groupchannel.viewmodels.ViewModelFactory;
 import com.sendbird.uikit.customsample.models.CustomMessageType;
@@ -92,6 +93,8 @@ public class CustomChannelFragment extends ChannelFragment {
                 customInput.requestInputMode(MessageInputView.Mode.DEFAULT);
                 customMessageType = CustomMessageType.NONE;
             });
+            customInput.setUseSuggestedMentionListDivider(false);
+            customInput.setSuggestedMentionListAdapter(new CustomSuggestedMentionListAdapter());
         }
     }
 

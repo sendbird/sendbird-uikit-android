@@ -20,6 +20,7 @@ import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserComponentBinding;
+import com.sendbird.uikit.utils.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +68,11 @@ public class EmojiReactionUserView extends FrameLayout {
     }
 
     public void drawUser(@Nullable User user) {
-        Context context = binding.ivUserCover.getContext();
-        String nickname = context.getString(R.string.sb_text_channel_list_title_unknown);
-        List<String> urls = new ArrayList<>();
+        final Context context = binding.ivUserCover.getContext();
+        final String nickname = UserUtils.getDisplayName(context, user);
+        final List<String> urls = new ArrayList<>();
 
         if (user != null) {
-            nickname = TextUtils.isEmpty(user.getNickname()) ?
-                    context.getString(R.string.sb_text_channel_list_title_unknown) : user.getNickname();
             urls.add(user.getProfileUrl());
         }
 

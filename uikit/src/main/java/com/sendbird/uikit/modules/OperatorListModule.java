@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -17,7 +16,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OperatorListComponent;

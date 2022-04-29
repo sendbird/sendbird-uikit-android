@@ -7,5 +7,5 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical"
     android:scrollbarStyle="outsideOverlay"
-    app:sb_pager_recycler_view_background="@android:color/transparent"
+    app:sb_recycler_view_background="@android:color/transparent"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

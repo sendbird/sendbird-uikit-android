@@ -31,6 +31,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.TextUtils;
 
@@ -64,6 +65,8 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     private final boolean useMessageGroupUI;
     @Nullable
     private HighlightMessageInfo highlight;
+    @Nullable
+    private MessageUIConfig messageUIConfig;
 
     // the worker must be a single thread.
     @NonNull
@@ -126,6 +129,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                 useMessageGroupUI);
 
         viewHolder.setHighlightInfo(highlight);
+        viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
         for (Map.Entry<String, View> entry : views.entrySet()) {
@@ -249,6 +253,28 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     @Nullable
     public HighlightMessageInfo getHighlightInfo() {
         return this.highlight;
+    }
+
+    /**
+     * Sets the configurations of the message's properties to highlight text.
+     *
+     * @param messageUIConfig the configurations of the message's properties to highlight text.
+     * @see com.sendbird.uikit.model.TextUIConfig
+     * @since 3.0.0
+     */
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
+    }
+
+    /**
+     * Returns the configurations of the message's properties to highlight text.
+     *
+     * @return the configurations of the message's properties to highlight text.
+     * @since 3.0.0
+     */
+    @Nullable
+    public MessageUIConfig getMessageUIConfig() {
+        return this.messageUIConfig;
     }
 
     /**

@@ -26,6 +26,7 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.model.UserMentionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +136,11 @@ public class BaseApplication extends MultiDexApplication {
 
         SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
         SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
+        SendbirdUIKit.setUseUserMention(true);
+        SendbirdUIKit.setMentionConfig(new UserMentionConfig.Builder()
+                .setMaxMentionCount(5)
+                .setMaxSuggestionCount(10)
+                .build());
     }
 
     @NonNull

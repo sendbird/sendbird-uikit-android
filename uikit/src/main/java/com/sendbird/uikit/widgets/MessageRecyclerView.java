@@ -32,8 +32,8 @@ public class MessageRecyclerView extends FrameLayout {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageListView, defStyle, 0);
         try {
             this.binding = SbViewMessageRecyclerViewBinding.inflate(LayoutInflater.from(getContext()), this, true);
-            int dividerColor = a.getColor(R.styleable.MessageListView_sb_pager_recycler_view_divide_line_color, context.getResources().getColor(android.R.color.transparent));
-            float dividerHeight = a.getDimension(R.styleable.MessageListView_sb_pager_recycler_view_divide_line_height, 0);
+            int dividerColor = a.getColor(R.styleable.MessageListView_sb_recycler_view_divide_line_color, context.getResources().getColor(android.R.color.transparent));
+            float dividerHeight = a.getDimension(R.styleable.MessageListView_sb_recycler_view_divide_line_height, 0);
             int recyclerViewBackground = a.getResourceId(R.styleable.MessageListView_sb_message_recyclerview_background, R.color.background_50);
             int tooltipBackground = a.getResourceId(R.styleable.MessageListView_sb_message_recyclerview_tooltip_background, R.drawable.selector_tooltip_background_light);
             int tooltipTextAppearance = a.getResourceId(R.styleable.MessageListView_sb_message_recyclerview_tooltip_textappearance, R.style.SendbirdCaption1Primary300);

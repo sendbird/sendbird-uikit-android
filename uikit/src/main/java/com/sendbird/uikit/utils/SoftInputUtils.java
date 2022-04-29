@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -52,13 +53,11 @@ public class SoftInputUtils {
     }
 
     public static int getSoftInputMode(@NonNull Context context) {
-        try {
-            while (!(context instanceof Activity) && context instanceof ContextWrapper) {
-                context = ((ContextWrapper) context).getBaseContext();
-            }
-            if (!(context instanceof Activity)) throw new Exception();
-            return ((Activity) context).getWindow().getAttributes().softInputMode;
-        } catch (Throwable ignore) {}
-        return WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
+        Window window = ContextUtils.getWindow(context);
+        if (window == null) {
+            return WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
+        } else {
+            return window.getAttributes().softInputMode;
+        }
     }
 }

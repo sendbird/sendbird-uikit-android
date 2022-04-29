@@ -24,6 +24,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewMemberListItemBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
+import com.sendbird.uikit.utils.UserUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class UserPreview extends FrameLayout {
@@ -126,7 +127,7 @@ public class UserPreview extends FrameLayout {
         Context context = preview.getContext();
         boolean isOperatorMember = member.getRole() == Member.Role.OPERATOR;
         boolean isMe = member.getUserId().equals(SendBird.getCurrentUser().getUserId());
-        String nickname = TextUtils.isEmpty(member.getNickname()) ? context.getString(R.string.sb_text_channel_list_title_unknown) : member.getNickname();
+        final String nickname = UserUtils.getDisplayName(context, member);
         preview.setName(nickname);
 
         String description = isOperatorMember ? context.getString(R.string.sb_text_operator) : "";
@@ -149,7 +150,7 @@ public class UserPreview extends FrameLayout {
     public static void drawMemberFromUser(@NonNull UserPreview preview, @NonNull User user) {
         Context context = preview.getContext();
         boolean isMe = user.getUserId().equals(SendBird.getCurrentUser().getUserId());
-        String nickname = TextUtils.isEmpty(user.getNickname()) ? context.getString(R.string.sb_text_channel_list_title_unknown) : user.getNickname();
+        final String nickname = UserUtils.getDisplayName(context, user);
         preview.setName(nickname);
 
         preview.setDescription("");

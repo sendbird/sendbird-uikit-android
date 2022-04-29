@@ -54,11 +54,12 @@
     </declare-styleable>
 
     <declare-styleable name="ListComponent">
-        <attr name="sb_pager_recycler_view_background" format="reference"/>
-        <attr name="sb_pager_recycler_view_divide_line_color" format="color"/>
-        <attr name="sb_pager_recycler_view_divide_line_height" format="dimension"/>
-        <attr name="sb_pager_recycler_view_divide_margin_left" format="dimension"/>
-        <attr name="sb_pager_recycler_view_divide_margin_right" format="dimension"/>
+        <attr name="sb_recycler_view_background" format="reference"/>
+        <attr name="sb_recycler_view_divide_line_color" format="color"/>
+        <attr name="sb_recycler_view_divide_line_height" format="dimension"/>
+        <attr name="sb_recycler_view_divide_margin_left" format="dimension"/>
+        <attr name="sb_recycler_view_divide_margin_right" format="dimension"/>
+        <attr name="sb_recycler_view_top_line_color" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="StatusComponent">
@@ -80,6 +81,7 @@
     <declare-styleable name="Widgets">
         <attr name="sb_widget_channel_preview" format="reference"/>
         <attr name="sb_widget_user_preview" format="reference"/>
+        <attr name="sb_widget_suggested_mention_preview" format="reference"/>
         <attr name="sb_widget_select_user_preview" format="reference"/>
         <attr name="sb_widget_select_channel_type" format="reference"/>
         <attr name="sb_widget_message_preview" format="reference"/>
@@ -100,6 +102,7 @@
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
         <attr name="sb_widget_dialog" format="reference"/>
+        <attr name="sb_widget_themeable_snackbar" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="ChannelPreview">
@@ -108,6 +111,7 @@
         <attr name="sb_channel_preview_member_count_appearance" format="reference"/>
         <attr name="sb_channel_preview_updated_at_appearance" format="reference"/>
         <attr name="sb_channel_preview_unread_count_appearance" format="reference"/>
+        <attr name="sb_channel_preview_unread_mention_count_appearance" format="reference"/>
         <attr name="sb_channel_preview_last_message_appearance" format="reference"/>
     </declare-styleable>
 
@@ -121,6 +125,15 @@
         <attr name="sb_member_preview_nickname_appearance" format="reference"/>
         <attr name="sb_member_preview_description_appearance" format="reference"/>
         <attr name="sb_member_preview_action_menu_background" format="reference"/>
+        <attr name="sb_mention_empty_nickname_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ThemeableSnackbar">
+        <attr name="sb_snackbar_roof_line_color" format="reference|color"/>
+        <attr name="sb_snackbar_background" format="reference"/>
+        <attr name="sb_snackbar_text_appearance" format="reference"/>
+        <attr name="sb_snackbar_icon" format="reference"/>
+        <attr name="sb_snackbar_icon_tint" format="reference|color"/>
     </declare-styleable>
 
     <!-- Message View -->
@@ -131,8 +144,8 @@
         <attr name="sb_message_other_background" format="reference"/>
         <attr name="sb_message_me_background_tint" format="reference|color"/>
         <attr name="sb_message_other_background_tint" format="reference|color"/>
-        <attr name="sb_message_my_edited_mark_text_appearance" format="reference"/>
-        <attr name="sb_message_other_edited_mark_text_appearance" format="reference"/>
+        <attr name="sb_message_my_edited_mark_text_appearance" format="reference|color"/>
+        <attr name="sb_message_other_edited_mark_text_appearance" format="reference|color"/>
 
         <attr name="sb_message_time_text_appearance" format="reference"/>
         <attr name="sb_message_timeline_text_appearance" format="reference"/>
@@ -162,8 +175,11 @@
         <attr name="sb_message_clicked_link_background_color" format="reference"/>
         <attr name="sb_message_edited_mark_text_appearance" format="reference"/>
 
-        <attr name="sb_message_highlight_background_color" format="reference"/>
-        <attr name="sb_message_highlight_foreground_color" format="reference"/>
+        <attr name="sb_message_searched_text_appearance" format="reference"/>
+        <attr name="sb_message_searched_text_background" format="reference|color"/>
+
+        <attr name="sb_message_my_mentioned_text_appearance" format="reference|color"/>
+        <attr name="sb_message_other_mentioned_text_appearance" format="reference|color"/>
 
         <attr name="sb_quoted_message_me_title_icon" format="reference"/>
         <attr name="sb_quoted_message_other_title_icon" format="reference"/>
@@ -190,6 +206,8 @@
         <attr name="sb_message_other_background_tint" />
         <attr name="sb_message_my_edited_mark_text_appearance" />
         <attr name="sb_message_other_edited_mark_text_appearance" />
+        <attr name="sb_message_my_mentioned_text_appearance" />
+        <attr name="sb_message_other_mentioned_text_appearance" />
 
         <attr name="sb_message_time_text_appearance" />
         <attr name="sb_message_sender_name_text_appearance"/>
@@ -209,8 +227,8 @@
         <attr name="sb_message_me_clicked_link_background_color" />
         <attr name="sb_message_other_clicked_link_background_color" />
 
-        <attr name="sb_message_highlight_background_color"/>
-        <attr name="sb_message_highlight_foreground_color"/>
+        <attr name="sb_message_searched_text_appearance" />
+        <attr name="sb_message_searched_text_background" />
 
         <attr name="sb_quoted_message_me_title_icon"/>
         <attr name="sb_quoted_message_other_title_icon"/>
@@ -240,8 +258,8 @@
         <attr name="sb_message_sender_name_text_appearance"/>`
 
         <attr name="sb_message_emoji_reaction_list_background" />
-        <attr name="sb_message_highlight_background_color"/>
-        <attr name="sb_message_highlight_foreground_color"/>
+        <attr name="sb_message_searched_text_appearance" />
+        <attr name="sb_message_searched_text_background" />
 
         <attr name="sb_quoted_message_me_title_icon"/>
         <attr name="sb_quoted_message_other_title_icon"/>
@@ -321,8 +339,8 @@
         <attr name="sb_message_scroll_bottom_icon" format="reference"/>
         <attr name="sb_message_scroll_bottom_icon_tint" format="color|reference"/>
 
-        <attr name="sb_pager_recycler_view_divide_line_color" />
-        <attr name="sb_pager_recycler_view_divide_line_height" />
+        <attr name="sb_recycler_view_divide_line_color" />
+        <attr name="sb_recycler_view_divide_line_height" />
     </declare-styleable>
 
     <!-- Message Input -->

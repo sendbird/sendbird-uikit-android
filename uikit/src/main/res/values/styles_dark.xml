@@ -120,11 +120,11 @@
     <!-- COMPONENTS -->
     <style name="Component.Dark"/>
     <style name="Component.Dark.List">
-        <item name="sb_pager_recycler_view_background">@color/background_600</item>
-        <item name="sb_pager_recycler_view_divide_line_color">@color/ondark_04</item>
-        <item name="sb_pager_recycler_view_divide_line_height">@dimen/sb_size_1</item>
-        <item name="sb_pager_recycler_view_divide_margin_left">0dp</item>
-        <item name="sb_pager_recycler_view_divide_margin_right">0dp</item>
+        <item name="sb_recycler_view_background">@color/background_600</item>
+        <item name="sb_recycler_view_divide_line_color">@color/ondark_04</item>
+        <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
+        <item name="sb_recycler_view_divide_margin_left">0dp</item>
+        <item name="sb_recycler_view_divide_margin_right">0dp</item>
     </style>
     <style name="Component.Dark.Header">
         <item name="sb_appbar_background">@color/background_500</item>
@@ -236,6 +236,15 @@
         <item name="sb_message_input_quote_reply_right_icon">@drawable/icon_close</item>
         <item name="sb_message_input_quote_reply_right_icon_tint">@color/ondark_02</item>
         <item name="sb_message_input_quote_reply_right_icon_background">@drawable/sb_button_uncontained_background_dark</item>
+
+        <!-- mention -->
+        <item name="sb_recycler_view_background">@drawable/sb_suggested_mention_list_background_dark</item>
+        <item name="sb_recycler_view_divide_line_color">@color/ondark_04</item>
+        <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
+        <item name="sb_recycler_view_divide_margin_left">@dimen/sb_size_52</item>
+        <item name="sb_recycler_view_divide_margin_right">0dp</item>
+        <item name="sb_widget_suggested_mention_preview">@style/Widget.Sendbird.Dark.SuggestedMentionPreview</item>
+        <item name="sb_widget_themeable_snackbar">@style/Widget.Sendbird.Dark.Snackbar</item>
     </style>
     <style name="Component.Dark.Status.Channel">
         <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
@@ -472,6 +481,7 @@
         <item name="sb_channel_preview_member_count_appearance">@style/SendbirdCaption1OnDark02</item>
         <item name="sb_channel_preview_updated_at_appearance">@style/SendbirdCaption2OnDark02</item>
         <item name="sb_channel_preview_unread_count_appearance">@style/SendbirdCaption1OnLight01</item>
+        <item name="sb_channel_preview_unread_mention_count_appearance">@style/SendbirdH2Primary200</item>
         <item name="sb_channel_preview_last_message_appearance">@style/SendbirdBody3OnDark03</item>
     </style>
 
@@ -487,12 +497,27 @@
         <item name="sb_member_preview_action_menu_background">@drawable/sb_button_uncontained_background_dark</item>
     </style>
 
+    <style name="Widget.Sendbird.Dark.SuggestedMentionPreview">
+        <item name="sb_member_preview_background">@drawable/selector_rectangle_dark600</item>
+        <item name="sb_member_preview_nickname_appearance">@style/SendbirdBody2OnDark01</item>
+        <item name="sb_member_preview_description_appearance">@style/SendbirdBody3OnDark02</item>
+        <item name="sb_mention_empty_nickname_appearance">@style/SendbirdBody2OnDark03</item>
+    </style>
+
+    <style name="Widget.Sendbird.Dark.Snackbar">
+        <item name="sb_snackbar_roof_line_color">@color/ondark_04</item>
+        <item name="sb_snackbar_background">@color/background_600</item>
+        <item name="sb_snackbar_text_appearance">@style/SendbirdBody3OnDark02</item>
+        <item name="sb_snackbar_icon">@drawable/icon_info</item>
+        <item name="sb_snackbar_icon_tint">@color/ondark_02</item>
+    </style>
+
     <!-- Message -->
     <style name="Widget.Sendbird.Dark.Message">
         <item name="sb_message_time_text_appearance">@style/SendbirdCaption4OnDark03</item>
         <item name="sb_message_sender_name_text_appearance">@style/SendbirdCaption1OnDark02</item>
-        <item name="sb_message_highlight_background_color">@color/highlight</item>
-        <item name="sb_message_highlight_foreground_color">@color/background_600</item>
+        <item name="sb_message_searched_text_appearance">@style/SendbirdSearchedMessage</item>
+        <item name="sb_message_searched_text_background">@color/highlight</item>
     </style>
 
     <style name="Widget.Sendbird.Dark.OgTag">
@@ -537,6 +562,7 @@
         <item name="sb_message_me_clicked_link_background_color">@color/primary_300</item>
 
         <item name="sb_message_my_edited_mark_text_appearance">@style/SendbirdBody3OnLight02</item>
+        <item name="sb_message_my_mentioned_text_appearance">@style/SendbirdMentionDarkMe</item>
     </style>
 
     <style name="Widget.Sendbird.Dark.Message.Other.User">
@@ -550,6 +576,7 @@
         <item name="sb_message_other_link_text_color">@color/ondark_01</item>
         <item name="sb_message_other_clicked_link_background_color">@color/primary_500</item>
         <item name="sb_message_other_edited_mark_text_appearance">@style/SendbirdBody3OnDark02</item>
+        <item name="sb_message_other_mentioned_text_appearance">@style/SendbirdMentionDarkOther</item>
     </style>
 
     <style name="Widget.Sendbird.Dark.Message.Me.File">
@@ -665,8 +692,6 @@
         <item name="sb_message_time_text_appearance">@style/SendbirdCaption4OnDark03</item>
         <item name="sb_message_sender_name_text_appearance">@style/SendbirdCaption1OnDark02</item>
         <item name="sb_message_operator_name_text_appearance">@style/SendbirdCaption1Secondary200</item>
-        <item name="sb_message_highlight_background_color">@color/highlight</item>
-        <item name="sb_message_highlight_foreground_color">@color/background_600</item>
     </style>
     <style name="Widget.Sendbird.Dark.OpenChannel.Message.User">
         <item name="sb_message_background">@drawable/selector_rectangle_dark500</item>
@@ -685,4 +710,5 @@
         <item name="sb_admin_message_text_appearance">@style/SendbirdCaption2OnLight02</item>
         <item name="sb_admin_message_background">@drawable/sb_shape_admin_message_background_dark</item>
     </style>
+
 </resources>

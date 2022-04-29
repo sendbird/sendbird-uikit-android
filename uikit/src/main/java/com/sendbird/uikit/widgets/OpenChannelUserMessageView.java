@@ -19,6 +19,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBinding;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.ViewUtils;
@@ -72,6 +73,9 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             binding.tvMessage.setClickedLinkBackgroundColor(context.getResources().getColor(R.color.primary_400));
             binding.ogTag.setOnLongClickListener(v -> binding.contentPanel.performLongClick());
 
+            final MessageUIConfig config = new MessageUIConfig();
+            config.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+
             marginLeftEmpty = getResources().getDimensionPixelSize(R.dimen.sb_size_40);
             marginLeftNor = getResources().getDimensionPixelSize(R.dimen.sb_size_12);
         } finally {
@@ -87,7 +91,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
 
     @Override
     public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance);
+        ViewUtils.drawTextMessage(binding.tvMessage, message, highlightMessageInfo, messageUIConfig);
 
         binding.ogTag.drawOgtag(message.getOgMetaData());
         binding.ivStatus.drawStatus(message, channel);

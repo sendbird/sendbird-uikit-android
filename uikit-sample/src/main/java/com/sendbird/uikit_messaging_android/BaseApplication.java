@@ -91,6 +91,7 @@ public class BaseApplication extends MultiDexApplication {
         SendbirdUIKit.setUseDefaultUserProfile(true);
         SendbirdUIKit.setUseChannelListTypingIndicators(true);
         SendbirdUIKit.setUseChannelListMessageReceiptStatus(true);
+        SendbirdUIKit.setUseUserMention(true);
     }
 
     @NonNull

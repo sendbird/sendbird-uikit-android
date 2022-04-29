@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
+import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
 import android.view.View;
@@ -14,11 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
@@ -35,19 +33,26 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.android.Sender;
+import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MentionSpan;
+import com.sendbird.uikit.model.MessageUIConfig;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.OgtagView;
 import com.sendbird.uikit.widgets.RoundCornerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -56,6 +61,7 @@ import java.util.List;
 public class ViewUtils {
     private final static int MINIMUM_THUMBNAIL_WIDTH = 100;
     private final static int MINIMUM_THUMBNAIL_HEIGHT = 100;
+    public static final Pattern MENTION = Pattern.compile("[@][{](.*?)([}])");
 
     private static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
         int unknownHintAppearance;
@@ -72,11 +78,7 @@ public class ViewUtils {
         view.setText(spannable);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @StyleRes int editedTextAppearance) {
-        drawTextMessage(textView, message, editedTextAppearance, null, 0, 0);
-    }
-
-    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @StyleRes int editedTextAppearance, @Nullable HighlightMessageInfo highlightMessageInfo, @ColorRes int backgroundColor, @ColorRes int foregroundColor) {
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable HighlightMessageInfo highlightInfo, @Nullable MessageUIConfig uiConfig) {
         if (message == null) {
             return;
         }
@@ -86,22 +88,73 @@ public class ViewUtils {
             return;
         }
 
-        CharSequence text = message.getMessage();
-        if (highlightMessageInfo != null && highlightMessageInfo.getMessageId() == message.getMessageId() && highlightMessageInfo.getUpdatedAt() == message.getUpdatedAt()) {
-            SpannableStringBuilder builder = new SpannableStringBuilder(textView.getContext(), text);
-            builder.addHighlightTextSpan(text.toString(), text.toString(), backgroundColor, foregroundColor);
-            text = builder.build();
-        }
-        textView.setText(text);
-        if (message.getUpdatedAt() <= 0L) {
-            return;
+        final boolean isMine = MessageUtils.isMine(message);
+        final Context context = textView.getContext();
+        final CharSequence text = getDisplayableText(context, message, uiConfig);
+        final SpannableStringBuilder builder = new SpannableStringBuilder(text);
+        if (uiConfig != null && highlightInfo != null && highlightInfo.getMessageId() == message.getMessageId() && highlightInfo.getUpdatedAt() == message.getUpdatedAt()) {
+            final TextUIConfig searchedTextUIConfig = uiConfig.getSearchedTextUIConfig();
+            searchedTextUIConfig.bind(builder, 0, text.length());
         }
 
-        String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
-        final Spannable spannable = new SpannableString(edited);
-        spannable.setSpan(new TextAppearanceSpan(textView.getContext(), editedTextAppearance),
-                0, edited.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.append(spannable);
+        if (message.getUpdatedAt() > 0L) {
+            final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
+            final Spannable editedString = new SpannableString(edited);
+            if (uiConfig != null) {
+                final TextUIConfig editedTextMarkUIConfig = isMine ? uiConfig.getMyEditedTextMarkUIConfig() : uiConfig.getOtherEditedTextMarkUIConfig();
+                editedTextMarkUIConfig.bind(editedString, 0, editedString.length());
+            }
+            builder.append(editedString);
+        }
+
+        textView.setText(builder);
+    }
+
+    @NonNull
+    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+        final String mentionedText = message.getMentionedMessageTemplate();
+        CharSequence text = message.getMessage();
+
+        if (SendbirdUIKit.isUsingUserMention() && !message.getMentionedUsers().isEmpty() && !TextUtils.isEmpty(mentionedText)) {
+            final Matcher matcher = MENTION.matcher(mentionedText);
+            final List<String> sources = new ArrayList<>();
+            final List<CharSequence> destinations = new ArrayList<>();
+            while (matcher.find()) {
+                if (matcher.groupCount() < 2) break;
+                Logger.d("_____ matched group[0] = %s, group[1] = %s, start=%d, end=%d, count=%d", matcher.group(0), matcher.group(1), matcher.start(), matcher.end(), matcher.groupCount());
+
+                final String mentionedUserId = matcher.group(1);
+                if (mentionedUserId != null) {
+                    final User mentionedUser = getMentionedUser(message, mentionedUserId);
+                    if (mentionedUser != null) {
+                        final boolean isMine = MessageUtils.isMine(message);
+                        final TextUIConfig config = uiConfig != null ? isMine ? uiConfig.getMyMentionUIConfig() : uiConfig.getOtherMentionUIConfig() : null;
+                        final String nickname = UserUtils.getDisplayName(context, mentionedUser);
+                        final MentionSpan mentionSpan = new MentionSpan(SendbirdUIKit.getUserMentionConfig().getTrigger(), nickname, mentionedUser, config);
+                        final SpannableString spannable = new SpannableString(mentionSpan.getDisplayText());
+                        spannable.setSpan(mentionSpan, 0, mentionSpan.getDisplayText().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        destinations.add(spannable);
+                        sources.add(matcher.group(0));
+                    }
+                }
+            }
+            int arraySize = sources.size();
+            text = TextUtils.replace(mentionedText, sources.toArray(new String[arraySize]), destinations.toArray(new CharSequence[arraySize]));
+        }
+        return text;
+    }
+
+    @Nullable
+    private static User getMentionedUser(@NonNull BaseMessage message, @NonNull String targetUserId) {
+        final List<User> mentionedUserList = message.getMentionedUsers();
+        if (mentionedUserList != null) {
+            for (User user : mentionedUserList) {
+                if (user.getUserId().equals(targetUserId)) {
+                    return user;
+                }
+            }
+        }
+        return null;
     }
 
     public static void drawOgtag(@NonNull ViewGroup parent, @Nullable OGMetaData ogMetaData) {

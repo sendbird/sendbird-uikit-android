@@ -11,6 +11,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 
@@ -36,7 +37,6 @@ import com.sendbird.android.MessageListParams;
 import com.sendbird.android.Reaction;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
-import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 import com.sendbird.android.UserMessageParams;
@@ -45,6 +45,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
+import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
@@ -64,6 +65,7 @@ import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.modules.ChannelModule;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
@@ -85,6 +87,7 @@ import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.EmojiListView;
 import com.sendbird.uikit.widgets.EmojiReactionUserListView;
+import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 
 import java.io.File;
@@ -139,6 +142,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     private MessageListAdapter adapter;
     @Nullable
     private MessageListParams params;
+    @Nullable
+    private SuggestedMentionListAdapter suggestedMentionListAdapter;
 
     @Nullable
     private BaseMessage targetMessage;
@@ -190,6 +195,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         if (this.adapter != null) {
             module.getMessageListComponent().setAdapter(adapter);
         }
+        module.getMessageInputComponent().setSuggestedMentionListAdapter(suggestedMentionListAdapter == null ? new SuggestedMentionListAdapter() : suggestedMentionListAdapter);
         final GroupChannel channel = viewModel.getChannel();
         onBindChannelHeaderComponent(module.getHeaderComponent(), viewModel, channel);
         onBindMessageListComponent(module.getMessageListComponent(), viewModel, channel);
@@ -372,10 +378,14 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         inputComponent.setOnInputRightButtonClickListener(v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
-                UserMessageParams params = new UserMessageParams(inputText.getText().toString());
+                final Editable editableText = inputText.getText();
+                UserMessageParams params = new UserMessageParams(editableText.toString());
                 if (targetMessage != null && SendbirdUIKit.getReplyType() == ReplyType.QUOTE_REPLY) {
                     params.setParentMessageId(targetMessage.getMessageId());
                     params.setReplyToChannel(true);
+                }
+                if (SendbirdUIKit.isUsingUserMention()) {
+                    setMentionInfo(inputText, params);
                 }
                 sendUserMessage(params);
             }
@@ -383,8 +393,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         inputComponent.setOnEditModeSaveButtonClickListener(v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
-                UserMessageParams params = new UserMessageParams(inputText.getText().toString());
                 if (null != targetMessage) {
+                    UserMessageParams params = new UserMessageParams(inputText.getText().toString());
+                    setMentionInfo(inputText, params);
                     updateUserMessage(targetMessage.getMessageId(), params);
                 } else {
                     Logger.d("Target message for update is missing");
@@ -415,6 +426,15 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                     targetMessage = null;
             }
         });
+
+        if (SendbirdUIKit.isUsingUserMention()) {
+            inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
+
+            // observe suggestion list
+            viewModel.getMentionSuggestion().observe(getViewLifecycleOwner(), suggestion -> {
+                inputComponent.notifySuggestedMentionDataChanged(suggestion.getSuggestionList());
+            });
+        }
 
         viewModel.onMessagesDeleted().observe(getViewLifecycleOwner(), deletedMessages -> {
             if (targetMessage != null && deletedMessages.contains(targetMessage)) {
@@ -718,7 +738,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      * @since 3.0.0
      */
     protected void onQuoteReplyMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (quoteReplyMessageLongClickListener != null) quoteReplyMessageLongClickListener.onItemLongClick(view, position, message);
+        if (quoteReplyMessageLongClickListener != null)
+            quoteReplyMessageLongClickListener.onItemLongClick(view, position, message);
     }
 
     @NonNull
@@ -834,7 +855,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
     }
 
-    private void showUserProfile(@NonNull Sender sender) {
+    private void showUserProfile(@NonNull User sender) {
         final Bundle args = getArguments();
         final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
         if (getContext() == null || !useUserProfile) return;
@@ -950,6 +971,17 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 }
             }
         });
+    }
+
+    private void setMentionInfo(@NonNull final EditText inputText,
+                                @NonNull final UserMessageParams params) {
+        if (inputText instanceof MentionEditText) {
+            final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
+            final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
+            Logger.d("++ mentioned template text=%s", mentionedTemplate);
+            params.setMentionedMessageTemplate(mentionedTemplate.toString());
+            params.setMentionedUsers(mentionedUsers);
+        }
     }
 
     /**
@@ -1322,6 +1354,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         private OnInputTextChangedListener inputTextChangedListener;
         @Nullable
         private OnInputTextChangedListener editModeTextChangedListener;
+        @Nullable
+        private SuggestedMentionListAdapter suggestedMentionListAdapter;
 
         /**
          * Constructor
@@ -1925,6 +1959,66 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
 
         /**
+         * Sets the suggested mention list adapter.
+         *
+         * @param adapter the adapter for the mentionable user list.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setSuggestedMentionListAdapter(@Nullable SuggestedMentionListAdapter adapter) {
+            this.suggestedMentionListAdapter = adapter;
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of mentioned text.
+         *
+         * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
+         * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of searched text.
+         *
+         * @param searchedTextUIConfig the UI configuration of searched text.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setSearchedTextUIConfig(@NonNull TextUIConfig searchedTextUIConfig) {
+            bundle.putParcelable(StringSet.KEY_SEARCHED_TEXT_UI_CONFIG, searchedTextUIConfig);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of edited text mark.
+         *
+         * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
+         * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
          * Creates an {@link ChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -1949,6 +2043,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             fragment.editModeTextChangedListener = editModeTextChangedListener;
             fragment.quoteReplyMessageClickListener = quoteReplyMessageClickListener;
             fragment.quoteReplyMessageLongClickListener = quoteReplyMessageLongClickListener;
+            fragment.suggestedMentionListAdapter = suggestedMentionListAdapter;
             fragment.adapter = adapter;
             fragment.params = params;
             return fragment;

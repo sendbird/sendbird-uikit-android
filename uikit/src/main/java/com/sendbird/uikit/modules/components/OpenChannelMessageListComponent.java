@@ -16,7 +16,6 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.adapter.OpenChannelMessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;

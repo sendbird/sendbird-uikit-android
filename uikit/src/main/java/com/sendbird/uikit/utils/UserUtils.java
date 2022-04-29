@@ -37,14 +37,31 @@ public class UserUtils {
 
     @NonNull
     public static String getDisplayName(@NonNull Context context, @Nullable User user) {
+        return getDisplayName(context, user, false);
+    }
+
+    @NonNull
+    public static String getDisplayName(@NonNull Context context, @Nullable User user, boolean usePronouns) {
         String nickname = context.getString(R.string.sb_text_channel_list_title_unknown);
         if (user == null) return nickname;
 
-        if (user.getUserId() != null && SendBird.getCurrentUser() != null &&
+        if (usePronouns && user.getUserId() != null &&
+                SendBird.getCurrentUser() != null &&
                 user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
             nickname = context.getString(R.string.sb_text_you);
         } else if (!TextUtils.isEmpty(user.getNickname())) {
             nickname = user.getNickname();
+        }
+        return nickname;
+    }
+
+    @NonNull
+    public static String getDisplayName(@NonNull Context context, @Nullable UserInfo userInfo) {
+        String nickname = context.getString(R.string.sb_text_channel_list_title_unknown);
+        if (userInfo == null) return nickname;
+
+        if (userInfo.getNickname() != null && userInfo.getNickname().length() > 0) {
+            nickname = userInfo.getNickname();
         }
         return nickname;
     }

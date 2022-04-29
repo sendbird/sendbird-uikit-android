@@ -2,10 +2,12 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -34,15 +36,34 @@ public class ThemeableRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ListComponent, defStyle, 0);
         try {
-            int backgroundResId = a.getResourceId(R.styleable.ListComponent_sb_pager_recycler_view_background, R.color.background_50);
-            dividerColor = a.getColor(R.styleable.ListComponent_sb_pager_recycler_view_divide_line_color, context.getResources().getColor(R.color.onlight_04));
-            dividerHeight = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_line_height, context.getResources().getDimensionPixelSize(R.dimen.sb_size_1));
-            dividerMarginLeft = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_margin_left, 0);
-            dividerMarginRight = a.getDimension(R.styleable.ListComponent_sb_pager_recycler_view_divide_margin_right, 0);
+            int backgroundResId = a.getResourceId(R.styleable.ListComponent_sb_recycler_view_background, R.color.background_50);
+            dividerColor = a.getColor(R.styleable.ListComponent_sb_recycler_view_divide_line_color, context.getResources().getColor(R.color.onlight_04));
+            dividerHeight = a.getDimension(R.styleable.ListComponent_sb_recycler_view_divide_line_height, context.getResources().getDimensionPixelSize(R.dimen.sb_size_1));
+            dividerMarginLeft = a.getDimension(R.styleable.ListComponent_sb_recycler_view_divide_margin_left, 0);
+            dividerMarginRight = a.getDimension(R.styleable.ListComponent_sb_recycler_view_divide_margin_right, 0);
 
             setBackgroundResource(backgroundResId);
-            dividerDecoration = new DividerItemDecoration(context, LinearLayout.VERTICAL);
-            Drawable divider = createDividerDrawable((int) dividerHeight, dividerColor, (int) dividerMarginLeft, (int) dividerMarginRight);
+            final Drawable divider = createDividerDrawable((int) dividerHeight, dividerColor, (int) dividerMarginLeft, (int) dividerMarginRight);
+            dividerDecoration = new DividerItemDecoration(context, LinearLayout.VERTICAL) {
+                @Override
+                public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+                    int dividerLeft = parent.getPaddingLeft();
+                    int dividerRight = parent.getWidth() - parent.getPaddingRight();
+
+                    int childCount = parent.getChildCount();
+                    for (int i = 0; i <= childCount - 2; i++) {
+                        View child = parent.getChildAt(i);
+
+                        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                        int dividerTop = child.getBottom() + params.bottomMargin;
+                        int dividerBottom = dividerTop + divider.getIntrinsicHeight();
+
+                        divider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
+                        divider.draw(canvas);
+                    }
+                }
+            };
             dividerDecoration.setDrawable(divider);
             setUseDivider(true);
 

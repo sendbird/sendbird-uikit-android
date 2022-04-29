@@ -24,6 +24,11 @@ public class StringSet {
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
     public final static String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
     public final static String KEY_USE_MESSAGE_GROUP_UI = "KEY_USE_MESSAGE_GROUP_UI";
+    public final static String KEY_MENTION_UI_CONFIG_SENT_FROM_ME = "KEY_MENTION_UI_CONFIG_SENT_FROM_ME";
+    public final static String KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS = "KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS";
+    public final static String KEY_SEARCHED_TEXT_UI_CONFIG = "KEY_SEARCHED_TEXT_UI_CONFIG";
+    public final static String KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME = "KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME";
+    public final static String KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS = "KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS";
 
     public final static String KEY_THEME_RES_ID = "KEY_THEME_RES_ID";
     public final static String KEY_USE_HEADER = "KEY_USE_HEADER";
@@ -95,4 +100,5 @@ public class StringSet {
     public final static String Chat = "Chat";
     public final static String Profile = "Profile";
     public final static String QuoteReply = "QuoteReply";
+    public final static String _AT = "@";
 }
