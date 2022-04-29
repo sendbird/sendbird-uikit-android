@@ -1,7 +1,7 @@
 # Sendbird UIKit for Android
 ![Platform](https://img.shields.io/badge/platform-ANDROID-orange.svg)
 ![Languages](https://img.shields.io/badge/language-JAVA-orange.svg)
-![Version](https://img.shields.io/badge/version-3.0.0--beta-blue)
+![Version](https://img.shields.io/badge/version-3.0.0--beta.2-blue)
 
 ## Introduction
 
