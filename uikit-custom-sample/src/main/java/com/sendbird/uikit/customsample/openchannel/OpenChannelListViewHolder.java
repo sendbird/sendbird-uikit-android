@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.OpenChannel;
 
+/**
+ * Base ViewHolder to bind <code>OpenChannel</code> data.
+ */
 abstract public class OpenChannelListViewHolder extends RecyclerView.ViewHolder {
     public OpenChannelListViewHolder(@NonNull View itemView) {
         super(itemView);

@@ -12,6 +12,9 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
+/**
+ * Displays a splash screen.
+ */
 public class SplashActivity extends AppCompatActivity {
 
     @Override

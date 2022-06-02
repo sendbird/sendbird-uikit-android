@@ -48,6 +48,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/**
+ * Displays a settings screen.
+ */
 public class SettingsFragment extends Fragment {
     private String[] REQUIRED_PERMISSIONS;
 

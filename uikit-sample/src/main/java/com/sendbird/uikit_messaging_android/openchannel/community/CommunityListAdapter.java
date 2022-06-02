@@ -19,6 +19,9 @@ import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListViewHolde
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
+/**
+ * RecyclerView adapter for <code>OpenChannel</code> list used for community.
+ */
 public class CommunityListAdapter extends OpenChannelListAdapter<CommunityListAdapter.CommunityListViewHolder> {
     @NonNull
     @Override

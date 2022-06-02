@@ -2,6 +2,10 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 
@@ -39,6 +43,7 @@ public class AutoLinkTextView extends AppCompatTextView {
         } finally {
             a.recycle();
         }
+        setSpannableFactory(Factory.getInstance());
     }
 
     @Override
@@ -75,5 +80,38 @@ public class AutoLinkTextView extends AppCompatTextView {
 
     public int getLinkifyMask() {
         return linkifyMask;
+    }
+
+    private static class Factory extends Spannable.Factory {
+        private final static Factory sInstance = new Factory();
+
+        public static Factory getInstance() {
+            return sInstance;
+        }
+
+        @Override
+        public Spannable newSpannable(CharSequence source) {
+            return new SpannableNoUnderline(source);
+        }
+    }
+
+    private static class SpannableNoUnderline extends SpannableString {
+        public SpannableNoUnderline(CharSequence source) {
+            super(source);
+        }
+
+        @Override
+        public void setSpan(Object what, int start, int end, int flags) {
+            if (what instanceof URLSpan) {
+                what = new URLSpan(((URLSpan) what).getURL()) {
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+            }
+            super.setSpan(what, start, end, flags);
+        }
     }
 }

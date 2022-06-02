@@ -1,5 +1,28 @@
 # Change Log
 
+### v3.0.0-beta.3 (Jun 02, 2022) with Core SDK `v3.1.14`
+* Synchronized Builder methods and Params methods.
+  * Added `setErrorText()` in `BannedUserListFragment.Builder`, `ChannelListFragment.Builder`, `MemberListFragment.Builder`, `MutedMemberListFragment.Builder`, `OperatorListFragment.Builder`.
+  * Added `setOnInputRightButtonClickListener()`, `setOnEditModeCancelButtonClickListener()`, `setOnEditModeSaveButtonClickListener()`, `setOnQuoteReplyModeCloseButtonClickListener()`, `setOnInputModeChangedListener()`, `setUseSuggestedMentionListDivider()`, `setOnTooltipClickListener()`, `setOnScrollBottomButtonClickListener()`, `setErrorText()` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`.
+  * Added `setRightButtonText()`, `setOnRightButtonClickListener()` in `ChannelSettings.Builder`.
+  * Added `setOnRightButtonClickListener()`, `setOnUserSelectChangedListener()`, `setOnUserSelectionCompleteListener()`, `setErrorText()` in `CreateChannelFragment.Builder`, `PromoteOperatorFragment.Builder`.
+  * Added `setOnInputTextChangedListener()`, `setOnClearButtonClickListener()`, `setErrorText()` in `MessageSearchFragment.Builder`.
+  * Added `setHeaderRightButtonIconResId()`, `setHeaderRightButtonIcon()`, `setUseHeaderRightButton()`, `setOnHeaderRightButtonClickListener()` in `ModerationFragment.Builder`.
+  * Added `setOnInputRightButtonClickListener()`, `setOnEditModeCancelButtonClickListener()`, `setOnEditModeSaveButtonClickListener()`, `setOnInputModeChangedListener()`, `setOnScrollBottomButtonClickListener()`, `setOnMessageProfileLongClickListener()`, `setOnMessageInsertedListener()`, `setErrorText()` in `OpenChannelFragment.Builder`.
+  * Added `setHeaderRightButtonIconResId()`, `setHeaderRightButtonIcon()`, `setUseHeaderRightButton()`, `setOnHeaderRightButtonClickListener()`, `setOnActionItemClickListener()`, `setErrorText()` in `ParticipantListFragment.Builder`.
+
+* Mention improvement
+  * Added `setStartingPoint(long, boolean)` in `ChannelFragment.Builder`.
+  * Removed `HighlightMessageInfo` class.
+  * Removed `setHighlightMessageInfo(HighlightMessageInfo)` in `ChannelFragment.Builder`.
+  * Removed `setHighlightMessageInfo(HighlightMessageInfo)` and `getHighlightMessageInfo()` in `MessageListAdapter`.
+  * Removed `setHighlightMessageInfo(HighlightMessageInfo)`, `getHighlightMessageInfo()`, `setSearchedTextUIConfig(TextUIConfig)`, and `setSearchedTextUIConfig(TextUIConfig)` in `MessageListComponent.Params`.
+  * Removed `setSearchedTextUIConfig(TextUIConfig)` in `ChannelFragment.Builder`.
+
+* Added channel push setting option for sent from mentioned only.
+* Added `ChannelPushSettingFragment` and `ChannelPushSettingActivity`.
+* Added `ChannelPushSettingViewModel`, `ChannelPushSettingModule`, and `ChannelPushSettingComponent`.
+
 ### v3.0.0-beta.2 (Apr 29, 2022) with Core SDK `v3.1.12`
 * Supported user mention in `GroupChannel`.
 * Now you can send mentioning text to the other users in `GroupChannel`. These following functions are available.

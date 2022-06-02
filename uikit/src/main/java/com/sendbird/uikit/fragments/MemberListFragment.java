@@ -471,6 +471,19 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Sets the click listener on the left button of the header.
          *
          * @param listener The callback that will run.

@@ -29,7 +29,9 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * ViewHolder to draw the highlight message sent from other users in the <code>GroupChannel</code>.
+ */
 public class HighlightMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     final private ViewHighlightMessageOtherHolderBinding binding;
 

@@ -15,6 +15,9 @@ import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.interfaces.UserInfo;
 
+/**
+ * Implements the customized <code>InviteUserListAdapter</code> to adapt the customized user list items.
+ */
 public class CustomInviteUserListAdapter extends InviteUserListAdapter {
     @NonNull
     @Override

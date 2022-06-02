@@ -1413,12 +1413,11 @@
     <item name="android:textColor">@color/ondark_01</item>
   </style>
 
-  <style name="SendbirdSearchedMessage">
+  <style name="MentionedCurrentUserMessage">
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textStyle">normal</item>
+    <item name="android:textStyle">bold</item>
     <item name="android:textSize">14sp</item>
     <item name="android:lineSpacingExtra">6sp</item>
     <item name="android:textColor">@color/background_600</item>
-    <item name="android:background">@color/highlight</item>
   </style>
 </resources>

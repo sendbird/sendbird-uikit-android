@@ -11,6 +11,9 @@ import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.groupchannel.components.viewholders.CustomChannelViewHolder;
 import com.sendbird.uikit.customsample.databinding.ViewCustomChannelHolderBinding;
 
+/**
+ * Implements the customized <code>ChannelListAdapter</code> to adapt the customized channel list items.
+ */
 public class CustomChannelListAdapter extends ChannelListAdapter {
     @NonNull
     @Override

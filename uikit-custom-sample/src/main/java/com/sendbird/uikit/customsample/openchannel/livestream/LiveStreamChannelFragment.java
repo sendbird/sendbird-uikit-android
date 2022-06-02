@@ -21,6 +21,9 @@ import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMessageInputComponent;
 import com.sendbird.uikit.vm.OpenChannelViewModel;
 
+/**
+ * Displays an open channel screen used for live stream.
+ */
 public class LiveStreamChannelFragment extends OpenChannelFragment {
     private String inputText;
 

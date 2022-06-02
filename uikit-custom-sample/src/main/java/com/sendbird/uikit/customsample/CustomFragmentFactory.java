@@ -36,6 +36,9 @@ import com.sendbird.uikit.fragments.ParticipantListFragment;
 import com.sendbird.uikit.fragments.PromoteOperatorFragment;
 import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 
+/**
+ * UIKit fragment factory implementation to provide customized fragments.
+ */
 public class CustomFragmentFactory extends UIKitFragmentFactory {
     @NonNull
     @Override

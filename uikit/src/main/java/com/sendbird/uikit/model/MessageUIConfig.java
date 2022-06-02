@@ -14,8 +14,6 @@ public class MessageUIConfig {
     private final TextUIConfig myMentionUIConfig;
     @NonNull
     private final TextUIConfig otherMentionUIConfig;
-    @NonNull
-    private final TextUIConfig searchedTextUIConfig;
 
     /**
      * Constructor
@@ -25,7 +23,6 @@ public class MessageUIConfig {
         this.otherEditedTextMarkUIConfig = new TextUIConfig();
         this.myMentionUIConfig = new TextUIConfig();
         this.otherMentionUIConfig = new TextUIConfig();
-        this.searchedTextUIConfig = new TextUIConfig();
     }
 
     /**
@@ -74,16 +71,5 @@ public class MessageUIConfig {
     @NonNull
     public TextUIConfig getOtherMentionUIConfig() {
         return otherMentionUIConfig;
-    }
-
-    /**
-     * Returns UI configuration of searched message.
-     *
-     * @return the UI configuration of searched message.
-     * @since 3.0.0
-     */
-    @NonNull
-    public TextUIConfig getSearchedTextUIConfig() {
-        return searchedTextUIConfig;
     }
 }

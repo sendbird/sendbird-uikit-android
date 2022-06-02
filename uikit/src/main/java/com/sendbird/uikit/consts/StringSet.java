@@ -20,13 +20,12 @@ public class StringSet {
 
     public final static String KEY_USE_USER_PROFILE = "KEY_USE_USER_PROFILE";
 
-    public final static String KEY_HIGHLIGHT_MESSAGE_INFO = "KEY_HIGHLIGHT_MESSAGE_INFO";
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
+    public final static String KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED = "KEY_MESSAGE_INITIAL_ANIMATE";
     public final static String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
     public final static String KEY_USE_MESSAGE_GROUP_UI = "KEY_USE_MESSAGE_GROUP_UI";
     public final static String KEY_MENTION_UI_CONFIG_SENT_FROM_ME = "KEY_MENTION_UI_CONFIG_SENT_FROM_ME";
     public final static String KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS = "KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS";
-    public final static String KEY_SEARCHED_TEXT_UI_CONFIG = "KEY_SEARCHED_TEXT_UI_CONFIG";
     public final static String KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME = "KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME";
     public final static String KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS = "KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS";
 
@@ -57,6 +56,7 @@ public class StringSet {
     public final static String KEY_DISTINCT = "KEY_DISTINCT";
     public final static String KEY_SEARCH_BAR_BUTTON_TEXT = "KEY_SEARCH_BAR_BUTTON_TEXT";
     public final static String KEY_ERROR_TEXT_RES_ID = "KEY_ERROR_TEXT_RES_ID";
+    public final static String KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER = "KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String audio = "audio";

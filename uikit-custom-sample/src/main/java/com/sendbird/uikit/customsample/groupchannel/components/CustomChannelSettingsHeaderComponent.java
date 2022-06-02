@@ -14,6 +14,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.ChannelSettingsHeaderComponent;
 
+/**
+ * Implements the customized <code>ChannelSettingsHeaderComponent</code>.
+ */
 public class CustomChannelSettingsHeaderComponent extends ChannelSettingsHeaderComponent {
 
     public CustomChannelSettingsHeaderComponent() {

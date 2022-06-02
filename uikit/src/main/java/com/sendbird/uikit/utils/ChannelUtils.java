@@ -165,4 +165,16 @@ public class ChannelUtils {
         }
         return text;
     }
+
+    @NonNull
+    public static String makePushSettingStatusText(@NonNull Context context, @NonNull GroupChannel.PushTriggerOption triggerOption) {
+        switch (triggerOption) {
+            case OFF:
+                return context.getString(R.string.sb_text_push_setting_off);
+            case MENTION_ONLY:
+                return context.getString(R.string.sb_text_push_setting_mentions_only);
+            default:
+                return context.getString(R.string.sb_text_push_setting_on);
+        }
+    }
 }

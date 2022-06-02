@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 
 /**
  * Activity displays a list of messages from a channel.
@@ -76,6 +75,7 @@ public class ChannelActivity extends AppCompatActivity {
                 // this is a internal behavior.
                 boolean useRightButton = !intent.getBooleanExtra(StringSet.KEY_FROM_SEARCH_RESULT, true);
                 intent.putExtra(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useRightButton);
+                intent.putExtra(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED, true);
             }
         }
         final Bundle args = intent != null && intent.getExtras() != null ? intent.getExtras() : new Bundle();
@@ -93,8 +93,6 @@ public class ChannelActivity extends AppCompatActivity {
         @NonNull
         private final String channelUrl;
         private long startingPoint = Long.MAX_VALUE;
-        @Nullable
-        private HighlightMessageInfo highlightMessageInfo;
         @Nullable
         private Class<? extends ChannelActivity> customClass = ChannelActivity.class;
 
@@ -138,19 +136,6 @@ public class ChannelActivity extends AppCompatActivity {
         }
 
         /**
-         * Sets the information of the message to highlight.
-         *
-         * @param highlightMessageInfo An information of the message to highlight.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
-         */
-        @NonNull
-        public IntentBuilder setHighlightMessageInfo(@NonNull HighlightMessageInfo highlightMessageInfo) {
-            this.highlightMessageInfo = highlightMessageInfo;
-            return this;
-        }
-
-        /**
          * Creates an {@link Intent} with the arguments supplied to this builder.
          *
          * @return The ChannelActivity {@link Intent} applied to the {@link Bundle}.
@@ -161,9 +146,6 @@ public class ChannelActivity extends AppCompatActivity {
             Intent intent = new Intent(context, customClass);
             intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
             intent.putExtra(StringSet.KEY_STARTING_POINT, startingPoint);
-            if (highlightMessageInfo != null) {
-                intent.putExtra(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO, highlightMessageInfo);
-            }
             return intent;
         }
     }

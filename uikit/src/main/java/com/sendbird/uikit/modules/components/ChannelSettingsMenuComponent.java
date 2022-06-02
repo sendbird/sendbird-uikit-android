@@ -120,7 +120,7 @@ public class ChannelSettingsMenuComponent {
 
         final SingleMenuItemView notificationItemView = view.findViewById(R.id.notification);
         notificationItemView.setName(context.getString(R.string.sb_text_channel_settings_notification));
-        notificationItemView.setMenuType(SingleMenuItemView.Type.SWITCH);
+        notificationItemView.setMenuType(SingleMenuItemView.Type.NEXT);
         notificationItemView.setIcon(R.drawable.icon_notifications);
 
         final SingleMenuItemView membersItemView = view.findViewById(R.id.members);
@@ -159,11 +159,12 @@ public class ChannelSettingsMenuComponent {
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (this.menuView == null) return;
 
+
         final SingleMenuItemView membersItemView = menuView.findViewById(R.id.members);
         membersItemView.setDescription(ChannelUtils.makeMemberCountText(channel.getMemberCount()).toString());
         GroupChannel.PushTriggerOption pushTriggerOption = channel.getMyPushTriggerOption();
         final SingleMenuItemView notificationItemView = menuView.findViewById(R.id.notification);
-        notificationItemView.setChecked(pushTriggerOption != GroupChannel.PushTriggerOption.OFF);
+        notificationItemView.setDescription(ChannelUtils.makePushSettingStatusText(menuView.getContext(), pushTriggerOption));
 
         final SingleMenuItemView moderationsItemView = menuView.findViewById(R.id.moderations);
         moderationsItemView.setVisibility(channel.getMyRole() == Member.Role.OPERATOR ? View.VISIBLE : View.GONE);

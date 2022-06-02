@@ -221,14 +221,14 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
             this.binding = binding;
 
             binding.suggestedMentionPreview.setOnClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && listener != null) {
                     listener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
             binding.suggestedMentionPreview.setOnLongClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && longClickListener != null) {
                     longClickListener.onItemLongClick(v, userPosition, getItem(userPosition));
                     return true;
@@ -237,7 +237,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
             });
 
             binding.suggestedMentionPreview.setOnProfileClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && profileClickListener != null) {
                     profileClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }

@@ -11,6 +11,9 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.ChannelSettingsModule;
 import com.sendbird.uikit.vm.ChannelSettingsViewModel;
 
+/**
+ * Implements the customized <code>ChannelSettingsFragment</code>.
+ */
 public class CustomChannelSettingsFragment extends ChannelSettingsFragment {
     @NonNull
     @Override

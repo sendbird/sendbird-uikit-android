@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -21,8 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
  */
 public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
-    @Nullable
-    protected HighlightMessageInfo highlight;
     @Nullable
     protected MessageUIConfig messageUIConfig;
     @NonNull
@@ -60,16 +57,6 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
                 MessageUtils.getMessageGroupType(prevMessage, message, nextMessage) :
                 MessageGroupType.GROUPING_TYPE_SINGLE);
         itemView.requestLayout();
-    }
-
-    /**
-     * Sets the information of the message to highlight.
-     *
-     * @param highlightInfo The information of the message to highlight.
-     * @since 2.1.0
-     */
-    public void setHighlightInfo(@Nullable HighlightMessageInfo highlightInfo) {
-        this.highlight = highlightInfo;
     }
 
     /**

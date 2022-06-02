@@ -47,8 +47,10 @@ import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.interfaces.OnItemEventListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnResultHandler;
 import com.sendbird.uikit.log.Logger;
@@ -112,6 +114,20 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     private OnInputTextChangedListener inputTextChangedListener;
     @Nullable
     private OnInputTextChangedListener editModeTextChangedListener;
+    @Nullable
+    private View.OnClickListener inputRightButtonClickListener;
+    @Nullable
+    private View.OnClickListener editModeCancelButtonClickListener;
+    @Nullable
+    private View.OnClickListener editModeSaveButtonClickListener;
+    @Nullable
+    private OnInputModeChangedListener inputModeChangedListener;
+    @Nullable
+    private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
+    @Nullable
+    private OnItemEventListener<BaseMessage> messageInsertedListener;
 
     @Nullable
     private BaseMessage targetMessage;
@@ -269,13 +285,14 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         messageListComponent.setOnMessageClickListener(this::onMessageClicked);
         messageListComponent.setOnMessageProfileClickListener(this::onMessageProfileClicked);
         messageListComponent.setOnMessageLongClickListener(this::onMessageLongClicked);
-        messageListComponent.setOnScrollBottomButtonClickListener(v -> {
+        messageListComponent.setOnMessageProfileLongClickListener(messageProfileLongClickListener);
+        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener != null ? scrollBottomButtonClickListener : v -> {
             if (messageListComponent.getRecyclerView() != null) {
                 messageListComponent.getRecyclerView().stopScroll();
                 messageListComponent.scrollToBottom();
             }
         });
-        messageListComponent.setOnMessageInsertedListener(data -> {
+        messageListComponent.setOnMessageInsertedListener(messageInsertedListener != null ? messageInsertedListener : data -> {
             if (!anchorDialogShowing.get()) {
                 messageListComponent.scrollToBottom();
             }
@@ -300,14 +317,14 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         Logger.d(">> OpenChannelFragment::onBindMessageInputComponent()");
         if (channel == null) return;
         inputComponent.setOnInputLeftButtonClickListener(inputLeftButtonClickListener != null ? inputLeftButtonClickListener : v -> showMediaSelectDialog());
-        inputComponent.setOnInputRightButtonClickListener(v -> {
+        inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 UserMessageParams params = new UserMessageParams(inputText.getText().toString());
                 sendUserMessage(params);
             }
         });
-        inputComponent.setOnEditModeSaveButtonClickListener(v -> {
+        inputComponent.setOnEditModeSaveButtonClickListener(editModeSaveButtonClickListener != null ? editModeSaveButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 UserMessageParams params = new UserMessageParams(inputText.getText().toString());
@@ -321,8 +338,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         });
         inputComponent.setOnEditModeTextChangedListener(editModeTextChangedListener);
         inputComponent.setOnInputTextChangedListener(inputTextChangedListener);
-        inputComponent.setOnEditModeCancelButtonClickListener(v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
-        inputComponent.setOnInputModeChangedListener((before, current) -> {
+        inputComponent.setOnEditModeCancelButtonClickListener(editModeCancelButtonClickListener != null ? editModeCancelButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
+        inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : (before, current) -> {
             if (current == MessageInputView.Mode.DEFAULT) {
                 targetMessage = null;
             }
@@ -1003,6 +1020,20 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         private OnInputTextChangedListener inputTextChangedListener;
         @Nullable
         private OnInputTextChangedListener editModeTextChangedListener;
+        @Nullable
+        private View.OnClickListener inputRightButtonClickListener;
+        @Nullable
+        private View.OnClickListener editModeCancelButtonClickListener;
+        @Nullable
+        private View.OnClickListener editModeSaveButtonClickListener;
+        @Nullable
+        private OnInputModeChangedListener inputModeChangedListener;
+        @Nullable
+        private View.OnClickListener scrollBottomButtonClickListener;
+        @Nullable
+        private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
+        @Nullable
+        private OnItemEventListener<BaseMessage> messageInsertedListener;
 
         /**
          * Constructor
@@ -1455,6 +1486,19 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Sets the input text
          *
          * @param inputText the message text to be displayed.
@@ -1507,6 +1551,97 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         }
 
         /**
+         * Register a callback to be invoked when the right button of the input is clicked.
+         *
+         * @param inputRightButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
+            this.inputRightButtonClickListener = inputRightButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the cancel button is clicked, when the input is the edited mode.
+         *
+         * @param editModeCancelButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
+            this.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the save button is clicked, when the input is the edited mode.
+         *
+         * @param editModeSaveButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
+            this.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the input mode is changed.
+         *
+         * @param inputModeChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
+            this.inputModeChangedListener = inputModeChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the button to scroll to the bottom is clicked.
+         *
+         * @param scrollBottomButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
+            this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the profile view of the message is long-clicked.
+         *
+         * @param messageProfileLongClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnMessageProfileLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
+            this.messageProfileLongClickListener = messageProfileLongClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the message is inserted.
+         *
+         * @param messageInsertedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnMessageInsertedListener(@Nullable OnItemEventListener<BaseMessage> messageInsertedListener) {
+            this.messageInsertedListener = messageInsertedListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link OpenChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -1527,6 +1662,13 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             fragment.loadingDialogHandler = loadingDialogHandler;
             fragment.inputTextChangedListener = inputTextChangedListener;
             fragment.editModeTextChangedListener = editModeTextChangedListener;
+            fragment.inputRightButtonClickListener = inputRightButtonClickListener;
+            fragment.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
+            fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
+            fragment.inputModeChangedListener = inputModeChangedListener;
+            fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            fragment.messageProfileLongClickListener = messageProfileLongClickListener;
+            fragment.messageInsertedListener = messageInsertedListener;
             return fragment;
         }
     }

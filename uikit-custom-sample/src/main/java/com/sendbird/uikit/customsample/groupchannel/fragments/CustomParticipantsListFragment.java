@@ -11,6 +11,9 @@ import com.sendbird.uikit.fragments.ParticipantListFragment;
 import com.sendbird.uikit.modules.ParticipantListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>ParticipantListFragment</code>.
+ */
 public class CustomParticipantsListFragment extends ParticipantListFragment {
     @NonNull
     @Override

@@ -11,6 +11,9 @@ import com.sendbird.uikit.fragments.MutedMemberListFragment;
 import com.sendbird.uikit.modules.MutedMemberListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>MutedMemberListFragment</code>.
+ */
 public class CustomMutedMemberListFragment extends MutedMemberListFragment {
     @NonNull
     @Override

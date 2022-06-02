@@ -15,16 +15,17 @@ import com.sendbird.android.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class MyUserMessageView extends GroupChannelMessageView {
     private final SbViewMyUserMessageComponentBinding binding;
-    private final int searchedTextBackground;
     private final int editedAppearance;
     private final int mentionAppearance;
-    private final int searchedMessageAppearance;
+    @NonNull
+    private final TextUIConfig mentionedCurrentUserUIConfig;
 
     @NonNull
     @Override
@@ -54,10 +55,12 @@ public class MyUserMessageView extends GroupChannelMessageView {
             ColorStateList ogtagBackgroundTint = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_ogtag_background_tint);
             ColorStateList linkTextColor = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_link_text_color);
             int clickedLinkBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_me_clicked_link_background_color, R.color.primary_400);
-            this.searchedTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_searched_text_background, R.color.highlight);
             this.editedAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_edited_mark_text_appearance, R.style.SendbirdBody3OnDark02);
             this.mentionAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_mentioned_text_appearance, R.style.SendbirdMentionLightMe);
-            this.searchedMessageAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_searched_text_appearance, R.style.SendbirdSearchedMessage);
+            int mentionedCurrentUserTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_background, R.color.highlight);
+            int mentionedCurrentUserAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_appearance, R.style.MentionedCurrentUserMessage);
+            this.mentionedCurrentUserUIConfig = new TextUIConfig();
+            this.mentionedCurrentUserUIConfig.mergeFromTextAppearance(context, mentionedCurrentUserAppearance, mentionedCurrentUserTextBackground);
 
             binding.tvMessage.setTextAppearance(context, messageAppearance);
             binding.tvMessage.setLinkTextColor(linkTextColor);
@@ -100,9 +103,9 @@ public class MyUserMessageView extends GroupChannelMessageView {
         if (messageUIConfig != null) {
             messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
             messageUIConfig.getMyMentionUIConfig().mergeFromTextAppearance(getContext(), mentionAppearance);
-            messageUIConfig.getSearchedTextUIConfig().mergeFromTextAppearance(getContext(), searchedMessageAppearance, searchedTextBackground);
         }
-        ViewUtils.drawTextMessage(binding.tvMessage, message, highlightMessageInfo, messageUIConfig);
+
+        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig, mentionedCurrentUserUIConfig);
         ViewUtils.drawOgtag(binding.ovOgtag, message.getOgMetaData());
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
 

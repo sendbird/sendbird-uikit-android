@@ -26,6 +26,9 @@ import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.widgets.MessageInputView;
 
+/**
+ * Implements the customized <code>ChannelFragment</code>.
+ */
 public class CustomChannelFragment extends ChannelFragment {
     @NonNull
     private CustomMessageType customMessageType = CustomMessageType.NONE;

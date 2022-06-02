@@ -229,4 +229,19 @@ public class UIKitFragmentFactory {
                 .setUseHeader(true)
                 .build();
     }
+
+    /**
+     * Returns the OpenChannelSettingsFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelSettingsFragment}
+     * @since 3.0.0
+     */
+    @NonNull
+    public Fragment newChannelPushSettingFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new ChannelPushSettingFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setUseHeader(true)
+                .build();
+    }
 }

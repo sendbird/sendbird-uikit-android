@@ -176,8 +176,8 @@
     <style name="Widget.Sendbird.Overlay.Message">
         <item name="sb_message_time_text_appearance">@style/SendbirdCaption4OnDark03</item>
         <item name="sb_message_sender_name_text_appearance">@style/SendbirdCaption1OnDark02</item>
-        <item name="sb_message_searched_text_appearance">@style/SendbirdSearchedMessage</item>
-        <item name="sb_message_searched_text_background">@color/highlight</item>
+        <item name="sb_message_mentioned_current_user_text_appearance">@style/MentionedCurrentUserMessage</item>
+        <item name="sb_message_mentioned_current_user_text_background">@color/highlight</item>
     </style>
 
     <style name="Widget.Sendbird.Overlay.Message.Timeline">

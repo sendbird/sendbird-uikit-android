@@ -26,7 +26,9 @@ import com.sendbird.uikit_messaging_android.utils.PushUtils;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Displays a channel select screen.
+ */
 public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding binding;
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY" + System.currentTimeMillis();
@@ -51,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // initialize total unread count
         SendBird.getTotalUnreadMessageCount(new GroupChannelTotalUnreadMessageCountParams(), (totalCount, e) -> {
             if (e != null) {
                 return;
@@ -65,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
                 binding.tvUnreadCount.setVisibility(View.GONE);
             }
         });
-
+        // register total unread count event
         SendBird.addUserEventHandler(USER_EVENT_HANDLER_KEY, new SendBird.UserEventHandler() {
             @Override
             public void onFriendsDiscovered(List<User> list) {}

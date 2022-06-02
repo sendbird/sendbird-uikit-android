@@ -13,6 +13,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>HeaderComponent</code> used in <code>CustomModerationFragment</code>.
+ */
 public class CustomModerationHeaderComponent extends HeaderComponent {
     public CustomModerationHeaderComponent() {
         super();

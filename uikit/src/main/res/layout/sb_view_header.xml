@@ -11,7 +11,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
-        android:padding="@dimen/sb_size_8">
+        android:paddingLeft="@dimen/sb_size_8"
+        android:paddingRight="@dimen/sb_size_8">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/leftButton"

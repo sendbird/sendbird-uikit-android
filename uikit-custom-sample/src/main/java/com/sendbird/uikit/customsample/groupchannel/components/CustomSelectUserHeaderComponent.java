@@ -15,6 +15,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 
+/**
+ * Implements the customized <code>SelectUserHeaderComponent</code>.
+ */
 public class CustomSelectUserHeaderComponent extends SelectUserHeaderComponent {
     private Toolbar toolbar;
 

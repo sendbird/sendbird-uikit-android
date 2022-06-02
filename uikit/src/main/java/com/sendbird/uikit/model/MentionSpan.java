@@ -1,16 +1,15 @@
 package com.sendbird.uikit.model;
 
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
+import android.text.style.MetricAffectingSpan;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sendbird.android.BaseMessageParams;
 import com.sendbird.android.User;
-import com.sendbird.uikit.log.Logger;
 
 /**
  * The text with a MentionSpan attached will be bold and clickable.
@@ -18,8 +17,8 @@ import com.sendbird.uikit.log.Logger;
  *
  * @since 3.0.0
  */
-public class MentionSpan extends ClickableSpan {
-    private final int UNDEFINED = -1;
+public class MentionSpan extends MetricAffectingSpan {
+    private static final int UNDEFINED = -1;
     @NonNull
     private final String trigger;
     @NonNull
@@ -28,20 +27,10 @@ public class MentionSpan extends ClickableSpan {
     private final User mentionedUser;
     @NonNull
     private final TextUIConfig uiConfig;
-
+    @Nullable
+    private final TextUIConfig mentionedCurrentUserUIConfig;
     @NonNull
     final BaseMessageParams.MentionType mentionType;
-    @Nullable
-    private OnMentionClickListener listener;
-
-    /**
-     * Interface to be invoked when the mention-spanned text is clicked.
-     *
-     * @since 3.0.0
-     */
-    public interface OnMentionClickListener {
-        void onClicked(@NonNull MentionSpan span);
-    }
 
     /**
      * Constructor
@@ -49,6 +38,7 @@ public class MentionSpan extends ClickableSpan {
      * @param trigger The text to trigger mention
      * @param value The text to be mentioned
      * @param user The User relevant to this mention-spanned text
+     * @param uiConfig The mention ui config.
      * @since 3.0.0
      */
     public MentionSpan(@NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
@@ -58,64 +48,121 @@ public class MentionSpan extends ClickableSpan {
     /**
      * Constructor
      *
+     * @param trigger The text to trigger mention
+     * @param value The text to be mentioned
+     * @param user The User relevant to this mention-spanned text
+     * @param uiConfig The mention ui config.
+     * @param mentionedCurrentUserUIConfig The mention ui config if current user is mentioned
+     * @since 3.0.0
+     */
+    public MentionSpan(@NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
+        this(BaseMessageParams.MentionType.USERS, trigger, value, user, uiConfig, mentionedCurrentUserUIConfig);
+    }
+
+    /**
+     * Constructor
+     *
      * @param mentionType The type of mention to be applied for this mention-spanned text
      * @param trigger The text to trigger mention
      * @param value The text to be mentioned
      * @param user The User relevant to this mention-spanned text
+     * @param uiConfig The mention ui config.
      * @since 3.0.0
      */
     public MentionSpan(@NonNull BaseMessageParams.MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
+        this(mentionType, trigger, value, user, uiConfig, null);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param mentionType The type of mention to be applied for this mention-spanned text
+     * @param trigger The text to trigger mention
+     * @param value The text to be mentioned
+     * @param user The User relevant to this mention-spanned text
+     * @param uiConfig The mention ui config.
+     * @param mentionedCurrentUserUIConfig The mention ui config if current user is mentioned
+     * @since 3.0.0
+     */
+    public MentionSpan(@NonNull BaseMessageParams.MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         this.mentionType = mentionType;
         this.trigger = trigger;
         this.value = value;
         this.mentionedUser = user;
         this.uiConfig = uiConfig;
+        this.mentionedCurrentUserUIConfig = mentionedCurrentUserUIConfig;
     }
 
-    /**
-     * Sets the callback to be invoked when the mention-spanned text is clicked.
-     *
-     * @param listener The callback that will run
-     * @since 3.0.0
-     */
-    public void setOnMentionClickListener(@NonNull OnMentionClickListener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void onClick(@NonNull View widget) {
-        Logger.d("++ onClicked mention()");
-        if (listener != null) listener.onClicked(this);
-    }
-
-    @Override
-    public void updateDrawState(@NonNull final TextPaint tp) {
+    private static Typeface generateTypeface(@NonNull TextUIConfig uiConfig) {
+        Typeface typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
         int typefaceStyle = uiConfig.getTypefaceStyle();
         if (typefaceStyle >= 0) {
             switch (typefaceStyle) {
                 case Typeface.NORMAL:
-                    tp.setTypeface(Typeface.create(tp.getTypeface(), Typeface.NORMAL));
+                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
                     break;
                 case Typeface.BOLD:
-                    tp.setTypeface(Typeface.create(tp.getTypeface(), Typeface.BOLD));
+                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD);
                     break;
                 case Typeface.ITALIC:
-                    tp.setTypeface(Typeface.create(tp.getTypeface(), Typeface.ITALIC));
+                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC);
                     break;
                 case Typeface.BOLD_ITALIC:
-                    tp.setTypeface(Typeface.create(tp.getTypeface(), Typeface.BOLD_ITALIC));
+                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
                     break;
             }
-        } else {
-            tp.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         }
+        return typeface;
+    }
+
+    @Override
+    public void updateDrawState(@NonNull TextPaint paint) {
+        applyUIConfig(paint, uiConfig);
+        if (mentionedCurrentUserUIConfig != null) {
+            // if mentioned current user exists, this color has priority.
+            applyUIConfig(paint, mentionedCurrentUserUIConfig);
+        }
+    }
+
+    @Override
+    public void updateMeasureState(@NonNull TextPaint paint) {
+        applyUIConfig(paint, uiConfig);
+        if (mentionedCurrentUserUIConfig != null) {
+            // if mentioned current user exists, this color has priority.
+            applyUIConfig(paint, mentionedCurrentUserUIConfig);
+        }
+    }
+
+    private static void applyUIConfig(@NonNull TextPaint paint, @NonNull TextUIConfig uiConfig) {
+        applyCustomTypeFace(paint, generateTypeface(uiConfig));
         if (uiConfig.getTextColor() != UNDEFINED) {
-            tp.setColor(this.uiConfig.getTextColor());
+            paint.setColor(uiConfig.getTextColor());
         }
         if (uiConfig.getTextBackgroundColor() != UNDEFINED) {
-            tp.bgColor = uiConfig.getTextBackgroundColor();
+            paint.bgColor = uiConfig.getTextBackgroundColor();
         }
-        tp.setUnderlineText(false);
+        paint.setUnderlineText(false);
+    }
+
+    private static void applyCustomTypeFace(@NonNull Paint paint, @NonNull Typeface tf) {
+        int oldStyle;
+        Typeface old = paint.getTypeface();
+        if (old == null) {
+            oldStyle = Typeface.BOLD;
+        } else {
+            oldStyle = old.getStyle();
+        }
+
+        int fake = oldStyle & ~tf.getStyle();
+        if ((fake & Typeface.BOLD) != 0) {
+            paint.setFakeBoldText(true);
+        }
+
+        if ((fake & Typeface.ITALIC) != 0) {
+            paint.setTextSkewX(-0.25f);
+        }
+
+        paint.setTypeface(tf);
     }
 
     /**

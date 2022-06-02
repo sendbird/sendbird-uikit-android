@@ -97,14 +97,14 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         holder.bind(channel);
 
         holder.itemView.setOnClickListener(v -> {
-            int channelPosition = holder.getAdapterPosition();
+            int channelPosition = holder.getBindingAdapterPosition();
             if (channelPosition != NO_POSITION && listener != null) {
                 listener.onItemClick(v, channelPosition, getItem(channelPosition));
             }
         });
 
         holder.itemView.setOnLongClickListener(v -> {
-            int channelPosition = holder.getAdapterPosition();
+            int channelPosition = holder.getBindingAdapterPosition();
             if (channelPosition != NO_POSITION && longClickListener != null) {
                 longClickListener.onItemLongClick(v, channelPosition, getItem(channelPosition));
                 return true;

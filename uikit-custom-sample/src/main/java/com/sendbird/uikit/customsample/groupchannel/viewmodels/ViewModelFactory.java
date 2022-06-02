@@ -8,6 +8,9 @@ import com.sendbird.android.MessageListParams;
 
 import java.util.Objects;
 
+/**
+ * Provides to create the customized <code>ViewModel</code>s.
+ */
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final Object[] params;
 

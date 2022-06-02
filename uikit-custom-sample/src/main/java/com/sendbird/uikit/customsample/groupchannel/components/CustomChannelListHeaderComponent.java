@@ -14,6 +14,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>HeaderComponent</code> used in <code>CustomChannelListFragment</code>.
+ */
 public class CustomChannelListHeaderComponent extends HeaderComponent {
     @Nullable
     private View.OnClickListener settingsButtonClickListener;

@@ -17,6 +17,9 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
 
+/**
+ * View displaying icon and badge in tabs.
+ */
 public class CustomTabView extends FrameLayout {
     private int tintColorRedId;
     private TextView badgeView;

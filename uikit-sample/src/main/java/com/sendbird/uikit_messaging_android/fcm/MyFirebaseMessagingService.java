@@ -31,6 +31,9 @@ import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Concrete implementation of a sendbird push handler.
+ */
 public class MyFirebaseMessagingService extends SendBirdPushHandler {
 
     private static final String TAG = "MyFirebaseMsgService";

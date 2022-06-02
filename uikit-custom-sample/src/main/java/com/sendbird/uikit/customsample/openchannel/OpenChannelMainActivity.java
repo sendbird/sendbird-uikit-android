@@ -22,6 +22,9 @@ import com.sendbird.uikit.customsample.widgets.CustomTabView;
 
 import java.util.Objects;
 
+/**
+ * Displays an open channel list screen.
+ */
 public class OpenChannelMainActivity extends AppCompatActivity {
     private ActivityOpenChannelMainBinding binding;
 

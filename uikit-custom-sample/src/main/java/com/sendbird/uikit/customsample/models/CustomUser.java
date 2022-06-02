@@ -6,6 +6,9 @@ import androidx.annotation.Nullable;
 import com.sendbird.android.User;
 import com.sendbird.uikit.interfaces.UserInfo;
 
+/**
+ * Model class for a user data to adapt UIKit UserInfo interface.
+ */
 public class CustomUser implements UserInfo {
     User user;
 

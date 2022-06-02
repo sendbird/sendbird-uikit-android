@@ -17,6 +17,7 @@
         <attr name="sb_module_operator_list" format="reference"/>
         <attr name="sb_module_participant_list" format="reference"/>
         <attr name="sb_module_promote_operator_list" format="reference"/>
+        <attr name="sb_module_channel_push_setting" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">
@@ -32,6 +33,7 @@
         <attr name="sb_component_state_header" format="reference"/>
         <attr name="sb_component_list" format="reference"/>
         <attr name="sb_component_status" format="reference"/>
+        <attr name="sb_component_channel_push_setting" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="HeaderComponent">
@@ -175,11 +177,11 @@
         <attr name="sb_message_clicked_link_background_color" format="reference"/>
         <attr name="sb_message_edited_mark_text_appearance" format="reference"/>
 
-        <attr name="sb_message_searched_text_appearance" format="reference"/>
-        <attr name="sb_message_searched_text_background" format="reference|color"/>
 
         <attr name="sb_message_my_mentioned_text_appearance" format="reference|color"/>
         <attr name="sb_message_other_mentioned_text_appearance" format="reference|color"/>
+        <attr name="sb_message_mentioned_current_user_text_appearance" format="reference"/>
+        <attr name="sb_message_mentioned_current_user_text_background" format="reference|color"/>
 
         <attr name="sb_quoted_message_me_title_icon" format="reference"/>
         <attr name="sb_quoted_message_other_title_icon" format="reference"/>
@@ -208,6 +210,8 @@
         <attr name="sb_message_other_edited_mark_text_appearance" />
         <attr name="sb_message_my_mentioned_text_appearance" />
         <attr name="sb_message_other_mentioned_text_appearance" />
+        <attr name="sb_message_mentioned_current_user_text_background" />
+        <attr name="sb_message_mentioned_current_user_text_appearance" />
 
         <attr name="sb_message_time_text_appearance" />
         <attr name="sb_message_sender_name_text_appearance"/>
@@ -226,9 +230,6 @@
         <attr name="sb_message_other_link_text_color" />
         <attr name="sb_message_me_clicked_link_background_color" />
         <attr name="sb_message_other_clicked_link_background_color" />
-
-        <attr name="sb_message_searched_text_appearance" />
-        <attr name="sb_message_searched_text_background" />
 
         <attr name="sb_quoted_message_me_title_icon"/>
         <attr name="sb_quoted_message_other_title_icon"/>
@@ -258,8 +259,6 @@
         <attr name="sb_message_sender_name_text_appearance"/>`
 
         <attr name="sb_message_emoji_reaction_list_background" />
-        <attr name="sb_message_searched_text_appearance" />
-        <attr name="sb_message_searched_text_background" />
 
         <attr name="sb_quoted_message_me_title_icon"/>
         <attr name="sb_quoted_message_other_title_icon"/>
@@ -424,8 +423,7 @@
     <declare-styleable name="SingleMenuItemView">
         <attr name="sb_menu_item_background" format="reference"/>
         <attr name="sb_menu_item_name_appearance" format="reference"/>
-        <attr name="sb_menu_item_name" format="string"/>
-        <attr name="sb_menu_item_icon" format="reference"/>
+        <attr name="sb_menu_item_description_appearance" format="reference"/>
         <attr name="sb_menu_item_icon_tint" format="reference|color"/>
         <attr name="sb_menu_item_action_drawable" format="reference"/>
         <attr name="sb_menu_item_type" format="enum">
@@ -468,5 +466,17 @@
         <attr name="sb_message_preview_divider_color" format="reference"/>
         <attr name="sb_message_preview_message_metaphor_background_color" format="reference"/>
         <attr name="sb_message_preview_message_metaphor_icon_tint_color" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ChannelPushSettings">
+        <attr name="sb_channel_push_settings_background" format="reference"/>
+        <attr name="sb_channel_push_settings_option_item_background" format="reference"/>
+        <attr name="sb_channel_push_settings_title_appearance" format="reference"/>
+        <attr name="sb_channel_push_settings_description_appearance" format="reference"/>
+        <attr name="sb_channel_push_option_item_appearance" format="reference"/>
+        <attr name="sb_channel_push_option_item_divider_color" format="reference|color"/>
+        <attr name="sb_channel_switch_track_tint" format="reference|color"/>
+        <attr name="sb_channel_switch_thumb_tint" format="reference|color"/>
+        <attr name="sb_channel_radio_button_background" format="reference|color"/>
     </declare-styleable>
 </resources>

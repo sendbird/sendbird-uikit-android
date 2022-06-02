@@ -75,15 +75,16 @@ public class SingleMenuItemView extends FrameLayout {
             this.binding = SbViewSingleMenuItemBinding.inflate(LayoutInflater.from(getContext()));
             addView(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-            String name = a.getString(R.styleable.SingleMenuItemView_sb_menu_item_name);
             int itemBackground = a.getResourceId(R.styleable.SingleMenuItemView_sb_menu_item_background, R.drawable.selector_rectangle_light);
             int nicknameAppearance = a.getResourceId(R.styleable.SingleMenuItemView_sb_menu_item_name_appearance, R.style.SendbirdSubtitle2OnLight01);
-            int iconResId = a.getResourceId(R.styleable.SingleMenuItemView_sb_menu_item_icon, 0);
+            int descriptionAppearance = a.getResourceId(R.styleable.SingleMenuItemView_sb_menu_item_description_appearance, R.style.SendbirdSubtitle2OnLight02);
             ColorStateList iconTintRes = a.getColorStateList(R.styleable.SingleMenuItemView_sb_menu_item_icon_tint);
             int type = a.getInteger(R.styleable.SingleMenuItemView_sb_menu_item_type, 0);
             binding.tvName.setTextAppearance(context, nicknameAppearance);
             binding.tvName.setEllipsize(TextUtils.TruncateAt.END);
             binding.tvName.setMaxLines(1);
+
+            binding.tvDescription.setTextAppearance(context, descriptionAppearance);
 
             binding.vgMenuItem.setBackgroundResource(itemBackground);
 
@@ -93,14 +94,6 @@ public class SingleMenuItemView extends FrameLayout {
             int switchTrackTint = useDarkTheme ? R.color.sb_switch_track_dark : R.color.sb_switch_track_light;
             int switchThumbTint = useDarkTheme ? R.color.sb_switch_thumb_dark : R.color.sb_switch_thumb_light;
             binding.divider.setBackgroundResource(divider);
-
-            if (!TextUtils.isEmpty(name)) {
-                setName(name);
-            }
-
-            if (iconResId > 0) {
-                setIcon(iconResId);
-            }
 
             if (iconTintRes != null) {
                 setIconTint(iconTintRes);

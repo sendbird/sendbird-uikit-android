@@ -69,6 +69,8 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             }
         } else if (modelClass.isAssignableFrom(PromoteOperatorViewModel.class)) {
             return (T) new PromoteOperatorViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<Member>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(ChannelPushSettingViewModel.class)) {
+            return (T) new ChannelPushSettingViewModel((String) Objects.requireNonNull(params)[0]);
         } else {
             return super.create(modelClass);
         }

@@ -20,6 +20,9 @@ import com.sendbird.uikit.modules.components.ChannelListComponent;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.vm.ChannelListViewModel;
 
+/**
+ * Implements the customized <code>ChannelListFragment</code>.
+ */
 public class CustomChannelListFragment extends ChannelListFragment {
 
     @NonNull

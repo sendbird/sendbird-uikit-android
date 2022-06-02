@@ -76,6 +76,7 @@ public class TextUIConfig implements Parcelable {
      * @return A background color int value.
      * @since 3.0.0
      */
+    @ColorInt
     public int getTextBackgroundColor() {
         return textBackgroundColor;
     }
@@ -86,6 +87,7 @@ public class TextUIConfig implements Parcelable {
      * @return A text color int value.
      * @since 3.0.0
      */
+    @ColorInt
     public int getTextColor() {
         return textColor;
     }
@@ -108,9 +110,11 @@ public class TextUIConfig implements Parcelable {
      * Apply values in the given {@link TextUIConfig} into this.
      *
      * @param config A {@link TextUIConfig} to apply.
+     * @return This TextUIConfig object that applied with given data.
      * @since 3.0.0
      */
-    public void apply(@NonNull TextUIConfig config) {
+    @NonNull
+    public TextUIConfig apply(@NonNull TextUIConfig config) {
         if (this.textBackgroundColor == UNDEFINED_RESOURCE_ID) {
             this.textBackgroundColor = config.getTextBackgroundColor();
         }
@@ -121,6 +125,7 @@ public class TextUIConfig implements Parcelable {
         if (this.typefaceStyle == UNDEFINED_RESOURCE_ID) {
             this.typefaceStyle = config.getTypefaceStyle();
         }
+        return this;
     }
 
     /**
@@ -169,7 +174,10 @@ public class TextUIConfig implements Parcelable {
         final TypedArray a = context.getTheme().obtainStyledAttributes(textAppearance, R.styleable.TextAppearance);
         try {
             if (this.textColor == UNDEFINED_RESOURCE_ID) {
-                this.textColor = ContextCompat.getColor(context, a.getResourceId(R.styleable.TextAppearance_android_textColor, this.textColor));
+                int textColorResId = a.getResourceId(R.styleable.TextAppearance_android_textColor, UNDEFINED_RESOURCE_ID);
+                if (textColorResId != UNDEFINED_RESOURCE_ID) {
+                    this.textColor = ContextCompat.getColor(context, textColorResId);
+                }
             }
             if (this.typefaceStyle == UNDEFINED_RESOURCE_ID) {
                 this.typefaceStyle = a.getInt(R.styleable.TextAppearance_android_textStyle, this.typefaceStyle);

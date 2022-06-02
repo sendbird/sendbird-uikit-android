@@ -36,7 +36,6 @@ public final class OtherFileMessageViewHolder extends GroupChannelMessageViewHol
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
-        otherFileMessageView.setHighlightMessageInfo(highlight);
         otherFileMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof GroupChannel) {
             otherFileMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);

@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Displays an open channel list screen.
+ */
 abstract public class OpenChannelListFragment extends Fragment implements SendBird.ConnectionHandler {
     private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
 
@@ -201,6 +204,11 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
         adapter.setItems(newList == null ? new ArrayList<>() : newList);
     }
 
+    /**
+     * Sets the custom type filter to be applied to <code>OpenChannelListQuery</code>.
+     *
+     * @param customTypeFilter Filter to discriminate <code>OpenChannel</code> by type
+     */
     public void setCustomTypeFilter(@NonNull String customTypeFilter) {
         this.customTypeFilter = customTypeFilter;
     }

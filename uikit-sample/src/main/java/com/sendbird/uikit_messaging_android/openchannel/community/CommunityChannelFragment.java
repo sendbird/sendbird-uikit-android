@@ -8,6 +8,9 @@ import com.sendbird.uikit.fragments.OpenChannelFragment;
 import com.sendbird.uikit.modules.OpenChannelModule;
 import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 
+/**
+ * Displays an open channel screen used for community.
+ */
 public class CommunityChannelFragment extends OpenChannelFragment {
     @Override
     protected void onConfigureParams(@NonNull OpenChannelModule module, @NonNull Bundle args) {

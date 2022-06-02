@@ -59,6 +59,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
     @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
     private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
     private LoadingDialogHandler loadingDialogHandler;
 
@@ -164,7 +166,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     protected void onBindHeaderComponent(@NonNull OpenChannelSettingsHeaderComponent headerComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelSettingsFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(v -> showChannelInfoEditDialog());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> showChannelInfoEditDialog());
     }
 
     /**
@@ -375,6 +377,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
         @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
         private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
@@ -514,6 +518,32 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         }
 
         /**
+         * Sets the text on the right button of the header.
+         *
+         * @param rightButtonText The String to be displayed on the right button
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setRightButtonText(@Nullable String rightButtonText) {
+            bundle.putString(StringSet.KEY_HEADER_RIGHT_BUTTON_TEXT, rightButtonText);
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
          * Sets the channel setting menu click listener.
          *
          * @param listener The callback that will run.
@@ -550,6 +580,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
             OpenChannelSettingsFragment fragment = new OpenChannelSettingsFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
             fragment.menuItemClickListener = menuItemClickListener;
             fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.sendbird.android.User;
@@ -43,7 +44,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     }
 
     /**
-     * Called when RecyclerView needs a new {@link BaseViewHolder<User>} of the given type to represent
+     * Called when RecyclerView needs a new {@link EmojiReactionUserViewHolder} of the given type to represent
      * an item.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to
@@ -74,7 +75,13 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<User> holder, int position) {
         User userInfo = getItem(position);
-        holder.bind(userInfo);
+        if (holder instanceof EmojiReactionUserViewHolder) {
+            ((EmojiReactionUserViewHolder) holder).bind(userInfo);
+        } else {
+            if (userInfo != null) {
+                holder.bind(userInfo);
+            }
+        }
     }
 
     /**
@@ -85,7 +92,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @since 1.1.0
      */
     @Override
-    @NonNull
+    @Nullable
     public User getItem(int position) {
         return userList.get(position);
     }
@@ -124,6 +131,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     @Override
     public long getItemId(int position) {
         final User user = getItem(position);
+        if (user == null) return super.getItemId(position);
         return user.hashCode();
     }
 
@@ -152,7 +160,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
         }
 
         @Override
-        public void bind(@NonNull User user) {
+        public void bind(@Nullable User user) {
             binding.userViewHolder.drawUser(user);
         }
     }

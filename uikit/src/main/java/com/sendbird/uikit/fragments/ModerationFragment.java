@@ -38,6 +38,8 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
     @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
     private OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> menuItemClickListener;
     @Nullable
     private LoadingDialogHandler loadingDialogHandler;
@@ -108,6 +110,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ModerationViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ModerationFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener);
     }
 
     /**
@@ -199,6 +202,8 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
         private final Bundle bundle;
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
         @Nullable
         private OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> menuItemClickListener;
         @Nullable
@@ -332,7 +337,61 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
         }
 
         /**
-         * Sets the click listener on the left button of the header.
+         * Sets whether the right button of the header is used.
+         *
+         * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
+         *                            <code>false</code> otherwise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 1.2.0
+         */
+        @NonNull
+        public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
+            bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
+            return this;
+        }
+
+        /**
+         * Sets the icon on the right button of the header.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 1.2.0
+         */
+        @NonNull
+        public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
+            return setHeaderRightButtonIcon(resId, null);
+        }
+
+        /**
+         * Sets the icon on the right button of the header.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.1.0
+         */
+        @NonNull
+        public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
+            bundle.putInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, resId);
+            bundle.putParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT, tint);
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the menu item is clicked.
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -369,6 +428,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
             ModerationFragment fragment = new ModerationFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
             fragment.menuItemClickListener = menuItemClickListener;
             fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;

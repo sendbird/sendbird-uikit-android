@@ -24,10 +24,8 @@
             android:id="@+id/tvChannelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:paddingLeft="@dimen/sb_size_50"
-            android:paddingRight="@dimen/sb_size_50"/>
+            android:singleLine="true"
+            android:ellipsize="middle"/>
 
     </LinearLayout>
 

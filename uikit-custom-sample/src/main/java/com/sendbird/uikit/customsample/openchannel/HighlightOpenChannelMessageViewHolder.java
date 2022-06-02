@@ -26,7 +26,9 @@ import com.sendbird.uikit.customsample.utils.DrawableUtils;
 
 import java.util.Map;
 
-
+/**
+ * ViewHolder to draw the highlight message for <code>OpenChannel</code>.
+ */
 public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     private final ViewOpenChannelHighlightMessageHolderBinding binding;
     private final int operatorAppearance;

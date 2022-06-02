@@ -123,7 +123,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Li
 
             binding.getRoot().setOnClickListener((v) -> {
                 if (listener != null && item.getKey() != 0) {
-                    listener.onItemClick(binding.getRoot(), getAdapterPosition(), item);
+                    listener.onItemClick(binding.getRoot(), getBindingAdapterPosition(), item);
                 }
             });
 

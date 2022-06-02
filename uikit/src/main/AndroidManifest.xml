@@ -93,6 +93,10 @@
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateUnchanged"
             />
+        <activity
+            android:name=".activities.ChannelPushSettingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:launchMode="singleTop" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

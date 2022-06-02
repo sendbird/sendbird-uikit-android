@@ -89,6 +89,7 @@
     <string name="sb_text_error_delete_channel">Couldn\&#39;t delete channel.</string>
     <string name="sb_text_error_push_notification_on">Couldn\&#39;t turn on notifications.</string>
     <string name="sb_text_error_push_notification_off">Couldn\&#39;t turn off notifications.</string>
+    <string name="sb_text_error_push_notification_setting">Couldn\&#39;t set the notification setting.</string>
     <string name="sb_text_error_invite_member">Couldn\&#39;t invite users.</string>
     <string name="sb_text_error_get_user_list">Couldn\&#39;t retrieve user list.</string>
     <string name="sb_text_error_add_reaction">Couldn\&#39;t add reaction.</string>
@@ -160,4 +161,10 @@
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
     <string name="sb_text_exceed_mention_limit_count">"You can mention up to %d times per message."</string>
+
+    <string name="sb_text_push_setting_on">On</string>
+    <string name="sb_text_push_setting_off">Off</string>
+    <string name="sb_text_push_setting_mentions_only">Mentions only</string>
+    <string name="sb_text_push_setting_option_all">All new messages</string>
+    <string name="sb_text_push_setting_description">Turn on push notifications if you wish to be notified when messages are delivered to this channel.</string>
 </resources>

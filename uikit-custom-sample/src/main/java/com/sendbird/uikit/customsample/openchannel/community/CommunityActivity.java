@@ -18,7 +18,7 @@ import com.sendbird.uikit.utils.ContextUtils;
 
 
 /**
- * Activity displays a list of messages from a channel.
+ * Displays an open channel screen used for community.
  */
 public class CommunityActivity extends AppCompatActivity {
 

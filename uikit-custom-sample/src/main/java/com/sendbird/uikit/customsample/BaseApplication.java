@@ -31,11 +31,17 @@ import com.sendbird.uikit.model.UserMentionConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base application to initialize Sendbird UIKit.
+ */
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
+    /**
+     * Initializes Sendbird UIKit
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -91,9 +97,12 @@ public class BaseApplication extends MultiDexApplication {
 
                     @Override
                     public void onInitSucceed() {
+                        // register push notification
                         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
                         SendbirdUIKit.setDefaultThemeMode(SendbirdUIKit.ThemeMode.Light);
+                        // set logger
                         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
+                        // set whether to use user profile
                         SendbirdUIKit.setUseDefaultUserProfile(false);
 
                         initState.setValue(InitState.SUCCEED);
@@ -102,6 +111,7 @@ public class BaseApplication extends MultiDexApplication {
             }
         }, this);
 
+        // set custom params
         SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
             @Override
             public void onBeforeCreateGroupChannel(@NonNull GroupChannelParams groupChannelParams) {
@@ -134,20 +144,34 @@ public class BaseApplication extends MultiDexApplication {
             }
         });
 
+        // set custom user list query
         SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
+        // set custom UIKit fragment factory
         SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
+        // set whether to use user mention
         SendbirdUIKit.setUseUserMention(true);
+        // set the mention configuration
         SendbirdUIKit.setMentionConfig(new UserMentionConfig.Builder()
                 .setMaxMentionCount(5)
                 .setMaxSuggestionCount(10)
                 .build());
     }
 
+    /**
+     * Returns the state of the result from initialization of Sendbird UIKit.
+     *
+     * @return the {@link InitState} instance
+     */
     @NonNull
     public static LiveData<InitState> initStateChanges() {
         return initState;
     }
 
+    /**
+     * Returns the user list query to be used to retrieve user list.
+     *
+     * @return the {@link CustomUserListQueryHandler} instance
+     */
     @NonNull
     public static CustomUserListQueryHandler getCustomUserListQuery() {
         final ApplicationUserListQuery userListQuery = SendBird.createApplicationUserListQuery();

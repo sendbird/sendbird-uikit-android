@@ -119,6 +119,7 @@ public class EmojiReactionUserListView extends FrameLayout {
         }
 
         @Override
+        @NonNull
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                                  @Nullable Bundle savedInstanceState) {
             LayoutInflater themeInflater = inflater.cloneInContext(context);

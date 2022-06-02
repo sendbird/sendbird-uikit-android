@@ -17,7 +17,7 @@ import com.sendbird.uikit_messaging_android.consts.StringSet;
 
 
 /**
- * Activity displays a list of messages from a channel.
+ * Displays an open channel screen used for community.
  */
 public class CommunityActivity extends AppCompatActivity {
 

@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
 import android.view.View;
@@ -39,7 +41,6 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.MentionSpan;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
@@ -78,7 +79,11 @@ public class ViewUtils {
         view.setText(spannable);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable HighlightMessageInfo highlightInfo, @Nullable MessageUIConfig uiConfig) {
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+        drawTextMessage(textView, message, uiConfig, null);
+    }
+
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         if (message == null) {
             return;
         }
@@ -90,13 +95,8 @@ public class ViewUtils {
 
         final boolean isMine = MessageUtils.isMine(message);
         final Context context = textView.getContext();
-        final CharSequence text = getDisplayableText(context, message, uiConfig);
+        final CharSequence text = getDisplayableText(context, message, uiConfig, mentionedCurrentUserUIConfig, true);
         final SpannableStringBuilder builder = new SpannableStringBuilder(text);
-        if (uiConfig != null && highlightInfo != null && highlightInfo.getMessageId() == message.getMessageId() && highlightInfo.getUpdatedAt() == message.getUpdatedAt()) {
-            final TextUIConfig searchedTextUIConfig = uiConfig.getSearchedTextUIConfig();
-            searchedTextUIConfig.bind(builder, 0, text.length());
-        }
-
         if (message.getUpdatedAt() > 0L) {
             final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
             final Spannable editedString = new SpannableString(edited);
@@ -111,7 +111,7 @@ public class ViewUtils {
     }
 
     @NonNull
-    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, boolean mentionClickable) {
         final String mentionedText = message.getMentionedMessageTemplate();
         CharSequence text = message.getMessage();
 
@@ -128,11 +128,32 @@ public class ViewUtils {
                     final User mentionedUser = getMentionedUser(message, mentionedUserId);
                     if (mentionedUser != null) {
                         final boolean isMine = MessageUtils.isMine(message);
-                        final TextUIConfig config = uiConfig != null ? isMine ? uiConfig.getMyMentionUIConfig() : uiConfig.getOtherMentionUIConfig() : null;
-                        final String nickname = UserUtils.getDisplayName(context, mentionedUser);
-                        final MentionSpan mentionSpan = new MentionSpan(SendbirdUIKit.getUserMentionConfig().getTrigger(), nickname, mentionedUser, config);
-                        final SpannableString spannable = new SpannableString(mentionSpan.getDisplayText());
-                        spannable.setSpan(mentionSpan, 0, mentionSpan.getDisplayText().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        final boolean isMentionedCurrentUser = MessageUtils.isMine(mentionedUserId);
+                        final String trigger = SendbirdUIKit.getUserMentionConfig().getTrigger();
+                        final SpannableString spannable;
+                        if (uiConfig != null) {
+                            final TextUIConfig config = isMine ? uiConfig.getMyMentionUIConfig() : uiConfig.getOtherMentionUIConfig();
+                            final String nickname = UserUtils.getDisplayName(context, mentionedUser);
+                            final MentionSpan mentionSpan = new MentionSpan(trigger, nickname, mentionedUser, config, isMentionedCurrentUser ? mentionedCurrentUserUIConfig : null);
+                            spannable = new SpannableString(mentionSpan.getDisplayText());
+                            spannable.setSpan(mentionSpan, 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            spannable = new SpannableString(trigger + mentionedUser.getNickname());
+                        }
+                        if (mentionClickable) {
+                            spannable.setSpan(new ClickableSpan() {
+                                @Override
+                                public void onClick(@NonNull View widget) {
+                                    SoftInputUtils.hideSoftKeyboard(widget);
+                                    DialogUtils.showUserProfileDialog(context, mentionedUser, !isMentionedCurrentUser, null, null);
+                                }
+
+                                @Override
+                                public void updateDrawState(@NonNull TextPaint paint) {
+                                    paint.setUnderlineText(false);
+                                }
+                            }, 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
                         destinations.add(spannable);
                         sources.add(matcher.group(0));
                     }

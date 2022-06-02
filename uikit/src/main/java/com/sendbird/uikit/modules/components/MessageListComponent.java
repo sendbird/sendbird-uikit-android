@@ -28,7 +28,6 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.TimelineMessage;
@@ -136,9 +135,6 @@ public class MessageListComponent {
 
         if (this.adapter.getMessageUIConfig() == null) {
             this.adapter.setMessageUIConfig(params.messageUIConfig);
-        }
-        if (this.adapter.getHighlightInfo() == null) {
-            this.adapter.setHighlightInfo(params.highlightMessageInfo);
         }
         if (this.adapter.getOnListItemClickListener() == null) {
             this.adapter.setOnListItemClickListener(this::onListItemClicked);
@@ -754,8 +750,6 @@ public class MessageListComponent {
         private boolean useGroupUI = true;
         private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
 
-        @Nullable
-        private HighlightMessageInfo highlightMessageInfo;
         private long initialStartingPoint = Long.MAX_VALUE;
 
         @NonNull
@@ -791,16 +785,6 @@ public class MessageListComponent {
         }
 
         /**
-         * Sets the information of the message to be highlighted.
-         *
-         * @param highlightMessageInfo The information of the message to be highlighted
-         * @since 3.0.0
-         */
-        public void setHighlightMessageInfo(@Nullable HighlightMessageInfo highlightMessageInfo) {
-            this.highlightMessageInfo = highlightMessageInfo;
-        }
-
-        /**
          * Returns whether the user profile uses when the profile of message is clicked.
          *
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
@@ -809,17 +793,6 @@ public class MessageListComponent {
         @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseUserProfile() {
             return useUserProfile;
-        }
-
-        /**
-         * Returns the information of the message to be highlighted.
-         *
-         * @return The information of the message to be highlighted
-         * @since 3.0.0
-         */
-        @Nullable
-        public HighlightMessageInfo getHighlightMessageInfo() {
-            return highlightMessageInfo;
         }
 
         /**
@@ -867,16 +840,6 @@ public class MessageListComponent {
         /**
          * Sets the UI configuration of searched text.
          *
-         * @param searchedTextUIConfig the UI configuration of searched text.
-         * @since 3.0.0
-         */
-        public void setSearchedTextUIConfig(@Nullable TextUIConfig searchedTextUIConfig) {
-            if (searchedTextUIConfig != null) this.messageUIConfig.getSearchedTextUIConfig().apply(searchedTextUIConfig);
-        }
-
-        /**
-         * Sets the UI configuration of searched text.
-         *
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
          * @since 3.0.0
@@ -890,9 +853,7 @@ public class MessageListComponent {
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_STARTING_POINT} is mapped to {@link #setInitialStartingPoint(long)}
          * {@code KEY_USE_USER_PROFILE} is mapped to {@link #setUseUserProfile(boolean)}
-         * {@code KEY_HIGHLIGHT_MESSAGE_INFO} is mapped to {@link #setHighlightMessageInfo(HighlightMessageInfo)}
          * {@code KEY_USE_MESSAGE_GROUP_UI} is mapped to {@link #setUseMessageGroupUI(boolean)}
-         * {@code KEY_SEARCHED_TEXT_UI_CONFIG} is mapped to {@link #setSearchedTextUIConfig(TextUIConfig)}
          * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
          * {@code KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME} and {@code KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setEditedTextMarkUIConfig(TextUIConfig, TextUIConfig)}
          *
@@ -909,14 +870,8 @@ public class MessageListComponent {
             if (args.containsKey(StringSet.KEY_USE_USER_PROFILE)) {
                 setUseUserProfile(args.getBoolean(StringSet.KEY_USE_USER_PROFILE));
             }
-            if (args.containsKey(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO)) {
-                setHighlightMessageInfo(args.getParcelable(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO));
-            }
             if (args.containsKey(StringSet.KEY_USE_MESSAGE_GROUP_UI)) {
                 setUseMessageGroupUI(args.getBoolean(StringSet.KEY_USE_MESSAGE_GROUP_UI));
-            }
-            if (args.containsKey(StringSet.KEY_SEARCHED_TEXT_UI_CONFIG)) {
-                setSearchedTextUIConfig(args.getParcelable(StringSet.KEY_SEARCHED_TEXT_UI_CONFIG));
             }
             setMentionUIConfig(args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS));
             setEditedTextMarkUIConfig(args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS));

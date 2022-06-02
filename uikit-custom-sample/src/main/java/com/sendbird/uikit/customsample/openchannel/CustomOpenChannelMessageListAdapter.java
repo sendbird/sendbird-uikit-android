@@ -15,6 +15,9 @@ import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.databinding.ViewOpenChannelHighlightMessageHolderBinding;
 import com.sendbird.uikit.utils.MessageUtils;
 
+/**
+ * Implements the customized <code>OpenChannelMessageListAdapter</code> to adapt the customized message items.
+ */
 public class CustomOpenChannelMessageListAdapter extends OpenChannelMessageListAdapter {
 
     public static final int VIEW_MAP_MESSAGE_ME_TYPE = 1001;

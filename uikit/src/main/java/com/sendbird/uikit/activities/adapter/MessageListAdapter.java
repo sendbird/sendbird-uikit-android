@@ -30,7 +30,6 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.TextUtils;
@@ -63,8 +62,6 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
-    @Nullable
-    private HighlightMessageInfo highlight;
     @Nullable
     private MessageUIConfig messageUIConfig;
 
@@ -128,14 +125,13 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                 MessageType.from(viewType),
                 useMessageGroupUI);
 
-        viewHolder.setHighlightInfo(highlight);
         viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
         for (Map.Entry<String, View> entry : views.entrySet()) {
             final String identifier = entry.getKey();
             entry.getValue().setOnClickListener(v -> {
-                int messagePosition = viewHolder.getAdapterPosition();
+                int messagePosition = viewHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION) {
                     if (listItemClickListener != null) {
                         listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
@@ -144,7 +140,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             });
 
             entry.getValue().setOnLongClickListener(v -> {
-                int messagePosition = viewHolder.getAdapterPosition();
+                int messagePosition = viewHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION) {
                     if (listItemLongClickListener != null) {
                         listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
@@ -198,7 +194,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             GroupChannelMessageViewHolder groupChannelHolder = (GroupChannelMessageViewHolder) holder;
             List<Reaction> reactionList = current.getReactions() != null ? current.getReactions() : new ArrayList<>();
             groupChannelHolder.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
-                int messagePosition = holder.getAdapterPosition();
+                int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
                     emojiReactionClickListener.onEmojiReactionClick(
                             view,
@@ -208,7 +204,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                     );
                 }
             }, (view, reactionPosition, reactionKey) -> {
-                int messagePosition = groupChannelHolder.getAdapterPosition();
+                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionLongClickListener != null) {
                     emojiReactionLongClickListener.onEmojiReactionLongClick(
                             view,
@@ -218,7 +214,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                     );
                 }
             }, v -> {
-                int messagePosition = groupChannelHolder.getAdapterPosition();
+                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionMoreButtonClickListener != null) {
                     emojiReactionMoreButtonClickListener.onItemClick(
                             v,
@@ -232,27 +228,6 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         if (channel != null) {
             holder.onBindViewHolder(channel, prev, current, next);
         }
-    }
-
-    /**
-     * Sets the information of the message to highlight.
-     *
-     * @param highlightInfo The information of the message to highlight.
-     * @since 2.1.0
-     */
-    public void setHighlightInfo(@Nullable HighlightMessageInfo highlightInfo) {
-        this.highlight = highlightInfo;
-    }
-
-    /**
-     * Returns the information of the message to highlight.
-     *
-     * @return The information of the message to highlight.
-     * @since 3.0.0
-     */
-    @Nullable
-    public HighlightMessageInfo getHighlightInfo() {
-        return this.highlight;
     }
 
     /**

@@ -15,6 +15,9 @@ import com.sendbird.android.GroupChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.ModerationListComponent;
 
+/**
+ * Implements the customized <code>ModerationListComponent</code>.
+ */
 public class CustomModerationListComponent extends ModerationListComponent {
     private View view;
 

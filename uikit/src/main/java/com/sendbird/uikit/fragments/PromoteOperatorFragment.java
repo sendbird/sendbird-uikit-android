@@ -18,6 +18,8 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.PromoteOperatorListAdapter;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
+import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.ReadyStatus;
@@ -39,11 +41,17 @@ import java.util.List;
 public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorModule, PromoteOperatorViewModel> {
 
     @Nullable
-    protected PagedQueryHandler<Member> pagedQueryHandler;
+    private PagedQueryHandler<Member> pagedQueryHandler;
     @Nullable
-    protected PromoteOperatorListAdapter adapter;
+    private PromoteOperatorListAdapter adapter;
     @Nullable
-    protected View.OnClickListener headerLeftButtonClickListener;
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private OnUserSelectChangedListener userSelectChangedListener;
+    @Nullable
+    private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
     @NonNull
     @Override
@@ -101,7 +109,7 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull PromoteOperatorViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> PromoteOperatorFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(v -> getModule().getPromoteOperatorListComponent().notifySelectionComplete());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> getModule().getPromoteOperatorListComponent().notifySelectionComplete());
     }
 
     /**
@@ -115,10 +123,9 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
     protected void onBindPromoteOperatorListComponent(@NonNull PromoteOperatorListComponent listComponent, @NonNull PromoteOperatorViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> PromoteOperatorFragment::onBindPromoteOperatorListComponent()");
 
-        listComponent.setOnUserSelectChangedListener((selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
-        listComponent.setOnUserSelectionCompleteListener(PromoteOperatorFragment.this::onUserSelectionCompleted);
+        listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
+        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : PromoteOperatorFragment.this::onUserSelectionCompleted);
 
-        listComponent.setPagedDataLoader(viewModel);
         viewModel.getUserList().observe(getViewLifecycleOwner(), listComponent::notifyDataSetChanged);
     }
 
@@ -172,13 +179,19 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
 
     public static class Builder {
         @NonNull
-        protected Bundle bundle;
+        private Bundle bundle;
         @Nullable
-        protected PagedQueryHandler<Member> pagedQueryHandler;
+        private PagedQueryHandler<Member> pagedQueryHandler;
         @Nullable
-        protected PromoteOperatorListAdapter adapter;
+        private PromoteOperatorListAdapter adapter;
         @Nullable
-        protected View.OnClickListener headerLeftButtonClickListener;
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
+        private OnUserSelectChangedListener userSelectChangedListener;
+        @Nullable
+        private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -350,6 +363,19 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
         }
 
         /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
@@ -378,6 +404,45 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the user is selected.
+         *
+         * @param userSelectChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
+            this.userSelectChangedListener = userSelectChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when selecting users is completed.
+         *
+         * @param userSelectionCompleteListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
+            this.userSelectionCompleteListener = userSelectionCompleteListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link PromoteOperatorFragment} with the arguments supplied to this
          * builder.
          *
@@ -390,6 +455,9 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.userSelectChangedListener = userSelectChangedListener;
+            fragment.userSelectionCompleteListener = userSelectionCompleteListener;
             return fragment;
         }
     }

@@ -29,6 +29,9 @@ import java.util.Objects;
 
 import static com.sendbird.uikit_messaging_android.consts.StringSet.PUSH_REDIRECT_CHANNEL;
 
+/**
+ * Displays a group channel list screen.
+ */
 public class GroupChannelMainActivity extends AppCompatActivity {
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY" + System.currentTimeMillis();
 

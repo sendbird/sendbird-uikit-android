@@ -213,7 +213,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
             this.binding = binding;
 
             binding.selectUserViewHolder.setOnClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION) {
                     final T item = getItem(userPosition);
                     boolean isSelected = isSelected(item);
@@ -232,7 +232,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
             });
 
             binding.selectUserViewHolder.setOnLongClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && longClickListener != null) {
                     longClickListener.onItemLongClick(v, userPosition, getItem(userPosition));
                     return true;
@@ -241,7 +241,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
             });
 
             binding.selectUserViewHolder.setOnSelectedStateChangedListener((buttonView, isSelected) -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION) {
                     if (userSelectChangedListener != null) {
                         userSelectChangedListener.onUserSelectChanged(selectedUserIdList, !isSelected);

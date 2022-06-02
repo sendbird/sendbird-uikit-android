@@ -29,7 +29,9 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * ViewHolder to draw the emoji message sent from other users in the <code>GroupChannel</code>.
+ */
 public class EmojiMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     final private ViewEmojiMessageOtherHolderBinding binding;
 

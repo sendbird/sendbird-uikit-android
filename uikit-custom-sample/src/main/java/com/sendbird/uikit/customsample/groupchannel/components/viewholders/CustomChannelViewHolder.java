@@ -10,6 +10,9 @@ import com.sendbird.uikit.customsample.databinding.ViewCustomChannelHolderBindin
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.DateUtils;
 
+/**
+ * ViewHolder to draw the channel list item for the <code>GroupChannel</code>.
+ */
 public class CustomChannelViewHolder extends BaseViewHolder<GroupChannel> {
     private final ViewCustomChannelHolderBinding binding;
 

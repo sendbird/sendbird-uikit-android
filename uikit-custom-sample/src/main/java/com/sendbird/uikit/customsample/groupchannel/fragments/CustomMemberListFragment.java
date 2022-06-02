@@ -14,6 +14,9 @@ import com.sendbird.uikit.modules.MemberListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.vm.MemberListViewModel;
 
+/**
+ * Implements the customized <code>MemberListFragment</code>.
+ */
 public class CustomMemberListFragment extends MemberListFragment {
     @NonNull
     @Override

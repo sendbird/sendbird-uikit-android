@@ -15,6 +15,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>HeaderComponent</code> used in the customized user typed fragments.
+ */
 public class CustomUserTypedHeaderComponent extends HeaderComponent {
 
     public CustomUserTypedHeaderComponent() {

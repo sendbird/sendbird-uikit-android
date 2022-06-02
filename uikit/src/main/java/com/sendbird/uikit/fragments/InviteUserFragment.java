@@ -19,6 +19,8 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.adapter.InviteUserListAdapter;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
+import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
@@ -45,6 +47,12 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     private InviteUserListAdapter adapter;
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private OnUserSelectChangedListener userSelectChangedListener;
+    @Nullable
+    private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
     @NonNull
     @Override
@@ -101,7 +109,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull InviteUserViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(v -> getModule().getInviteUserListComponent().notifySelectionComplete());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> getModule().getInviteUserListComponent().notifySelectionComplete());
     }
 
     /**
@@ -115,8 +123,8 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     protected void onBindInviteUserListComponent(@NonNull InviteUserListComponent listComponent, @NonNull InviteUserViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onBindInviteUserListComponent()");
 
-        listComponent.setOnUserSelectChangedListener((selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
-        listComponent.setOnUserSelectionCompleteListener(InviteUserFragment.this::onUserSelectionCompleted);
+        listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
+        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : InviteUserFragment.this::onUserSelectionCompleted);
         viewModel.getUserList().observe(getViewLifecycleOwner(), listComponent::notifyDataSetChanged);
     }
 
@@ -235,6 +243,12 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
         private InviteUserListAdapter adapter;
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
+        private OnUserSelectChangedListener userSelectChangedListener;
+        @Nullable
+        private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
         /**
          * Constructor
@@ -411,6 +425,19 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
         }
 
         /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
@@ -439,6 +466,45 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the user is selected.
+         *
+         * @param userSelectChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
+            this.userSelectChangedListener = userSelectChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when selecting users is completed.
+         *
+         * @param userSelectionCompleteListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
+            this.userSelectionCompleteListener = userSelectionCompleteListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link InviteUserFragment} with the arguments supplied to this
          * builder.
          *
@@ -451,6 +517,9 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
             fragment.pagedQueryHandler = customUserListQueryHandler;
             fragment.adapter = adapter;
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.userSelectChangedListener = userSelectChangedListener;
+            fragment.userSelectionCompleteListener = userSelectionCompleteListener;
             return fragment;
         }
     }

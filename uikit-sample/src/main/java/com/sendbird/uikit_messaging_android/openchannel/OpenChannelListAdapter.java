@@ -11,6 +11,9 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * RecyclerView adapter for <code>OpenChannel</code> list.
+ */
 abstract public class OpenChannelListAdapter<VH extends OpenChannelListViewHolder> extends RecyclerView.Adapter<VH> {
     @NonNull
     protected List<OpenChannel> openChannelList = new ArrayList<>();

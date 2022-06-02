@@ -32,6 +32,9 @@ import com.sendbird.uikit.widgets.MessageInputView;
 
 import java.util.List;
 
+/**
+ * Implements the customized <code>MessageInputComponent</code>.
+ */
 public class CustomMessageInputComponent extends MessageInputComponent {
     private final static String MODE_MENU = "MODE_MENU";
     private final static String MODE_EMOJI = "MODE_EMOJI";

@@ -14,6 +14,9 @@ import com.sendbird.uikit.modules.MessageSearchModule;
 import com.sendbird.uikit.modules.components.MessageSearchHeaderComponent;
 import com.sendbird.uikit.vm.MessageSearchViewModel;
 
+/**
+ * Implements the customized <code>MessageSearchFragment</code>.
+ */
 public class CustomMessageSearchFragment extends MessageSearchFragment {
     @NonNull
     @Override

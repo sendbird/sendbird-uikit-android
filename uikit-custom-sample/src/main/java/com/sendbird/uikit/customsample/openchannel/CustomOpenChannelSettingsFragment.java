@@ -8,6 +8,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.fragments.OpenChannelSettingsFragment;
 import com.sendbird.uikit.modules.OpenChannelSettingsModule;
 
+/**
+ * Implements the customized <code>OpenChannelSettingsFragment</code>
+ */
 public class CustomOpenChannelSettingsFragment extends OpenChannelSettingsFragment {
     @NonNull
     @Override

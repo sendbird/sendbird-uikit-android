@@ -9,12 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.MessageUIConfig;
 
 public abstract class BaseMessageView extends FrameLayout {
-    @Nullable
-    protected HighlightMessageInfo highlightMessageInfo;
     @Nullable
     protected MessageUIConfig messageUIConfig;
 
@@ -35,10 +32,6 @@ public abstract class BaseMessageView extends FrameLayout {
 
     @NonNull
     abstract public ViewBinding getBinding();
-
-    public void setHighlightMessageInfo(@Nullable HighlightMessageInfo highlightMessageInfo) {
-        this.highlightMessageInfo = highlightMessageInfo;
-    }
 
     public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
         this.messageUIConfig = messageUIConfig;

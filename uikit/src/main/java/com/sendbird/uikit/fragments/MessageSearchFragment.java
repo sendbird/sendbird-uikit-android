@@ -20,10 +20,10 @@ import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnSearchEventListener;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.MessageSearchModule;
 import com.sendbird.uikit.modules.components.MessageSearchHeaderComponent;
@@ -50,6 +50,10 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
     private LoadingDialogHandler loadingDialogHandler;
     @Nullable
     private MessageSearchQuery query;
+    @Nullable
+    private OnInputTextChangedListener inputTextChangedListener;
+    @Nullable
+    private View.OnClickListener clearButtonClickListener;
 
     @NonNull
     @Override
@@ -103,6 +107,8 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
             hideKeyboard();
             search(keyword);
         });
+        headerComponent.setOnInputTextChangedListener(inputTextChangedListener);
+        headerComponent.setOnClearButtonClickListener(clearButtonClickListener);
     }
 
     /**
@@ -213,7 +219,6 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
             final String channelUrl = getViewModel().getChannel() == null ? "" : getViewModel().getChannel().getUrl();
             Intent intent = new ChannelActivity.IntentBuilder(getContext(), channelUrl)
                     .setStartingPoint(message.getCreatedAt())
-                    .setHighlightMessageInfo(HighlightMessageInfo.fromMessage(message))
                     .build();
             intent.putExtra(StringSet.KEY_FROM_SEARCH_RESULT, true);
             startActivity(intent);
@@ -245,6 +250,10 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
         private LoadingDialogHandler loadingDialogHandler;
         @Nullable
         private MessageSearchQuery query;
+        @Nullable
+        private OnInputTextChangedListener inputTextChangedListener;
+        @Nullable
+        private View.OnClickListener clearButtonClickListener;
 
         /**
          * Constructor
@@ -360,6 +369,19 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Sets the search action event listener on the right button of the search bar.
          *
          * @param listener The callback that will run.
@@ -426,6 +448,32 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
         }
 
         /**
+         * Register a callback to be invoked when the input text is changed.
+         *
+         * @param textChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnInputTextChangedListener(@Nullable OnInputTextChangedListener textChangedListener) {
+            this.inputTextChangedListener = textChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the clear button related to the input is clicked.
+         *
+         * @param clearButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnClearButtonClickListener(@Nullable View.OnClickListener clearButtonClickListener) {
+            this.clearButtonClickListener = clearButtonClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link MessageSearchFragment} with the arguments supplied to this
          * builder.
          *
@@ -440,6 +488,8 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
             fragment.itemClickListener = itemClickListener;
             fragment.loadingDialogHandler = loadingDialogHandler;
             fragment.query = query;
+            fragment.inputTextChangedListener = inputTextChangedListener;
+            fragment.clearButtonClickListener = clearButtonClickListener;
             return fragment;
         }
     }

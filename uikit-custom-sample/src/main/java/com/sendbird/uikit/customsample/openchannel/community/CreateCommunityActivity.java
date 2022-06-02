@@ -45,6 +45,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Displays a create open channel screen used for community.
+ */
 public class CreateCommunityActivity extends AppCompatActivity {
     private String[] REQUIRED_PERMISSIONS;
 

@@ -15,6 +15,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 
+/**
+ * Implements the customized <code>ChannelHeaderComponent</code> used in <code>CustomChannelFragment</code>.
+ */
 public class CustomChannelHeaderComponent extends ChannelHeaderComponent {
     private Toolbar toolbar;
     @Nullable

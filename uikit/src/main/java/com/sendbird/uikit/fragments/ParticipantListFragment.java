@@ -40,6 +40,8 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
     @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
     private ParticipantListAdapter adapter;
     @Nullable
     private OnItemClickListener<User> itemClickListener;
@@ -47,6 +49,8 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     private OnItemLongClickListener<User> itemLongClickListener;
     @Nullable
     private OnItemClickListener<User> profileClickListener;
+    @Nullable
+    private OnItemClickListener<User> actionItemClickListener;
 
     @NonNull
     @Override
@@ -106,6 +110,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ParticipantViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> ParticipantListFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener);
     }
 
     /**
@@ -122,6 +127,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         listComponent.setOnItemClickListener(itemClickListener);
         listComponent.setOnItemLongClickListener(itemLongClickListener);
         listComponent.setOnProfileClickListener(profileClickListener != null ? profileClickListener : this::onProfileClicked);
+        listComponent.setOnActionItemClickListener(actionItemClickListener);
         viewModel.getUserList().observe(getViewLifecycleOwner(), users -> {
             Logger.dev("++ observing result members size : %s", users.size());
             if (channel == null) return;
@@ -183,6 +189,8 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
         @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
         private ParticipantListAdapter adapter;
         @Nullable
         private OnItemClickListener<User> itemClickListener;
@@ -190,6 +198,8 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         private OnItemLongClickListener<User> itemLongClickListener;
         @Nullable
         private OnItemClickListener<User> profileClickListener;
+        @Nullable
+        private OnItemClickListener<User> actionItemClickListener;
 
         /**
          * Constructor
@@ -299,6 +309,45 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         }
 
         /**
+         * Sets whether the right button of the header is used.
+         *
+         * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
+         *                            <code>false</code> otherwise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        @NonNull
+        public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
+            bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
+            return this;
+        }
+
+        /**
+         * Sets the icon on the right button of the header.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         */
+        @NonNull
+        public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
+            return setHeaderRightButtonIcon(resId, null);
+        }
+
+        /**
+         * Sets the icon on the right button of the header.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 2.1.0
+         */
+        @NonNull
+        public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
+            bundle.putInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, resId);
+            bundle.putParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT, tint);
+            return this;
+        }
+
+        /**
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
@@ -337,6 +386,19 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Sets the click listener on the left button of the header.
          *
          * @param listener The callback that will run.
@@ -348,6 +410,20 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
             this.headerLeftButtonClickListener = listener;
             return this;
         }
+
+        /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
 
         /**
          * Sets the participants list adapter.
@@ -413,6 +489,19 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         }
 
         /**
+         * Register a callback to be invoked when the action button of the item is clicked.
+         *
+         * @param actionItemClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnActionItemClickListener(@Nullable OnItemClickListener<User> actionItemClickListener) {
+            this.actionItemClickListener = actionItemClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link ParticipantListFragment} with the arguments supplied to this
          * builder.
          *
@@ -423,10 +512,12 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
             ParticipantListFragment fragment = new ParticipantListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
             fragment.adapter = adapter;
             fragment.itemClickListener = itemClickListener;
             fragment.itemLongClickListener = itemLongClickListener;
             fragment.profileClickListener = profileClickListener;
+            fragment.actionItemClickListener = actionItemClickListener;
             return fragment;
         }
     }

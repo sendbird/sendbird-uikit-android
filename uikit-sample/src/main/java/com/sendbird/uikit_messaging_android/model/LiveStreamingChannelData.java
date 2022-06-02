@@ -13,6 +13,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Model class for a live streaming channel data.
+ */
 public class LiveStreamingChannelData {
     private final String name;
     private final List<String> tags = new ArrayList<>();

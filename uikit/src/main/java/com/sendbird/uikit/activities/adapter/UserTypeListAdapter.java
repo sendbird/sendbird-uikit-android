@@ -217,14 +217,14 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
             this.binding = binding;
 
             binding.userViewHolder.setOnClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && listener != null) {
                     listener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
             binding.userViewHolder.setOnLongClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && longClickListener != null) {
                     longClickListener.onItemLongClick(v, userPosition, getItem(userPosition));
                     return true;
@@ -233,14 +233,14 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
             });
 
             binding.userViewHolder.setOnActionMenuClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && actionItemClickListener != null) {
                     actionItemClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
             binding.userViewHolder.setOnProfileClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && profileClickListener != null) {
                     profileClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }

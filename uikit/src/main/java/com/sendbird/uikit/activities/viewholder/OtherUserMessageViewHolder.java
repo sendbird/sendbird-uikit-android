@@ -36,7 +36,6 @@ public final class OtherUserMessageViewHolder extends GroupChannelMessageViewHol
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
-        otherUserMessageView.setHighlightMessageInfo(highlight);
         otherUserMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof GroupChannel) {
             otherUserMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);

@@ -13,6 +13,9 @@ import com.sendbird.uikit.modules.PromoteOperatorModule;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.vm.PromoteOperatorViewModel;
 
+/**
+ * Implements the customized <code>PromoteOperatorFragment</code>.
+ */
 public class CustomPromoteOperatorsFragment extends PromoteOperatorFragment {
     @NonNull
     @Override

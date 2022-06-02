@@ -18,6 +18,9 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 
 import java.util.List;
 
+/**
+ * Implements the customized <code>MemberListAdapter</code> to adapt the customized member list items.
+ */
 public class CustomMemberListAdapter extends MemberListAdapter {
     private OnItemClickListener<Member> actionItemClickListener;
     private OnItemClickListener<Member> profileClickListener;

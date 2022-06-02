@@ -15,6 +15,9 @@ import com.sendbird.uikit.activities.adapter.PromoteOperatorListAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
 
+/**
+ * Implements the customized <code>PromoteOperatorListAdapter</code> to adapt the promote operators list items.
+ */
 public class CustomPromoteOperatorListAdapter extends PromoteOperatorListAdapter {
     @NonNull
     @Override

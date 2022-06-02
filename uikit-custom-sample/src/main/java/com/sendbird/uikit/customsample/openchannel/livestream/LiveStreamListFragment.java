@@ -6,7 +6,9 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListFragment;
 
-
+/**
+ * Displays an open channel list screen used for live stream.
+ */
 public class LiveStreamListFragment extends OpenChannelListFragment {
     public LiveStreamListFragment() {
         super(new LiveStreamListAdapter());

@@ -16,6 +16,9 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.sendbird.uikit.R;
 
+/**
+ * This provides methods to draw icon and color.
+ */
 public class DrawableUtils {
     @Nullable
     public static Drawable setTintList(@NonNull Context context, int resId, int colorRes) {

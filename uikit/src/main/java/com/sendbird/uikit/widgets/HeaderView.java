@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +59,7 @@ public class HeaderView extends FrameLayout {
             binding.title.setText(titleText);
             binding.title.setTextAppearance(context, titleTextAppearance);
             binding.description.setTextAppearance(context, descTextAppearance);
+            binding.description.setTextSize(Dimension.DP, getResources().getDimension(R.dimen.sb_size_12));
 
             binding.leftButton.setImageResource(leftButtonIconResId);
             binding.leftButton.setBackgroundResource(leftButtonBackground);

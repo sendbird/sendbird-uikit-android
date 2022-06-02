@@ -500,6 +500,19 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Creates an {@link ChannelListFragment} with the arguments supplied to this
          * builder.
          *

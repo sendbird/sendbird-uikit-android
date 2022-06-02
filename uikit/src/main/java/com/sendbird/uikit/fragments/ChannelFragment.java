@@ -55,6 +55,7 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
+import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -63,7 +64,6 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
-import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.modules.ChannelModule;
@@ -139,6 +139,20 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @Nullable
     private OnInputTextChangedListener editModeTextChangedListener;
     @Nullable
+    private View.OnClickListener inputRightButtonClickListener;
+    @Nullable
+    private View.OnClickListener editModeCancelButtonClickListener;
+    @Nullable
+    private View.OnClickListener editModeSaveButtonClickListener;
+    @Nullable
+    private View.OnClickListener replyModeCloseButtonClickListener;
+    @Nullable
+    private OnInputModeChangedListener inputModeChangedListener;
+    @Nullable
+    private View.OnClickListener tooltipClickListener;
+    @Nullable
+    private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
     private MessageListAdapter adapter;
     @Nullable
     private MessageListParams params;
@@ -150,7 +164,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @NonNull
     private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     @NonNull
-    private final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
+    private final AtomicBoolean tryAnimateWhenMessageLoaded = new AtomicBoolean(false);
     @NonNull
     private final AtomicBoolean anchorDialogShowing = new AtomicBoolean(false);
     @Nullable
@@ -274,8 +288,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         messageListComponent.setOnEmojiReactionClickListener(emojiReactionClickListener != null ? emojiReactionClickListener : (view, position, message, reactionKey) -> toggleReaction(view, message, reactionKey));
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
-        messageListComponent.setOnTooltipClickListener(v -> scrollToBottom());
-        messageListComponent.setOnScrollBottomButtonClickListener(v -> scrollToBottom());
+        messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : v -> scrollToBottom());
+        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener != null ? scrollBottomButtonClickListener : v -> scrollToBottom());
 
         final ChannelModule module = getModule();
         viewModel.getMessageList().observe(getViewLifecycleOwner(), receivedMessageData -> {
@@ -326,7 +340,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 }
                 if (!isInitialCallFinished) {
                     BaseMessage willAnimateMessage = null;
-                    if (shouldAnimate.getAndSet(false)) {
+                    if (tryAnimateWhenMessageLoaded.getAndSet(false)) {
                         final List<BaseMessage> founded = viewModel.getMessagesByCreatedAt(viewModel.getStartingPoint());
                         Logger.i("++ founded=%s, startingPoint=%s", founded, viewModel.getStartingPoint());
                         if (founded.size() == 1) {
@@ -375,7 +389,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         Logger.d(">> ChannelFragment::onBindMessageInputComponent()");
         if (channel == null) return;
         inputComponent.setOnInputLeftButtonClickListener(inputLeftButtonClickListener != null ? inputLeftButtonClickListener : v -> showMediaSelectDialog());
-        inputComponent.setOnInputRightButtonClickListener(v -> {
+        inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 final Editable editableText = inputText.getText();
@@ -390,7 +404,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 sendUserMessage(params);
             }
         });
-        inputComponent.setOnEditModeSaveButtonClickListener(v -> {
+        inputComponent.setOnEditModeSaveButtonClickListener(editModeSaveButtonClickListener != null ? editModeSaveButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 if (null != targetMessage) {
@@ -405,10 +419,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         });
 
         inputComponent.setOnEditModeTextChangedListener(editModeTextChangedListener != null ? editModeTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
-        inputComponent.setOnEditModeCancelButtonClickListener(v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
-        inputComponent.setOnQuoteReplyModeCloseButtonClickListener(v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
+        inputComponent.setOnEditModeCancelButtonClickListener(editModeCancelButtonClickListener != null ? editModeCancelButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
+        inputComponent.setOnQuoteReplyModeCloseButtonClickListener(replyModeCloseButtonClickListener != null ? replyModeCloseButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
         inputComponent.setOnInputTextChangedListener(inputTextChangedListener != null ? inputTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
-        inputComponent.setOnInputModeChangedListener((before, current) -> {
+        inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : (before, current) -> {
             switch (current) {
                 case QUOTE_REPLY:
                 case EDIT:
@@ -847,7 +861,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             if (getViewModel().hasMessageById(message.getParentMessageId())) {
                 messageListComponent.moveToFocusedMessage(parentMessageCreatedAt, parentMessage);
             } else {
-                shouldAnimate.set(true);
+                tryAnimateWhenMessageLoaded.set(true);
                 loadInitial(parentMessageCreatedAt);
             }
         } else {
@@ -1356,6 +1370,21 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         private OnInputTextChangedListener editModeTextChangedListener;
         @Nullable
         private SuggestedMentionListAdapter suggestedMentionListAdapter;
+        @Nullable
+        private View.OnClickListener inputRightButtonClickListener;
+        @Nullable
+        private View.OnClickListener editModeCancelButtonClickListener;
+        @Nullable
+        private View.OnClickListener editModeSaveButtonClickListener;
+        @Nullable
+        private View.OnClickListener replyModeCloseButtonClickListener;
+        @Nullable
+        private OnInputModeChangedListener inputModeChangedListener;
+        @Nullable
+        private View.OnClickListener tooltipClickListener;
+        @Nullable
+        private View.OnClickListener scrollBottomButtonClickListener;
+
 
         /**
          * Constructor
@@ -1881,6 +1910,19 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
          * Sets the listener invoked when a text of message input is edited.
          *
          * @param editModeTextChangedListener The callback that will run.
@@ -1916,19 +1958,6 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         @NonNull
         public Builder setOnInputTextChangedListener(@NonNull OnInputTextChangedListener inputTextChangedListener) {
             this.inputTextChangedListener = inputTextChangedListener;
-            return this;
-        }
-
-        /**
-         * Sets the information of the message to highlight.
-         *
-         * @param highlightMessageInfo The information of the message to highlight.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
-         */
-        @NonNull
-        public Builder setHighlightMessageInfo(@NonNull HighlightMessageInfo highlightMessageInfo) {
-            bundle.putParcelable(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO, highlightMessageInfo);
             return this;
         }
 
@@ -1989,19 +2018,6 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
 
         /**
-         * Sets the UI configuration of searched text.
-         *
-         * @param searchedTextUIConfig the UI configuration of searched text.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
-         */
-        @NonNull
-        public Builder setSearchedTextUIConfig(@NonNull TextUIConfig searchedTextUIConfig) {
-            bundle.putParcelable(StringSet.KEY_SEARCHED_TEXT_UI_CONFIG, searchedTextUIConfig);
-            return this;
-        }
-
-        /**
          * Sets the UI configuration of edited text mark.
          *
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
@@ -2015,6 +2031,110 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
             if (configSentFromOthers != null)
                 bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the right button of the input is clicked.
+         *
+         * @param inputRightButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
+            this.inputRightButtonClickListener = inputRightButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the cancel button is clicked, when the input is the edited mode.
+         *
+         * @param editModeCancelButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
+            this.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the save button is clicked, when the input is the edited mode.
+         *
+         * @param editModeSaveButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
+            this.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the close button is clicked, when the input is the quote reply mode.
+         *
+         * @param replyModeCloseButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnQuoteReplyModeCloseButtonClickListener(@Nullable View.OnClickListener replyModeCloseButtonClickListener) {
+            this.replyModeCloseButtonClickListener = replyModeCloseButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the input mode is changed.
+         *
+         * @param inputModeChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
+            this.inputModeChangedListener = inputModeChangedListener;
+            return this;
+        }
+
+        /**
+         * Sets whether to use divider in suggested mention list.
+         *
+         * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setUseSuggestedMentionListDivider(boolean useDivider) {
+            bundle.putBoolean(StringSet.KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER, useDivider);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the tooltip view is clicked.
+         *
+         * @param tooltipClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnTooltipClickListener(@Nullable View.OnClickListener tooltipClickListener) {
+            this.tooltipClickListener = tooltipClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the button to scroll to the bottom is clicked.
+         *
+         * @param scrollBottomButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
+            this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
             return this;
         }
 
@@ -2044,8 +2164,20 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             fragment.quoteReplyMessageClickListener = quoteReplyMessageClickListener;
             fragment.quoteReplyMessageLongClickListener = quoteReplyMessageLongClickListener;
             fragment.suggestedMentionListAdapter = suggestedMentionListAdapter;
+            fragment.inputRightButtonClickListener = inputRightButtonClickListener;
+            fragment.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
+            fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
+            fragment.replyModeCloseButtonClickListener = replyModeCloseButtonClickListener;
+            fragment.inputModeChangedListener = inputModeChangedListener;
+            fragment.tooltipClickListener = tooltipClickListener;
+            fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
             fragment.adapter = adapter;
             fragment.params = params;
+
+            // set animation flag to TRUE to animate searched text.
+            if (bundle.containsKey(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED)) {
+                fragment.tryAnimateWhenMessageLoaded.set(true);
+            }
             return fragment;
         }
     }

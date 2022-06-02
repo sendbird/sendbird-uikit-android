@@ -15,11 +15,17 @@ import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
+/**
+ * Base application to initialize Sendbird UIKit.
+ */
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
+    /**
+     * Initializes Sendbird UIKit
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -86,14 +92,25 @@ public class BaseApplication extends MultiDexApplication {
 
         boolean useDarkTheme = PreferenceUtils.isUsingDarkTheme();
         SendbirdUIKit.setDefaultThemeMode(useDarkTheme ? SendbirdUIKit.ThemeMode.Dark : SendbirdUIKit.ThemeMode.Light);
+        // register push notification
         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
+        // set logger
         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
+        // set whether to use user profile
         SendbirdUIKit.setUseDefaultUserProfile(true);
+        // set whether to use typing indicators in channel list
         SendbirdUIKit.setUseChannelListTypingIndicators(true);
+        // set whether to use read/delivery receipt in channel list
         SendbirdUIKit.setUseChannelListMessageReceiptStatus(true);
+        // set whether to use user mention
         SendbirdUIKit.setUseUserMention(true);
     }
 
+    /**
+     * Returns the state of the result from initialization of Sendbird UIKit.
+     *
+     * @return the {@link InitState} instance
+     */
     @NonNull
     public static LiveData<InitState> initStateChanges() {
         return initState;

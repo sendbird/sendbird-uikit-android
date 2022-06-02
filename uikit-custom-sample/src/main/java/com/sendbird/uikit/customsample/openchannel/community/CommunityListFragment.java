@@ -15,7 +15,9 @@ import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListFragment;
 import com.sendbird.uikit.log.Logger;
 
-
+/**
+ * Displays an open channel list screen used for community.
+ */
 public class CommunityListFragment extends OpenChannelListFragment {
     public CommunityListFragment() {
         super(new CommunityListAdapter());

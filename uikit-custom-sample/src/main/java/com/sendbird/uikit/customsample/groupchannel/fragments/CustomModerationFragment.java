@@ -9,6 +9,9 @@ import com.sendbird.uikit.customsample.groupchannel.components.CustomModerationL
 import com.sendbird.uikit.fragments.ModerationFragment;
 import com.sendbird.uikit.modules.ModerationModule;
 
+/**
+ * Implements the customized <code>ModerationFragment</code>.
+ */
 public class CustomModerationFragment extends ModerationFragment {
     @NonNull
     @Override

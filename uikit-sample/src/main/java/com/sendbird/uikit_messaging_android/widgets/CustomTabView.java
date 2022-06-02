@@ -17,6 +17,9 @@ import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
+/**
+ * View displaying icon and badge in tabs.
+ */
 public class CustomTabView extends FrameLayout {
     private int tintColorRedId;
     private TextView badgeView;

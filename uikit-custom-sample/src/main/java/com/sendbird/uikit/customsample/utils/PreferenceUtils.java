@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
+/**
+ * This provides methods to manage preferences data.
+ */
 public class PreferenceUtils {
 
     private static final String PREFERENCE_KEY_USER_ID = "PREFERENCE_KEY_USER_ID";

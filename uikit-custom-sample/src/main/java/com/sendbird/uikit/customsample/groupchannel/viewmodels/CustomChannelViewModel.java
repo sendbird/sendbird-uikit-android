@@ -10,6 +10,9 @@ import com.sendbird.uikit.vm.ChannelViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements the customized <code>ChannelViewModel</code> to manage data related to the <code>GroupChannel</code>.
+ */
 public class CustomChannelViewModel extends ChannelViewModel {
     public CustomChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams) {
         super(channelUrl, messageListParams);

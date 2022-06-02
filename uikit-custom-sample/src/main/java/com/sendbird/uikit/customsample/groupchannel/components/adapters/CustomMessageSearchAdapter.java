@@ -17,6 +17,9 @@ import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 
+/**
+ * Implements the customized <code>MessageSearchAdapter</code> to adapt the customized search list items.
+ */
 public class CustomMessageSearchAdapter extends MessageSearchAdapter {
     @Nullable
     private OnItemClickListener<BaseMessage> itemClickListener;

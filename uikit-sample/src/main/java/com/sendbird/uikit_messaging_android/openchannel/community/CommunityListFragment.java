@@ -18,6 +18,9 @@ import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListFragment;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
+/**
+ * Displays an open channel list screen used for community.
+ */
 public class CommunityListFragment extends OpenChannelListFragment {
     public CommunityListFragment() {
         super(new CommunityListAdapter());

@@ -19,6 +19,9 @@ import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
+/**
+ * Displays a login screen.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override

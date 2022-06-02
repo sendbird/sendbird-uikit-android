@@ -160,7 +160,7 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
             this.binding = binding;
 
             this.binding.getRoot().setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (position != NO_POSITION && listener != null) {
                     BaseMessage message = getItem(position);
                     listener.onItemClick(v, position, message);

@@ -15,6 +15,9 @@ import com.sendbird.android.Member;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.ChannelSettingsMenuComponent;
 
+/**
+ * Implements the customized <code>ChannelSettingsMenuComponent</code>.
+ */
 public class CustomChannelSettingsMenuComponent extends ChannelSettingsMenuComponent {
     private View view;
 

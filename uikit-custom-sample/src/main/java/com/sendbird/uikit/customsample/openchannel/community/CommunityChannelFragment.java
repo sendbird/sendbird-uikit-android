@@ -14,6 +14,9 @@ import com.sendbird.uikit.modules.OpenChannelModule;
 import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 import com.sendbird.uikit.vm.OpenChannelViewModel;
 
+/**
+ * Displays an open channel screen used for community.
+ */
 public class CommunityChannelFragment extends OpenChannelFragment {
     private CustomMessageType customMessageType = CustomMessageType.NONE;
 

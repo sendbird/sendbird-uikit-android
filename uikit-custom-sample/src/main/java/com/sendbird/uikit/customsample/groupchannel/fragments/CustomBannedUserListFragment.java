@@ -11,6 +11,9 @@ import com.sendbird.uikit.fragments.BannedUserListFragment;
 import com.sendbird.uikit.modules.BannedUserListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>BannedUserListFragment</code>.
+ */
 public class CustomBannedUserListFragment extends BannedUserListFragment {
     @NonNull
     @Override

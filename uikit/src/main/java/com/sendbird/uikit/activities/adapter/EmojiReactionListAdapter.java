@@ -87,7 +87,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
         if (type == VIEW_EMOJI_REACTION_MORE) {
             holder.itemView.setOnClickListener(v -> {
-                int reactionPosition = holder.getAdapterPosition();
+                int reactionPosition = holder.getBindingAdapterPosition();
                 if (reactionPosition != NO_POSITION && moreButtonClickListener != null) {
                     moreButtonClickListener.onClick(v);
                 }
@@ -104,7 +104,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
             Logger.d("++ isClickable = %s, longClickable=%s", clickable, longClickable);
             if (this.clickable) {
                 holder.itemView.setOnClickListener(v -> {
-                    int reactionPosition = holder.getAdapterPosition();
+                    int reactionPosition = holder.getBindingAdapterPosition();
                     if (reactionPosition != NO_POSITION && emojiReactionClickListener != null) {
                         final Reaction reaction = getItem(reactionPosition);
                         emojiReactionClickListener.onItemClick(v,
@@ -118,7 +118,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
             if (this.longClickable) {
                 holder.itemView.setOnLongClickListener(v -> {
-                    int reactionPosition = holder.getAdapterPosition();
+                    int reactionPosition = holder.getBindingAdapterPosition();
                     if (reactionPosition != NO_POSITION && emojiReactionLongClickListener != null) {
                         final Reaction reaction = getItem(reactionPosition);
                         emojiReactionLongClickListener.onItemLongClick(v,

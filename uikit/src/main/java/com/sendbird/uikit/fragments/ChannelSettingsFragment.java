@@ -22,6 +22,7 @@ import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.ChannelPushSettingActivity;
 import com.sendbird.uikit.activities.MemberListActivity;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.ModerationActivity;
@@ -59,6 +60,8 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     private Uri mediaUri;
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
     @Nullable
     private OnItemClickListener<ChannelSettingsMenuComponent.Menu> menuItemClickListener;
     @Nullable
@@ -167,7 +170,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     protected void onBindHeaderComponent(@NonNull ChannelSettingsHeaderComponent headerComponent, @NonNull ChannelSettingsViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelSettingsFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(v -> showChannelInfoEditDialog());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> showChannelInfoEditDialog());
     }
 
     /**
@@ -198,7 +201,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
             if (menu == ChannelSettingsMenuComponent.Menu.MODERATIONS) {
                 startModerationsActivity();
             } else if (menu == ChannelSettingsMenuComponent.Menu.NOTIFICATIONS) {
-                toggleNotification();
+                startChannelPushSettingActivity();
             } else if (menu == ChannelSettingsMenuComponent.Menu.MEMBERS) {
                 startMemberListActivity();
             } else if (menu == ChannelSettingsMenuComponent.Menu.LEAVE_CHANNEL) {
@@ -216,6 +219,12 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         }
     }
 
+    private void startChannelPushSettingActivity() {
+        if (isFragmentAlive()) {
+            startActivity(ChannelPushSettingActivity.newIntent(requireContext(), getViewModel().getChannelUrl()));
+        }
+    }
+
     private void startMessageSearchActivity() {
         if (isFragmentAlive()) {
             startActivity(MessageSearchActivity.newIntent(requireContext(), getViewModel().getChannelUrl()));
@@ -226,23 +235,6 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         if (isFragmentAlive()) {
             startActivity(MemberListActivity.newIntent(requireContext(), getViewModel().getChannelUrl()));
         }
-    }
-
-    private void toggleNotification() {
-        final ChannelSettingsViewModel viewModel = getViewModel();
-        shouldShowLoadingDialog();
-        viewModel.toggleNotification(e -> {
-            shouldDismissLoadingDialog();
-            if (e != null) {
-                Logger.e(e);
-                if (viewModel.getChannel() == null) return;
-                if (viewModel.getChannel().getMyPushTriggerOption() == GroupChannel.PushTriggerOption.ALL) {
-                    toastError(R.string.sb_text_error_push_notification_on);
-                } else {
-                    toastError(R.string.sb_text_error_push_notification_off);
-                }
-            }
-        });
     }
 
     private void showChannelInfoEditDialog() {
@@ -416,6 +408,8 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
         @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
         private OnItemClickListener<ChannelSettingsMenuComponent.Menu> menuItemClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
@@ -555,6 +549,32 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         }
 
         /**
+         * Sets the text on the right button of the header.
+         *
+         * @param rightButtonText The String to be displayed on the right button
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setRightButtonText(@Nullable String rightButtonText) {
+            bundle.putString(StringSet.KEY_HEADER_RIGHT_BUTTON_TEXT, rightButtonText);
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
          * Sets the channel setting menu click listener.
          *
          * @param listener The callback that will run.
@@ -591,6 +611,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
             final ChannelSettingsFragment fragment = new ChannelSettingsFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
             fragment.menuItemClickListener = menuItemClickListener;
             fragment.loadingDialogHandler = loadingDialogHandler;
             return fragment;

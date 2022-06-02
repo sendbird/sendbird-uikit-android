@@ -13,6 +13,9 @@ import com.sendbird.uikit.modules.InviteUserModule;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.vm.InviteUserViewModel;
 
+/**
+ * Implements the customized <code>InviteUserFragment</code>.
+ */
 public class CustomInviteUserFragment extends InviteUserFragment {
     @NonNull
     @Override

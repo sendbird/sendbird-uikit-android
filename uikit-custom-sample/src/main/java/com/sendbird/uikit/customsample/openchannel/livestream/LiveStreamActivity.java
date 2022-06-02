@@ -38,7 +38,7 @@ import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 /**
- * Activity displays a list of messages from a channel.
+ * Displays an open channel screen used for live stream.
  */
 public class LiveStreamActivity extends AppCompatActivity {
     private final String CHANNEL_HANDLER_KEY = getClass().getSimpleName() + System.currentTimeMillis();
@@ -49,6 +49,10 @@ public class LiveStreamActivity extends AppCompatActivity {
     private String inputText;
 
     private final HideHandler hideHandler = new HideHandler(this);
+
+    /**
+     * Hides the system UI for full screen.
+     */
     private static class HideHandler extends Handler {
         private final WeakReference<LiveStreamActivity> weakReference;
 
@@ -244,6 +248,14 @@ public class LiveStreamActivity extends AppCompatActivity {
         hideHandler.sendEmptyMessageDelayed(0, 300);
     }
 
+    /**
+     * Creates <code>OpenChannelFragment</code> with channel url.
+     * <p>
+     *     In preparation for screen configuration change, the value is initialized.
+     * </p>
+     * @param channelUrl The channel url to be applied to this screen
+     * @return <code>OpenChannelFragment</code> instance
+     */
     @NonNull
     protected OpenChannelFragment createOpenChannelFragment(@NonNull String channelUrl) {
         final Bundle args = new Bundle();

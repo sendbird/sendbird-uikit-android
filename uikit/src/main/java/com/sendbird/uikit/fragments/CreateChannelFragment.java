@@ -21,6 +21,8 @@ import com.sendbird.uikit.activities.adapter.CreateChannelUserListAdapter;
 import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
+import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
+import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
@@ -47,6 +49,12 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
     private CreateChannelUserListAdapter adapter;
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private OnUserSelectChangedListener userSelectChangedListener;
+    @Nullable
+    private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
     @NonNull
     @Override
@@ -98,7 +106,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
         Logger.d(">> CreateChannelFragment::onBindHeaderComponent()");
 
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(v -> {
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
             final CreateChannelUserListComponent listComponent = getModule().getUserListComponent();
             listComponent.notifySelectionComplete();
         });
@@ -113,11 +121,11 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      */
     protected void onBindUserListComponent(@NonNull CreateChannelUserListComponent listComponent, @NonNull CreateChannelViewModel viewModel) {
         Logger.d(">> CreateChannelFragment::onBindUserListComponent()");
-        listComponent.setOnUserSelectChangedListener((selectedUserIds, isSelected) -> {
+        listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> {
             final SelectUserHeaderComponent headerComponent = getModule().getHeaderComponent();
             headerComponent.notifySelectedUserChanged(selectedUserIds.size());
         });
-        listComponent.setOnUserSelectionCompleteListener(CreateChannelFragment.this::onUserSelectionCompleted);
+        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : CreateChannelFragment.this::onUserSelectionCompleted);
         viewModel.getUserList().observe(getViewLifecycleOwner(), listComponent::notifyDataSetChanged);
     }
 
@@ -237,6 +245,12 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
         private CreateChannelUserListAdapter adapter;
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
+        private OnUserSelectChangedListener userSelectChangedListener;
+        @Nullable
+        private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
         /**
          * Constructor
@@ -441,6 +455,19 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
         }
 
         /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
+            return this;
+        }
+
+        /**
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
@@ -469,6 +496,45 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
         }
 
         /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the user is selected.
+         *
+         * @param userSelectChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
+            this.userSelectChangedListener = userSelectChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when selecting users is completed.
+         *
+         * @param userSelectionCompleteListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
+            this.userSelectionCompleteListener = userSelectionCompleteListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link CreateChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -481,6 +547,9 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.userSelectChangedListener = userSelectChangedListener;
+            fragment.userSelectionCompleteListener = userSelectionCompleteListener;
             return fragment;
         }
     }

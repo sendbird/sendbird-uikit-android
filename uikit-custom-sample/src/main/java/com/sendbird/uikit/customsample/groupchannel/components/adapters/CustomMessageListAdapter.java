@@ -22,6 +22,9 @@ import com.sendbird.uikit.customsample.groupchannel.components.viewholders.Highl
 import com.sendbird.uikit.customsample.groupchannel.components.viewholders.HighlightMessageOtherViewHolder;
 import com.sendbird.uikit.utils.MessageUtils;
 
+/**
+ * Implements the customized <code>MessageListAdapter</code> to adapt the customized message items.
+ */
 public class CustomMessageListAdapter extends MessageListAdapter {
 
     public static final int VIEW_HIGHLIGHT_MESSAGE_ME_TYPE = 1001;

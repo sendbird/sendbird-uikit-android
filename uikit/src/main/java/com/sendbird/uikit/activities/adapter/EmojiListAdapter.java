@@ -113,10 +113,10 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
             }
 
             holder.itemView.setOnClickListener(v -> {
-                Emoji emoji = getItem(holder.getAdapterPosition());
+                Emoji emoji = getItem(holder.getBindingAdapterPosition());
                 if (emojiClickListener != null && emoji != null) {
                     emojiClickListener.onItemClick(v,
-                            holder.getAdapterPosition(),
+                            holder.getBindingAdapterPosition(),
                             emoji.getKey());
                 }
             });

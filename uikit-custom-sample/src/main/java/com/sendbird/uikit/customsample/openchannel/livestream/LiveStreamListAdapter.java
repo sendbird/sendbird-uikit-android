@@ -24,6 +24,9 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+/**
+ * RecyclerView adapter for <code>OpenChannel</code> list used for live stream.
+ */
 public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamListAdapter.LiveStreamingListViewHolder> {
     @NonNull
     @Override

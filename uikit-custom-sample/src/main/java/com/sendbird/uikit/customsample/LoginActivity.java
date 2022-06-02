@@ -18,6 +18,9 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.widgets.WaitingDialog;
 
+/**
+ * Displays a login screen.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override

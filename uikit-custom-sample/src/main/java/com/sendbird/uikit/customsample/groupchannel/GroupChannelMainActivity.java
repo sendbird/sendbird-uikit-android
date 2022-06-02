@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Displays a group channel list screen.
+ */
 public class GroupChannelMainActivity extends AppCompatActivity {
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY";
     private CustomTabView unreadCountTab;

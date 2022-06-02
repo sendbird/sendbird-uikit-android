@@ -157,7 +157,7 @@ public class MessageInputComponent {
         this.messageInputView.setOnEditModeTextChangedListener(this::onEditModeTextChanged);
         this.messageInputView.setOnReplyCloseClickListener(this::onQuoteReplyModeCloseButtonClicked);
         this.messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
-
+        this.setUseSuggestedMentionListDivider(params.useSuggestedMentionListDivider);
         return messageInputView;
     }
 
@@ -421,7 +421,7 @@ public class MessageInputComponent {
         final MessageInputView.Mode mode = inputView.getInputMode();
         if (MessageInputView.Mode.EDIT == mode) {
             if (message != null) {
-                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig);
+                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig, null, true);
                 inputView.setInputText(text);
             }
             inputView.showKeyboard();
@@ -496,6 +496,7 @@ public class MessageInputComponent {
     public static class Params {
         private boolean useLeftButton = true;
         private boolean alwaysShowRightButton = false;
+        private boolean useSuggestedMentionListDivider = true;
         @Nullable
         private Drawable leftButtonIcon;
         @Nullable
@@ -618,6 +619,16 @@ public class MessageInputComponent {
         }
 
         /**
+         * Sets whether to use divider in suggested mention list.
+         *
+         * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
+         * @since 3.0.0
+         */
+        public void setUseSuggestedMentionListDivider(boolean useDivider) {
+            this.useSuggestedMentionListDivider = useDivider;
+        }
+
+        /**
          * Returns the keyboard display type. (Refer to {@link KeyboardDisplayType})
          *
          * @return Keyboard display type used in this component
@@ -716,6 +727,16 @@ public class MessageInputComponent {
         }
 
         /**
+         * Returns whether to use divider in suggested mention list.
+         *
+         * @return If <code>true</code> the divider is used at suggested mention list, <code>false</code> other wise.
+         * @since 3.0.0
+         */
+        public boolean shouldUseSuggestedMentionListDivider() {
+            return useSuggestedMentionListDivider;
+        }
+
+        /**
          * Sets the UI configuration of mentioned text.
          *
          * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
@@ -740,6 +761,7 @@ public class MessageInputComponent {
          * {@code KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS} is mapped to {@link #showInputRightButtonAlways()}
          * {@code KEY_KEYBOARD_DISPLAY_TYPE} is mapped to {@link #setKeyboardDisplayType(KeyboardDisplayType)}
          * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
+         * {@code KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER} is mapped to {@link #setUseSuggestedMentionListDivider(boolean)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -781,6 +803,9 @@ public class MessageInputComponent {
                 }
             }
             setMentionUIConfig(args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS));
+            if (args.containsKey(StringSet.KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER)) {
+                setUseSuggestedMentionListDivider(args.getBoolean(StringSet.KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER));
+            }
             return this;
         }
     }

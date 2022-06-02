@@ -11,6 +11,9 @@ import com.sendbird.uikit.fragments.OperatorListFragment;
 import com.sendbird.uikit.modules.OperatorListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 
+/**
+ * Implements the customized <code>OperatorListFragment</code>.
+ */
 public class CustomOperatorListFragment extends OperatorListFragment {
     @NonNull
     @Override

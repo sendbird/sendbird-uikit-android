@@ -115,7 +115,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         for (Map.Entry<String, View> entry : views.entrySet()) {
             final String identifier = entry.getKey();
             entry.getValue().setOnClickListener(v -> {
-                int messagePosition = viewHolder.getAdapterPosition();
+                int messagePosition = viewHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION) {
                     if (listItemClickListener != null) {
                         listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
@@ -124,7 +124,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
             });
 
             entry.getValue().setOnLongClickListener(v -> {
-                int messagePosition = viewHolder.getAdapterPosition();
+                int messagePosition = viewHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION) {
                     if (listItemLongClickListener != null) {
                         listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));

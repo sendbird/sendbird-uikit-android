@@ -16,6 +16,9 @@ import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.MessageSearchHeaderComponent;
 import com.sendbird.uikit.utils.TextUtils;
 
+/**
+ * Implements the customized <code>MessageSearchHeaderComponent</code>.
+ */
 public class CustomMessageSearchHeaderComponent extends MessageSearchHeaderComponent {
     private EditText input;
     @Nullable

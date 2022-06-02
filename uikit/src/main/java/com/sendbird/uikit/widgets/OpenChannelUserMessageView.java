@@ -26,7 +26,6 @@ import com.sendbird.uikit.utils.ViewUtils;
 
 public class OpenChannelUserMessageView extends OpenChannelMessageView {
     private final SbViewOpenChannelUserMessageComponentBinding binding;
-    private final int editedAppearance;
     private final int operatorAppearance;
     private final int nicknameAppearance;
     private final int marginLeftEmpty;
@@ -58,7 +57,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             int ogtagBackground = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_background, R.drawable.selector_open_channel_message_bg_light);
             nicknameAppearance = a.getResourceId(R.styleable.MessageView_sb_message_sender_name_text_appearance, R.style.SendbirdCaption1OnLight02);
             operatorAppearance = a.getResourceId(R.styleable.MessageView_sb_message_operator_name_text_appearance, R.style.SendbirdCaption1Secondary300);
-            editedAppearance = a.getResourceId(R.styleable.MessageView_sb_message_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
+            int editedAppearance = a.getResourceId(R.styleable.MessageView_sb_message_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
 
             binding.ogTag.setBackgroundResource(ogtagBackground);
             binding.tvMessage.setTextAppearance(context, messageAppearance);
@@ -91,7 +90,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
 
     @Override
     public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
-        ViewUtils.drawTextMessage(binding.tvMessage, message, highlightMessageInfo, messageUIConfig);
+        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig);
 
         binding.ogTag.drawOgtag(message.getOgMetaData());
         binding.ivStatus.drawStatus(message, channel);

@@ -13,6 +13,9 @@ import com.sendbird.uikit.modules.CreateChannelModule;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.vm.CreateChannelViewModel;
 
+/**
+ * Implements the customized <code>CreateChannelFragment</code>.
+ */
 public class CustomCreateChannelFragment extends CreateChannelFragment {
     @NonNull
     @Override

@@ -16,6 +16,9 @@ import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 
+/**
+ * Implements the customized <code>SuggestedMentionListAdapter</code> to adapt the suggested mention user list items.
+ */
 public class CustomSuggestedMentionListAdapter extends SuggestedMentionListAdapter {
    @Nullable
    private OnItemClickListener<User> itemClickListener;
