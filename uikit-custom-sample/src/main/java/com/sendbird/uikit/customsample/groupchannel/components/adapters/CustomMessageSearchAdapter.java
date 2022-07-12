@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;

@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewSuggestedUserPreviewBinding;
@@ -22,6 +22,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * SuggestedMentionListAdapter provides a binding from a {@link User} type data set to views that are displayed within a RecyclerView.
@@ -32,6 +33,8 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
 
     @NonNull
     final private List<User> users = new ArrayList<>();
+    @NonNull
+    private List<SuggestedUserInfo> cachedUsers = new ArrayList<>();
     @Nullable
     private OnItemClickListener<User> listener;
     @Nullable
@@ -204,11 +207,13 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      */
     @Override
     public void setItems(@NonNull List<User> userList) {
-        final UserTypeDiffCallback<User> diffCallback = new UserTypeDiffCallback<>(this.users, userList);
+        final List<SuggestedUserInfo> newUserList = SuggestedUserInfo.toUserInfoList(userList);
+        final UserTypeDiffCallback<SuggestedUserInfo> diffCallback = new UserTypeDiffCallback<>(this.cachedUsers, newUserList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
         this.users.clear();
         this.users.addAll(userList);
+        this.cachedUsers = newUserList;
         diffResult.dispatchUpdatesTo(this);
     }
 
@@ -250,7 +255,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
         }
     }
 
-    private static class UserTypeDiffCallback<T extends User> extends DiffUtil.Callback {
+    private static class UserTypeDiffCallback<T extends SuggestedUserInfo> extends DiffUtil.Callback {
         @NonNull
         private final List<T> oldUserList;
         @NonNull
@@ -288,16 +293,91 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
                 return false;
             }
 
-            final String oldNickname = oldUser.getNickname();
-            final String newNickname = newUser.getNickname() != null ? newUser.getNickname() : "";
+            final String oldId = oldUser.getUserId();
+            final String newId = newUser.getUserId();
+            if (!newId.equals(oldId)) {
+                return false;
+            }
+
+            final String oldNickname = oldUser.getUserNickname();
+            final String newNickname = newUser.getUserNickname();
             if (!newNickname.equals(oldNickname)) {
                 return false;
             }
 
             final String oldProfileUrl = oldUser.getProfileUrl();
-            final String newProfileUrl = newUser.getProfileUrl() != null ? newUser.getProfileUrl() : "";
+            final String newProfileUrl = newUser.getProfileUrl();
 
             return newProfileUrl.equals(oldProfileUrl);
+        }
+    }
+
+    private static class SuggestedUserInfo {
+        @NonNull
+        private final String userId;
+        @NonNull
+        private final String userNickname;
+        @NonNull
+        private final String profileUrl;
+
+        SuggestedUserInfo(@NonNull User user) {
+            this.userId = user.getUserId();
+            this.userNickname = user.getNickname();
+            this.profileUrl = user.getProfileUrl();
+        }
+
+        @NonNull
+        String getUserId() {
+            return userId;
+        }
+
+        @NonNull
+        String getUserNickname() {
+            return userNickname;
+        }
+
+        @NonNull
+        String getProfileUrl() {
+            return profileUrl;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            SuggestedUserInfo that = (SuggestedUserInfo) o;
+
+            if (!userId.equals(that.userId)) return false;
+            if (!userNickname.equals(that.userNickname)) return false;
+            return Objects.equals(profileUrl, that.profileUrl);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = userId.hashCode();
+            result = 31 * result + userNickname.hashCode();
+            result = 31 * result + profileUrl.hashCode();
+            return result;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "UserInfo{" +
+                    "userId='" + userId + '\'' +
+                    ", userNickname='" + userNickname + '\'' +
+                    ", profileUrl='" + profileUrl + '\'' +
+                    '}';
+        }
+
+        @NonNull
+        static List<SuggestedUserInfo> toUserInfoList(@NonNull List<User> userList) {
+            List<SuggestedUserInfo> results = new ArrayList<>();
+            for (User user : userList) {
+                results.add(new SuggestedUserInfo(user));
+            }
+            return results;
         }
     }
 }

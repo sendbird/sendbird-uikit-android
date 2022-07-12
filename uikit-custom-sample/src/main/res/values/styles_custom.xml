@@ -23,7 +23,7 @@
         <item name="sb_module_muted_member_list">@style/Module.MutedMemberList</item>
         <item name="sb_module_operator_list">@style/Module.OperatorList</item>
         <item name="sb_module_participant_list">@style/Module.ParticipantList</item>
-        <item name="sb_module_promote_operator_list">@style/Module.PromoteOperator</item>
+        <item name="sb_module_register_operator_list">@style/Module.RegisterOperator</item>
 
         <item name="sb_component_channel_message_input">@style/Component.ChannelMessageInput</item>
         <item name="sb_component_channel_settings_info">@style/Component.ChannelSettingsInfo</item>

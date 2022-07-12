@@ -5,11 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.handler.ConnectionHandler;
+import com.sendbird.android.handler.OpenChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
@@ -59,14 +63,13 @@ public class ParticipantViewModel extends BaseViewModel implements OnPagedDataLo
         super();
         this.channelUrl = channelUrl;
         this.queryHandler = queryHandler == null ? createQueryHandler(channelUrl) : queryHandler;
-
-        SendBird.addChannelHandler(CHANNEL_HANDLER_MEMBER_LIST, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_MEMBER_LIST, new OpenChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
+            public void onMessageReceived(@NonNull BaseChannel baseChannel, @NonNull BaseMessage baseMessage) {
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> UserViewModel::onChannelDeleted()");
                     channelDeleted.postValue(true);
@@ -74,17 +77,18 @@ public class ParticipantViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 updateChannel(channel);
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> UserViewModel::onUserBanned()");
                     channelDeleted.postValue(true);
                 }
             }
 
             @Override
-            public void onChannelChanged(BaseChannel channel) {
+            public void onChannelChanged(@NonNull BaseChannel channel) {
                 updateChannel(channel);
             }
         });
@@ -93,8 +97,8 @@ public class ParticipantViewModel extends BaseViewModel implements OnPagedDataLo
     @Override
     protected void onCleared() {
         super.onCleared();
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_MEMBER_LIST);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_MEMBER_LIST);
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
@@ -105,19 +109,31 @@ public class ParticipantViewModel extends BaseViewModel implements OnPagedDataLo
         if (e != null) {
             Logger.e(e);
             if (isInitialRequest) {
-                SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+                SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+                    @Override
+                    public void onConnected(@NonNull String s) {
+
+                    }
+
+                    @Override
+                    public void onDisconnected(@NonNull String s) {
+
+                    }
+
                     @Override
                     public void onReconnectStarted() {
+
                     }
 
                     @Override
                     public void onReconnectSucceeded() {
-                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
                         loadInitial();
                     }
 
                     @Override
                     public void onReconnectFailed() {
+
                     }
                 });
                 return;

@@ -16,10 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.OpenChannelParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.params.OpenChannelUpdateParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ParticipantListActivity;
@@ -84,7 +84,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
@@ -110,13 +110,14 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
             }
 
             @Override
-            public void onResultForUiThread(@Nullable File file, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable File file, @Nullable SendbirdException e) {
                 if (e != null) {
                     Logger.w(e);
                     return;
                 }
                 if (isFragmentAlive()) {
-                    OpenChannelParams params = new OpenChannelParams().setCoverImage(file);
+                    OpenChannelUpdateParams params = new OpenChannelUpdateParams();
+                    params.setCoverImage(file);
                     toastSuccess(R.string.sb_text_toast_success_start_upload_file);
                     updateOpenChannel(params);
                 }
@@ -127,7 +128,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
     }
 
     @Override
@@ -223,7 +224,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
 
                 Logger.dev("change channel name");
                 OnEditTextResultListener listener = res -> {
-                    OpenChannelParams params = new OpenChannelParams().setName(res);
+                    OpenChannelUpdateParams params = new OpenChannelUpdateParams();
+                    params.setName(res);
                     updateOpenChannel(params);
                 };
 
@@ -272,7 +274,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
-                        SendBird.setAutoBackgroundDetection(false);
+                        SendbirdChat.setAutoBackgroundDetection(false);
                         if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
@@ -296,7 +298,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
     }
 
@@ -304,17 +306,17 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * It will be called before updating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link OpenChannelParams}.
+     * @param params Params of channel. Refer to {@link OpenChannelUpdateParams}.
      */
-    protected void onBeforeUpdateOpenChannel(@NonNull OpenChannelParams params) {
+    protected void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams params) {
     }
 
     /**
      * Update this channel with OpenChannelParams.
      *
-     * @param params Params of channel. Refer to {@link OpenChannelParams}.
+     * @param params Params of channel. Refer to {@link OpenChannelUpdateParams}.
      */
-    protected void updateOpenChannel(@NonNull OpenChannelParams params) {
+    protected void updateOpenChannel(@NonNull OpenChannelUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
             customHandler.onBeforeUpdateOpenChannel(params);

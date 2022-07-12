@@ -3,8 +3,8 @@ package com.sendbird.uikit.vm;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.vm.queries.OperatorListQuery;
 
@@ -14,7 +14,7 @@ import com.sendbird.uikit.vm.queries.OperatorListQuery;
  * @since 3.0.0
  */
 public class OperatorListViewModel extends UserViewModel<User> {
-    private final BaseChannel.ChannelType channelType;
+    private final ChannelType channelType;
 
     /**
      * Constructor
@@ -24,9 +24,9 @@ public class OperatorListViewModel extends UserViewModel<User> {
      * @param queryHandler A callback to be invoked when a list of data is loaded.
      * @since 3.0.0
      */
-    public OperatorListViewModel(@NonNull String channelUrl, @Nullable BaseChannel.ChannelType channelType, @Nullable PagedQueryHandler<User> queryHandler) {
+    public OperatorListViewModel(@NonNull String channelUrl, @Nullable ChannelType channelType, @Nullable PagedQueryHandler<User> queryHandler) {
         super(channelUrl, queryHandler);
-        this.channelType = channelType == null ? BaseChannel.ChannelType.GROUP : channelType;
+        this.channelType = channelType == null ? ChannelType.GROUP : channelType;
     }
 
     /**

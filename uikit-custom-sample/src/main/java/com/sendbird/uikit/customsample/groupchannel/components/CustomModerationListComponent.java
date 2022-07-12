@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.widget.NestedScrollView;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.ModerationListComponent;
 

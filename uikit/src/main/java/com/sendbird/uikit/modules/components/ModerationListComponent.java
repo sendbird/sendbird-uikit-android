@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.widget.NestedScrollView;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
 import com.sendbird.uikit.widgets.SingleMenuItemView;

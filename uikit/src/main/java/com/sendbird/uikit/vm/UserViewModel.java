@@ -5,13 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.ConnectionHandler;
+import com.sendbird.android.handler.GroupChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.MemberState;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
@@ -45,13 +50,13 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
     @NonNull
     private final MutableLiveData<List<T>> userList = new MutableLiveData<>();
     @NonNull
-    private final MutableLiveData<Boolean> operatorDismissed = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> operatorUnregistered = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<Boolean> channelDeleted = new MutableLiveData<>();
     @NonNull
     private final String channelUrl;
-    @NonNull
-    private final PagedQueryHandler<T> query;
+    @Nullable
+    private PagedQueryHandler<T> query;
     @Nullable
     private GroupChannel channel;
     private volatile boolean isInitialRequest = false;
@@ -59,15 +64,6 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Nullable
     private Future<Boolean> currentFuture;
-
-    /**
-     * Constructor
-     *
-     * @since 3.0.0
-     */
-    public UserViewModel() {
-        this("", null);
-    }
 
     /**
      * Constructor
@@ -89,28 +85,28 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
     public UserViewModel(@NonNull String channelUrl, @Nullable PagedQueryHandler<T> queryHandler) {
         super();
         this.channelUrl = channelUrl;
-        this.query = queryHandler != null ? queryHandler : createQueryHandler(channelUrl);
+        this.query = queryHandler;
         registerChannelHandler();
     }
 
     private void registerChannelHandler() {
-        SendBird.addChannelHandler(CHANNEL_HANDLER_MEMBER_LIST, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_MEMBER_LIST, new GroupChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
+            public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
             }
 
             @Override
-            public void onUserLeft(GroupChannel channel, User user) {
+            public void onUserLeft(@NonNull GroupChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> UserViewModel::onUserLeft()");
-                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                    if (channel.getMyMemberState() == MemberState.NONE) {
                         channelDeleted.postValue(true);
                     }
                 }
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> UserViewModel::onChannelDeleted()");
                     channelDeleted.postValue(true);
@@ -118,43 +114,44 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
             }
 
             @Override
-            public void onOperatorUpdated(BaseChannel channel) {
+            public void onOperatorUpdated(@NonNull BaseChannel channel) {
                 updateChannel(channel);
                 if (isCurrentChannel(channel.getUrl()) &&
-                        ((GroupChannel) channel).getMyRole() != Member.Role.OPERATOR) {
+                        ((GroupChannel) channel).getMyRole() != Role.OPERATOR) {
                     Logger.i(">> UserViewModel::onOperatorUpdated()");
                     Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
-                    operatorDismissed.postValue(true);
+                    operatorUnregistered.postValue(true);
                 }
             }
 
             @Override
-            public void onUserMuted(BaseChannel channel, User user) {
+            public void onUserMuted(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 updateChannel(channel);
             }
 
             @Override
-            public void onUserUnmuted(BaseChannel channel, User user) {
+            public void onUserUnmuted(@NonNull BaseChannel channel, @NonNull User user) {
                 updateChannel(channel);
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 updateChannel(channel);
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> UserViewModel::onUserBanned()");
                     channelDeleted.postValue(true);
                 }
             }
 
             @Override
-            public void onUserUnbanned(BaseChannel channel, User user) {
+            public void onUserUnbanned(@NonNull BaseChannel channel, @NonNull User user) {
                 updateChannel(channel);
             }
 
             @Override
-            public void onChannelChanged(BaseChannel channel) {
+            public void onChannelChanged(@NonNull BaseChannel channel) {
                 updateChannel(channel);
             }
         });
@@ -163,8 +160,8 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
     @Override
     protected void onCleared() {
         super.onCleared();
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_MEMBER_LIST);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_MEMBER_LIST);
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
@@ -175,14 +172,22 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
         if (e != null) {
             Logger.e(e);
             if (isInitialRequest) {
-                SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+                SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+                    @Override
+                    public void onDisconnected(@NonNull String s) {
+                    }
+
+                    @Override
+                    public void onConnected(@NonNull String s) {
+                    }
+
                     @Override
                     public void onReconnectStarted() {
                     }
 
                     @Override
                     public void onReconnectSucceeded() {
-                        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+                        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
                         loadInitial();
                     }
 
@@ -232,14 +237,14 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
     }
 
     /**
-     * Returns LiveData that can be observed if the current user has been dismissed from the operator.
+     * Returns LiveData that can be observed if the current user has been unregistered from the operator.
      *
-     * @return LiveData holding whether the current user has been dismissed from the operator
+     * @return LiveData holding whether the current user has been unregistered from the operator
      * @since 3.0.0
      */
     @NonNull
-    public LiveData<Boolean> getOperatorDismissed() {
-        return operatorDismissed;
+    public LiveData<Boolean> getOperatorUnregistered() {
+        return operatorUnregistered;
     }
 
     /**
@@ -316,7 +321,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
 
     @Override
     public boolean hasNext() {
-        return query.hasMore();
+        return query != null && query.hasMore();
     }
 
     /**
@@ -328,6 +333,9 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public synchronized boolean loadInitial() {
         Logger.d(">> UserViewModel::loadInitial()");
+        if (this.query == null) {
+            this.query = createQueryHandler(channelUrl);
+        }
         if (currentFuture != null) currentFuture.cancel(true);
         this.currentFuture = executorService.schedule(() -> {
             List<T> origin = userList.getValue();
@@ -358,6 +366,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
             final AtomicReference<List<T>> result = new AtomicReference<>();
             final AtomicReference<Exception> error = new AtomicReference<>();
             try {
+                if (query == null) return Collections.emptyList();
                 query.loadMore((userList, e) -> {
                     try {
                         if (e != null) {
@@ -402,7 +411,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void addOperators(@NonNull List<String> userIds, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
         channel.addOperators(userIds, e -> {
@@ -419,7 +428,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void addOperator(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
         channel.addOperators(Collections.singletonList(userId), e -> {
@@ -436,7 +445,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void removeOperator(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
         channel.removeOperators(Collections.singletonList(userId), e -> {
@@ -453,10 +462,10 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void muteUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
-        channel.muteUserWithUserId(userId, e -> {
+        channel.muteUser(userId, e -> {
             if (handler != null) handler.onComplete(e);
         });
     }
@@ -470,10 +479,10 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void unmuteUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
-        channel.unmuteUserWithUserId(userId, e -> {
+        channel.unmuteUser(userId, e -> {
             if (handler != null) handler.onComplete(e);
         });
     }
@@ -487,10 +496,10 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void banUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
-        channel.banUserWithUserId(userId, null, -1, e -> {
+        channel.banUser(userId, null, -1, e -> {
             if (handler != null) handler.onComplete(e);
         });
     }
@@ -504,10 +513,10 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void unbanUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
-        channel.unbanUserWithUserId(userId, e -> {
+        channel.unbanUser(userId, e -> {
             if (handler != null) handler.onComplete(e);
         });
     }
@@ -521,10 +530,10 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      */
     public void inviteUser(@NonNull List<String> userIds, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("channel instance not exists"));
+            if (handler != null) handler.onComplete(new SendbirdException("channel instance not exists"));
             return;
         }
-        channel.inviteWithUserIds(userIds, e -> {
+        channel.invite(userIds, e -> {
             if (handler != null) handler.onComplete(e);
         });
     }

@@ -26,20 +26,25 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.Emoji;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.MessageListParams;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.Reaction;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MessageListParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.MutedState;
+import com.sendbird.android.user.Sender;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
@@ -191,7 +196,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     public void onDestroy() {
         Logger.i(">> ChannelFragment::onDestroy()");
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
         if (!isInitCallFinished.get()) {
             shouldDismissLoadingDialog();
         }
@@ -292,7 +297,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener != null ? scrollBottomButtonClickListener : v -> scrollToBottom());
 
         final ChannelModule module = getModule();
-        viewModel.getMessageList().observe(getViewLifecycleOwner(), receivedMessageData -> {
+        viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), receivedMessageData -> {
             boolean isInitialCallFinished = isInitCallFinished.getAndSet(true);
             if (!isInitialCallFinished && isFragmentAlive()) shouldDismissLoadingDialog();
 
@@ -324,7 +329,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                             messageListComponent.notifyOtherMessageReceived(anchorDialogShowing.get());
                             if (eventSource.equals(StringSet.EVENT_MESSAGE_SENT)) {
                                 final MessageListParams messageListParams = viewModel.getMessageListParams();
-                                final BaseMessage latestMessage = adapter.getItem(messageListParams.shouldReverse() ? 0 : adapter.getItemCount() - 1);
+                                final BaseMessage latestMessage = adapter.getItem(messageListParams.getReverse() ? 0 : adapter.getItemCount() - 1);
                                 if (latestMessage instanceof FileMessage) {
                                     // Download from files already sent for quick image loading.
                                     FileDownloader.downloadThumbnail(context, (FileMessage) latestMessage);
@@ -393,13 +398,19 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 final Editable editableText = inputText.getText();
-                UserMessageParams params = new UserMessageParams(editableText.toString());
+                UserMessageCreateParams params = new UserMessageCreateParams(editableText.toString());
                 if (targetMessage != null && SendbirdUIKit.getReplyType() == ReplyType.QUOTE_REPLY) {
                     params.setParentMessageId(targetMessage.getMessageId());
                     params.setReplyToChannel(true);
                 }
                 if (SendbirdUIKit.isUsingUserMention()) {
-                    setMentionInfo(inputText, params);
+                    if (inputText instanceof MentionEditText) {
+                        final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
+                        final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
+                        Logger.d("++ mentioned template text=%s", mentionedTemplate);
+                        params.setMentionedMessageTemplate(mentionedTemplate.toString());
+                        params.setMentionedUsers(mentionedUsers);
+                    }
                 }
                 sendUserMessage(params);
             }
@@ -408,8 +419,14 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
                 if (null != targetMessage) {
-                    UserMessageParams params = new UserMessageParams(inputText.getText().toString());
-                    setMentionInfo(inputText, params);
+                    UserMessageUpdateParams params = new UserMessageUpdateParams(inputText.getText().toString());
+                    if (inputText instanceof MentionEditText) {
+                        final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
+                        final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
+                        Logger.d("++ mentioned template text=%s", mentionedTemplate);
+                        params.setMentionedMessageTemplate(mentionedTemplate.toString());
+                        params.setMentionedUsers(mentionedUsers);
+                    }
                     updateUserMessage(targetMessage.getMessageId(), params);
                 } else {
                     Logger.d("Target message for update is missing");
@@ -445,9 +462,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
 
             // observe suggestion list
-            viewModel.getMentionSuggestion().observe(getViewLifecycleOwner(), suggestion -> {
-                inputComponent.notifySuggestedMentionDataChanged(suggestion.getSuggestionList());
-            });
+            viewModel.getMentionSuggestion().observe(getViewLifecycleOwner(), suggestion -> inputComponent.notifySuggestedMentionDataChanged(suggestion.getSuggestionList()));
         }
 
         viewModel.onMessagesDeleted().observe(getViewLifecycleOwner(), deletedMessages -> {
@@ -459,8 +474,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
 
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), openChannel -> {
             inputComponent.notifyChannelChanged(openChannel);
-            boolean isOperator = channel.getMyRole() == Member.Role.OPERATOR;
-            boolean isMuted = channel.getMyMutedState() == Member.MutedState.MUTED;
+            boolean isOperator = channel.getMyRole() == Role.OPERATOR;
+            boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
             boolean isFrozen = channel.isFrozen() && !isOperator;
             if (isMuted || isFrozen) {
                 inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT);
@@ -500,8 +515,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @NonNull
     protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
         final List<DialogListItem> items = new ArrayList<>();
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return items;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return items;
 
         MessageType type = MessageViewHolderFactory.getMessageType(message);
         DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
@@ -516,7 +531,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         final ReplyType replyType = SendbirdUIKit.getReplyType();
         switch (type) {
             case VIEW_TYPE_USER_MESSAGE_ME:
-                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                if (status == SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
                         actions = new DialogListItem[]{copy, edit, delete};
                     } else {
@@ -645,12 +660,12 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             messageClickListener.onItemClick(view, position, message);
             return;
         }
-        if (message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+        if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
             MessageType type = MessageViewHolderFactory.getMessageType(message);
             switch (type) {
                 case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
                 case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                    startActivity(PhotoViewActivity.newIntent(requireContext(), BaseChannel.ChannelType.GROUP, (FileMessage) message));
+                    startActivity(PhotoViewActivity.newIntent(requireContext(), ChannelType.GROUP, (FileMessage) message));
                     break;
                 case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
                 case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
@@ -664,7 +679,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                         }
 
                         @Override
-                        public void onError(@Nullable SendBirdException e) {
+                        public void onError(@Nullable SendbirdException e) {
                             toastError(R.string.sb_text_error_download_file);
                         }
                     });
@@ -692,7 +707,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             return;
         }
 
-        showUserProfile(message.getSender());
+        final Sender sender = message.getSender();
+        if (sender != null) {
+            showUserProfile(sender);
+        }
     }
 
     /**
@@ -724,8 +742,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             messageLongClickListener.onItemLongClick(view, position, message);
             return;
         }
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return;
         showMessageContextMenu(view, message, makeMessageContextMenu(message));
     }
 
@@ -775,7 +793,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             }
 
             @Override
-            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendbirdException e) {
                 if (e != null) {
                     Logger.e(e);
                     toastError(R.string.sb_text_error_download_file);
@@ -973,7 +991,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             }
 
             @Override
-            public void onResultForUiThread(@Nullable Intent intent, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Intent intent, @Nullable SendbirdException e) {
                 if (!isFragmentAlive()) return;
                 if (e != null) {
                     Logger.e(e);
@@ -985,17 +1003,6 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 }
             }
         });
-    }
-
-    private void setMentionInfo(@NonNull final EditText inputText,
-                                @NonNull final UserMessageParams params) {
-        if (inputText instanceof MentionEditText) {
-            final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
-            final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
-            Logger.d("++ mentioned template text=%s", mentionedTemplate);
-            params.setMentionedMessageTemplate(mentionedTemplate.toString());
-            params.setMentionedUsers(mentionedUsers);
-        }
     }
 
     /**
@@ -1041,7 +1048,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      * @since 2.0.1
      */
     public void takeCamera() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_ALL, new PermissionFragment.IPermissionHandler() {
             @Override
             @NonNull
@@ -1074,7 +1081,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      * @since 2.0.1
      */
     public void takePhoto() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_STORAGE, new PermissionFragment.IPermissionHandler() {
             @Override
             @NonNull
@@ -1100,7 +1107,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      * @since 2.0.1
      */
     public void takeFile() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_STORAGE, new PermissionFragment.IPermissionHandler() {
             @Override
             @NonNull
@@ -1123,7 +1130,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
@@ -1167,39 +1174,39 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
     }
 
     /**
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of file message. Refer to {@link FileMessageParams}.
+     * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
+    protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
     }
 
     /**
      * It will be called before updating message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeUpdateUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
     }
 
     /**
      * Sends a user message.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      * @since 1.0.4
      */
-    protected void sendUserMessage(@NonNull UserMessageParams params) {
+    protected void sendUserMessage(@NonNull UserMessageCreateParams params) {
         final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
             customHandler.onBeforeSendUserMessage(params);
@@ -1220,7 +1227,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 @Override
                 public void onResult(@NonNull FileInfo info) {
                     ChannelFragment.this.mediaUri = null;
-                    final FileMessageParams params = info.toFileParams();
+                    final FileMessageCreateParams params = info.toFileParams();
                     final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
                     if (customHandler != null) {
                         customHandler.onBeforeSendFileMessage(params);
@@ -1234,7 +1241,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 }
 
                 @Override
-                public void onError(@Nullable SendBirdException e) {
+                public void onError(@Nullable SendbirdException e) {
                     Logger.w(e);
                     toastError(R.string.sb_text_error_send_message);
                     ChannelFragment.this.mediaUri = null;
@@ -1248,10 +1255,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
      *
      * @param messageId The ID of the message. This must be a message that exists in the channel's history,
      *                  or an error will be returned.
-     * @param params    Params of a message. Refer to {@link UserMessageParams}.
+     * @param params    Params of a message. Refer to {@link UserMessageUpdateParams}.
      * @since 1.0.4
      */
-    protected void updateUserMessage(long messageId, @NonNull UserMessageParams params) {
+    protected void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
             customHandler.onBeforeUpdateUserMessage(params);

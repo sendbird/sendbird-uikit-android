@@ -26,12 +26,11 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.Sender;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -43,6 +42,7 @@ import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
+import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 
 public class PhotoViewFragment extends PermissionFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
@@ -68,7 +68,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     private long messageId;
     private boolean isDeletableMessage;
     @Nullable
-    private BaseChannel.ChannelType channelType = BaseChannel.ChannelType.GROUP;
+    private ChannelType channelType = ChannelType.GROUP;
     @Nullable
     private LoadingDialogHandler loadingDialogHandler;
 
@@ -97,7 +97,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             isDeletableMessage = args.getBoolean(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isMine(senderId));
 
             if (args.containsKey(StringSet.KEY_CHANNEL_TYPE)) {
-                channelType = (BaseChannel.ChannelType) args.getSerializable(StringSet.KEY_CHANNEL_TYPE);
+                channelType = (ChannelType) args.getSerializable(StringSet.KEY_CHANNEL_TYPE);
             }
         }
 
@@ -105,7 +105,9 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             loadingDialogHandler = this;
         }
 
-        if (channelType == BaseChannel.ChannelType.GROUP) {
+        if (TextUtils.isEmpty(channelUrl)) return;
+
+        if (channelType == ChannelType.GROUP) {
             GroupChannel.getChannel(channelUrl, (channel, e) -> {
                 PhotoViewFragment.this.channel = channel;
                 onDrawPage();
@@ -134,7 +136,8 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     private <T> RequestBuilder<T> makeRequestBuilder(@NonNull String url, @NonNull Class<T> clazz) {
         final View loading = binding.loading;
         final RequestManager glide = Glide.with(this);
-        return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).thumbnail(0.5f).listener(new RequestListener<T>() {
+
+        return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).sizeMultiplier(0.5f).listener(new RequestListener<T>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<T> target, boolean isFirstResource) {
                 if (!isFragmentAlive()) return false;
@@ -186,7 +189,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
                                 requireContext(),
                                 getString(R.string.sb_text_dialog_delete_file_message),
                                 getString(R.string.sb_text_button_delete),
-                                v1 -> channel.deleteMessage(createDummyMessage(), e -> {
+                                v1 -> channel.deleteMessage(messageId, e -> {
                                     if (e != null) {
                                         toastError(R.string.sb_text_error_delete_message);
                                         return;
@@ -297,7 +300,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             }
 
             @Override
-            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendbirdException e) {
                 if (loadingDialogHandler != null) {
                     loadingDialogHandler.shouldDismissLoadingDialog();
                 }
@@ -340,33 +343,13 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         dismissWaitingDialog();
     }
 
-    private BaseMessage createDummyMessage() {
-        return new BaseMessage(channelUrl, messageId, createdAt) {
-
-            @Override
-            public String getRequestId() {
-                return null;
-            }
-
-            @Override
-            public String getMessage() {
-                return null;
-            }
-
-            @Override
-            public Sender getSender() {
-                return null;
-            }
-        };
-    }
-
     public static class Builder {
         private final Bundle bundle = new Bundle();
         private LoadingDialogHandler loadingDialogHandler;
 
         public Builder(@Nullable String senderId, @Nullable String fileName, @Nullable String channelUrl,
                        @Nullable String url, @Nullable String mimeType, @Nullable String senderNickname, long createdAt,
-                       long messageId, @Nullable BaseChannel.ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode  themeMode, boolean isDeletableMessage) {
+                       long messageId, @Nullable ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode  themeMode, boolean isDeletableMessage) {
             bundle.putString(StringSet.KEY_SENDER_ID, senderId);
             bundle.putString(StringSet.KEY_MESSAGE_FILENAME, fileName);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);

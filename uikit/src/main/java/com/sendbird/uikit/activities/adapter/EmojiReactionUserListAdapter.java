@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserBinding;
 
@@ -190,6 +190,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
             final User oldUser = oldUserList.get(oldItemPosition);
             final User newUser = newUserList.get(newItemPosition);
+            if (oldUser == null || newUser == null) return false;
 
             return oldUser.equals(newUser);
         }
@@ -204,13 +205,13 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
             }
 
             String oldNickname = oldUser.getNickname();
-            String newNickname = newUser.getNickname() != null ? newUser.getNickname() : "";
+            String newNickname = newUser.getNickname();
             if (!newNickname.equals(oldNickname)) {
                 return false;
             }
 
             String oldProfileUrl = oldUser.getProfileUrl();
-            String newProfileUrl = newUser.getProfileUrl() != null ? newUser.getProfileUrl() : "";
+            String newProfileUrl = newUser.getProfileUrl();
             return newProfileUrl.equals(oldProfileUrl);
         }
     }

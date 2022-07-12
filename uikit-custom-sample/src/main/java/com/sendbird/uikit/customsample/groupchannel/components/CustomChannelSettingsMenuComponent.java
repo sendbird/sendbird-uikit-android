@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.modules.components.ChannelSettingsMenuComponent;
 
@@ -46,7 +46,7 @@ public class CustomChannelSettingsMenuComponent extends ChannelSettingsMenuCompo
     @Override
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         super.notifyChannelChanged(channel);
-        if (channel.getMyRole() == Member.Role.OPERATOR) {
+        if (channel.getMyRole() == Role.OPERATOR) {
             view.findViewById(R.id.moderationPanel).setVisibility(View.VISIBLE);
         } else {
             view.findViewById(R.id.moderationPanel).setVisibility(View.GONE);

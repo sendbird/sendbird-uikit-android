@@ -19,11 +19,12 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.handler.OpenChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.fragments.OpenChannelFragment;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit_messaging_android.R;
@@ -156,7 +157,7 @@ public class LiveStreamActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (binding == null) return;
+                if (binding == null || openChannel == null) return;
                 updateParticipantCount(openChannel.getParticipantCount());
                 try {
                     LiveStreamingChannelData channelData = new LiveStreamingChannelData(new JSONObject(openChannel.getData()));
@@ -191,21 +192,21 @@ public class LiveStreamActivity extends AppCompatActivity {
     }
 
     private void addChannelHandler() {
-        SendBird.addChannelHandler(CHANNEL_HANDLER_KEY, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_KEY, new OpenChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
+            public void onMessageReceived(@NonNull BaseChannel baseChannel, @NonNull BaseMessage baseMessage) {
 
             }
 
             @Override
-            public void onUserEntered(OpenChannel channel, User user) {
+            public void onUserEntered(@NonNull OpenChannel channel, @NonNull User user) {
                 if (channel.getUrl().equals(channelUrl)) {
                     updateParticipantCount(channel.getParticipantCount());
                 }
             }
 
             @Override
-            public void onUserExited(OpenChannel channel, User user) {
+            public void onUserExited(@NonNull OpenChannel channel, @NonNull User user) {
                 if (channel.getUrl().equals(channelUrl)) {
                     updateParticipantCount(channel.getParticipantCount());
                 }
@@ -225,7 +226,7 @@ public class LiveStreamActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         hideHandler.removeMessages(0);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_KEY);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_KEY);
     }
 
     @Override

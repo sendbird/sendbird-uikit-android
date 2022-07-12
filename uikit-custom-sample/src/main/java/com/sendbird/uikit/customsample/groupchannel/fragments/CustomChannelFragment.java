@@ -6,9 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.customsample.groupchannel.components.CustomChannelHeaderComponent;
@@ -51,19 +52,19 @@ public class CustomChannelFragment extends ChannelFragment {
     }
 
     @Override
-    protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
         super.onBeforeSendUserMessage(params);
         params.setCustomType(customMessageType.getValue());
     }
 
     @Override
-    protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
+    protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
         super.onBeforeSendFileMessage(params);
         params.setCustomType(customMessageType.getValue());
     }
 
     @Override
-    protected void onBeforeUpdateUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
         super.onBeforeUpdateUserMessage(params);
         params.setCustomType(customMessageType.getValue());
     }
@@ -89,7 +90,7 @@ public class CustomChannelFragment extends ChannelFragment {
             customInput.setHighlightCheckedListener((buttonView, isChecked) ->
                     customMessageType = isChecked ? CustomMessageType.HIGHLIGHT : CustomMessageType.NONE);
             customInput.setEmojiClickListener((view, position, url) -> {
-                final UserMessageParams params = new UserMessageParams();
+                final UserMessageCreateParams params = new UserMessageCreateParams();
                 params.setMessage(url);
                 customMessageType = CustomMessageType.EMOJI;
                 sendUserMessage(params);

@@ -23,9 +23,9 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.OpenChannelParams;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
@@ -117,11 +117,11 @@ public class CreateCommunityActivity extends AppCompatActivity {
     }
 
     private void createCommunityChannel() {
-        if (TextUtils.isEmpty(binding.etTitle.getText()) || SendBird.getCurrentUser() == null) {
+        if (TextUtils.isEmpty(binding.etTitle.getText()) || SendbirdChat.getCurrentUser() == null) {
             return;
         }
 
-        OpenChannelParams params = new OpenChannelParams(SendBird.getCurrentUser().getUserId());
+        OpenChannelCreateParams params = new OpenChannelCreateParams(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         params.setCustomType(StringSet.SB_COMMUNITY_TYPE);
         params.setName(binding.etTitle.getText().toString());
         if (mediaFile != null) {
@@ -145,7 +145,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
@@ -234,7 +234,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
         DialogUtils.showListBottomDialog(this, items, (view, position, item) -> {
             try {
                 final int key = item.getKey();
-                SendBird.setAutoBackgroundDetection(false);
+                SendbirdChat.setAutoBackgroundDetection(false);
                 if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                     takeCamera();
                 } else if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery) {
@@ -258,7 +258,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 

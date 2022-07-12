@@ -4,8 +4,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageBinding;
 import com.sendbird.uikit.widgets.OpenChannelAdminMessageView;

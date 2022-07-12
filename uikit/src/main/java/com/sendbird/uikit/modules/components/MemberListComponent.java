@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.Member;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MemberListAdapter;
 
 /**

@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;

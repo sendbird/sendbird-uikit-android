@@ -53,7 +53,7 @@ public class SelectUserHeaderComponent extends StateHeaderComponent {
 
         if (getParams().getRightButtonText() != null) {
             final String rightButtonText = getParams().getRightButtonText();
-            headerView.setRightButtonText(count > 0 ? count + " " + rightButtonText : rightButtonText);
+            headerView.setRightButtonText(count > 0 ? rightButtonText + " " + "(" + count + ")" : rightButtonText);
         }
     }
 }

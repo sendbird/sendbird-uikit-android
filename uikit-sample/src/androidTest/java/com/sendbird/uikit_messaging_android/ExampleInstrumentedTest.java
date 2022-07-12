@@ -1,5 +1,7 @@
 package com.sendbird.uikit_messaging_android;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -7,8 +9,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.

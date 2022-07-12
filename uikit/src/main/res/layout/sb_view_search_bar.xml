@@ -33,7 +33,7 @@
             android:layout_width="@dimen/sb_size_0"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:imeOptions="actionSearch"
+            android:imeOptions="actionSearch|flagNoExtractUi"
             android:inputType="text"
             android:layout_weight="1"
             android:background="@null"

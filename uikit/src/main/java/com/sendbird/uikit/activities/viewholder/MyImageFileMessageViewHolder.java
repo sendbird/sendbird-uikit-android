@@ -5,10 +5,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyFileImageMessageBinding;

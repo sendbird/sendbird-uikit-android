@@ -15,6 +15,5 @@ public enum ClickableViewIdentifier {
     /**
      * Quoted message area
      */
-    QuoteReply,
-    ;
+    QuoteReply
 }

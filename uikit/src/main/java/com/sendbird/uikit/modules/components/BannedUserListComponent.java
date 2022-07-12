@@ -2,7 +2,7 @@ package com.sendbird.uikit.modules.components;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.BannedUserListAdapter;
 
 /**

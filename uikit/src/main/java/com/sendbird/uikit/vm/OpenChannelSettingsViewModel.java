@@ -5,13 +5,16 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.OpenChannelParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.OpenChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.params.OpenChannelUpdateParams;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.log.Logger;
@@ -123,12 +126,12 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
     }
 
     private void registerChannelHandler() {
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_ID, new OpenChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
+            public void onMessageReceived(@NonNull BaseChannel baseChannel, @NonNull BaseMessage baseMessage) {}
 
             @Override
-            public void onUserEntered(OpenChannel channel, User user) {
+            public void onUserEntered(@NonNull OpenChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelSettingsFragment::onUserEntered()");
                     Logger.d("++ joind user : " + user);
@@ -137,7 +140,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onUserExited(OpenChannel channel, User user) {
+            public void onUserExited(@NonNull OpenChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelSettingsFragment::onUserLeft()");
                     Logger.d("++ left user : " + user);
@@ -146,7 +149,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelChanged(BaseChannel channel) {
+            public void onChannelChanged(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelSettingsFragment::onChannelChanged()");
                     notifyChannelUpdated((OpenChannel) channel);
@@ -154,7 +157,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> OpenChannelSettingsFragment::onChannelDeleted()");
                     Logger.d("++ deleted channel url : " + channelUrl);
@@ -164,21 +167,22 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onOperatorUpdated(BaseChannel channel) {
+            public void onOperatorUpdated(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelSettingsFragment::onOperatorUpdated()");
                     notifyChannelUpdated((OpenChannel) channel);
-                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendBird.getCurrentUser()));
-                    if (!((OpenChannel) channel).isOperator(SendBird.getCurrentUser())) {
+                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendbirdChat.getCurrentUser()));
+                    if (!((OpenChannel) channel).isOperator(SendbirdChat.getCurrentUser())) {
                         shouldFinish.postValue(true);
                     }
                 }
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> OpenChannelSettingsFragment::onUserBanned()");
                     shouldFinish.postValue(true);
                 }
@@ -187,7 +191,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
     }
 
     private void unregisterChannelHandler() {
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_ID);
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
@@ -207,9 +211,9 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * @param handler Callback handler called when this method is completed.
      * @since 3.0.0
      */
-    public void updateChannel(@NonNull OpenChannelParams params, @Nullable OnCompleteHandler handler) {
+    public void updateChannel(@NonNull OpenChannelUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("Couldn't retrieve the channel"));
+            if (handler != null) handler.onComplete(new SendbirdException("Couldn't retrieve the channel"));
             return;
         }
         channel.updateChannel(params, (updatedChannel, e) -> {
@@ -226,7 +230,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      */
     public void deleteChannel(@Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("Couldn't retrieve the channel"));
+            if (handler != null) handler.onComplete(new SendbirdException("Couldn't retrieve the channel"));
             return;
         }
         channel.delete(e -> {

@@ -55,6 +55,7 @@
             android:layout_marginLeft="@dimen/sb_size_24"
             android:layout_marginRight="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_24"
+            android:imeOptions="flagNoExtractUi"
             android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.sendbird.android.Member;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.UserTypeListAdapter;
 import com.sendbird.uikit.consts.StringSet;
@@ -153,7 +153,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param userList The list of users to be displayed on this component
      * @param myRole   Role of the current user
      */
-    public void notifyDataSetChanged(@NonNull List<T> userList, @NonNull Member.Role myRole) {
+    public void notifyDataSetChanged(@NonNull List<T> userList, @NonNull Role myRole) {
         if (this.recyclerView == null) return;
         getAdapter().setItems(userList, myRole);
     }
@@ -293,7 +293,7 @@ abstract public class UserTypeListComponent<T extends User> {
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
-            if (args.containsKey(StringSet.KEY_HEADER_TITLE)) {
+            if (args.containsKey(StringSet.KEY_USE_USER_PROFILE)) {
                 setUseUserProfile(args.getBoolean(StringSet.KEY_USE_USER_PROFILE));
             }
             return this;

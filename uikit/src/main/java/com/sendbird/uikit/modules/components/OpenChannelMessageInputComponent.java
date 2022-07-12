@@ -14,9 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
@@ -369,7 +369,7 @@ public class OpenChannelMessageInputComponent {
     }
 
     private void setHintMessageText(@NonNull MessageInputView inputView, @NonNull OpenChannel channel) {
-        boolean isOperator = channel.isOperator(SendBird.getCurrentUser());
+        boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
         boolean isFrozen = channel.isFrozen() && !isOperator;
         inputView.setEnabled(!isFrozen);
 

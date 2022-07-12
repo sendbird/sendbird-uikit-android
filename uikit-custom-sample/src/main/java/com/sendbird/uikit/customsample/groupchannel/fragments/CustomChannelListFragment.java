@@ -7,8 +7,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.GroupChannelUpdateParams;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.groupchannel.GroupChannelMainActivity;
 import com.sendbird.uikit.customsample.groupchannel.components.CustomChannelListHeaderComponent;
@@ -85,8 +85,12 @@ public class CustomChannelListFragment extends ChannelListFragment {
         builder.setView(input)
                 .setTitle(R.string.sb_text_channel_settings_change_channel_name)
                 .setPositiveButton(R.string.text_confirm,
-                        (dialog, which) -> channel.updateChannel(new GroupChannelParams()
-                                .setName(input.getText().toString()), null));
+                        (dialog, which) -> {
+                            final GroupChannelUpdateParams params = new GroupChannelUpdateParams();
+                            params.setName(input.getText().toString());
+                            channel.updateChannel(params, null);
+                        }
+                );
         builder.show();
     }
 

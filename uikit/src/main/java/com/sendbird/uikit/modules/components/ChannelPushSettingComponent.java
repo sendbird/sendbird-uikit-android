@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.widgets.ChannelPushSettingView;
 
@@ -74,7 +74,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param channelPushButtonClickListener The callback that will run
-     * @since TBD
+     * @since 3.0.0
      */
     public void setOnSwitchButtonClickListener(@Nullable View.OnClickListener channelPushButtonClickListener) {
         this.channelPushButtonClickListener = channelPushButtonClickListener;
@@ -84,7 +84,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param pushOptionAllClickListener The callback that will run
-     * @since TBD
+     * @since 3.0.0
      */
     public void setOnPushOptionAllClickListener(@Nullable View.OnClickListener pushOptionAllClickListener) {
         this.pushOptionAllClickListener = pushOptionAllClickListener;
@@ -94,7 +94,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param pushOptionMentionsOnlyClickListener The callback that will run
-     * @since TBD
+     * @since 3.0.0
      */
     public void setOnPushOptionMentionsOnlyClickListener(@Nullable View.OnClickListener pushOptionMentionsOnlyClickListener) {
         this.pushOptionMentionsOnlyClickListener = pushOptionMentionsOnlyClickListener;
@@ -104,7 +104,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since TBD
+     * @since 3.0.0
      */
     protected void onSwitchButtonClicked(@NonNull View view) {
         if (channelPushButtonClickListener != null) channelPushButtonClickListener.onClick(view);
@@ -114,7 +114,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since TBD
+     * @since 3.0.0
      */
     protected void onPushOptionAllClicked(@NonNull View view) {
         if (pushOptionAllClickListener != null) pushOptionAllClickListener.onClick(view);
@@ -124,7 +124,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since TBD
+     * @since 3.0.0
      */
     protected void onPushOptionMentionsOnlyClicked(@NonNull View view) {
         if (pushOptionMentionsOnlyClickListener != null) pushOptionMentionsOnlyClickListener.onClick(view);
@@ -134,7 +134,7 @@ public class ChannelPushSettingComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since TBD
+     * @since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (this.settingView == null) return;

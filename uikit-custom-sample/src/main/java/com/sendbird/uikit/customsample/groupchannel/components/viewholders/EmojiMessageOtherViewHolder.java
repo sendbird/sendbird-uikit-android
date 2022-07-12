@@ -13,10 +13,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.Sender;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.user.Sender;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -45,7 +46,7 @@ public class EmojiMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
         Context context = binding.getRoot().getContext();
-        boolean sendingState = message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED;
+        boolean sendingState = message.getSendingStatus() == SendingStatus.SUCCEEDED;
         binding.tvSentAt.setVisibility(sendingState ? View.VISIBLE : View.GONE);
         String sentAt = DateUtils.formatDateTime(context, message.getCreatedAt(), DateUtils.FORMAT_SHOW_TIME);
         binding.tvSentAt.setText(sentAt);

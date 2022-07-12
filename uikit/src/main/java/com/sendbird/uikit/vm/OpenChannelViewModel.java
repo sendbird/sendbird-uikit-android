@@ -6,18 +6,25 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.MessageListParams;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdError;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.exception.SendbirdError;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.ConnectionHandler;
+import com.sendbird.android.handler.OpenChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MessageListParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
+import com.sendbird.android.params.common.MessagePayloadFilter;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
@@ -91,10 +98,10 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
 
         this.pendingStatusObserver = message -> {
             Logger.d("__ pending message events, message = %s", message.getMessage());
-            if (message.getChannelUrl().equals(channel.getUrl())) {
-                final BaseMessage.SendingStatus sendingStatus = message.getSendingStatus();
+            if (channel != null && message.getChannelUrl().equals(channel.getUrl())) {
+                final SendingStatus sendingStatus = message.getSendingStatus();
                 Logger.i("__ pending status of message is changed, pending status = %s ", sendingStatus);
-                if (sendingStatus == BaseMessage.SendingStatus.SUCCEEDED) {
+                if (sendingStatus == SendingStatus.SUCCEEDED) {
                     messageCollection.add(message);
                 }
                 notifyDataSetChanged();
@@ -103,7 +110,15 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
         };
         PendingMessageRepository.getInstance().addPendingMessageStatusChanged(pendingStatusObserver);
 
-        SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+        SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+            @Override
+            public void onDisconnected(@NonNull String s) {
+            }
+
+            @Override
+            public void onConnected(@NonNull String s) {
+            }
+
             @Override
             public void onReconnectStarted() {
             }
@@ -121,7 +136,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                             if (e != null) {
                                 Logger.dev(e);
                                 // already left this channel at the other device.
-                                if (e.getCode() == SendBirdError.ERR_NON_AUTHORIZED) {
+                                if (e.getCode() == SendbirdError.ERR_NON_AUTHORIZED) {
                                     channelDeleted.postValue(true);
                                     return;
                                 }
@@ -141,9 +156,9 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
     }
 
     private void registerChannelHandler() {
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_ID, new OpenChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
+            public void onMessageReceived(@NonNull BaseChannel baseChannel, @NonNull BaseMessage baseMessage) {
                 if (messageListParams == null || !messageListParams.belongsTo(baseMessage)) return;
 
                 if (isCurrentChannel(baseChannel.getUrl())) {
@@ -154,7 +169,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onUserEntered(OpenChannel channel, User user) {
+            public void onUserEntered(@NonNull OpenChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserEntered()");
                     Logger.d("++ joind user : " + user);
@@ -164,7 +179,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onUserExited(OpenChannel channel, User user) {
+            public void onUserExited(@NonNull OpenChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserLeft()");
                     Logger.d("++ left user : " + user);
@@ -174,7 +189,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onMessageDeleted(BaseChannel baseChannel, long msgId) {
+            public void onMessageDeleted(@NonNull BaseChannel baseChannel, long msgId) {
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onMessageDeleted()");
                     Logger.d("++ deletedMessage : " + msgId);
@@ -185,7 +200,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onMessageUpdated(BaseChannel baseChannel, BaseMessage updatedMessage) {
+            public void onMessageUpdated(@NonNull BaseChannel baseChannel, @NonNull BaseMessage updatedMessage) {
                 if (isCurrentChannel(baseChannel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onMessageUpdated()");
                     Logger.d("++ updatedMessage : " + updatedMessage.getMessageId());
@@ -201,7 +216,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onChannelChanged(BaseChannel channel) {
+            public void onChannelChanged(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelChanged()");
                     channelUpdated.postValue((OpenChannel) channel);
@@ -209,7 +224,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> OpenChannelViewModel::onChannelDeleted()");
                     Logger.d("++ deleted channel url : " + channelUrl);
@@ -219,7 +234,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onChannelFrozen(BaseChannel channel) {
+            public void onChannelFrozen(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelFrozen(%s)", channel.isFrozen());
                     notifyDataSetChanged();
@@ -228,7 +243,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onChannelUnfrozen(BaseChannel channel) {
+            public void onChannelUnfrozen(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onChannelUnfrozen(%s)", channel.isFrozen());
                     notifyDataSetChanged();
@@ -237,26 +252,27 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onOperatorUpdated(BaseChannel channel) {
+            public void onOperatorUpdated(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onOperatorUpdated()");
-                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendBird.getCurrentUser()));
+                    Logger.i("++ Am I an operator : " + ((OpenChannel) channel).isOperator(SendbirdChat.getCurrentUser()));
                     notifyDataSetChanged();
                     channelUpdated.postValue((OpenChannel) channel);
                 }
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> OpenChannelViewModel::onUserBanned()");
                     channelDeleted.postValue(true);
                 }
             }
 
             @Override
-            public void onUserMuted(BaseChannel channel, User user) {
+            public void onUserMuted(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserMuted()");
                     channelUpdated.postValue((OpenChannel) channel);
@@ -264,7 +280,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onUserUnmuted(BaseChannel channel, User user) {
+            public void onUserUnmuted(@NonNull BaseChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserUnmuted()");
                     channelUpdated.postValue((OpenChannel) channel);
@@ -272,9 +288,9 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onChannelParticipantCountChanged(List<OpenChannel> channels) {
-                com.sendbird.android.log.Logger.i(">> OpenChannelViewModel::onChannelParticipantCountChanged()");
-                if (channels != null && !channels.isEmpty()) {
+            public void onChannelParticipantCountChanged(@NonNull List<OpenChannel> channels) {
+                Logger.i(">> OpenChannelViewModel::onChannelParticipantCountChanged()");
+                if (!channels.isEmpty()) {
                     for (OpenChannel channel : channels) {
                         if (isCurrentChannel(channel.getUrl())) {
                             channelUpdated.postValue(channel);
@@ -285,8 +301,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             @Override
-            public void onMentionReceived(BaseChannel channel, BaseMessage message) {
-                com.sendbird.android.log.Logger.i(">> MessageCollection::onMentionReceived()");
+            public void onMentionReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
+                Logger.i(">> MessageCollection::onMentionReceived()");
                 if (isCurrentChannel(channel.getUrl())) {
                     channelUpdated.postValue((OpenChannel) channel);
                 }
@@ -513,8 +529,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
         }
 
         Logger.dev("-- onCleared ChannelViewModel");
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_ID);
         PendingMessageRepository.getInstance().removePendingMessageStatusObserver(pendingStatusObserver);
         worker.shutdownNow();
     }
@@ -544,7 +560,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             MessageChangeLogsPager pager = new MessageChangeLogsPager(channel, lastSyncTs, messageListParams);
             pager.load(new MessageChangeLogsPager.MessageChangeLogsResultHandler() {
                 @Override
-                public void onError(@NonNull SendBirdException e) {
+                public void onError(@NonNull SendbirdException e) {
                     Logger.e(e);
                 }
 
@@ -593,7 +609,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param handler Callback notifying that the message which the current user tried to send is filtered
      * @since 3.0.0
      */
-    public void sendUserMessage(@NonNull UserMessageParams params, @Nullable OnFilteringMessageHandler handler) {
+    public void sendUserMessage(@NonNull UserMessageCreateParams params, @Nullable OnFilteringMessageHandler handler) {
         Logger.i("++ request send message : %s", params);
         if (channel == null || messageListParams == null) return;
         final String channelUrl = channel.getUrl();
@@ -605,20 +621,18 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 return;
             }
 
-            if (messageListParams.belongsTo(message)) {
+            if (message != null && messageListParams.belongsTo(message)) {
                 Logger.i("++ sent message : %s", message);
                 messageCollection.add(message);
                 PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message);
                 notifyDataSetChanged();
             }
         });
-        if (pendingUserMessage != null) {
-            if (messageListParams.belongsTo(pendingUserMessage)) {
-                PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingUserMessage);
-                notifyDataSetChanged();
-            } else {
-                if (handler != null) handler.onFiltered(pendingUserMessage);
-            }
+        if (messageListParams.belongsTo(pendingUserMessage)) {
+            PendingMessageRepository.getInstance().addPendingMessage(channelUrl, pendingUserMessage);
+            notifyDataSetChanged();
+        } else {
+            if (handler != null) handler.onFiltered(pendingUserMessage);
         }
     }
 
@@ -630,7 +644,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param handler Callback notifying that the message which the current user tried to send is filtered
      * @since 3.0.0
      */
-    public void sendFileMessage(@NonNull FileMessageParams params, @NonNull FileInfo fileInfo, @Nullable OnFilteringMessageHandler handler) {
+    public void sendFileMessage(@NonNull FileMessageCreateParams params, @NonNull FileInfo fileInfo, @Nullable OnFilteringMessageHandler handler) {
         Logger.i("++ request send file message : %s", params);
         if (channel == null || messageListParams == null) return;
         final String channelUrl = channel.getUrl();
@@ -644,7 +658,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 return;
             }
 
-            if (messageListParams.belongsTo(message)) {
+            if (message != null && messageListParams.belongsTo(message)) {
                 Logger.i("++ sent message : %s", message);
                 //if (file.exists()) file.deleteOnExit();
                 messageCollection.add(message);
@@ -675,18 +689,19 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
         if (channel == null) return;
         final String channelUrl = channel.getUrl();
         if (message instanceof UserMessage) {
-            UserMessage pendingMessage = channel.resendMessage((UserMessage) message, (message12, e) -> {
+            UserMessage pendingMessage = channel.resendMessage((UserMessage) message, (resentMessage, e) -> {
                 if (e != null) {
                     Logger.e(e);
                     if (handler != null) handler.onComplete(e);
-                    PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message12);
+                    PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, resentMessage);
                     notifyDataSetChanged();
                     return;
                 }
 
-                Logger.i("__ resent message : %s", message12);
-                messageCollection.add(message12);
-                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message12);
+                Logger.i("__ resent message : %s", resentMessage);
+                if (resentMessage == null) return;
+                messageCollection.add(resentMessage);
+                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, resentMessage);
                 notifyDataSetChanged();
             });
             PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, pendingMessage);
@@ -695,19 +710,20 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
             Logger.d("++ file info=%s", info);
             final File file = info == null ? null : info.getFile();
-            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, file, (message1, e1) -> {
-                if (e1 != null) {
-                    Logger.e(e1);
-                    if (handler != null) handler.onComplete(e1);
-                    PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, message1);
+            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, file, (resentMessage, e) -> {
+                if (e != null) {
+                    Logger.e(e);
+                    if (handler != null) handler.onComplete(e);
+                    PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, resentMessage);
                     notifyDataSetChanged();
                     return;
                 }
 
-                Logger.i("__ resent file message : %s", message1);
+                Logger.i("__ resent file message : %s", resentMessage);
                 //if (file.exists()) file.deleteOnExit();
-                messageCollection.add(message1);
-                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, message1);
+                if (resentMessage == null) return;
+                messageCollection.add(resentMessage);
+                PendingMessageRepository.getInstance().removePendingMessage(channelUrl, resentMessage);
                 notifyDataSetChanged();
             });
             PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, pendingMessage);
@@ -723,7 +739,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param handler Callback handler called when this method is completed
      * @since 3.0.0
      */
-    public void updateUserMessage(long messageId, @NonNull UserMessageParams params, @Nullable OnCompleteHandler handler) {
+    public void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
         channel.updateUserMessage(messageId, params, (message, e) -> {
             if (e != null) {
@@ -732,6 +748,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             }
 
             Logger.i("++ updated message : %s", message);
+            if (message == null) return;
             messageCollection.update(message);
             notifyDataSetChanged();
         });
@@ -745,7 +762,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @since 3.0.0
      */
     public void deleteMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
-        if (message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+        if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
             if (channel == null) return;
             channel.deleteMessage(message, e -> {
                 if (e != null) {
@@ -775,7 +792,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
         final MessageListParams messageListParams = new MessageListParams();
         messageListParams.setReverse(true);
         messageListParams.setNextResultSize(0);
-        messageListParams.setIncludeReactions(Available.isSupportReaction());
+        messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, false, false, false));
         if (messageListParams.getPreviousResultSize() <= 0) {
             messageListParams.setPreviousResultSize(40);
         }

@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;

@@ -92,15 +92,15 @@ public class UIKitFragmentFactory {
     }
 
     /**
-     * Returns the PromoteOperatorFragment.
+     * Returns the RegisterOperatorFragment.
      *
      * @param args the arguments supplied when the fragment was instantiated.
-     * @return The {@link PromoteOperatorFragment}
+     * @return The {@link RegisterOperatorFragment}
      * @since 3.0.0
      */
     @NonNull
-    public Fragment newPromoteOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
-        return new PromoteOperatorFragment.Builder(channelUrl)
+    public Fragment newRegisterOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new RegisterOperatorFragment.Builder(channelUrl)
                 .withArguments(args)
                 .setUseHeader(true)
                 .build();

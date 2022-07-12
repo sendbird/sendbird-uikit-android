@@ -3,8 +3,8 @@ package com.sendbird.uikit.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.log.Logger;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -17,8 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageList {
     enum Order {
         ASC,
-        DESC,
-        ;
+        DESC
     }
 
     @NonNull
@@ -92,7 +91,7 @@ public class MessageList {
         messages.add(BaseMessage.clone(message));
     }
 
-    public void addAll(@NonNull List<BaseMessage> messages) {
+    public void addAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::addAll()");
         if (messages.isEmpty()) return;
 
@@ -132,7 +131,7 @@ public class MessageList {
         return removed;
     }
 
-    public void deleteAll(@NonNull List<BaseMessage> messages) {
+    public void deleteAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::deleteAllMessages() size = %s", messages.size());
         if (messages.isEmpty()) return;
 
@@ -191,7 +190,7 @@ public class MessageList {
         messages.add(BaseMessage.clone(message));
     }
 
-    public void updateAll(@NonNull List<BaseMessage> messages) {
+    public void updateAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::updateAllMessages() size=%s", messages.size());
         if (messages.isEmpty()) return;
 

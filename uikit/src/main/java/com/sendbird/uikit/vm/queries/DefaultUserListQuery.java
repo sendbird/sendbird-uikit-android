@@ -3,8 +3,9 @@ package com.sendbird.uikit.vm.queries;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.params.ApplicationUserListQueryParams;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class DefaultUserListQuery implements PagedQueryHandler<UserInfo> {
     @Nullable
-    private com.sendbird.android.ApplicationUserListQuery query;
+    private com.sendbird.android.user.query.ApplicationUserListQuery query;
     private final boolean exceptMe;
 
     public DefaultUserListQuery() {
@@ -29,8 +30,9 @@ public class DefaultUserListQuery implements PagedQueryHandler<UserInfo> {
 
     @Override
     public void loadInitial(@NonNull OnListResultHandler<UserInfo> handler) {
-        this.query = SendBird.createApplicationUserListQuery();
-        this.query.setLimit(30);
+        ApplicationUserListQueryParams params = new ApplicationUserListQueryParams();
+        params.setLimit(30);
+        this.query = SendbirdChat.createApplicationUserListQuery(params);
         loadMore(handler);
     }
 
@@ -50,13 +52,13 @@ public class DefaultUserListQuery implements PagedQueryHandler<UserInfo> {
     @Override
     public boolean hasMore() {
         if (query != null) {
-            return this.query.hasNext();
+            return this.query.getHasNext();
         } else {
             return false;
         }
     }
 
-    private List<UserInfo> toUserInfoList(@NonNull List<User> users) {
+    private List<UserInfo> toUserInfoList(@NonNull List<? extends User> users) {
         final List<UserInfo> userInfoList = new ArrayList<>();
         for (User user : users) {
             if (this.exceptMe) {

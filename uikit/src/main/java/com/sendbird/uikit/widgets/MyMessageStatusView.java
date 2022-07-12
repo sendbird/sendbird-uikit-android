@@ -9,9 +9,10 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewMyMessageStatusBinding;
@@ -75,7 +76,7 @@ public class MyMessageStatusView extends FrameLayout {
     }
 
     public void drawStatus(@NonNull BaseMessage message, @NonNull BaseChannel channel) {
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
+        final SendingStatus status = message.getSendingStatus();
 
         switch (status) {
             case CANCELED:

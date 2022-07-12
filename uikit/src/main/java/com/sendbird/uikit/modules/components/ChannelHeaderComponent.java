@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.TextUtils;

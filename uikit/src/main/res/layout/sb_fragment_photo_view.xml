@@ -24,7 +24,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingRight="@dimen/sb_size_64"
+            android:paddingLeft="@dimen/sb_size_64">
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -33,7 +35,9 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:textAppearance="@style/SendbirdH2OnDark01"
-                android:textSize="@dimen/sb_text_size_16" />
+                android:textSize="@dimen/sb_text_size_16"
+                android:ellipsize="end"
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/tvCreatedAt"
@@ -45,7 +49,9 @@
                 android:textAppearance="@style/SendbirdCaption2OnDark01"
                 android:textColor="@color/ondark_01"
                 android:textSize="@dimen/sb_text_size_12"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                android:ellipsize="end"
+                android:singleLine="true" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView

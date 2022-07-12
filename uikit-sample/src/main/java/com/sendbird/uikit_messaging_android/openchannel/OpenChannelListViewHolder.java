@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 
 /**
  * Base ViewHolder to bind <code>OpenChannel</code> data.

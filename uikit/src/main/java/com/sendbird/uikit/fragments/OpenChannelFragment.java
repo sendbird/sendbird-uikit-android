@@ -24,17 +24,19 @@ import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.MessageListParams;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.Sender;
-import com.sendbird.android.UserMessage;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MessageListParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
+import com.sendbird.android.user.Sender;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.OpenChannelSettingsActivity;
@@ -57,6 +59,7 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.modules.OpenChannelModule;
 import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMessageInputComponent;
@@ -153,7 +156,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     public void onDestroy() {
         Logger.i(">> OpenChannelFragment::onDestroy()");
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (!isInitCallFinished.get()) {
             shouldDismissLoadingDialog();
@@ -256,7 +259,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         Logger.d(">> OpenChannelFragment::onBindChannelHeaderComponent()");
         if (channel == null) return;
 
-        boolean isOperator = channel.isOperator(SendBird.getCurrentUser());
+        boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
         headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
             if (!isFragmentAlive()) return;
@@ -320,14 +323,14 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
-                UserMessageParams params = new UserMessageParams(inputText.getText().toString());
+                UserMessageCreateParams params = new UserMessageCreateParams(inputText.getText().toString());
                 sendUserMessage(params);
             }
         });
         inputComponent.setOnEditModeSaveButtonClickListener(editModeSaveButtonClickListener != null ? editModeSaveButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
-                UserMessageParams params = new UserMessageParams(inputText.getText().toString());
+                UserMessageUpdateParams params = new UserMessageUpdateParams(inputText.getText().toString());
                 if (null != targetMessage) {
                     updateUserMessage(targetMessage.getMessageId(), params);
                 } else {
@@ -354,7 +357,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         });
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), openChannel -> {
             inputComponent.notifyChannelChanged(openChannel);
-            boolean isOperator = channel.isOperator(SendBird.getCurrentUser());
+            boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
             boolean isFrozen = channel.isFrozen() && !isOperator;
             if (isFrozen) {
                 inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT);
@@ -393,8 +396,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     @NonNull
     protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
         final List<DialogListItem> items = new ArrayList<>();
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return items;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return items;
 
         MessageType type = MessageViewHolderFactory.getMessageType(message);
         DialogListItem copy = new DialogListItem(R.string.sb_text_channel_anchor_copy, R.drawable.icon_copy);
@@ -407,7 +410,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         DialogListItem[] actions = null;
         switch (type) {
             case VIEW_TYPE_USER_MESSAGE_ME:
-                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                if (status == SendingStatus.SUCCEEDED) {
                     actions = new DialogListItem[]{copy, edit, delete};
                 } else if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
@@ -547,7 +550,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @since 2.0.1
      */
     public void takeCamera() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_ALL, new IPermissionHandler() {
             @Override
             @NonNull
@@ -580,7 +583,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @since 2.0.1
      */
     public void takePhoto() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             @NonNull
@@ -606,7 +609,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @since 2.0.1
      */
     public void takeFile() {
-        SendBird.setAutoBackgroundDetection(false);
+        SendbirdChat.setAutoBackgroundDetection(false);
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             @NonNull
@@ -629,7 +632,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
@@ -672,35 +675,35 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      */
-    protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
     }
 
     /**
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of file message. Refer to {@link FileMessageParams}.
+     * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
      */
-    protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
+    protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
     }
 
     /**
      * It will be called before updating message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
      */
-    protected void onBeforeUpdateUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
     }
 
     /**
      * Sends a user message.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      */
-    protected void sendUserMessage(@NonNull UserMessageParams params) {
+    protected void sendUserMessage(@NonNull UserMessageCreateParams params) {
         CustomParamsHandler customParamsHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customParamsHandler != null) {
             customParamsHandler.onBeforeSendUserMessage(params);
@@ -721,7 +724,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             FileInfo.fromUri(getContext(), uri, SendbirdUIKit.shouldUseImageCompression(), new OnResultHandler<FileInfo>() {
                 @Override
                 public void onResult(@NonNull FileInfo info) {
-                    FileMessageParams params = info.toFileParams();
+                    FileMessageCreateParams params = info.toFileParams();
                     CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
                     if (customHandler != null) {
                         customHandler.onBeforeSendFileMessage(params);
@@ -733,7 +736,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
                 }
 
                 @Override
-                public void onError(@Nullable SendBirdException e) {
+                public void onError(@Nullable SendbirdException e) {
                     Logger.w(e);
                     toastError(R.string.sb_text_error_send_message, getModule().getParams().shouldUseOverlayMode());
                 }
@@ -746,9 +749,9 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      *
      * @param messageId The ID of the message. This must be a message that exists in the channel's history,
      *                  or an error will be returned.
-     * @param params    Params of a message. Refer to {@link UserMessageParams}.
+     * @param params    Params of a message. Refer to {@link UserMessageUpdateParams}.
      */
-    protected void updateUserMessage(long messageId, @NonNull UserMessageParams params) {
+    protected void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
             customHandler.onBeforeUpdateUserMessage(params);
@@ -790,7 +793,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             }
 
             @Override
-            public void onResultForUiThread(@Nullable Intent intent, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Intent intent, @Nullable SendbirdException e) {
                 if (e != null) {
                     Logger.e(e);
                     toastError(R.string.sb_text_error_open_file, getModule().getParams().shouldUseOverlayMode());
@@ -823,12 +826,12 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             return;
         }
 
-        if (message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+        if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
             MessageType type = MessageViewHolderFactory.getMessageType(message);
             switch (type) {
                 case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
                 case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                    startActivity(PhotoViewActivity.newIntent(requireContext(), BaseChannel.ChannelType.OPEN, (FileMessage) message));
+                    startActivity(PhotoViewActivity.newIntent(requireContext(), ChannelType.OPEN, (FileMessage) message));
                     break;
                 case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
                 case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
@@ -842,7 +845,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
                         }
 
                         @Override
-                        public void onError(@Nullable SendBirdException e) {
+                        public void onError(@Nullable SendbirdException e) {
                             toastError(R.string.sb_text_error_download_file, getModule().getParams().shouldUseOverlayMode());
                         }
                     });
@@ -870,7 +873,9 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             return;
         }
 
-        showUserProfile(message.getSender());
+        if (message.getSender() != null) {
+            showUserProfile(message.getSender());
+        }
     }
 
     /**
@@ -886,8 +891,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             messageLongClickListener.onItemLongClick(view, position, message);
             return;
         }
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return;
         showMessageContextMenu(view, message, makeMessageContextMenu(message));
     }
 
@@ -910,7 +915,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             }
 
             @Override
-            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendbirdException e) {
                 if (e != null) {
                     Logger.e(e);
                     toastError(R.string.sb_text_error_download_file, getModule().getParams().shouldUseOverlayMode());
@@ -1638,6 +1643,23 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         @NonNull
         public Builder setOnMessageInsertedListener(@Nullable OnItemEventListener<BaseMessage> messageInsertedListener) {
             this.messageInsertedListener = messageInsertedListener;
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of edited text mark.
+         *
+         * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
+         * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
             return this;
         }
 

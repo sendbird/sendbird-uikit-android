@@ -3,7 +3,7 @@ package com.sendbird.uikit.interfaces;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.exception.SendbirdException;
 
 /**
  * Interface definition for a callback to be invoked when getting a result.
@@ -21,5 +21,5 @@ public interface OnResultHandler<T> {
      *
      * @param e The object of exception.
      */
-    void onError(@Nullable SendBirdException e);
+    void onError(@Nullable SendbirdException e);
 }

@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.databinding.ViewCustomChannelHolderBinding;
 import com.sendbird.uikit.utils.ChannelUtils;

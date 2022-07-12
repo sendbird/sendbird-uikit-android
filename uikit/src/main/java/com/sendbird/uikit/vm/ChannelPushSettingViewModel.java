@@ -5,13 +5,16 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.GroupChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.MemberState;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.log.Logger;
@@ -119,12 +122,12 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
     }
 
     private void registerChannelHandler() {
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_ID, new GroupChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {}
+            public void onMessageReceived(@NonNull BaseChannel baseChannel, @NonNull BaseMessage baseMessage) {}
 
             @Override
-            public void onUserJoined(GroupChannel channel, User user) {
+            public void onUserJoined(@NonNull GroupChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ChannelSettingsViewModel::onUserJoined()");
                     Logger.d("++ joind user : " + user);
@@ -133,11 +136,11 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onUserLeft(GroupChannel channel, User user) {
+            public void onUserLeft(@NonNull GroupChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ChannelSettingsViewModel::onUserLeft()");
                     Logger.d("++ left user : " + user);
-                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                    if (channel.getMyMemberState() == MemberState.NONE) {
                         shouldFinish.postValue(true);
                         return;
                     }
@@ -146,7 +149,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelChanged(BaseChannel channel) {
+            public void onChannelChanged(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ChannelSettingsViewModel::onChannelChanged()");
                     notifyChannelUpdated((GroupChannel) channel);
@@ -154,7 +157,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> ChannelSettingsViewModel::onChannelDeleted()");
                     Logger.d("++ deleted channel url : " + channelUrl);
@@ -164,9 +167,10 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> ChannelSettingsViewModel::onUserBanned()");
                     shouldFinish.postValue(true);
                 }
@@ -175,7 +179,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
     }
 
     private void unregisterChannelHandler() {
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_ID);
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
@@ -191,13 +195,13 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
     /**
      * Sets the push notification to on, off, or mentions only for the current channel.
      *
-     * @param option pushTriggerOption `PushTriggerOption`. Refer to {@link com.sendbird.android.GroupChannel.PushTriggerOption}.
+     * @param option pushTriggerOption `PushTriggerOption`. Refer to {@link com.sendbird.android.channel.GroupChannel.PushTriggerOption}.
      * @param handler Callback handler called when this method is completed.
      * @since 3.0.0
      */
     public void requestPushOption(@NonNull GroupChannel.PushTriggerOption option, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
-            if (handler != null) handler.onComplete(new SendBirdException("Couldn't retrieve the channel"));
+            if (handler != null) handler.onComplete(new SendbirdException("Couldn't retrieve the channel"));
             return;
         }
         channel.setMyPushTriggerOption(option, e -> {

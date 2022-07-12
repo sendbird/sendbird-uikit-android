@@ -15,8 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewMessagePreviewBinding;

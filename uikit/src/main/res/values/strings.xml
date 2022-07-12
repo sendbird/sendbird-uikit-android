@@ -5,7 +5,7 @@
     <string name="sb_text_header_member_list">Members</string>
     <string name="sb_text_header_invite_member">Invite users</string>
     <string name="sb_text_header_create_channel">New channel</string>
-    <string name="sb_text_header_select_members">Select members</string>
+    <string name="sb_text_header_set_operators">Set as operators</string>
     <string name="sb_text_header_participants">Participants</string>
     <string name="sb_text_header_participants_count">%s participants</string>
 
@@ -75,6 +75,8 @@
     <string name="sb_text_button_save">Save</string>
     <string name="sb_text_button_delete">Delete</string>
     <string name="sb_text_button_retry">Retry</string>
+    <string name="sb_text_button_selected">Selected</string>
+    <string name="sb_text_button_add">Add</string>
 
     <!-- Error Messages -->
     <!-- Connection Error -->
@@ -93,8 +95,8 @@
     <string name="sb_text_error_invite_member">Couldn\&#39;t invite users.</string>
     <string name="sb_text_error_get_user_list">Couldn\&#39;t retrieve user list.</string>
     <string name="sb_text_error_add_reaction">Couldn\&#39;t add reaction.</string>
-    <string name="sb_text_error_promote_operator">Couldn\&#39;t promote operator.</string>
-    <string name="sb_text_error_dismiss_operator">Couldn\&#39;t dismiss operator.</string>
+    <string name="sb_text_error_register_operator">Couldn\&#39;t register as operator.</string>
+    <string name="sb_text_error_unregister_operator">Couldn\&#39;t unregister operator.</string>
     <string name="sb_text_error_delete_reaction">Couldn\&#39;t delete reaction.</string>
 
     <!-- Message Error -->
@@ -136,13 +138,10 @@
     <string name="sb_text_empty_no_muted_member">No muted members</string>
     <string name="sb_text_empty_no_banned_member">No banned members</string>
 
-    <string name="sb_text_button_selected">SELECTED</string>
-    <string name="sb_text_button_add">ADD</string>
-
-    <string name="sb_text_promote_operator">Promote to operator</string>
+    <string name="sb_text_register_operator">Register as operator</string>
     <string name="sb_text_mute_member">Mute</string>
     <string name="sb_text_ban_member">Ban</string>
-    <string name="sb_text_dismiss_operator">Dismiss operator</string>
+    <string name="sb_text_unregister_operator">Unregister operator</string>
     <string name="sb_text_unmute_member">Unmute</string>
     <string name="sb_text_unban_member">Unban</string>
 

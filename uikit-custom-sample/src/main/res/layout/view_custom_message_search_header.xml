@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:inputType="text"
         android:maxLines="1"
-        android:imeOptions="actionSearch"
+        android:imeOptions="actionSearch|flagNoExtractUi"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/searchIcon"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -15,8 +15,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserComponentBinding;
@@ -79,7 +79,7 @@ public class EmojiReactionUserView extends FrameLayout {
         binding.tvNickname.setText(nickname);
         binding.ivUserCover.loadImages(urls);
 
-        if (user != null && user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+        if (user != null && user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
             String meBadge = context.getResources().getString(R.string.sb_text_user_list_badge_me);
             final Spannable spannable = new SpannableString(meBadge);
             int badgeAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;

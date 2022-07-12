@@ -16,8 +16,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.User;
+import com.sendbird.android.message.Reaction;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.EmojiReactionUserListAdapter;
 import com.sendbird.uikit.databinding.SbFragmentUserListBinding;
@@ -66,7 +66,7 @@ public class EmojiReactionUserListView extends FrameLayout {
                 (tab, position) -> {
                     EmojiReactionCountView view = new EmojiReactionCountView(getContext());
                     Reaction reaction = reactionList.get(position);
-                    if (reaction != null && reaction.getUserIds() != null) {
+                    if (reaction != null) {
                         view.setCount(reaction.getUserIds().size());
                         view.setEmojiUrl(EmojiManager.getInstance().getEmojiUrl(reaction.getKey()));
                     }

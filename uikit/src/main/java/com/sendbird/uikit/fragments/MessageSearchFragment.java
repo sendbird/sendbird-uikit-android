@@ -12,9 +12,9 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.MessageSearchQuery;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.query.MessageSearchQuery;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;

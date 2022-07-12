@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.widgets.OpenChannelSettingsInfoView;
 

@@ -6,11 +6,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelMemberListQuery;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.params.MemberListQueryParams;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.User;
+import com.sendbird.android.user.query.MemberListQuery;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MentionSuggestion;
@@ -35,7 +36,7 @@ class MemberFinder {
     @NonNull
     private final MutableLiveData<MentionSuggestion> userList = new MutableLiveData<>();
     @Nullable
-    private GroupChannelMemberListQuery query;
+    private MemberListQuery query;
     private volatile boolean isLive = true;
     @Nullable
     private String lastNicknameStartWith;
@@ -100,7 +101,7 @@ class MemberFinder {
         Collections.sort(members, ALPHABETICAL_COMPARATOR);
         final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
         for (Member member : members) {
-            final String nickname = member.getNickname() != null ? member.getNickname() : "";
+            final String nickname = member.getNickname();
             if (nickname.toLowerCase().startsWith(nicknameStartWith.toLowerCase()) && !myUserId.equalsIgnoreCase(member.getUserId())) {
                 if (filteredList.size() >= maxMemberCount) {
                     return filteredList;
@@ -112,13 +113,13 @@ class MemberFinder {
     }
 
     @NonNull
-    private List<User> getFilteredMembers(@NonNull GroupChannelMemberListQuery query) throws Exception {
+    private List<User> getFilteredMembers(@NonNull MemberListQuery query) throws Exception {
         Logger.d(">> MemberFinder::requestNext() nicknameStartWith=%s", lastNicknameStartWith);
         if (channel == null || channel.isBroadcast()) return Collections.emptyList();
 
         final CountDownLatch lock = new CountDownLatch(1);
         final AtomicReference<List<Member>> results = new AtomicReference<>();
-        final AtomicReference<SendBirdException> error = new AtomicReference<>();
+        final AtomicReference<SendbirdException> error = new AtomicReference<>();
         query.next((queryResult, e) -> {
             try {
                 error.set(e);
@@ -128,7 +129,7 @@ class MemberFinder {
             }
         });
         lock.await();
-        if (error.get() != null) throw new SendBirdException("Error");
+        if (error.get() != null) throw new SendbirdException("Error");
 
         final List<User> filteredList = new ArrayList<>();
         final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
@@ -145,11 +146,11 @@ class MemberFinder {
     }
 
     @NonNull
-    private static GroupChannelMemberListQuery createMemberListQuery(@NonNull GroupChannel channel, @NonNull String nicknameStartWith, int maxMemberCount) {
-        final GroupChannelMemberListQuery query = GroupChannelMemberListQuery.create(channel.getUrl());
-        query.setNicknameStartsWithFilter(nicknameStartWith);
-        query.setLimit(maxMemberCount);
-        return query;
+    private static MemberListQuery createMemberListQuery(@NonNull GroupChannel channel, @NonNull String nicknameStartWith, int maxMemberCount) {
+        MemberListQueryParams memberListQueryParams = new MemberListQueryParams();
+        memberListQueryParams.setLimit(maxMemberCount);
+        memberListQueryParams.setNicknameStartsWithFilter(nicknameStartWith);
+        return channel.createMemberListQuery(memberListQueryParams);
     }
 
     @AnyThread

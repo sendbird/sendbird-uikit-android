@@ -15,11 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.utils.ChannelUtils;

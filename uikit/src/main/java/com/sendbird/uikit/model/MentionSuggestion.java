@@ -2,7 +2,7 @@ package com.sendbird.uikit.model;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +53,7 @@ public class MentionSuggestion {
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MentionSuggestion{" +

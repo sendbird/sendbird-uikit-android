@@ -138,10 +138,10 @@
     <string name="sb_text_button_mute_with_count">%d명</string>
     <string name="sb_text_button_ban_with_count">%d명</string>
 
-    <string name="sb_text_promote_operator">관리자로 지정</string>
+    <string name="sb_text_register_operator">관리자로 지정</string>
     <string name="sb_text_mute_member">음소거</string>
     <string name="sb_text_ban_member">접근 금지</string>
-    <string name="sb_text_dismiss_operator">관리자 해제</string>
+    <string name="sb_text_unregister_operator">관리자 해제</string>
     <string name="sb_text_unmute_member">음소거 해제</string>
     <string name="sb_text_unban_member">접근 금지 해제</string>
 

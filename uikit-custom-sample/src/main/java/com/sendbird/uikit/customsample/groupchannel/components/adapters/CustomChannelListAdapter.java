@@ -5,11 +5,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
-import com.sendbird.uikit.customsample.groupchannel.components.viewholders.CustomChannelViewHolder;
 import com.sendbird.uikit.customsample.databinding.ViewCustomChannelHolderBinding;
+import com.sendbird.uikit.customsample.groupchannel.components.viewholders.CustomChannelViewHolder;
 
 /**
  * Implements the customized <code>ChannelListAdapter</code> to adapt the customized channel list items.

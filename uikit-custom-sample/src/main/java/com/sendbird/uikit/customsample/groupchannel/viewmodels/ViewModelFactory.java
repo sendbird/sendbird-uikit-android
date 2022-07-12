@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.MessageListParams;
+import com.sendbird.android.params.MessageListParams;
 
 import java.util.Objects;
 

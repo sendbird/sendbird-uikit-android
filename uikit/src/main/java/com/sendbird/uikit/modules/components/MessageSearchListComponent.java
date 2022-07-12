@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -88,7 +88,7 @@ public class MessageSearchListComponent {
         this.adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                if (toPosition == 0) {
+                if (fromPosition == 0 || toPosition == 0) {
                     if (listView.findFirstVisibleItemPosition() == 0) {
                         listView.scrollToPosition(0);
                     }

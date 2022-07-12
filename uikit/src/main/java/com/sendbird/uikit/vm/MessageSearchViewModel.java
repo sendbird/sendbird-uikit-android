@@ -6,9 +6,11 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.MessageSearchQuery;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.query.MessageSearchQuery;
+import com.sendbird.android.params.MessageSearchQueryParams;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
@@ -81,22 +83,22 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
     @NonNull
     protected MessageSearchQuery createMessageSearchQuery(@NonNull String keyword) {
         final long timestampFrom = channel == null ? 0 : Math.max(channel.getJoinedAt(), channel.getInvitedAt());
+        final MessageSearchQueryParams params = new MessageSearchQueryParams(keyword);
         if (query != null) {
-            return new MessageSearchQuery.Builder(query)
-                    .setChannelUrl(channelUrl)
-                    .setMessageTimestampFrom(timestampFrom)
-                    .setKeyword(keyword)
-                    .setReverse(false)
-                    .build();
+            params.setAdvancedQuery(query.isAdvancedQuery());
+            params.setChannelCustomType(query.getChannelCustomType());
+            params.setExactMatch(query.getExactMatch());
+            params.setLimit(query.getLimit());
+            params.setMessageTimestampTo(query.getMessageTimestampTo());
+            params.setTargetFields(query.getTargetFields());
+            params.setOrder(query.getOrder());
+        } else {
+            params.setOrder(MessageSearchQuery.Order.TIMESTAMP);
         }
-        return new MessageSearchQuery.Builder()
-                .setChannelUrl(channelUrl)
-                .setKeyword(keyword)
-                .setLimit(40)
-                .setMessageTimestampFrom(timestampFrom)
-                .setOrder(MessageSearchQuery.Order.TIMESTAMP)
-                .setReverse(false)
-                .build();
+        params.setChannelUrl(channelUrl);
+        params.setMessageTimestampFrom(timestampFrom);
+        params.setReverse(false);
+        return SendbirdChat.createMessageSearchQuery(params);
     }
 
     /**
@@ -127,7 +129,7 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
         }
         this.query.next((queryResult, e) -> {
             if (handler != null) {
-                handler.onResult(queryResult, e);
+                handler.onResult(queryResult != null ? new ArrayList<>(queryResult) : null, e);
             }
             MessageSearchViewModel.this.onResult(queryResult, e);
         });
@@ -165,7 +167,7 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
 
     @Override
     public boolean hasNext() {
-        return query != null && query.hasNext();
+        return query != null && query.getHasNext();
     }
 
     /**

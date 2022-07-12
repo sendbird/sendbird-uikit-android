@@ -1,6 +1,8 @@
-# Migration Guide
+# Migration guide
 
-UIKit v3 beta for Android is now available. The biggest change from v2 to v3 is modularization, which allows you to build and customize views at a component level. You can execute key functions, such as list channels, using a fragment, module, and view model. Each fragment has a module that creates the view, and each module is made up of components. A fragment also has a corresponding `ViewModel` that provides the necessary data and APIs from Sendbird Chat SDK. This new architecture allows for easier and more detailed customization.
+UIKit v3 for Android is now available. UIKit v3 has a dependency on Chat SDK v4. Before migrating UIKit v2 to v3, refer to the [migration guide of Chat SDK v4 for Android](/docs/chat/v4/android/getting-started/migration-guide) for any breaking changes. The Chat SDK must be updated first before proceeding with the latest version of UIKit.
+
+The biggest change from v2 to v3 is modularization, which allows you to build and customize views at a component level. You can execute key functions, such as list channels, using a fragment, module, and view model. Each fragment has a module that creates the view, and each module is made up of components. A fragment also has a corresponding `ViewModel` that provides the necessary data and APIs from Sendbird Chat SDK. This new architecture allows for easier and more detailed customization.
 
 ![Image|Image showing the basic concepts and architecture of modularization in UIKit for Android.](https://static.sendbird.com/docs/uikit-android-key-functions-modularization-concepts.png)
 
@@ -16,21 +18,21 @@ Key functions are carried out on a screen basis, meaning each function correspon
 
 |Key function|Fragment|Module|Component|ViewModel|
 |---|---|---|---|---|
-|[List channels](/docs/uikit/v3/android/key-functions/list-channels)|ChannelListFragment|ChannelListModule|HeaderComponent<br/><br/>ChannelListComponent<br/><br/>StatusComponent|ChannelListViewModel|
-|[Chat in a group channel](/docs/uikit/v3/android/key-functions/chatting-in-a-channel/chat-in-a-group-channel)|ChannelFragment|ChannelModule|ChannelHeaderComponent<br/><br/>MessageListComponent<br/><br/>MessageInputComponent<br/><br/>StatusComponent|ChannelViewModel|
-|[Chat in an open channel](/docs/uikit/v3/android/key-functions/chatting-in-an-open-channel/chat-in-an-open-channel)|OpenChannelFragment|OpenChannelModule|OpenChannelHeaderComponent<br/><br/>OpenChannelMessageListComponent<br/><br/>OpenChannelMessageInputComponent<br/><br/>StatusComponent|OpenChannelViewModel|
-|[Create a group channel](/docs/uikit/v3/android/key-functions/creating-a-channel/create-a-group-channel)|CreateChannelFragment|CreateChannelModule|SelectUserHeaderComponent<br/><br/>CreateChannelUserListComponent<br/><br/>StatusComponent|CreateChannelViewModel|
-|[Configure group channel settings](/docs/uikit/v3/android/key-functions/configuring-channel-settings/configure-group-channel-settings)|ChannelSettingsFragment|ChannelSettingsModule|ChannelSettingsHeaderComponent<br/><br/>ChannelSettingsInfoComponent<br/><br/>ChannelSettingsMenuComponent|ChannelSettingsViewModel|
-|[Configure open channel settings](/docs/uikit/v3/android/key-functions/configuring-channel-settings/configure-open-channel-settings)|OpenChannelSettingsFragment|OpenChannelSettingsModule|OpenChannelSettingsHeaderComponent<br/><br/>OpenChannelSettingsInfoComponent<br/><br/>OpenChannelSettingsMenuComponent|OpenChannelSettingsViewModel|
-|[Invite users](/docs/uikit/v3/android/key-functions/invite-users)|InviteUserFragment|InviteUserModule|SelectUserHeaderComponent<br/><br/>InviteUserListComponent<br/><br/>StatusComponent|InviteUserViewModel|
-|[Promote to operator](/docs/uikit/v3/android/key-functions/promote-to-operator)|PromoteOperatorFragment|PromoteOperatorModule|SelectUserHeaderComponent<br/><br/>PromoteOperatorListComponent<br/><br/>StatusComponent|PromoteOperatorViewModel|
-|[List channel members](/docs/uikit/v3/android/key-functions/listing-users/list-channel-members)|MemberListFragment|MemberListModule|HeaderComponent<br/><br/>MemberListComponent<br/><br/>StatusComponent|MemberListViewModel|
-|[List channel participants](/docs/uikit/v3/android/key-functions/listing-users/list-channel-participants)|ParticipantsListFragment|ParticipantListModule|HeaderComponent<br/><br/>ParticipantListComponent<br/><br/>StatusComponent|ParticipantListViewModel|
-|[List banned users](/docs/uikit/v3/android/key-functions/listing-users/list-banned-users)|BannedUserListFragment|BannedUserListModule|HeaderComponent<br/><br/>BannedUserListComponent<br/><br/>StatusComponent|BannedUserListViewModel|
-|[List muted members](/docs/uikit/v3/android/key-functions/listing-users/list-muted-members)|MutedMemberListFragment|MutedMemberListModule|HeaderComponent<br/><br/>MutedMemberListComponent<br/><br/>StatusComponent|MutedMemberListViewModel|
-|[List operators](/docs/uikit/v3/android/key-functions/listing-users/list-operators)|OperatorListFragment|OperatorListModule|HeaderComponent<br/><br/>OperatorListComponent<br/><br/>StatusComponent|OperatorListViewModel|
-|[Moderate channels and members](/docs/uikit/v3/android/key-functions/moderate-channels-and-members)|ModerationFragment|ModerationModule|HeaderComponent<br/><br/>ModerationListComponent|ModerationViewModel|
-|[Search messages](/docs/uikit/v3/android/key-functions/search-messages)|MessageSearchFragment|MessageSearchModule|MessageSearchHeaderComponent<br/><br/>MessageSearchListComponent<br/><br/>StatusComponent|MessageSearchViewModel|
+|[List channels](https://sendbird.com/docs/uikit/v3/android/key-functions/list-channels)|ChannelListFragment|ChannelListModule|HeaderComponent<br/><br/>ChannelListComponent<br/><br/>StatusComponent|ChannelListViewModel|
+|[Chat in a group channel](https://sendbird.com/docs/uikit/v3/android/key-functions/chatting-in-a-channel/chat-in-a-group-channel)|ChannelFragment|ChannelModule|ChannelHeaderComponent<br/><br/>MessageListComponent<br/><br/>MessageInputComponent<br/><br/>StatusComponent|ChannelViewModel|
+|[Chat in an open channel](https://sendbird.com/docs/uikit/v3/android/key-functions/chatting-in-a-channel/chat-in-an-open-channel)|OpenChannelFragment|OpenChannelModule|OpenChannelHeaderComponent<br/><br/>OpenChannelMessageListComponent<br/><br/>OpenChannelMessageInputComponent<br/><br/>StatusComponent|OpenChannelViewModel|
+|[Create a group channel](https://sendbird.com/docs/uikit/v3/android/key-functions/creating-a-channel/create-a-group-channel)|CreateChannelFragment|CreateChannelModule|SelectUserHeaderComponent<br/><br/>CreateChannelUserListComponent<br/><br/>StatusComponent|CreateChannelViewModel|
+|[Configure group channel settings](https://sendbird.com/docs/uikit/v3/android/key-functions/configuring-channel-settings/configure-group-channel-settings)|ChannelSettingsFragment|ChannelSettingsModule|ChannelSettingsHeaderComponent<br/><br/>ChannelSettingsInfoComponent<br/><br/>ChannelSettingsMenuComponent|ChannelSettingsViewModel|
+|[Configure open channel settings](https://sendbird.com/docs/uikit/v3/android/key-functions/configuring-channel-settings/configure-open-channel-settings)|OpenChannelSettingsFragment|OpenChannelSettingsModule|OpenChannelSettingsHeaderComponent<br/><br/>OpenChannelSettingsInfoComponent<br/><br/>OpenChannelSettingsMenuComponent|OpenChannelSettingsViewModel|
+|[Invite users](https://sendbird.com/docs/uikit/v3/android/key-functions/invite-users)|InviteUserFragment|InviteUserModule|SelectUserHeaderComponent<br/><br/>InviteUserListComponent<br/><br/>StatusComponent|InviteUserViewModel|
+|[Register as operator](https://sendbird.com/docs/uikit/v3/android/key-functions/register-as-operator)|RegisterOperatorFragment|RegisterOperatorModule|SelectUserHeaderComponent<br/><br/>RegisterOperatorListComponent<br/><br/>StatusComponent|RegisterOperatorViewModel|
+|[List channel members](https://sendbird.com/docs/uikit/v3/android/key-functions/listing-users/list-channel-members)|MemberListFragment|MemberListModule|HeaderComponent<br/><br/>MemberListComponent<br/><br/>StatusComponent|MemberListViewModel|
+|[List channel participants](https://sendbird.com/docs/uikit/v3/android/key-functions/listing-users/list-channel-participants)|ParticipantsListFragment|ParticipantListModule|HeaderComponent<br/><br/>ParticipantListComponent<br/><br/>StatusComponent|ParticipantListViewModel|
+|[List banned users](https://sendbird.com/docs/uikit/v3/android/key-functions/listing-users/list-banned-members)|BannedUserListFragment|BannedUserListModule|HeaderComponent<br/><br/>BannedUserListComponent<br/><br/>StatusComponent|BannedUserListViewModel|
+|[List muted members](https://sendbird.com/docs/uikit/v3/android/key-functions/listing-users/list-muted-members)|MutedMemberListFragment|MutedMemberListModule|HeaderComponent<br/><br/>MutedMemberListComponent<br/><br/>StatusComponent|MutedMemberListViewModel|
+|[List operators](https://sendbird.com/docs/uikit/v3/android/key-functions/listing-users/list-operators)|OperatorListFragment|OperatorListModule|HeaderComponent<br/><br/>OperatorListComponent<br/><br/>StatusComponent|OperatorListViewModel|
+|[Moderate channels and members](https://sendbird.com/docs/uikit/v3/android/key-functions/moderate-channels-and-members)|ModerationFragment|ModerationModule|HeaderComponent<br/><br/>ModerationListComponent|ModerationViewModel|
+|[Search messages](https://sendbird.com/docs/uikit/v3/android/key-functions/search-messages)|MessageSearchFragment|MessageSearchModule|MessageSearchHeaderComponent<br/><br/>MessageSearchListComponent<br/><br/>StatusComponent|MessageSearchViewModel|
 
 </div>
 
@@ -57,11 +59,11 @@ android {
 
 In v3, there are new changes to APIs that create and customize fragments. Refer to the breaking changes that apply to all fragments in the UIKit below.
 
-### Change default setter method value
+### Default setter method value
 
-In v2, the default value of the setter method in a fragment was set to **false**. But in v3, the value has changed to **true**. For example, the default value of the `setUseHeader()` method in the `HeaderComponent` of `ChannelListFragment` was previously **false** but it's now changed to **true**. In fragments that previously didn't use a header region in v2, you must now manually change the value to **false** if you don't wish to use it in v3. When using custom fragments, call the `onConfigureParams` method to access the setter methods that were previously provided by the builder. Refer to the codes below.
+In v2, the default value of the setter method in a fragment was set to `false`. But in v3, the value has changed to `true`. For example, the default value of the `setUseHeader()` method in the `HeaderComponent` of `ChannelListFragment` was previously `false` but it's now changed to `true`. In fragments that previously didn't use a header region in v2, you must now manually change the value to `false` if you don't wish to use it in v3. When using custom fragments, call the `onConfigureParams` method to access the setter methods that were previously provided by the builder. Refer to the codes below.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelListFragment.Builder().build();
@@ -69,7 +71,7 @@ Fragment fragment = new ChannelListFragment.Builder().build();
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 // Use non-customized fragments through the builder.
@@ -93,7 +95,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 
 Starting in v3, you can't apply a custom theme to customized fragments using a `fragment.builder()` class. In order to do so, you must call the `Params` class of the fragment and set the style resource as a parameter. For non-custom fragments, you can apply a custom theme using the builder class. See the codes below.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelListFragment.Builder(R.style.custom_theme_resource_id).build();
@@ -101,7 +103,7 @@ Fragment fragment = new ChannelListFragment.Builder(R.style.custom_theme_resourc
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 // Apply custom theme to non-customized fragments through the builder.
@@ -119,7 +121,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 
 </div>
 
-> __Note__: Go to the [Customize style resource](/docs/uikit/v3/android/customization/customize-style) page to learn more.
+> __Note__: Go to the [Customize style resource](https://sendbird.com/docs/uikit/v3/android/customization/customize-style) page to learn more.
 
 </div>
 
@@ -134,7 +136,7 @@ Unlike v2, the new version doesn't allow you to use custom fragments through `fr
 1. Inherit the fragment you wish to make changes to and create a custom fragment.
 2. In each `fragment.builder()` class, there are UI-related APIs such as view properties, methods, and event handlers. To customize each fragment, you must override those setter methods. Refer to the following codes on how to build a custom `ChannelListFragment` as an example.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 ChannelListFragment Fragment = new ChannelListFragment.Builder()
@@ -158,7 +160,7 @@ ChannelListFragment Fragment = new ChannelListFragment.Builder()
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 public class CustomChannelListFragment extends ChannelListFragment {
@@ -175,6 +177,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 		statusParams.setEmptyIcon(emptyDrawable);
 		statusParams.setEmptyIconTint(emptyIconTint);
 		statusParams.setEmptyText("empty text");
+		statusParams.setErrorText("error text");
 	}
 
 	@Override
@@ -205,7 +208,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 
 The following table shows a list of methods you must override to build a custom fragment.
 
-<div component="AdvancedTable" title="v3" type="2B">
+<div component="AdvancedTable" title="To v3" type="2B">
 
 |Method|Description|
 |---|---|
@@ -213,6 +216,7 @@ The following table shows a list of methods you must override to build a custom 
 |onBeforeReady(ReadyStatus, ChannelListModule, ChannelListViewModel)|Specifies the method to set custom adapters in the component once a view has been created.|
 |onBindHeaderComponent()|Specifies the method to bind event handlers to `HeaderComponent` of the channel list screen.|
 |onBindChannelListComponent(ChannelListComponent, ChannelListViewModel)|Specifies the method to bind event handlers to `ChannelListComponent` of the channel list screen.|
+|onBindStatusComponent(StatusComponent, ChannelListViewModel)|Specifies the method to bind event handlers to `StatusComponent` of the channel list screen.|
 
 </div>
 
@@ -269,7 +273,7 @@ The following table shows a list of methods you must inherit to create a new fra
 |Configure group channel settings|ChannelSettingsFragment|Fragment newChannelSettingsFragment(String, Bundle)|
 |Configure open channel settings|OpenChannelSettingsFragment|Fragment newOpenChannelSettingsFragment(String, Bundle)|
 |Invite users|InviteUserFragment|Fragment newInviteUserFragment(String, Bundle)|
-|Promote to operator|PromoteOperatorFragment|Fragment newPromoteOperatorFragment(String, Bundle)|
+|Register as operator|RegisterOperatorFragment|Fragment newRegisterOperatorFragment(String, Bundle)|
 |List channel members|MemberListFragment|Fragment newMemberListFragment(String, Bundle)|
 |List channel participants|ParticipantListFragment|Fragment newParticipantListFragment(String, Bundle)|
 |List banned users|BannedUserListFragment|Fragment newBannedUserListFragment(String, Bundle)|
@@ -290,7 +294,7 @@ When migrating from v2 to v3, you should be aware of some changes to the setter 
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelListFragment.Builder()
@@ -303,7 +307,7 @@ Fragment fragment = new ChannelListFragment.Builder()
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ChannelListFragment.Builder()
@@ -320,7 +324,7 @@ Fragment fragment = new ChannelListFragment.Builder()
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelFragment.Builder(channelUrl)
@@ -333,7 +337,7 @@ Fragment fragment = new ChannelFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ChannelFragment.Builder(channelUrl)
@@ -348,7 +352,7 @@ Fragment fragment = new ChannelFragment.Builder(channelUrl)
 
 In the `ChannelFragment.Builder` class, the `setListItemClickListener` method and `setListItemLongClickListener` method have separated into individual event listener methods for each view item.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelFragment.Builder(channelUrl)
@@ -375,7 +379,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ChannelFragment.Builder(channelUrl)
@@ -407,7 +411,7 @@ public class CustomChannelListFragment extends ChannelListFragment {
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
@@ -420,7 +424,7 @@ Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
  Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
@@ -435,7 +439,7 @@ Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
 
 In the `OpenChannelFragment.Builder` class, the `setListItemClickListener` method and `setListItemLongClickListener` method have now been divided into individual event listener methods for each view item.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
@@ -460,7 +464,7 @@ public class CustomOpenChannelListFragment extends OpenChannelListFragment {
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new OpenChannelFragment.Builder(channelUrl)
@@ -490,7 +494,7 @@ public class CustomOpenChannelListFragment extends OpenChannelListFragment {
 
 The `CreateableChannelType` property has been changed to `CreatableChannelType` and the following methods have also changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new CreateChannelFragment.Builder(CreateableChannelType.Normal)
@@ -501,7 +505,7 @@ Fragment fragment = new CreateChannelFragment.Builder(CreateableChannelType.Norm
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new CreateChannelFragment.Builder(CreatableChannelType.Normal)
@@ -516,7 +520,7 @@ Fragment fragment = new CreateChannelFragment.Builder(CreatableChannelType.Norma
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ChannelSettingsFragment.Builder(channelUrl)
@@ -528,7 +532,7 @@ Fragment fragment = new ChannelSettingsFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ChannelSettingsFragment.Builder(channelUrl)
@@ -543,7 +547,7 @@ Fragment fragment = new ChannelSettingsFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new OpenChannelSettingsFragment.Builder(channelUrl)
@@ -555,7 +559,7 @@ Fragment fragment = new OpenChannelSettingsFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new OpenChannelSettingsFragment.Builder(channelUrl)
@@ -570,7 +574,7 @@ Fragment fragment = new OpenChannelSettingsFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new InviteUserFragment.Builder(channelUrl)
@@ -582,26 +586,26 @@ Fragment fragment = new InviteUserFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new InviteUserFragment.Builder(channelUrl)
 	.setOnHeaderLeftButtonClickListener(leftButtonListener)
 	.setInviteUserListAdapter(inviteUserListAdapter)
-	.setOnCustomPagedQueryHandler(customPagedQueryHandler)
+	.setCustomPagedQueryHandler(customPagedQueryHandler)
 	.build();
 ```
 
 </div>
 
-### PromoteOperatorFragment.Builder
+### RegisterOperatorFragment.Builder
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
-Fragment fragment = new PromoteOperatorFragment.Builder(channelUrl)
+Fragment fragment = new RegisterOperatorFragment.Builder(channelUrl)
 	.setHeaderLeftButtonListener(leftButtonListener)
 	.setUserListAdapter(userListAdapter)
 	.setCustomUserListQueryHandler(userListQueryHandler)
@@ -610,13 +614,13 @@ Fragment fragment = new PromoteOperatorFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
-Fragment fragment = new PromoteOperatorFragment.Builder(channelUrl)
+Fragment fragment = new RegisterOperatorFragment.Builder(channelUrl)
 	.setOnHeaderLeftButtonClickListener(leftButtonListener)
-	.setPromoteOperatorListAdapter(promoteOperatorListAdapter)
-	.setOnCustomPagedQueryHandler(customPagedQueryHandler)
+	.setRegisterOperatorListAdapter(registerOperatorListAdapter)
+	.setCustomPagedQueryHandler(customPagedQueryHandler)
 	.build();
 ```
 
@@ -626,7 +630,7 @@ Fragment fragment = new PromoteOperatorFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new MemberListFragment.Builder(channelUrl)
@@ -640,7 +644,7 @@ Fragment fragment = new MemberListFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new MemberListFragment.Builder(channelUrl)
@@ -658,7 +662,7 @@ Fragment fragment = new MemberListFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ParticipantListFragment.Builder(channelUrl)
@@ -673,7 +677,7 @@ Fragment fragment = new ParticipantListFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ParticipantListFragment.Builder(channelUrl)
@@ -692,7 +696,7 @@ Fragment fragment = new ParticipantListFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new MutedMemberListFragment.Builder(channelUrl)
@@ -707,7 +711,7 @@ Fragment fragment = new MutedMemberListFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new MutedMemberListFragment.Builder(channelUrl)
@@ -726,7 +730,7 @@ Fragment fragment = new MutedMemberListFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new OperatorListFragment.Builder(channelUrl)
@@ -741,7 +745,7 @@ Fragment fragment = new OperatorListFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new OperatorListFragment.Builder(channelUrl)
@@ -760,7 +764,7 @@ Fragment fragment = new OperatorListFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new ModerationFragment.Builder(channelUrl)
@@ -770,7 +774,7 @@ Fragment fragment = new ModerationFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new ModerationFragment.Builder(channelUrl)
@@ -784,7 +788,7 @@ Fragment fragment = new ModerationFragment.Builder(channelUrl)
 
 The following methods have changed names in v3.
 
-<div component="AdvancedCode" title="v2">
+<div component="AdvancedCode" title="From v2">
 
 ```java
 Fragment fragment = new MessageSearchFragment.Builder(channelUrl)
@@ -794,7 +798,7 @@ Fragment fragment = new MessageSearchFragment.Builder(channelUrl)
 
 </div>
 
-<div component="AdvancedCode" title="v3">
+<div component="AdvancedCode" title="To v3">
 
 ```java
 Fragment fragment = new MessageSearchFragment.Builder(channelUrl)

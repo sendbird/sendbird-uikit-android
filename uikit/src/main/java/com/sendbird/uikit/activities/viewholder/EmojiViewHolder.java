@@ -2,7 +2,7 @@ package com.sendbird.uikit.activities.viewholder;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.Emoji;
+import com.sendbird.android.message.Emoji;
 import com.sendbird.uikit.databinding.SbViewEmojiBinding;
 
 public class EmojiViewHolder extends BaseViewHolder<Emoji> {

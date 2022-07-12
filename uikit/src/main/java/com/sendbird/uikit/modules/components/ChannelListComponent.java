@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
 import com.sendbird.uikit.fragments.ItemAnimator;
@@ -92,7 +92,7 @@ public class ChannelListComponent {
         this.adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                if (toPosition == 0) {
+                if (fromPosition == 0 || toPosition == 0) {
                     if (pagerRecyclerView == null) return;
                     if (pagerRecyclerView.findFirstVisibleItemPosition() == 0) {
                         pagerRecyclerView.scrollToPosition(0);

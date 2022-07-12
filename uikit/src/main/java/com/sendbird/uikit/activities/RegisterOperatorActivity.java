@@ -13,16 +13,16 @@ import androidx.fragment.app.FragmentManager;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.fragments.PromoteOperatorFragment;
+import com.sendbird.uikit.fragments.RegisterOperatorFragment;
 
 /**
  * Activity displays a list of users and provide a current user.
  *
  * @since 1.2.0
  */
-public class PromoteOperatorActivity extends AppCompatActivity {
+public class RegisterOperatorActivity extends AppCompatActivity {
     /**
-     * Create an intent for a {@link PromoteOperatorActivity}.
+     * Create an intent for a {@link RegisterOperatorActivity}.
      * @param context A Context of the application package implementing this class.
      * @param channelUrl The url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
@@ -31,12 +31,12 @@ public class PromoteOperatorActivity extends AppCompatActivity {
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
-        return newIntentFromCustomActivity(context, PromoteOperatorActivity.class, channelUrl);
+        return newIntentFromCustomActivity(context, RegisterOperatorActivity.class, channelUrl);
     }
 
     /**
      * Create an intent for a custom activity.
-     * The custom activity must inherit {@link PromoteOperatorActivity}.
+     * The custom activity must inherit {@link RegisterOperatorActivity}.
      *
      * @param context A Context of the application package implementing this class.
      * @param cls The activity class that is to be used for the intent.
@@ -45,7 +45,7 @@ public class PromoteOperatorActivity extends AppCompatActivity {
      * @since 1.2.0
      */
     @NonNull
-    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends PromoteOperatorActivity> cls, @NonNull String channelUrl) {
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends RegisterOperatorActivity> cls, @NonNull String channelUrl) {
         Intent intent = new Intent(context, cls);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
         return intent;
@@ -66,15 +66,15 @@ public class PromoteOperatorActivity extends AppCompatActivity {
     }
 
     /**
-     * It will be called when the {@link PromoteOperatorActivity} is being created.
+     * It will be called when the {@link RegisterOperatorActivity} is being created.
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
-     * @return {@link PromoteOperatorFragment}
+     * @return {@link RegisterOperatorFragment}
      * @since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {
         final Bundle args = getIntent() != null && getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle();
-        return SendbirdUIKit.getFragmentFactory().newPromoteOperatorFragment(args.getString(StringSet.KEY_CHANNEL_URL, ""), args);
+        return SendbirdUIKit.getFragmentFactory().newRegisterOperatorFragment(args.getString(StringSet.KEY_CHANNEL_URL, ""), args);
     }
 }

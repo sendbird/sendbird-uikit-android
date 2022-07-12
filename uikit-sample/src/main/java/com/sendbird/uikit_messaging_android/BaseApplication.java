@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.handlers.InitResultHandler;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.InitResultHandler;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
@@ -78,7 +78,7 @@ public class BaseApplication extends MultiDexApplication {
                     }
 
                     @Override
-                    public void onInitFailed(@NonNull SendBirdException e) {
+                    public void onInitFailed(@NonNull SendbirdException e) {
                         initState.setValue(InitState.FAILED);
                     }
 

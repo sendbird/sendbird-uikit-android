@@ -6,14 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sendbird.android.GroupChannelTotalUnreadMessageCountParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.SendBirdPushHelper;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.PushRequestCompleteHandler;
+import com.sendbird.android.handler.UserEventHandler;
+import com.sendbird.android.params.GroupChannelTotalUnreadMessageCountParams;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.widgets.WaitingDialog;
@@ -39,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendBird.getSDKVersion());
+        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendbirdChat.getSdkVersion());
         binding.tvVersionInfo.setText(sdkVersion);
 
         binding.groupChannelButton.setOnClickListener(v -> clickGroupChannel());
@@ -54,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // initialize total unread count
-        SendBird.getTotalUnreadMessageCount(new GroupChannelTotalUnreadMessageCountParams(), (totalCount, e) -> {
+        SendbirdChat.getTotalUnreadMessageCount(new GroupChannelTotalUnreadMessageCountParams(), (totalCount, e) -> {
             if (e != null) {
                 return;
             }
@@ -69,12 +71,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         // register total unread count event
-        SendBird.addUserEventHandler(USER_EVENT_HANDLER_KEY, new SendBird.UserEventHandler() {
+        SendbirdChat.addUserEventHandler(USER_EVENT_HANDLER_KEY, new UserEventHandler() {
             @Override
-            public void onFriendsDiscovered(List<User> list) {}
+            public void onFriendsDiscovered(@NonNull List<User> list) {}
 
             @Override
-            public void onTotalUnreadMessageCountChanged(int totalCount, Map<String, Integer> totalCountByCustomType) {
+            public void onTotalUnreadMessageCountChanged(int totalCount, @NonNull Map<String, Integer> totalCountByCustomType) {
                 if (totalCount > 0) {
                     binding.tvUnreadCount.setVisibility(View.VISIBLE);
                     binding.tvUnreadCount.setText(totalCount > 99 ?
@@ -90,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        SendBird.removeUserEventHandler(USER_EVENT_HANDLER_KEY);
+        SendbirdChat.removeUserEventHandler(USER_EVENT_HANDLER_KEY);
     }
 
     private void clickGroupChannel() {
@@ -105,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void signOut() {
         WaitingDialog.show(this);
-        PushUtils.unregisterPushHandler(new SendBirdPushHelper.OnPushRequestCompleteListener() {
+        PushUtils.unregisterPushHandler(new PushRequestCompleteHandler() {
             @Override
             public void onComplete(boolean isActive, String token) {
                 SendbirdUIKit.disconnect(() -> {
@@ -119,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(SendBirdException e) {
+            public void onError(SendbirdException e) {
                 WaitingDialog.dismiss();
             }
         });

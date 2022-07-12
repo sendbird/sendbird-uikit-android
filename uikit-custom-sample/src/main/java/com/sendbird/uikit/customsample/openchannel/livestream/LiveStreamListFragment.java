@@ -2,7 +2,7 @@ package com.sendbird.uikit.customsample.openchannel.livestream;
 
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListFragment;
 

@@ -4,8 +4,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.widgets.StateHeaderView;
 
 /**
@@ -25,7 +25,7 @@ public class ChannelSettingsHeaderComponent extends StateHeaderComponent {
         if (!(rootView instanceof StateHeaderView)) return;
 
         final StateHeaderView headerView = (StateHeaderView) rootView;
-        if (channel.isBroadcast() && channel.getMyRole() != Member.Role.OPERATOR) {
+        if (channel.isBroadcast() && channel.getMyRole() != Role.OPERATOR) {
             headerView.setUseRightButton(false);
         }
     }

@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.fragments.OpenChannelFragment;

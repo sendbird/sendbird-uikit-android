@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.view.ContextThemeWrapper;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;

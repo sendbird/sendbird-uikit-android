@@ -21,7 +21,7 @@
         <item name="sb_module_open_channel_settings">@style/Module.OpenChannelSettings</item>
         <item name="sb_module_operator_list">@style/Module.OperatorList</item>
         <item name="sb_module_participant_list">@style/Module.ParticipantList</item>
-        <item name="sb_module_promote_operator_list">@style/Module.PromoteOperator</item>
+        <item name="sb_module_register_operator_list">@style/Module.RegisterOperator</item>
         <item name="sb_module_channel_push_setting">@style/Module.ChannelPushSetting</item>
 
         <item name="sb_component_channel_message_input">@style/Component.ChannelMessageInput</item>
@@ -112,10 +112,10 @@
         <item name="sb_component_list">@style/Component.List.ParticipantList</item>
         <item name="sb_component_status">@style/Component.Status.ParticipantList</item>
     </style>
-    <style name="Module.PromoteOperator">
-        <item name="sb_component_state_header">@style/Component.Header.State.PromoteOperator</item>
-        <item name="sb_component_list">@style/Component.List.PromoteOperator</item>
-        <item name="sb_component_status">@style/Component.Status.PromoteOperator</item>
+    <style name="Module.RegisterOperator">
+        <item name="sb_component_state_header">@style/Component.Header.State.RegisterOperator</item>
+        <item name="sb_component_list">@style/Component.List.RegisterOperator</item>
+        <item name="sb_component_status">@style/Component.Status.RegisterOperator</item>
     </style>
     <style name="Module.ChannelPushSetting">
         <item name="sb_component_header">@style/Component.Header.ChannelPushSetting</item>
@@ -275,7 +275,6 @@
 
     <style name="Component.Header.State.CreateChannel">
         <item name="sb_appbar_title">@string/sb_text_header_create_channel</item>
-        <item name="sb_appbar_right_button_text">@string/sb_text_button_create</item>
     </style>
     <style name="Component.List.CreateChannel">
         <item name="sb_widget_select_user_preview">@style/Widget.Sendbird.SelectUserPreview</item>
@@ -288,7 +287,6 @@
 
     <style name="Component.Header.State.InviteUser">
         <item name="sb_appbar_title">@string/sb_text_header_invite_member</item>
-        <item name="sb_appbar_right_button_text">@string/sb_text_button_invite</item>
     </style>
     <style name="Component.List.InviteUser">
         <item name="sb_widget_select_user_preview">@style/Widget.Sendbird.SelectUserPreview</item>
@@ -466,14 +464,13 @@
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
 
-    <style name="Component.Header.State.PromoteOperator">
-        <item name="sb_appbar_title">@string/sb_text_header_select_members</item>
-        <item name="sb_appbar_right_button_text">@string/sb_text_button_add</item>
+    <style name="Component.Header.State.RegisterOperator">
+        <item name="sb_appbar_title">@string/sb_text_header_set_operators</item>
     </style>
-    <style name="Component.List.PromoteOperator">
+    <style name="Component.List.RegisterOperator">
         <item name="sb_widget_select_user_preview">@style/Widget.Sendbird.SelectUserPreview</item>
     </style>
-    <style name="Component.Status.PromoteOperator">
+    <style name="Component.Status.RegisterOperator">
         <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_user_list_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>

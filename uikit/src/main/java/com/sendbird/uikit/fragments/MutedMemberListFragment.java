@@ -11,12 +11,12 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.activities.PromoteOperatorActivity;
+import com.sendbird.uikit.activities.RegisterOperatorActivity;
 import com.sendbird.uikit.activities.adapter.MutedMemberListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
@@ -97,8 +97,8 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
     protected void onReady(@NonNull ReadyStatus status, @NonNull MutedMemberListModule module, @NonNull MutedMemberListViewModel viewModel) {
         Logger.d(">> MutedMemberListFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
-        if (channel != null && channel.getMyRole() != Member.Role.OPERATOR) shouldActivityFinish();
-        viewModel.getOperatorDismissed().observe(getViewLifecycleOwner(), isDismissed -> {
+        if (channel != null && channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
+        viewModel.getOperatorUnregistered().observe(getViewLifecycleOwner(), isDismissed -> {
             if (isDismissed) shouldActivityFinish();
         });
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
@@ -121,7 +121,7 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
         headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
             if (isFragmentAlive() && getContext() != null && channel != null) {
-                startActivity(PromoteOperatorActivity.newIntent(getContext(), channel.getUrl()));
+                startActivity(RegisterOperatorActivity.newIntent(getContext(), channel.getUrl()));
             }
         });
     }
@@ -205,7 +205,7 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull Member user) {
         if (getContext() == null) return;
-        boolean useChannelCreateButton = !user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean useChannelCreateButton = !user.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), user, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
 

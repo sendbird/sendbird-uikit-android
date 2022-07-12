@@ -3,16 +3,21 @@
 - #### Prerequisites
 
   - minSDKVersion is increased from **16** to **21**.
+  - Sendbird Chat SDK for Android 4.0.0 and later
   - changed `databinding` of buildFeatures to use `viewbinding`.
 
 - #### Breaking changes
 
   ##### Common changes
 
+  - Rename the main class from `SendBirdUIKit` to `SendbirdUIKit`.
+
+  - Rename the class from `SendBirdUIKitAdapter` to `SendbirdUIKitAdapter`.
+
   - All `useHeader` property's default value in `Builder` class has been changed from `false` to `true`.
-
+  
   - All fragments inherites `BaseModuleFragment` and it has abstract methods related to the module. So below functions are added all fragments. 
-
+  
     > For more information on this changes of `BaseModuleFragment`, refer to [this](https://sendbird.com/docs/uikit/v1/android/guides/group-channel).
   
     - `onCreateModule(Bundle)`
@@ -20,7 +25,7 @@
     - `onCreateViewModel()`
     - `onBeforeReady(ReadyStatus, BaseModule, BaseViewModel)`
     - `onReady(ReadyStatus, BaseModule, BaseViewModel)`
-
+  
   - Added `Modules` and `Components` classes. Each fragment has it's corresponding module and components.
   
     | fragment                        | module                    | component                                                    | viewmodel                    | style name                   | recyclerview adapter          |
@@ -32,7 +37,7 @@
     | **ChannelSettingsFragment**     | ChannelSettingsModule     | ChannelSettingsHeaderComponent<br />ChannelSettingsInfoComponent<br />ChannelSettingsMenuComponent | ChannelSettingsViewModel     | `Module.ChannelSettings`     |                               |
     | **OpenChannelSettingsFragment** | OpenChannelSettingsModule | OpenChannelSettingsHeaderComponent<br />OpenChannelSettingsInfoComponent<br />OpenChannelSettingsMenuComponent | OpenChannelSettingsViewModel | `Module.OpenChannelSettings` |                               |
     | **InviteUserFragment**          | InviteUserModule          | SelectUserHeaderComponent<br />InviteUserListComponent<br />StatusComponent | InviteUserViewModel          | `Module.InviteUser`          | InviteUserListAdapter         |
-    | **PromoteOperatorFragment**     | PromoteOperatorModule     | SelectUserHeaderComponent<br />PromoteOperatorListComponent<br />StatusComponent | PromoteOperatorViewModel     | `Module.PromoteOperators`    | PromoteOperatorListAdapter    |
+    | **RegisterOperatorFragment**     | RegisterOperatorModule     | SelectUserHeaderComponent<br />RegisterOperatorListComponent<br />StatusComponent | RegisterOperatorViewModel     | `Module.RegisterOperator`    | RegisterOperatorListAdapter    |
     | **ModerationFragment**          | ModerationModule          | HeaderComponent<br />ModerationListComponent                 | ModerationViewModel          | `Module.Moderation`          |                               |
     | **MemberListFragment**          | MemberListModule          | HeaderComponent<br />MemberListComponent<br />StatusComponent | MemberListViewModel          | `Module.MemberList`          | MemberListAdapter             |
     | **BannedUserListFragment**      | BannedUserListModule      | HeaderComponent<br />BannedUserListComponent<br />StatusComponent | BannedUserListViewModel      | `Module.BannedUserList`      | BannedUserListAdater          |
@@ -40,7 +45,7 @@
     | **OperatorListFragment**        | OperatorListModule        | HeaderComponent<br />OperatorListComponent<br />StatusComponent | OperatorListViewModel        | `Module.OperatorList`        | OperatorListAdapter           |
     | **MessageSearchFragment**       | MessageSearchModule       | MessageSearchHeaderComponent<br />MessageSearchListComponent<br />StatusComponent | MessageSearchViewModel       | `Module.MessageSearch`       | MessageSearchAdapter          |
     | **ParticipantListFragment**     | ParticipantListModule     | HeaderComponent<br />ParticipantListComponent<br />StatusComponent | ParticipantViewModel         | `Module.ParticipantList`     | ParticipantListAdapter        |
-
+  
   - Deleted below functions in all fragments.
   
     - `onConfigure()`
@@ -69,6 +74,43 @@
   
   - Replaced interface of  `CreateableChannelType` to `CreatableChannelType`.
 
+
+------
+
+##### SendbirdUIkit
+
+- Replaced `updateUserInfo(String, String, UserInfoUpdateHandler)` to `updateUserInfo(UserUpdateParams, CompletionHandler)`.
+- Replaced `connect(SendBird.ConnectHandler)` to `connect(ConnectHandler)`.
+- Replaced `disconnect(SendBird.DisconnectHandler)` to `disconnect(DisconnectHandler)`.
+
+------
+
+##### CustomParamsHandler
+
+- Replaced `onBeforeCreateGroupChannel(GroupChannelParams)` to `onBeforeCreateGroupChannel(GroupChannelCreateParams)`.
+- Replaced `onBeforeSendUserMessage(UserMessageParams)` to `onBeforeSendUserMessage(UserMessageCreateParams)`.
+- Replaced `onBeforeUpdateGroupChannel(GroupChannelParams)` to `onBeforeUpdateGroupChannel(GroupChannelUpdateParams)`.
+- Replaced `onBeforeUpdateUserMessage(UserMessageParams)` to `onBeforeUpdateUserMessage(UserMessageUpdateParams)`.
+- Replaced `onBeforeSendFileMessage(FileMessageParams)` to `onBeforeSendFileMessage(FileMessageCreateParams).`
+- Replaced `onBeforeCreateOpenChannel(OpenChannelParams)` to `onBeforeCreateOpenChannel(OpenChannelCreateParams)`
+
+------
+
+##### OnCompleteHandler
+
+- Repleace `onComplete(SendBirdException)` to `onComplete(SendbirdException)`.
+
+------
+
+##### OnResultHandler
+
+- Replaced `onResult(List<T>, SendBirdException)` to `onComplete(List<T>, SendbirdException)`.
+
+------
+
+##### OnListResultHandler
+
+- Replaced `onError(SendBirdException)` to `onError(SendbirdException)`.
 
 ------
 
@@ -109,6 +151,11 @@
     - Moved `getTooltipMessage(int)` into `MessageListComponent`
     - Replaced `onIdentifiableItemClick(View, String, int, BaseMessage)` to use `onMessageClicked(View, int, BaseMessage)`, `onMessageProfileClicked(View, int, BaseMessage)`, and `onQuoteReplyMessageClicked(View, int, BaseMessage)`.
     - Replaced `onIdentifiableItemLongClick(View, String, int, BaseMessage)` to use `onMessageLongClicked(View, int, BaseMessage)`, `onMessageProfileLongClicked(View, int, BaseMessage)`, and `onQuoteReplyMessageLongClicked(View, int, BaseMessage)`.
+    - Replaced `sendUserMessage(UserMessageParams)` to use `sendUserMessage(UserMessageCreateParams)`.
+    - Replaced `updateUserMessage(long, UserMessageParams)` to use `updateUserMessage(long, UserMessageUpdateParams)`.
+    - Replaced `onBeforeSendUserMessage(UserMessageParams)` to use `onBeforeSendUserMessage(UserMessageCreateParams)`.
+    - Replaced `onBeforeUpdateUserMessage(UserMessageParams)` to use `onBeforeUpdateUserMessage(UserMessageUpdateParams)`.
+    - Replaced `onBeforeSendFileMessage(FileMessageParams)` to use `onBeforeSendFileMessage(FileMessageCreateParams)`.
     - Added `onBindChannelHeaderComponent(ChannelHeaderComponent, ChannelViewMode, GroupChannel)`
     - Added `onBindMessageListComponent(MessageListComponent, ChannelViewModel, GroupChannel)`
     - Added `onBindMessageInputComponent(MessageInputComponent, ChannelViewModel, GroupChannel)`
@@ -138,30 +185,35 @@
 
   ##### Chat in open channel
 
-- ###### OpenChannelFragment.Builder
+- ###### OpenChannelFragment
 
   - Replaced `onIdentifiableItemClick(View, String, int, BaseMessage)` to use `onMessageClicked(View, int, BaseMessage)` and  `onMessageProfileClicked(View, int, BaseMessage)`.
   - Replaced `onIdentifiableItemLongClick(View, String, int, BaseMessage)` to use `onMessageLongClicked(View, int, BaseMessage)` and `onMessageProfileLongClicked(View, int, BaseMessage)`.
+  - Replaced `sendUserMessage(UserMessageParams)` to use `sendUserMessage(UserMessageCreateParams)`.
+  - Replaced `updateUserMessage(long, UserMessageParams)` to use `updateUserMessage(long, UserMessageUpdateParams)`.
+  - Replaced `onBeforeSendUserMessage(UserMessageParams)` to use `onBeforeSendUserMessage(UserMessageCreateParams)`.
+  - Replaced `onBeforeUpdateUserMessage(UserMessageParams)` to use `onBeforeUpdateUserMessage(UserMessageUpdateParams)`.
+  - Replaced `onBeforeSendFileMessage(FileMessageParams)` to use `onBeforeSendFileMessage(FileMessageCreateParams)`.
   - Added `onBindChannelHeaderComponent(OpenChannelChannelHeaderComponent, OpenChannelViewModel, OpenChannel)`
   - Added `onBindMessageListComponent(OpenChannelMessageListComponent, OpenChannelViewModel, OpenChannel)`
   - Added `onBindMessageInputComponent(OpenChannelMessageInputComponent, OpenChannelViewModel, OpenChannel)`
   - Added `onBindStatusComponent(StatusComponent, OpenChannelViewModel, OpenChannel)`
 
-  - ###### OpenChannelFragment.Builder
+- ###### OpenChannelFragment.Builder
 
-    - Replaced `setHeaderLeftButtonListener(OnClickListener)` to `setOnLeftbuttonClickListener(OnClickListener`
-    - Replaced `setHeaderRightButtonListener(OnClickListener)` to `setOnRightbuttonClickListener(OnClickListener)`
-    - Replaced `setInputLeftButtonListener(OnClickListener)` to `setOnInputLeftbuttonClickListener(OnClickListener)`
-    - Replaced `setOnProfileClickListener(OnItemClickListener<>)` to `setOnMessageProfileClickListener(OnItemClickListener<>)`
-    - Deleted `setCustomOpenChannelFragment(OpenChannelFragment)`
-    - Deleted `setItemClickListener(OnItemClickListener)`
-    - Deleted `setItemLongClickListener(OnItemClickListener)`
-    - Deleted `setListItemClickListener(OnIdentificableItemClickListener<>)`
-    - Deleted `setListItemLongClickListener(OnIdentificableItemClickListener<>)`
-    - Added `withArguments(Bundle)`
-    - Added `setOnProfileLongClickListener(OnItemClickListener<>)` to `setOnMessageProfileClickListener(OnItemClickListener<>)`
-    - Added `setOnMessageClickListener(OnItemClickListener)`
-    - Added `setOnMessageLongClickListener(OnItemLongClickListener)`
+  - Replaced `setHeaderLeftButtonListener(OnClickListener)` to `setOnLeftbuttonClickListener(OnClickListener`
+  - Replaced `setHeaderRightButtonListener(OnClickListener)` to `setOnRightbuttonClickListener(OnClickListener)`
+  - Replaced `setInputLeftButtonListener(OnClickListener)` to `setOnInputLeftbuttonClickListener(OnClickListener)`
+  - Replaced `setOnProfileClickListener(OnItemClickListener<>)` to `setOnMessageProfileClickListener(OnItemClickListener<>)`
+  - Deleted `setCustomOpenChannelFragment(OpenChannelFragment)`
+  - Deleted `setItemClickListener(OnItemClickListener)`
+  - Deleted `setItemLongClickListener(OnItemClickListener)`
+  - Deleted `setListItemClickListener(OnIdentificableItemClickListener<>)`
+  - Deleted `setListItemLongClickListener(OnIdentificableItemClickListener<>)`
+  - Added `withArguments(Bundle)`
+  - Added `setOnProfileLongClickListener(OnItemClickListener<>)` to `setOnMessageProfileClickListener(OnItemClickListener<>)`
+  - Added `setOnMessageClickListener(OnItemClickListener)`
+  - Added `setOnMessageLongClickListener(OnItemLongClickListener)`
 
 ------
 
@@ -179,6 +231,8 @@
     - Replaced `setUserListAdapter(UserListAdapter)` to use `setAdapter(UserInfoListAdapter)` in `CreateChannelUserListComponent`.
     - Replaced `setHeaderLeftButtonListener(OnClickListener)` to use `setOnLeftButtonClickListener(OnClickListener)` in `StateHeaderComponent`
     - Replaced `setCustomUserListQueryHandler(CustomUserListQueryHandler)` to use `PagedQueryHandler<UserInfo> createQueryHandler()` in `CreateChannelViewModel`.
+    - Replaced `onBeforeCreateGroupChannel(GroupChannelParams)` to `onBeforeCreateGroupChannel(GroupChannelCreateParams)`.
+    - Replaced `createGroupChannel(GroupChannelParams)` to `createGroupChannel(GroupChannelCreateParams)`.
     - Added `onBindHeaderComponent(SelectUserHeaderComponent, CreateChannelViewModel)`
     - Added `onBindUserListComponent(CreateChannelUserListComponent, CreateChannelViewModel)`
     - Added `onBindStatusComponent(StatusComponent, CreateChannelViewModel)`
@@ -204,6 +258,8 @@
 
     - Replaced `setHeaderLeftButtonListener(OnClickListener)` to use `setOnLeftButtonClickListener(OnClickListener)` in `ChannelSettingsHeaderComponent`.
     - Replaced `setOnMenuItemClickListener(OnMenuItemClickListener)` to use `setOnMenuClickListener(OnItemClickListener<Menu>)` in `ChannelSettingsMenuComponent`.
+    - Replaced `onBeforeUpdateGroupChannel(GroupChannelParams)` to `onBeforeUpdateGroupChannel(GroupChannelUpdateParams)`.
+    - Replaced `updateGroupChannel(GroupChannelParams)` to `updateGroupChannel(GroupChannelUpdateParams)`.
     - Added `onBindHeaderComponent(ChannelSettingsHeaderComponent, ChannelSettingsViewModel, GroupChannel)`
     - Added `onBindSettingsInfoComponent(ChannelSettingsInfoComponent, ChannelSettingsViewModel, GroupChannel)`
     - Added `onBindSettingsMenuComponent(ChannelSettingsMenuComponent, ChannelSettingsViewModel, GroupChannel)`
@@ -228,6 +284,8 @@
 
   - Replaced `setHeaderLeftButtonListener(OnClickListener)` to use `setOnLeftButtonClickListener(OnClickListener)` in `ChannelSettingsHeaderComponent`.
   - Replaced `setOnMenuItemClickListener(OnMenuItemClickListener)` to use `setOnMenuClickListener(OnItemClickListener<Menu>)` in `ChannelSettingsMenuComponent`.
+  - Replaced `onBeforeUpdateOpenChannel(OpenChannelParams)` to `onBeforeUpdateOpenChannel(OpenChannelUpdateParams)`.
+  - Replaced `updateOpenChannel(OpenChannelParams)` to `updateOpenChannel(OpenChannelUpdateParams)`.
   - Added `onBindHeaderComponent(OpenChannelSettingsHeaderComponent, OpenChannelSettingsViewModel, OpenChannel)`
   - Added `onBindSettingsInfoComponent(OpenChannelSettingsInfoComponent, OpenChannelSettingsViewModel, OpenChannel)`
   - Added `onBindSettingsMenuComponent(OpenChannelSettingsMenuComponent, OpenChannelSettingsViewModel, OpenChannel)`
@@ -273,35 +331,42 @@
 
 ------
 
-  ##### Promote operators
+  ##### Register as operators
 
 - ###### PromoteOperatorsActivity
 
-    - Renamed `PromoteOperatorsActivity` to `PromoteOperatorListActivity`
+    - Renamed `PromoteOperatorsActivity` to `RegisterOperatorListActivity`
     - Replaced `Fragment createPromoteOperatorFragment(GroupChannel)` to `Fragment createFragment()`.
 
 - ###### PromoteOperatorsFragment
 
-    - Renamed `PromoteOperatorsFragment` to `PromoteOperatorListFragment`
+    - Renamed `PromoteOperatorsFragment` to `RegisterOperatorListFragment`
     - Deleted `setErrorFrame()`.
-    - Replaced `getDisabledUserIds()` to use `setDisabledUserIdList(List<String>)` in `PromoteOperatorListAdapter`.
+    - Replaced `getDisabledUserIds()` to use `setDisabledUserIdList(List<String>)` in `RegisterOperatorListAdapter`.
     - Replaced `onUserSelectComplete(List)` to `onUserSelectionCompleted(List)`
     - Replaced `setRightButtonText(CharSequence)` and `setRightButtonEnabled(boolean)` to use `notifySelectedUserChanged(int)` in `SelectUserHeaderComponent`.
     - Replaced `setHeaderLeftButtonListener(OnClickListener)` to use `setOnLeftButtonClickListener(OnClickListener)` in `SelectUserHeaderComponent`.
-    - Replaced `setUserListAdapter(UserListAdapter)` to use `setAdapter(PromoteOperatorListAdapter)` in `PromoteOperatorListComponent`.
-    - Replaced `setCustomUserListQueryHandler(CustomUserListQueryHandler)` to use `PagedQueryHandler<Member> createQueryHandler(String)` in `PromoteOperatorsViewModel`.
-    - Added `onBindHeaderComponent(SelectUserHeaderComponent, PromoteOperatorViewModel, GroupChannel)`
-    - Added `onBindPromoteOperatorListComponent(PromoteOperatorListComponent, PromoteOperatorViewModel, GroupChannel)`
-    - Added `onBindStatusComponent(StatusComponent, PromoteOperatorViewModel, GroupChannel)`
+    - Replaced `setUserListAdapter(UserListAdapter)` to use `setAdapter(RegisterOperatorListAdapter)` in `RegisterOperatorListComponent`.
+    - Replaced `setCustomUserListQueryHandler(CustomUserListQueryHandler)` to use `PagedQueryHandler<Member> createQueryHandler(String)` in `RegisterOperatorsViewModel`.
+    - Added `onBindHeaderComponent(SelectUserHeaderComponent, RegisterOperatorViewModel, GroupChannel)`
+    - Added `onBindRegisterOperatorListComponent(RegisterOperatorListComponent, RegisterOperatorViewModel, GroupChannel)`
+    - Added `onBindStatusComponent(StatusComponent, RegisterOperatorViewModel, GroupChannel)`
 
-- ###### PromoteOperatorListFragment.Builder
+- ###### RegisterOperatorListFragment.Builder
 
   - Replaced `setCustomUserListQueryHandler(CustomUserListQueryHandler)` to `setCustomPagedQueryHandler(PagedQueryHandler<Member>)`
-  - Replaced `setUserListAdapter(UserListAdapter)` to `setPromoteOperatorListAdapter(PromoteOperatorListAdapter)`
+  - Replaced `setUserListAdapter(UserListAdapter)` to `setRegisterOperatorListAdapter(RegisterOperatorListAdapter)`
   - Replaced `setHeaderLeftButtonListener(OnClickListener)` to `setOnLeftButtonClickListener(OnClickListener)`
   - Deleted `setCustomPromoteOperatorFragment(PromoteOperatorsFragment)`
   - Added `withArguments(Bundle)`
 
+- ###### strings.xml
+
+  - Replaced `sb_promote_operator` to `sb_text_register_operator`
+  - Replaced `sb_dismiss_operator` to `sb_text_unregister_operator`
+  - Replaced `sb_text_error_promote_operator` to `sb_text_error_register_operator`
+  - Replaced `sb_text_error_dismiss_operator` to `sb_text_error_unregister_operator`
+  
 
 ------
 

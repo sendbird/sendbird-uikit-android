@@ -7,8 +7,9 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.Thumbnail;
 import com.sendbird.uikit.interfaces.OnResultHandler;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.tasks.JobResultTask;
@@ -58,9 +59,9 @@ public class FileDownloader {
         }
         try {
             downloadingFileSet.add(url);
-            String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
-            File destFile = FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
+            File destFile = Glide.with(context).asFile().load(url).submit().get();;
             Logger.dev("__ file size : " + destFile.length());
+            Logger.d("__ destFile path : " + destFile.getAbsolutePath());
 
             if (destFile.exists()) {
                 if (destFile.length() == message.getSize()) {
@@ -70,8 +71,8 @@ public class FileDownloader {
                 destFile.delete();
             }
 
-            File file = Glide.with(context).asFile().load(message.getUrl()).submit().get();
-            if (file != null && file.exists() && file.renameTo(destFile)) {
+            destFile = Glide.with(context).asFile().load(url).submit().get();
+            if (destFile != null && destFile.exists()) {
                 return destFile;
             }
         } finally {
@@ -116,7 +117,7 @@ public class FileDownloader {
             }
 
             @Override
-            public void onResultForUiThread(@Nullable File file, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable File file, @Nullable SendbirdException e) {
                 if (e != null || file == null) {
                     Logger.e(e);
                     handler.onError(e);
@@ -131,8 +132,8 @@ public class FileDownloader {
     }
 
     public static void downloadThumbnail(@NonNull Context context, @NonNull FileMessage message) {
-        List<FileMessage.Thumbnail> thumbnails = message.getThumbnails();
-        FileMessage.Thumbnail thumbnail = null;
+        List<Thumbnail> thumbnails = message.getThumbnails();
+        Thumbnail thumbnail = null;
         if (thumbnails.size() > 0) {
             thumbnail = thumbnails.get(0);
         }

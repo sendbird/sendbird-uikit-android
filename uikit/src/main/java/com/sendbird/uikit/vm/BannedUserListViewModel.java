@@ -3,8 +3,8 @@ package com.sendbird.uikit.vm;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.vm.queries.BannedUserListQuery;
 
@@ -14,7 +14,7 @@ import com.sendbird.uikit.vm.queries.BannedUserListQuery;
  * @since 3.0.0
  */
 public class BannedUserListViewModel extends UserViewModel<User> {
-    private final BaseChannel.ChannelType channelType;
+    private final ChannelType channelType;
 
     /**
      * Constructor
@@ -23,9 +23,9 @@ public class BannedUserListViewModel extends UserViewModel<User> {
      * @param channelType Type of a channel this view model is currently associated with
      * @since 3.0.0
      */
-    public BannedUserListViewModel(@NonNull String channelUrl, @Nullable BaseChannel.ChannelType channelType) {
+    public BannedUserListViewModel(@NonNull String channelUrl, @Nullable ChannelType channelType) {
         super(channelUrl);
-        this.channelType = channelType == null ? BaseChannel.ChannelType.GROUP : channelType;
+        this.channelType = channelType == null ? ChannelType.GROUP : channelType;
     }
 
     /**

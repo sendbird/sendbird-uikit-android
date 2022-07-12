@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.utils.TextUtils;

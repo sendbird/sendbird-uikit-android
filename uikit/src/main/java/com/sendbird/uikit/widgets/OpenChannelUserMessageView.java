@@ -12,14 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OGMetaData;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.OGMetaData;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBinding;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.ViewUtils;
@@ -28,6 +27,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
     private final SbViewOpenChannelUserMessageComponentBinding binding;
     private final int operatorAppearance;
     private final int nicknameAppearance;
+    private final int editedAppearance;
     private final int marginLeftEmpty;
     private final int marginLeftNor;
 
@@ -57,7 +57,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             int ogtagBackground = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_background, R.drawable.selector_open_channel_message_bg_light);
             nicknameAppearance = a.getResourceId(R.styleable.MessageView_sb_message_sender_name_text_appearance, R.style.SendbirdCaption1OnLight02);
             operatorAppearance = a.getResourceId(R.styleable.MessageView_sb_message_operator_name_text_appearance, R.style.SendbirdCaption1Secondary300);
-            int editedAppearance = a.getResourceId(R.styleable.MessageView_sb_message_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
+            editedAppearance = a.getResourceId(R.styleable.MessageView_sb_message_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
 
             binding.ogTag.setBackgroundResource(ogtagBackground);
             binding.tvMessage.setTextAppearance(context, messageAppearance);
@@ -71,9 +71,6 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             binding.tvMessage.setOnLinkLongClickListener((v, link) -> binding.contentPanel.performLongClick());
             binding.tvMessage.setClickedLinkBackgroundColor(context.getResources().getColor(R.color.primary_400));
             binding.ogTag.setOnLongClickListener(v -> binding.contentPanel.performLongClick());
-
-            final MessageUIConfig config = new MessageUIConfig();
-            config.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
 
             marginLeftEmpty = getResources().getDimensionPixelSize(R.dimen.sb_size_40);
             marginLeftNor = getResources().getDimensionPixelSize(R.dimen.sb_size_12);
@@ -90,6 +87,10 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
 
     @Override
     public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        if (messageUIConfig != null) {
+            messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+            messageUIConfig.getOtherEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+        }
         ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig);
 
         binding.ogTag.drawOgtag(message.getOgMetaData());

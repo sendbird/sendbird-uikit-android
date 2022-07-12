@@ -9,7 +9,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.consts.StringSet;

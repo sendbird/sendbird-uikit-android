@@ -17,9 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewMemberListItemBinding;
@@ -125,8 +126,8 @@ public class UserPreview extends FrameLayout {
 
     public static void drawMember(@NonNull UserPreview preview, @NonNull Member member) {
         Context context = preview.getContext();
-        boolean isOperatorMember = member.getRole() == Member.Role.OPERATOR;
-        boolean isMe = member.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean isOperatorMember = member.getRole() == Role.OPERATOR;
+        boolean isMe = member.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
         final String nickname = UserUtils.getDisplayName(context, member);
         preview.setName(nickname);
 
@@ -149,7 +150,7 @@ public class UserPreview extends FrameLayout {
 
     public static void drawMemberFromUser(@NonNull UserPreview preview, @NonNull User user) {
         Context context = preview.getContext();
-        boolean isMe = user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean isMe = user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
         final String nickname = UserUtils.getDisplayName(context, user);
         preview.setName(nickname);
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;

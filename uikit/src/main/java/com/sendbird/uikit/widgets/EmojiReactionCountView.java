@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -14,7 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionCountComponentBinding;
 import com.sendbird.uikit.model.EmojiManager;
@@ -49,6 +50,10 @@ public class EmojiReactionCountView extends FrameLayout {
             emojiFailedDrawableResTint = a.getColorStateList(R.styleable.EmojiReactionCount_sb_emoji_failed_src_tint);
 
             binding.tvCount.setTextAppearance(context, textStyleId);
+            // letterSpacing should be 0 to use ellipsize as TextUtils.TruncateAt.MIDDLE
+            binding.tvCount.setLetterSpacing(0);
+            binding.tvCount.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+            binding.tvCount.setSingleLine(true);
         } finally {
             a.recycle();
         }

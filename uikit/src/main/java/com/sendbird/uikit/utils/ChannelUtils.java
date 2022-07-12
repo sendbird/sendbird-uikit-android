@@ -5,14 +5,14 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.Sender;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.Sender;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.widgets.ChannelCoverView;
@@ -33,12 +33,12 @@ public class ChannelUtils {
         List<Member> members = channel.getMembers();
 
         String result;
-        if (members.size() < 2 || SendBird.getCurrentUser() == null) {
+        if (members.size() < 2 || SendbirdChat.getCurrentUser() == null) {
             result = context.getString(R.string.sb_text_channel_list_title_no_members);
         } else if (members.size() == 2) {
             StringBuilder names = new StringBuilder();
             for (Member member : members) {
-                if (member.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                if (member.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
                     continue;
                 }
 
@@ -52,7 +52,7 @@ public class ChannelUtils {
             int count = 0;
             StringBuilder names = new StringBuilder();
             for (Member member : members) {
-                if (member.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                if (member.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
                     continue;
                 }
 
@@ -119,8 +119,8 @@ public class ChannelUtils {
             urls.add(channel.getCoverUrl());
         } else {
             String myUserId = "";
-            if (SendBird.getCurrentUser() != null) {
-                myUserId = SendBird.getCurrentUser().getUserId();
+            if (SendbirdChat.getCurrentUser() != null) {
+                myUserId = SendbirdChat.getCurrentUser().getUserId();
             }
             List<Member> memberList = channel.getMembers();
             int index = 0;

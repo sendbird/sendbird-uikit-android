@@ -3,6 +3,8 @@ package com.sendbird.uikit.activities.adapter;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageType;
@@ -68,6 +69,8 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     // the worker must be a single thread.
     @NonNull
     private final ExecutorService differWorker = Executors.newSingleThreadExecutor();
+    @NonNull
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Constructor
@@ -192,7 +195,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
 
         if (ReactionUtils.useReaction(channel) && holder instanceof GroupChannelMessageViewHolder) {
             GroupChannelMessageViewHolder groupChannelHolder = (GroupChannelMessageViewHolder) holder;
-            List<Reaction> reactionList = current.getReactions() != null ? current.getReactions() : new ArrayList<>();
+            List<Reaction> reactionList = current.getReactions();
             groupChannelHolder.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
                 int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
@@ -313,7 +316,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             final MessageDiffCallback diffCallback = new MessageDiffCallback(MessageListAdapter.this.channel, channel, MessageListAdapter.this.messageList, messageList, useMessageGroupUI);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-            SendBird.runOnUIThread(() -> {
+            mainHandler.post(() -> {
                 try {
                     MessageListAdapter.this.messageList = copiedMessage;
                     MessageListAdapter.this.channel = copiedChannel;

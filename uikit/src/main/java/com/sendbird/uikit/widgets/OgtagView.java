@@ -20,7 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.sendbird.android.OGMetaData;
+import com.sendbird.android.message.OGMetaData;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewOgtagBinding;
@@ -74,14 +74,14 @@ public class OgtagView extends FrameLayout {
             return;
         }
 
-        if (ogMetaData.getOGImage() != null &&
-                (ogMetaData.getOGImage().getSecureUrl() != null || ogMetaData.getOGImage().getUrl() != null)) {
+        if (ogMetaData.getOgImage() != null &&
+                (ogMetaData.getOgImage().getSecureUrl() != null || ogMetaData.getOgImage().getUrl() != null)) {
             binding.ivOgImage.setVisibility(VISIBLE);
             String ogImageUrl;
-            if (ogMetaData.getOGImage().getSecureUrl() != null) {
-                ogImageUrl = ogMetaData.getOGImage().getSecureUrl();
+            if (ogMetaData.getOgImage().getSecureUrl() != null) {
+                ogImageUrl = ogMetaData.getOgImage().getSecureUrl();
             } else {
-                ogImageUrl = ogMetaData.getOGImage().getUrl();
+                ogImageUrl = ogMetaData.getOgImage().getUrl();
             }
 
             int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;

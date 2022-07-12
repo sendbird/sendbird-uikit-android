@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.interfaces.UserInfo;
 
@@ -46,8 +46,8 @@ public class UserUtils {
         if (user == null) return nickname;
 
         if (usePronouns && user.getUserId() != null &&
-                SendBird.getCurrentUser() != null &&
-                user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+                SendbirdChat.getCurrentUser() != null &&
+                user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
             nickname = context.getString(R.string.sb_text_you);
         } else if (!TextUtils.isEmpty(user.getNickname())) {
             nickname = user.getNickname();

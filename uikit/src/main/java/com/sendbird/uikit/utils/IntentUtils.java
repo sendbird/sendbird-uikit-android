@@ -33,11 +33,20 @@ public class IntentUtils {
     }
 
     @NonNull
+    public static Intent getImageGalleryIntent() {
+        return getGalleryIntent(new String[]{"image/*"});
+    }
+
+    @NonNull
     public static Intent getGalleryIntent() {
+        return getGalleryIntent(new String[]{"image/*", "video/*"});
+    }
+
+    @NonNull
+    private static Intent getGalleryIntent(@NonNull String[] mimetypes) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        String[] mimetypes = {"image/*", "video/*"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return Intent.createChooser(intent, null);

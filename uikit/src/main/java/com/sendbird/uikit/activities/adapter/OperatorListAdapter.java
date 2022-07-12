@@ -1,6 +1,6 @@
 package com.sendbird.uikit.activities.adapter;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 
 /**
  * OperatorListAdapter provides a binding from a {@link User} type data set to views that are displayed within a RecyclerView.

@@ -9,26 +9,31 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.MessageCollection;
-import com.sendbird.android.MessageListParams;
-import com.sendbird.android.MessagePayloadFilter;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
-import com.sendbird.android.UserMessageParams;
-import com.sendbird.android.handlers.CollectionEventSource;
-import com.sendbird.android.handlers.GroupChannelContext;
-import com.sendbird.android.handlers.MessageCollectionHandler;
-import com.sendbird.android.handlers.MessageCollectionInitHandler;
-import com.sendbird.android.handlers.MessageCollectionInitPolicy;
-import com.sendbird.android.handlers.MessageContext;
-import com.sendbird.android.handlers.Traceable;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.collection.CollectionEventSource;
+import com.sendbird.android.collection.GroupChannelContext;
+import com.sendbird.android.collection.MessageCollection;
+import com.sendbird.android.collection.MessageCollectionInitPolicy;
+import com.sendbird.android.collection.MessageContext;
+import com.sendbird.android.collection.Traceable;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.ConnectionHandler;
+import com.sendbird.android.handler.GroupChannelHandler;
+import com.sendbird.android.handler.MessageCollectionHandler;
+import com.sendbird.android.handler.MessageCollectionInitHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MessageCollectionCreateParams;
+import com.sendbird.android.params.MessageListParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
+import com.sendbird.android.params.common.MessagePayloadFilter;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
@@ -38,8 +43,10 @@ import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
+import com.sendbird.uikit.model.LiveDataEx;
 import com.sendbird.uikit.model.MentionSuggestion;
 import com.sendbird.uikit.model.MessageList;
+import com.sendbird.uikit.model.MutableLiveDataEx;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
@@ -64,7 +71,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     @NonNull
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     @NonNull
-    private final MutableLiveData<ChannelMessageData> messageList = new MutableLiveData<>();
+    private final MutableLiveDataEx<ChannelMessageData> messageList = new MutableLiveDataEx<>();
     @NonNull
     private final MutableLiveData<List<User>> typingMembers = new MutableLiveData<>();
     @NonNull
@@ -147,17 +154,25 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         this.messageListParams.setReverse(true);
         this.memberFinder = new MemberFinder(channelUrl, SendbirdUIKit.getUserMentionConfig());
 
-        SendBird.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
+            public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
                 if (ChannelViewModel.this.channel != null && channel.getUrl().equals(channelUrl) && hasNext()) {
                     markAsRead();
-                    notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, BaseMessage.SendingStatus.SUCCEEDED));
+                    notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, SendingStatus.SUCCEEDED));
                 }
             }
         });
 
-        SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, new SendBird.ConnectionHandler() {
+        SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+            @Override
+            public void onDisconnected(@NonNull String s) {
+            }
+
+            @Override
+            public void onConnected(@NonNull String s) {
+            }
+
             @Override
             public void onReconnectStarted() {
             }
@@ -203,20 +218,17 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         if (this.collection != null) {
             disposeMessageCollection();
         }
-        this.collection = new MessageCollection.Builder(channel, messageListParams)
-                .setStartingPoint(startingPoint)
-                .build();
-        this.collection.setMessageCollectionHandler(new MessageCollectionHandler() {
+        this.collection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, messageListParams, startingPoint, new MessageCollectionHandler() {
             @UiThread
             @Override
             public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> ChannelViewModel::onMessagesAdded() from=%s", context.getCollectionEventSource());
                 if (messages.isEmpty()) return;
 
-                if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED || context.getMessagesSendingStatus() == BaseMessage.SendingStatus.NONE) {
+                if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED || context.getMessagesSendingStatus() == SendingStatus.NONE) {
                     cachedMessages.addAll(messages);
                     notifyDataSetChanged(context);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.PENDING) {
                     notifyDataSetChanged(StringSet.ACTION_PENDING_MESSAGE_ADDED);
                 }
 
@@ -238,7 +250,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                 Logger.d(">> ChannelViewModel::onMessagesUpdated() from=%s", context.getCollectionEventSource());
                 if (messages.isEmpty()) return;
 
-                if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+                if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED) {
                     // if the source was MESSAGE_SENT, we should remove the message from the pending message datasource.
                     if (context.getCollectionEventSource() == CollectionEventSource.EVENT_MESSAGE_SENT) {
                         PendingMessageRepository.getInstance().clearAllFileInfo(messages);
@@ -247,11 +259,11 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                         cachedMessages.updateAll(messages);
                     }
                     notifyDataSetChanged(context);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.PENDING) {
                     notifyDataSetChanged(StringSet.ACTION_PENDING_MESSAGE_ADDED);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.FAILED) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.FAILED) {
                     notifyDataSetChanged(StringSet.ACTION_FAILED_MESSAGE_ADDED);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.CANCELED) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.CANCELED) {
                     notifyDataSetChanged(StringSet.ACTION_FAILED_MESSAGE_ADDED);
                 }
 
@@ -267,14 +279,14 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                 if (messages.isEmpty()) return;
 
 
-                if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+                if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED) {
                     // Remove the succeeded message from the succeeded message datasource.
                     cachedMessages.deleteAll(messages);
                     notifyDataSetChanged(context);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.PENDING) {
                     // Remove the pending message from the pending message datasource.
                     notifyDataSetChanged(StringSet.ACTION_PENDING_MESSAGE_REMOVED);
-                } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.FAILED) {
+                } else if (context.getMessagesSendingStatus() == SendingStatus.FAILED) {
                     // Remove the failed message from the pending message datasource.
                     notifyDataSetChanged(StringSet.ACTION_FAILED_MESSAGE_REMOVED);
                 }
@@ -318,8 +330,8 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                             typingMembers.setValue(null);
                         }
                         break;
-                    case EVENT_DELIVERY_RECEIPT_UPDATED:
-                    case EVENT_READ_RECEIPT_UPDATED:
+                    case EVENT_DELIVERY_STATUS_UPDATED:
+                    case EVENT_READ_STATUS_UPDATED:
                         notifyDataSetChanged(context);
                         break;
                     default:
@@ -331,7 +343,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
                     ChannelViewModel.this.handler.onChannelUpdated(context, channel);
                 }
             }
-        });
+        }));
         Logger.i(">> ChannelViewModel::initMessageCollection() collection=%s", collection);
         loadLatestMessagesForCache();
     }
@@ -341,7 +353,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     private void loadLatestMessagesForCache() {
         if (!needToLoadMessageCache || (this.collection != null && this.collection.getStartingPoint() == Long.MAX_VALUE)) return;
         if (channel == null) return;
-        final MessageCollection syncCollection = new MessageCollection.Builder(channel, new MessageListParams()).build();
+        final MessageCollection syncCollection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, new MessageListParams()));
         syncCollection.loadPrevious((messages, e) -> {
             if (e == null) {
                 needToLoadMessageCache = false;
@@ -452,7 +464,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      * @since 3.0.0
      */
     @NonNull
-    public LiveData<ChannelMessageData> getMessageList() {
+    public LiveDataEx<ChannelMessageData> getMessageList() {
         return messageList;
     }
 
@@ -503,12 +515,12 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
 
     @Override
     public boolean hasNext() {
-        return collection == null || collection.hasNext();
+        return collection == null || collection.getHasNext();
     }
 
     @Override
     public boolean hasPrevious() {
-        return collection == null || collection.hasPrevious();
+        return collection == null || collection.getHasPrevious();
     }
 
     /**
@@ -568,11 +580,11 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     protected void onCleared() {
         super.onCleared();
         Logger.dev("-- onCleared ChannelViewModel");
-        SendBird.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
         disposeMessageCollection();
-        SendBird.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
         memberFinder.dispose();
         worker.shutdownNow();
     }
@@ -603,7 +615,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      * @param params Parameters to be applied to the message
      * @since 3.0.0
      */
-    public void sendUserMessage(@NonNull UserMessageParams params) {
+    public void sendUserMessage(@NonNull UserMessageCreateParams params) {
         Logger.i("++ request send message : %s", params);
         if (channel != null) {
             channel.sendUserMessage(params, (message, e) -> {
@@ -623,7 +635,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      * @param fileInfo File information to send to the channel
      * @since 3.0.0
      */
-    public void sendFileMessage(@NonNull FileMessageParams params, @NonNull FileInfo fileInfo) {
+    public void sendFileMessage(@NonNull FileMessageCreateParams params, @NonNull FileInfo fileInfo) {
         Logger.i("++ request send file message : %s", params);
         if (channel != null) {
             FileMessage pendingFileMessage = channel.sendFileMessage(params, (message, ee) -> {
@@ -672,7 +684,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      * @param handler Callback handler called when this method is completed
      * @since 3.0.0
      */
-    public void updateUserMessage(long messageId, @NonNull UserMessageParams params, @Nullable OnCompleteHandler handler) {
+    public void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
         channel.updateUserMessage(messageId, params, (message, e) -> {
             if (handler != null) handler.onComplete(e);
@@ -689,13 +701,13 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      */
     public void deleteMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.SUCCEEDED) {
             channel.deleteMessage(message, e -> {
                 if (handler != null) handler.onComplete(e);
                 Logger.i("++ deleted message : %s", message);
             });
-        } else if (status == BaseMessage.SendingStatus.FAILED) {
+        } else if (status == SendingStatus.FAILED) {
             if (collection != null) {
                 collection.removeFailedMessages(Collections.singletonList(message), (requestIds, e) -> {
                     if (handler != null) handler.onComplete(e);
@@ -760,7 +772,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         cachedMessages.clear();
         collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
-            public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendBirdException e) {
+            public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendbirdException e) {
                 if (e == null && cachedList != null && cachedList.size() > 0) {
                     cachedMessages.addAll(cachedList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
@@ -768,7 +780,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
             }
 
             @Override
-            public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendBirdException e) {
+            public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendbirdException e) {
                 if (e == null && apiResultList != null) {
                     cachedMessages.clear();
                     cachedMessages.addAll(apiResultList);
@@ -850,6 +862,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         collection.loadNext((messages, e) -> {
             try {
                 if (e == null) {
+                    messages = messages == null ? Collections.emptyList() : messages;
                     cachedMessages.addAll(messages);
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_NEXT);
@@ -901,18 +914,11 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         final MessageListParams messageListParams = new MessageListParams();
         messageListParams.setReverse(true);
         if (SendbirdUIKit.getReplyType() == ReplyType.QUOTE_REPLY) {
-            messageListParams.setReplyTypeFilter(com.sendbird.android.ReplyTypeFilter.ONLY_REPLY_TO_CHANNEL);
-            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter.Builder()
-                    .setIncludeParentMessageInfo(true)
-                    .setIncludeThreadInfo(true)
-                    .setIncludeReactions(Available.isSupportReaction())
-                    .build());
+            messageListParams.setReplyType(com.sendbird.android.message.ReplyType.ONLY_REPLY_TO_CHANNEL);
+            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), true, true));
         } else {
-            messageListParams.setReplyTypeFilter(com.sendbird.android.ReplyTypeFilter.NONE);
-            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter.Builder()
-                    .setIncludeThreadInfo(true)
-                    .setIncludeReactions(Available.isSupportReaction())
-                    .build());
+            messageListParams.setReplyType(com.sendbird.android.message.ReplyType.NONE);
+            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), false, true));
         }
         return messageListParams;
     }

@@ -3,7 +3,7 @@ package com.sendbird.uikit.activities.adapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 
 import java.util.List;
 
@@ -30,22 +30,21 @@ class EmojiReactionDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        Reaction oldReaction = oldReactionList.get(oldItemPosition);
-        Reaction newReaction = newReactionList.get(newItemPosition);
+        final Reaction oldReaction = oldReactionList.get(oldItemPosition);
+        final Reaction newReaction = newReactionList.get(newItemPosition);
 
         return oldReaction.equals(newReaction);
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        Reaction oldReaction = oldReactionList.get(oldItemPosition);
-        Reaction newReaction = newReactionList.get(newItemPosition);
+        final Reaction oldReaction = oldReactionList.get(oldItemPosition);
+        final Reaction newReaction = newReactionList.get(newItemPosition);
 
         if (!areItemsTheSame(oldItemPosition, newItemPosition)) {
             return false;
         }
 
-        return oldReaction.getUserIds() != null &&
-                oldReaction.getUserIds().equals(newReaction.getUserIds());
+        return oldReaction.getUserIds().equals(newReaction.getUserIds());
     }
 }

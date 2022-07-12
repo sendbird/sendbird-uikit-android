@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.EmojiReactionListAdapter;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionListBinding;

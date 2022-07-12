@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewSuggestedMentionListItemBinding;
 import com.sendbird.uikit.utils.UserUtils;

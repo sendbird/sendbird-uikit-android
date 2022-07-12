@@ -8,8 +8,8 @@ import android.text.style.MetricAffectingSpan;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessageParams;
-import com.sendbird.android.User;
+import com.sendbird.android.message.MentionType;
+import com.sendbird.android.user.User;
 
 /**
  * The text with a MentionSpan attached will be bold and clickable.
@@ -30,7 +30,7 @@ public class MentionSpan extends MetricAffectingSpan {
     @Nullable
     private final TextUIConfig mentionedCurrentUserUIConfig;
     @NonNull
-    final BaseMessageParams.MentionType mentionType;
+    final MentionType mentionType;
 
     /**
      * Constructor
@@ -42,7 +42,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @since 3.0.0
      */
     public MentionSpan(@NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
-        this(BaseMessageParams.MentionType.USERS, trigger, value, user, uiConfig);
+        this(MentionType.USERS, trigger, value, user, uiConfig);
     }
 
     /**
@@ -56,7 +56,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @since 3.0.0
      */
     public MentionSpan(@NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
-        this(BaseMessageParams.MentionType.USERS, trigger, value, user, uiConfig, mentionedCurrentUserUIConfig);
+        this(MentionType.USERS, trigger, value, user, uiConfig, mentionedCurrentUserUIConfig);
     }
 
     /**
@@ -69,7 +69,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param uiConfig The mention ui config.
      * @since 3.0.0
      */
-    public MentionSpan(@NonNull BaseMessageParams.MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
+    public MentionSpan(@NonNull MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
         this(mentionType, trigger, value, user, uiConfig, null);
     }
 
@@ -84,7 +84,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param mentionedCurrentUserUIConfig The mention ui config if current user is mentioned
      * @since 3.0.0
      */
-    public MentionSpan(@NonNull BaseMessageParams.MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
+    public MentionSpan(@NonNull MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         this.mentionType = mentionType;
         this.trigger = trigger;
         this.value = value;

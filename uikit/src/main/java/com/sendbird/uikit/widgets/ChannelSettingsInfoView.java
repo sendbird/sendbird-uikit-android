@@ -2,6 +2,7 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -9,7 +10,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewChannelSettingsInfoBinding;
@@ -38,6 +39,10 @@ public class ChannelSettingsInfoView extends FrameLayout {
 
             this.setBackgroundResource(background);
             binding.tvChannelName.setTextAppearance(context, nameAppearance);
+            // letterSpacing should be 0 to use ellipsize as TextUtils.TruncateAt.MIDDLE
+            binding.tvChannelName.setLetterSpacing(0);
+            binding.tvChannelName.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+            binding.tvChannelName.setSingleLine(true);
             binding.divider.setBackgroundResource(divider);
         } finally {
             a.recycle();

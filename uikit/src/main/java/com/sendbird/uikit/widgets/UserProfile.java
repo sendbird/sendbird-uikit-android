@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewUserProfileBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -71,7 +71,7 @@ public class UserProfile extends FrameLayout {
     }
 
     private boolean isMe(@NonNull String userId) {
-        User currentUser = SendBird.getCurrentUser();
+        User currentUser = SendbirdChat.getCurrentUser();
         if (currentUser != null) {
             return userId.equals(currentUser.getUserId());
         }

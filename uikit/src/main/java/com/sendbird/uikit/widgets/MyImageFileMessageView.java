@@ -10,9 +10,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -67,7 +68,7 @@ public class MyImageFileMessageView extends GroupChannelMessageView {
 
     @Override
     public void drawMessage(@NonNull GroupChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
-        boolean sendingState = message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED;
+        boolean sendingState = message.getSendingStatus() == SendingStatus.SUCCEEDED;
         boolean hasReaction = message.getReactions() != null && message.getReactions().size() > 0;
 
         binding.emojiReactionListBackground.setVisibility(hasReaction ? View.VISIBLE : View.GONE);

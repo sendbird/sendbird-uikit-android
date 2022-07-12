@@ -67,7 +67,7 @@
                     android:background="@drawable/shape_rect_transparent"
                     android:textSize="16sp"
                     android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionNext|flagNoExtractUi"
                     android:inputType="text">
                     <requestFocus />
                 </com.google.android.material.textfield.TextInputEditText>
@@ -98,7 +98,7 @@
                     android:textSize="16sp"
                     android:hint="@string/text_hint_nickname"
                     android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionDone|flagNoExtractUi"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>

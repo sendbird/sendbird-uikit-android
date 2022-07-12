@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.etUserId.setSelectAllOnFocus(true);
         binding.etNickname.setSelectAllOnFocus(true);
 
-        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendBird.getSDKVersion());
+        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendbirdChat.getSdkVersion());
         binding.tvVersionInfo.setText(sdkVersion);
 
         binding.btSignIn.setOnClickListener(v -> {

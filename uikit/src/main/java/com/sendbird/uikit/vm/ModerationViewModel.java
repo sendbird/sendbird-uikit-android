@@ -6,12 +6,16 @@ import androidx.annotation.UiThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.handler.GroupChannelHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.MemberState;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.log.Logger;
 
@@ -25,8 +29,8 @@ public class ModerationViewModel extends BaseViewModel {
     private final String channelUrl;
     private GroupChannel channel;
     private final MutableLiveData<BaseChannel> frozenStateChanges = new MutableLiveData<>();
-    private final MutableLiveData<Member.MemberState> myMemberStateChanges = new MutableLiveData<>();
-    private final MutableLiveData<Member.Role> myRoleChanges = new MutableLiveData<>();
+    private final MutableLiveData<MemberState> myMemberStateChanges = new MutableLiveData<>();
+    private final MutableLiveData<Role> myRoleChanges = new MutableLiveData<>();
     private final MutableLiveData<String> isChannelDeleted = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isBanned = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isShowLoadingDialog = new MutableLiveData<>();
@@ -40,24 +44,24 @@ public class ModerationViewModel extends BaseViewModel {
     public ModerationViewModel(@NonNull String channelUrl) {
         super();
         this.channelUrl = channelUrl;
-        SendBird.addChannelHandler(CHANNEL_HANDLER_ID, new SendBird.ChannelHandler() {
+        SendbirdChat.addChannelHandler(CHANNEL_HANDLER_ID, new GroupChannelHandler() {
             @Override
-            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
+            public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
             }
 
             @Override
-            public void onUserLeft(GroupChannel channel, User user) {
+            public void onUserLeft(@NonNull GroupChannel channel, @NonNull User user) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ModerationFragment::onUserLeft()");
                     Logger.d("++ left user : " + user);
-                    if (channel.getMyMemberState() == Member.MemberState.NONE) {
+                    if (channel.getMyMemberState() == MemberState.NONE) {
                         ModerationViewModel.this.myMemberStateChanges.setValue(channel.getMyMemberState());
                     }
                 }
             }
 
             @Override
-            public void onChannelDeleted(String channelUrl, BaseChannel.ChannelType channelType) {
+            public void onChannelDeleted(@NonNull String channelUrl, @NonNull ChannelType channelType) {
                 if (isCurrentChannel(channelUrl)) {
                     Logger.i(">> ModerationFragment::onChannelDeleted()");
                     Logger.d("++ deleted channel url : " + channelUrl);
@@ -66,7 +70,7 @@ public class ModerationViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelFrozen(BaseChannel channel) {
+            public void onChannelFrozen(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ModerationFragment::onChannelFrozen(%s)", channel.isFrozen());
                     ModerationViewModel.this.frozenStateChanges.setValue(channel);
@@ -74,7 +78,7 @@ public class ModerationViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onChannelUnfrozen(BaseChannel channel) {
+            public void onChannelUnfrozen(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> ModerationFragment::onChannelUnfrozen(%s)", channel.isFrozen());
                     ModerationViewModel.this.frozenStateChanges.setValue(channel);
@@ -82,9 +86,9 @@ public class ModerationViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onOperatorUpdated(BaseChannel channel) {
+            public void onOperatorUpdated(@NonNull BaseChannel channel) {
                 if (isCurrentChannel(channel.getUrl()) && channel instanceof GroupChannel) {
-                    if (((GroupChannel) channel).getMyRole() != Member.Role.OPERATOR) {
+                    if (((GroupChannel) channel).getMyRole() != Role.OPERATOR) {
                         Logger.i(">> ModerationFragment::onOperatorUpdated()");
                         Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
                         ModerationViewModel.this.myRoleChanges.setValue(((GroupChannel) channel).getMyRole());
@@ -93,9 +97,10 @@ public class ModerationViewModel extends BaseViewModel {
             }
 
             @Override
-            public void onUserBanned(BaseChannel channel, User user) {
-                if (isCurrentChannel(channel.getUrl()) &&
-                        user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+            public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
+                final User currentUser = SendbirdChat.getCurrentUser();
+                if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
+                        user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> ModerationFragment::onUserBanned()");
                     ModerationViewModel.this.isBanned.setValue(true);
                 }
@@ -132,7 +137,7 @@ public class ModerationViewModel extends BaseViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        SendBird.removeChannelHandler(CHANNEL_HANDLER_ID);
+        SendbirdChat.removeChannelHandler(CHANNEL_HANDLER_ID);
     }
 
     /**
@@ -149,22 +154,22 @@ public class ModerationViewModel extends BaseViewModel {
     /**
      * Returns LiveData that can be observed if the state of the current user is changed.
      *
-     * @return LiveData holding the latest {@code Member.MemberState}
+     * @return LiveData holding the latest {@code MemberState}
      * @since 3.0.0
      */
     @NonNull
-    public LiveData<Member.MemberState> getMyMemberStateChanges() {
+    public LiveData<MemberState> getMyMemberStateChanges() {
         return myMemberStateChanges;
     }
 
     /**
      * Returns LiveData that can be observed if the role of the current user is changed.
      *
-     * @return LiveData holding the latest {@code Member.Role}
+     * @return LiveData holding the latest {@code Role}
      * @since 3.0.0
      */
     @NonNull
-    public LiveData<Member.Role> getMyRoleChanges() {
+    public LiveData<Role> getMyRoleChanges() {
         return myRoleChanges;
     }
 

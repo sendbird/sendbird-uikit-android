@@ -64,6 +64,7 @@ public class CreateChannelModule extends BaseModule {
     public CreateChannelModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
         this.headerComponent = new SelectUserHeaderComponent();
+        this.headerComponent.getParams().setRightButtonText(context.getString(R.string.sb_text_button_create));
         this.userListComponent = new CreateChannelUserListComponent();
         this.statusComponent = new StatusComponent();
     }

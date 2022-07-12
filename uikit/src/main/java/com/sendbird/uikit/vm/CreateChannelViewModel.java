@@ -3,8 +3,9 @@ package com.sendbird.uikit.vm;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.handler.GroupChannelCallbackHandler;
+import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
@@ -31,7 +32,7 @@ public class CreateChannelViewModel extends UserViewModel<UserInfo> {
      * @param params Params to be applied when creating a channel
      * @param handler Callback notifying the result of authentication
      */
-    public void createChannel(@NonNull GroupChannelParams params, @Nullable GroupChannel.GroupChannelCreateHandler handler) {
+    public void createChannel(@NonNull GroupChannelCreateParams params, @Nullable GroupChannelCallbackHandler handler) {
         Logger.dev("++ createGroupChannel isCreatingChannel : " + isCreatingChannel.get());
         if (isCreatingChannel.compareAndSet(false, true)) {
             GroupChannel.createChannel(params, (channel, e) -> {

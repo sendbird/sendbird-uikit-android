@@ -26,7 +26,9 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.params.UserUpdateParams;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.customsample.consts.StringSet;
@@ -79,13 +81,13 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
         if (resultCode != RESULT_OK) return;
 
         if (requestCode == PERMISSION_SETTINGS_REQUEST_ID) {
@@ -196,7 +198,7 @@ public class SettingsFragment extends Fragment {
             });
 
             disturbSwitch = view.findViewById(R.id.scDisturbSwitch);
-            SendBird.getDoNotDisturb((b, i, i1, i2, i3, s, e) -> {
+            SendbirdChat.getDoNotDisturb((b, i, i1, i2, i3, s, e) -> {
                 PreferenceUtils.setDoNotDisturb(b);
                 disturbSwitch.setChecked(PreferenceUtils.getDoNotDisturb());
             });
@@ -260,7 +262,9 @@ public class SettingsFragment extends Fragment {
     private void updateUserNickname(@NonNull String nickname) {
         if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        SendbirdUIKit.updateUserInfo(nickname, null, e -> {
+        final UserUpdateParams params = new UserUpdateParams();
+        params.setNickname(nickname);
+        SendbirdUIKit.updateUserInfo(params, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
@@ -275,23 +279,28 @@ public class SettingsFragment extends Fragment {
     private void updateUserProfileImage(@NonNull File profileImage) {
         if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        SendBird.updateCurrentUserInfoWithProfileImage(null, profileImage, e -> {
+        final UserUpdateParams params = new UserUpdateParams();
+        params.setProfileImageFile(profileImage);
+        SendbirdUIKit.updateUserInfo(params, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
                 return;
             }
 
-            String profileUrl = SendBird.getCurrentUser().getProfileUrl();
-            PreferenceUtils.setProfileUrl(profileUrl);
-            loadUserProfileUrl(profileUrl);
+            final User currentUser = SendbirdChat.getCurrentUser();
+            if (currentUser != null) {
+                final String profileUrl = currentUser.getProfileUrl();
+                PreferenceUtils.setProfileUrl(profileUrl);
+                loadUserProfileUrl(profileUrl);
+            }
         });
     }
 
     private void updateDoNotDisturb() {
         disturbSwitch.setChecked(!PreferenceUtils.getDoNotDisturb());
         Logger.d("update do not disturb : " + !PreferenceUtils.getDoNotDisturb());
-        SendBird.setDoNotDisturb(!PreferenceUtils.getDoNotDisturb(), 0, 0, 23, 59, TimeZone.getDefault().getID(), e -> {
+        SendbirdChat.setDoNotDisturb(!PreferenceUtils.getDoNotDisturb(), 0, 0, 23, 59, TimeZone.getDefault().getID(), e -> {
             if (e != null) {
                 disturbSwitch.setChecked(PreferenceUtils.getDoNotDisturb());
                 return;
@@ -312,7 +321,7 @@ public class SettingsFragment extends Fragment {
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
-                        SendBird.setAutoBackgroundDetection(false);
+                        SendbirdChat.setAutoBackgroundDetection(false);
                         if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery) {
@@ -337,7 +346,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 

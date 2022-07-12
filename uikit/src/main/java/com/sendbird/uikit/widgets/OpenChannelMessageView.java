@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 
 public abstract class OpenChannelMessageView extends BaseMessageView {

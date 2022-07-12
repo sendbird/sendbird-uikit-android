@@ -5,7 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 

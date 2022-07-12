@@ -16,29 +16,29 @@ import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.modules.components.PromoteOperatorListComponent;
+import com.sendbird.uikit.modules.components.RegisterOperatorListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
 
 /**
- * A module for promoting operators. This module is composed of a header, list, and status.
+ * A module for registering operators. This module is composed of a header, list, and status.
  * All composed components are created when the module is created. After than those components can replace.
  *
  * <ul>
  *  <li>Header component is {@link SelectUserHeaderComponent} and you can set custom header component by {@link #setHeaderComponent(SelectUserHeaderComponent)}
- *  <li>List component is {@link PromoteOperatorListComponent} and you can set custom list component by {@link #setMemberListComponent(PromoteOperatorListComponent)}
+ *  <li>List component is {@link RegisterOperatorListComponent} and you can set custom list component by {@link #setRegisterOperatorListComponent(RegisterOperatorListComponent)}
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>
  *
  * @since 3.0.0
  */
-public class PromoteOperatorModule extends BaseModule {
+public class RegisterOperatorModule extends BaseModule {
     @NonNull
     private final Params params;
     @NonNull
     private SelectUserHeaderComponent headerComponent;
     @NonNull
-    private PromoteOperatorListComponent memberListComponent;
+    private RegisterOperatorListComponent registerOperatorListComponent;
     @NonNull
     private StatusComponent statusComponent;
 
@@ -48,7 +48,7 @@ public class PromoteOperatorModule extends BaseModule {
      * @param context The {@code Context} this module is currently associated with
      * @since 3.0.0
      */
-    public PromoteOperatorModule(@NonNull Context context) {
+    public RegisterOperatorModule(@NonNull Context context) {
         this(context, new Params(context));
     }
 
@@ -59,10 +59,11 @@ public class PromoteOperatorModule extends BaseModule {
      * @param params The Parameter object that can customize a default Fragment.
      * @since 3.0.0
      */
-    public PromoteOperatorModule(@NonNull Context context, @NonNull Params params) {
+    public RegisterOperatorModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
         this.headerComponent = new SelectUserHeaderComponent();
-        this.memberListComponent = new PromoteOperatorListComponent();
+        this.headerComponent.getParams().setRightButtonText(context.getString(R.string.sb_text_button_add));
+        this.registerOperatorListComponent = new RegisterOperatorListComponent();
         this.statusComponent = new StatusComponent();
     }
 
@@ -91,7 +92,7 @@ public class PromoteOperatorModule extends BaseModule {
         moduleContext.getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
         final Context listThemeContext = new ContextThemeWrapper(moduleContext, values.resourceId);
         final LayoutInflater listInflater = inflater.cloneInContext(listThemeContext);
-        final View memberListLayout = memberListComponent.onCreateView(listThemeContext, listInflater, innerContainer, args);
+        final View memberListLayout = registerOperatorListComponent.onCreateView(listThemeContext, listInflater, innerContainer, args);
         innerContainer.addView(memberListLayout);
 
         moduleContext.getTheme().resolveAttribute(R.attr.sb_component_status, values, true);
@@ -118,8 +119,8 @@ public class PromoteOperatorModule extends BaseModule {
      * @param component The list component to be used in this module
      * @since 3.0.0
      */
-    public <T extends PromoteOperatorListComponent> void setMemberListComponent(@NonNull T component) {
-        this.memberListComponent = component;
+    public <T extends RegisterOperatorListComponent> void setRegisterOperatorListComponent(@NonNull T component) {
+        this.registerOperatorListComponent = component;
     }
 
     /**
@@ -150,8 +151,8 @@ public class PromoteOperatorModule extends BaseModule {
      * @since 3.0.0
      */
     @NonNull
-    public PromoteOperatorListComponent getPromoteOperatorListComponent() {
-        return memberListComponent;
+    public RegisterOperatorListComponent getRegisterOperatorListComponent() {
+        return registerOperatorListComponent;
     }
 
     /**
@@ -196,7 +197,7 @@ public class PromoteOperatorModule extends BaseModule {
          * @since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
-            super(context, themeMode, R.attr.sb_module_promote_operator_list);
+            super(context, themeMode, R.attr.sb_module_register_operator_list);
         }
 
         /**
@@ -207,7 +208,7 @@ public class PromoteOperatorModule extends BaseModule {
          * @since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
-            super(context, themeResId, R.attr.sb_module_promote_operator_list);
+            super(context, themeResId, R.attr.sb_module_register_operator_list);
         }
     }
 }

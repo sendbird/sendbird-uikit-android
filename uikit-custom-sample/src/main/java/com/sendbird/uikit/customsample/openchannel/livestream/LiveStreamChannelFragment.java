@@ -7,9 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.models.CustomMessageType;
@@ -64,45 +65,41 @@ public class LiveStreamChannelFragment extends OpenChannelFragment {
     private CustomMessageType customMessageType = CustomMessageType.NONE;
 
     @Override
-    protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
         super.onBeforeSendUserMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null)
-                .setTranslationTargetLanguages(null);
+        params.setCustomType(customMessageType.getValue());
+        params.setData(null);
+        params.setMentionedUserIds(null);
+        params.setMentionedUsers(null);
+        params.setMetaArrays(null);
+        params.setParentMessageId(0);
+        params.setPushNotificationDeliveryOption(null);
+        params.setTranslationTargetLanguages(null);
     }
 
     @Override
-    protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
+    protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
         super.onBeforeSendFileMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null);
+        params.setCustomType(customMessageType.getValue());
+        params.setData(null);
+        params.setMentionedUserIds(null);
+        params.setMentionedUsers(null);
+        params.setMetaArrays(null);
+        params.setParentMessageId(0);
+        params.setPushNotificationDeliveryOption(null);
     }
 
     @Override
-    protected void onBeforeUpdateUserMessage(@NonNull UserMessageParams params) {
+    protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
         super.onBeforeUpdateUserMessage(params);
-        params.setCustomType(customMessageType.getValue())
-                .setData(null)
-                .setMentionedUserIds(null)
-                .setMentionedUsers(null)
-                .setMetaArrays(null)
-                .setParentMessageId(0)
-                .setPushNotificationDeliveryOption(null)
-                .setTranslationTargetLanguages(null);
+        params.setCustomType(customMessageType.getValue());
+        params.setData(null);
+        params.setMentionedUserIds(null);
+        params.setMentionedUsers(null);
     }
 
     @Override
-    protected void sendUserMessage(@NonNull UserMessageParams params) {
+    protected void sendUserMessage(@NonNull UserMessageCreateParams params) {
         super.sendUserMessage(params);
     }
 
@@ -112,7 +109,7 @@ public class LiveStreamChannelFragment extends OpenChannelFragment {
     }
 
     @Override
-    protected void updateUserMessage(long messageId, @NonNull UserMessageParams params) {
+    protected void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params) {
         super.updateUserMessage(messageId, params);
     }
 

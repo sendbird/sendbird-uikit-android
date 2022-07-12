@@ -3,6 +3,8 @@ package com.sendbird.uikit.activities.adapter;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +17,8 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
@@ -26,6 +27,7 @@ import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.TextUtils;
 
 import java.util.ArrayList;
@@ -52,8 +54,13 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
+    @Nullable
+    private MessageUIConfig messageUIConfig;
+
     @NonNull
     private final ExecutorService service = Executors.newSingleThreadExecutor();
+    @NonNull
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Constructor
@@ -110,6 +117,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
                 parent,
                 MessageType.from(viewType),
                 useMessageGroupUI);
+        viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
         for (Map.Entry<String, View> entry : views.entrySet()) {
@@ -240,7 +248,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
             final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(OpenChannelMessageListAdapter.this.channel, channel, OpenChannelMessageListAdapter.this.messageList, messageList, useMessageGroupUI);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-            SendBird.runOnUIThread(() -> {
+            mainHandler.post(() -> {
                 try {
                     OpenChannelMessageListAdapter.this.messageList = copiedMessage;
                     OpenChannelMessageListAdapter.this.channel = copiedChannel;
@@ -351,5 +359,27 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     @NonNull
     public List<BaseMessage> getItems() {
         return Collections.unmodifiableList(messageList);
+    }
+
+    /**
+     * Sets the configurations of the message's properties to highlight text.
+     *
+     * @param messageUIConfig the configurations of the message's properties to highlight text.
+     * @see com.sendbird.uikit.model.TextUIConfig
+     * @since 3.0.0
+     */
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
+    }
+
+    /**
+     * Returns the configurations of the message's properties to highlight text.
+     *
+     * @return the configurations of the message's properties to highlight text.
+     * @since 3.0.0
+     */
+    @Nullable
+    public MessageUIConfig getMessageUIConfig() {
+        return this.messageUIConfig;
     }
 }

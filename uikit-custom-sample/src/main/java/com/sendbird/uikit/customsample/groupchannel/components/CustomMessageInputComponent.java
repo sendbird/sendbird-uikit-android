@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.Emoji;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Emoji;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.databinding.ViewCustomChannelInputBinding;

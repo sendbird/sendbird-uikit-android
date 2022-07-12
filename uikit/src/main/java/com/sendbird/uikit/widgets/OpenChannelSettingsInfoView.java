@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewOpenChannelSettingsInfoBinding;
@@ -41,6 +41,10 @@ public class OpenChannelSettingsInfoView extends FrameLayout {
 
             this.setBackgroundResource(background);
             binding.tvChannelName.setTextAppearance(context, nameAppearance);
+            // letterSpacing should be 0 to use ellipsize as TextUtils.TruncateAt.MIDDLE
+            binding.tvChannelName.setLetterSpacing(0);
+            binding.tvChannelName.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
+            binding.tvChannelName.setSingleLine(true);
             binding.tvInformationTitle.setTextAppearance(context, infoTitleAppearance);
             binding.tvInformationContent.setTextAppearance(context, infoContentAppearance);
             binding.divider.setBackgroundResource(divider);

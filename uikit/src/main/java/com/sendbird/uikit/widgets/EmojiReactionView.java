@@ -15,7 +15,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionComponentBinding;
 import com.sendbird.uikit.model.EmojiManager;

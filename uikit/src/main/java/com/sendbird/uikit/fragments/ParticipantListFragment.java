@@ -11,10 +11,10 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.Member;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.ParticipantListAdapter;
 import com.sendbird.uikit.consts.StringSet;
@@ -131,7 +131,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         viewModel.getUserList().observe(getViewLifecycleOwner(), users -> {
             Logger.dev("++ observing result members size : %s", users.size());
             if (channel == null) return;
-            listComponent.notifyDataSetChanged(users, channel.isOperator(SendBird.getCurrentUser()) ? Member.Role.OPERATOR : Member.Role.NONE);
+            listComponent.notifyDataSetChanged(users, channel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE);
         });
     }
 

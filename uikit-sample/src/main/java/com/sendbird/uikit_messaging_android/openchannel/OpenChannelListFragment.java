@@ -13,9 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.OpenChannelListQuery;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.channel.query.OpenChannelListQuery;
+import com.sendbird.android.handler.ConnectionHandler;
+import com.sendbird.android.params.OpenChannelListQueryParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.log.Logger;
@@ -35,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Displays an open channel list screen.
  */
-abstract public class OpenChannelListFragment extends Fragment implements SendBird.ConnectionHandler {
+abstract public class OpenChannelListFragment extends Fragment implements ConnectionHandler {
     private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
 
     private FragmentOpenChannelListBinding binding;
@@ -102,7 +104,7 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, this);
+        SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, this);
     }
 
     @Override
@@ -114,7 +116,7 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
     }
 
     @Override
@@ -129,29 +131,37 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
     @Override
     public void onReconnectFailed() {}
 
+    @Override
+    public void onConnected(@NonNull String s) {
+    }
+
+    @Override
+    public void onDisconnected(@NonNull String s) {
+    }
+
     private boolean isActive() {
         boolean isDeactivated = isRemoving() || isDetached() || getContext() == null;
         return !isDeactivated;
     }
 
     private void loadInitial() {
-        openChannelListQuery = OpenChannel.createOpenChannelListQuery();
+        final OpenChannelListQueryParams params = new OpenChannelListQueryParams();
+        if (customTypeFilter != null) {
+            params.setCustomTypeFilter(customTypeFilter);
+        }
+        openChannelListQuery = OpenChannel.createOpenChannelListQuery(params);
         next(true);
     }
 
     private void next(boolean isInitialLoading) {
         if (openChannelListQuery == null) return;
 
-        if (customTypeFilter != null) {
-            openChannelListQuery.setCustomTypeFilter(customTypeFilter);
-        }
-
         if (!openChannelListQuery.isLoading()) {
             openChannelListQuery.next((list, e) -> {
                 refreshing.set(false);
                 final boolean hasData = channelListCache.size() > 0;
 
-                if (e != null) {
+                if (e != null || list == null) {
                     Logger.e(e);
                     if (!hasData) {
                         drawError();
@@ -172,7 +182,7 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
     }
 
     private void drawError() {
-        if (SendBird.getCurrentUser() == null) {
+        if (SendbirdChat.getCurrentUser() == null) {
             statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
             statusComponent.setOnActionButtonClickListener(v -> connectAndNext());
         } else {

@@ -8,8 +8,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.Emoji;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.EmojiListAdapter;
 import com.sendbird.uikit.databinding.SbViewEmojiListBinding;

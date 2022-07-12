@@ -10,9 +10,9 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.ThumbnailSize;
+import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnResultHandler;
@@ -123,8 +123,8 @@ final public class FileInfo {
     }
 
     @NonNull
-    public FileMessageParams toFileParams() {
-        FileMessageParams params = new FileMessageParams();
+    public FileMessageCreateParams toFileParams() {
+        FileMessageCreateParams params = new FileMessageCreateParams();
         params.setMimeType(getMimeType());
         params.setFileName(getFileName());
         params.setFileSize(getSize());
@@ -134,9 +134,9 @@ final public class FileInfo {
         int thumbHeight = getThumbnailHeight();
         if (thumbWidth > 0 && thumbHeight > 0) {
             Logger.dev("++ image width : %s, image height : %s", thumbWidth, thumbHeight);
-            List<FileMessage.ThumbnailSize> thumbnailSizes = new ArrayList<>();
-            thumbnailSizes.add(new FileMessage.ThumbnailSize(thumbWidth, thumbHeight));
-            thumbnailSizes.add(new FileMessage.ThumbnailSize(thumbWidth / 2, thumbHeight / 2));
+            List<ThumbnailSize> thumbnailSizes = new ArrayList<>();
+            thumbnailSizes.add(new ThumbnailSize(thumbWidth, thumbHeight));
+            thumbnailSizes.add(new ThumbnailSize(thumbWidth / 2, thumbHeight / 2));
             params.setThumbnailSizes(thumbnailSizes);
         }
 
@@ -219,7 +219,7 @@ final public class FileInfo {
             }
 
             @Override
-            public void onResultForUiThread(@Nullable FileInfo info, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable FileInfo info, @Nullable SendbirdException e) {
                 if (handler == null) return;
                 if (e != null || info == null) {
                     Logger.w(e);

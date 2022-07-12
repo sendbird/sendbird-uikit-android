@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.UserMessage;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.customsample.consts.StringSet;

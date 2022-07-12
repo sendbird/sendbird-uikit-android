@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiReactionMoreViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiReactionViewHolder;
@@ -97,8 +97,8 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
             if (current != null) {
                 List<String> userIds = current.getUserIds();
-                holder.itemView.setSelected(userIds != null && SendBird.getCurrentUser() != null && userIds.contains(
-                        SendBird.getCurrentUser().getUserId()));
+                holder.itemView.setSelected(SendbirdChat.getCurrentUser() != null && userIds.contains(
+                        SendbirdChat.getCurrentUser().getUserId()));
             }
 
             Logger.d("++ isClickable = %s, longClickable=%s", clickable, longClickable);

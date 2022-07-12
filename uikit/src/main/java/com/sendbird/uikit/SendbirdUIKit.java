@@ -13,10 +13,16 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.AppInfo;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-import com.sendbird.android.handlers.InitResultHandler;
+import com.sendbird.android.ConnectionState;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.CompletionHandler;
+import com.sendbird.android.handler.ConnectHandler;
+import com.sendbird.android.handler.DisconnectHandler;
+import com.sendbird.android.handler.InitResultHandler;
+import com.sendbird.android.params.InitParams;
+import com.sendbird.android.params.UserUpdateParams;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
@@ -245,7 +251,7 @@ public class SendbirdUIKit {
             }
 
             @Override
-            public void onInitFailed(@NonNull SendBirdException e) {
+            public void onInitFailed(@NonNull SendbirdException e) {
                 Logger.d(">> onInitFailed() e=%s", e);
                 Logger.e(e);
                 handler.onInitFailed(e);
@@ -259,7 +265,7 @@ public class SendbirdUIKit {
                 EmojiManager.getInstance().init();
 
                 try {
-                    SendBird.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
+                    SendbirdChat.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
                 } catch (Throwable ignored) {
                 }
 
@@ -267,11 +273,10 @@ public class SendbirdUIKit {
             }
         };
 
-        if (isForeground) {
-            SendBird.initFromForeground(adapter.getAppId(), context, true, initResultHandler);
-        } else {
-            SendBird.init(adapter.getAppId(), context, true, initResultHandler);
-        }
+        final com.sendbird.android.LogLevel logLevel = BuildConfig.DEBUG ? com.sendbird.android.LogLevel.VERBOSE : com.sendbird.android.LogLevel.WARN;
+        // useCaching=true is required for UIKit
+        final InitParams initParams = new InitParams(adapter.getAppId(), context, true, logLevel, isForeground);
+        SendbirdChat.init(initParams, initResultHandler);
     }
 
     /**
@@ -452,75 +457,79 @@ public class SendbirdUIKit {
      *
      * @param handler Callback handler.
      */
-    public static void connect(@Nullable SendBird.ConnectHandler handler) {
-        TaskQueue.addTask(new JobResultTask<User>() {
+    public static void connect(@Nullable ConnectHandler handler) {
+        TaskQueue.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
             @Override
-            public User call() throws Exception {
-                User user = connect();
-                if (SendBird.getConnectionState() == SendBird.ConnectionState.OPEN && user != null) {
+            public Pair<User, SendbirdException> call() throws Exception {
+                final Pair<User, SendbirdException> data = connect();
+                final User user = data.first;
+                final SendbirdException error = data.second;
+                if (SendbirdChat.getConnectionState() == ConnectionState.OPEN && user != null) {
                     UserInfo userInfo = adapter.getUserInfo();
                     String userId = userInfo.getUserId();
                     String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
                     if (TextUtils.isEmpty(nickname)) nickname = userId;
                     String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
                     if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
-                        updateUserInfoBlocking(nickname, profileUrl);
+                        final UserUpdateParams params = new UserUpdateParams();
+                        params.setNickname(nickname);
+                        params.setProfileImageUrl(profileUrl);
+                        updateUserInfoBlocking(params);
                     }
 
                     Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
 
-                    AppInfo appInfo = SendBird.getAppInfo();
+                    AppInfo appInfo = SendbirdChat.getAppInfo();
                     if (appInfo != null &&
-                            appInfo.useReaction() &&
+                            appInfo.getUseReaction() &&
                             appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
                         updateEmojiList();
                     }
                 }
 
-                return user;
+                return new Pair<>(user, error);
             }
 
             @Override
-            public void onResultForUiThread(@Nullable User user, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable Pair<User, SendbirdException> data, @Nullable SendbirdException e) {
+                final User user = data != null ? data.first : null;
+                final SendbirdException error = data != null ? data.second : e;
+                Logger.d("++ user=%s, error=%s", user, error);
                 if (handler != null) {
-                    handler.onConnected(SendBird.getCurrentUser(), e);
+                    handler.onConnected(user, error);
                 }
             }
         });
     }
 
-    @Nullable
-    private static User connect() throws InterruptedException, SendBirdException {
+    @NonNull
+    private static Pair<User, SendbirdException> connect() throws InterruptedException {
         AtomicReference<User> result = new AtomicReference<>();
-        AtomicReference<SendBirdException> error = new AtomicReference<>();
+        AtomicReference<SendbirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
         UserInfo userInfo = adapter.getUserInfo();
         String userId = userInfo.getUserId();
         String accessToken = adapter.getAccessToken();
 
-        SendBird.connect(userId, accessToken, (user, e) -> {
+        SendbirdChat.connect(userId, accessToken, (user, e) -> {
             result.set(user);
             if (e != null) {
                 error.set(e);
-                latch.countDown();
-                return;
             }
 
             latch.countDown();
         });
         latch.await();
-
-        if (error.get() != null) throw error.get();
-        return result.get();
+        return new Pair<>(result.get(), error.get());
     }
 
     /**
-     * Disconnects from SendBird. Call this when user logged out.
+     * Disconnects from SendbirdChat. Call this when user logged out.
      *
      * @param handler Callback handler.
      */
-    public static void disconnect(@Nullable SendBird.DisconnectHandler handler) {
-        SendBird.disconnect(() -> {
+    public static void disconnect(@Nullable DisconnectHandler handler) {
+        SendbirdChat.disconnect(() -> {
             clearAll();
             if (handler != null) {
                 handler.onDisconnected();
@@ -531,18 +540,17 @@ public class SendbirdUIKit {
     /**
      * Updates current <code>UserInfo</code>.
      *
-     * @param nickname   Nickname to be used.
-     * @param profileUrl Image URL to be used.
+     * @param params   Params for update current users.
      * @param handler    Callback handler.
      */
-    public static void updateUserInfo(@Nullable String nickname, @Nullable String profileUrl, @Nullable SendBird.UserInfoUpdateHandler handler) {
-        SendBird.updateCurrentUserInfo(nickname, profileUrl, handler);
+    public static void updateUserInfo(@NonNull UserUpdateParams params, @Nullable CompletionHandler handler) {
+        SendbirdChat.updateCurrentUserInfo(params, handler);
     }
 
-    private static void updateUserInfoBlocking(@Nullable String nickname, @Nullable String profileUrl) throws SendBirdException, InterruptedException {
+    private static void updateUserInfoBlocking(@NonNull UserUpdateParams params) throws SendbirdException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<SendBirdException> error = new AtomicReference<>();
-        SendBird.updateCurrentUserInfo(nickname, profileUrl, e -> {
+        AtomicReference<SendbirdException> error = new AtomicReference<>();
+        SendbirdChat.updateCurrentUserInfo(params, e -> {
             if (e != null) error.set(e);
             latch.countDown();
         });
@@ -591,11 +599,13 @@ public class SendbirdUIKit {
 
     private static void updateEmojiList() {
         Logger.d(">> SendBirdUIkit::updateEmojiList()");
-        SendBird.getAllEmoji((emojiContainer, e) -> {
+        SendbirdChat.getAllEmoji((emojiContainer, e) -> {
             if (e != null) {
                 Logger.e(e);
             } else {
-                EmojiManager.getInstance().upsertEmojiContainer(emojiContainer);
+                if (emojiContainer != null) {
+                    EmojiManager.getInstance().upsertEmojiContainer(emojiContainer);
+                }
             }
         });
     }

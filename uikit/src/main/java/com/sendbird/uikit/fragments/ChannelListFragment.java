@@ -13,8 +13,8 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelListQuery;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.query.GroupChannelListQuery;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
@@ -211,7 +211,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      * @since 1.2.0
      */
     protected void onSelectedChannelType(@NonNull CreatableChannelType channelType) {
-        startActivity(CreateChannelActivity.newIntent(Objects.requireNonNull(getContext()), channelType));
+        startActivity(CreateChannelActivity.newIntent(requireContext(), channelType));
     }
 
     /**

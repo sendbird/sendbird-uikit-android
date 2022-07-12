@@ -3,7 +3,7 @@ package com.sendbird.uikit.customsample.models;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.UserInfo;
 
 /**

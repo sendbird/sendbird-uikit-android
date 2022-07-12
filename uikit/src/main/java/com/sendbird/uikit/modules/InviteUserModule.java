@@ -62,6 +62,7 @@ public class InviteUserModule extends BaseModule {
     public InviteUserModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
         this.headerComponent = new SelectUserHeaderComponent();
+        this.headerComponent.getParams().setRightButtonText(context.getString(R.string.sb_text_button_invite));
         this.userListComponent = new InviteUserListComponent();
         this.statusComponent = new StatusComponent();
     }

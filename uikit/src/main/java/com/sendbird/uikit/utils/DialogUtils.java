@@ -13,10 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.GroupChannelCreateParams;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
@@ -326,11 +326,11 @@ public final class DialogUtils {
     }
 
     private static void createDirectChannel(Context context, User user, LoadingDialogHandler handler) {
-        GroupChannelParams params = new GroupChannelParams();
-        params.addUserId(user.getUserId());
+        GroupChannelCreateParams params = new GroupChannelCreateParams();
+        params.setUserIds(Collections.singletonList(user.getUserId()));
         params.setName("");
         params.setCoverUrl("");
-        params.setOperators(Collections.singletonList(SendBird.getCurrentUser()));
+        params.setOperators(Collections.singletonList(SendbirdChat.getCurrentUser()));
 
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {

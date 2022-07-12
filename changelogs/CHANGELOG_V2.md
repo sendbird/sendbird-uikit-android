@@ -1,4 +1,4 @@
-# Change Log
+# Changelog
 
 ### v2.2.5 (Mar 29, 2022) with Core SDK `v3.1.9`
 * Improved stability.

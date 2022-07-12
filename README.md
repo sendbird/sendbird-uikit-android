@@ -1,11 +1,10 @@
 # Sendbird UIKit for Android
 ![Platform](https://img.shields.io/badge/platform-ANDROID-orange.svg)
 ![Languages](https://img.shields.io/badge/language-JAVA-orange.svg)
-![Version](https://img.shields.io/badge/version-3.0.0--beta.2-blue)
 
 ## Introduction
 
-We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/changelogs/MIGRATIONGUIDE_V3.md) and download [our samples](https://github.com/sendbird/sendbird-uikit-android/tree/v3-beta/uikit-sample)
+We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/changelogs/MIGRATIONGUIDE_V3.md) and download [our samples](https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-sample)
 
 Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
 
@@ -33,15 +32,15 @@ This section shows you the prerequisites you need for testing Sendbird UIKit for
 
 The minimum requirements for UIKit for Android are:
 
-- Android + (API level as 21 or higher) 
-- Java 8
+- Android 5.0 (API level 21) or higher 
+- Java 8 or higher
 - Support androidx only 
-- Gradle 4.0.1 or higher 
-- Sendbird Chat SDK for Android 3.1.1 and later
+- Android Gradle plugin 4.0.1 or higher
+- Sendbird Chat SDK for Android 4.0.3 and later
 
 ### Try the sample app using your data 
 
-If you would like to try the sample app specifically fit to your usage, you can do so by replacing the default sample app ID with yours, which you can obtain by [creating your Sendbird application from the dashboard](https://sendbird.com/docs/chat/v3/android/quickstart/send-first-message#3-install-and-configure-the-chat-sdk-4-step-1-create-a-sendbird-application-from-your-dashboard). Furthermore, you could also add data of your choice on the dashboard to test. This will allow you to experience the sample app with data from your Sendbird application.
+If you would like to try the sample app specifically fit to your usage, you can do so by replacing the default sample app ID with yours, which you can obtain by [creating your Sendbird application from the dashboard](https://sendbird.com/docs/chat/v4/android/quickstart/send-first-message#3-install-and-configure-the-chat-sdk-4-step-1-create-a-sendbird-application-from-your-dashboard). Furthermore, you could also add data of your choice on the dashboard to test. This will allow you to experience the sample app with data from your Sendbird application.
 
 <br />
 
@@ -67,16 +66,6 @@ UIKit for Android is installed via `Gradle`. Begin by opening the project's top-
 > Note: Add the code blocks in your root `build.gradle` file, not your module `build.gradle` file.
 
 ```gradle
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
-    }
-}
-
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
@@ -105,9 +94,7 @@ Then, open the `build.gradle` file at the application level. For `Java` and `Kot
 ```gradle
 apply plugin: 'com.android.application'
 
-android {
-    ...
-    
+android {    
     buildFeatures {
         viewBinding true
     }
@@ -116,14 +103,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    ...
-    
 }
 
 dependencies {
     implementation 'com.sendbird.sdk:uikit:LATEST_VERSION'
-    ...
-    
 }
 ```
 

@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         etUserId.setSelectAllOnFocus(true);
         etNickname.setSelectAllOnFocus(true);
 
-        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendBird.getSDKVersion());
+        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendbirdChat.getSdkVersion());
         tvVersion.setText(sdkVersion);
 
         findViewById(R.id.btSignIn).setOnClickListener(v -> {

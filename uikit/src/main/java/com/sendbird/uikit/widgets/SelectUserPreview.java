@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.widget.CompoundButtonCompat;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewUserListItemBinding;
@@ -136,7 +136,7 @@ public class SelectUserPreview extends FrameLayout {
         binding.tvNickname.setText(nickname);
         ChannelUtils.loadImage(binding.ivUserCover, userInfo.getProfileUrl());
 
-        if (userInfo.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
+        if (userInfo.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
             String meBadge = getResources().getString(R.string.sb_text_user_list_badge_me);
             final Spannable spannable = new SpannableString(meBadge);
             int badgeAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;

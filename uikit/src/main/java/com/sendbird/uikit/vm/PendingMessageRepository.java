@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.model.FileInfo;
 
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ public class PendingMessageRepository {
     private static class PendingMessageManagerHolder {
         static final PendingMessageRepository INSTANCE = new PendingMessageRepository();
     }
+
+    @NonNull
     public static PendingMessageRepository getInstance() {
         return PendingMessageManagerHolder.INSTANCE;
     }
@@ -109,7 +111,7 @@ public class PendingMessageRepository {
             clearFileInfo((FileMessage) message);
         }
 
-        if (pendingMessages != null && reqId != null) {
+        if (pendingMessages != null) {
             // because this is temp message so it must compare by request id not using equals function.
             for (BaseMessage pendingMessage : pendingMessages) {
                 if (message.getClass() != pendingMessage.getClass()) {

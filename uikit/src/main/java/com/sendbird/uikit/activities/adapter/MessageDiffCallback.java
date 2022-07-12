@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.utils.MessageUtils;
 
@@ -97,8 +97,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
                 return false;
             }
 
-            if (oldReaction.getUserIds() != null &&
-                    !oldReaction.getUserIds().equals(newReaction.getUserIds())) {
+            if (!oldReaction.getUserIds().equals(newReaction.getUserIds())) {
                 return false;
             }
         }

@@ -5,9 +5,9 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.Emoji;
-import com.sendbird.android.EmojiCategory;
-import com.sendbird.android.EmojiContainer;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.EmojiCategory;
+import com.sendbird.android.message.EmojiContainer;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.UIKitPrefs;
@@ -52,7 +52,9 @@ public final class EmojiManager {
         String emojiContainerStr = UIKitPrefs.getString(StringSet.KEY_EMOJI_CONTAINER);
         if (!TextUtils.isEmpty(emojiContainerStr)) {
             EmojiContainer container = decodeEmojiContainer(emojiContainerStr);
-            upsertEmojiContainer(container, false);
+            if (container != null) {
+                upsertEmojiContainer(container, false);
+            }
         }
     }
 
@@ -155,7 +157,7 @@ public final class EmojiManager {
         return Base64.encodeToString(container.serialize(), Base64.DEFAULT);
     }
 
-    @NonNull
+    @Nullable
     private EmojiContainer decodeEmojiContainer(@NonNull String data) {
         byte[] array = Base64.decode(data, Base64.DEFAULT);
         return EmojiContainer.buildFromSerializedData(array);

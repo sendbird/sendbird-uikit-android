@@ -60,7 +60,7 @@
             android:hint="@string/text_input_channel_name_hint"
             android:singleLine="true"
             android:lines="1"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionDone|flagNoExtractUi"
             android:layout_weight="1"
             android:textCursorDrawable="@drawable/shape_cursor_drawable_bg_300"
             android:textAppearance="@style/SendbirdSubtitle1OnDark01"

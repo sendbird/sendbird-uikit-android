@@ -19,8 +19,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdPushHandler;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.push.SendbirdPushHandler;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.groupchannel.GroupChannelMainActivity;
@@ -34,13 +34,13 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Concrete implementation of a sendbird push handler.
  */
-public class MyFirebaseMessagingService extends SendBirdPushHandler {
+public class MyFirebaseMessagingService extends SendbirdPushHandler {
 
     private static final String TAG = "MyFirebaseMsgService";
     private static final AtomicReference<String> pushToken = new AtomicReference<>();
 
     @Override
-    protected boolean isUniquePushToken() {
+    public boolean isUniquePushToken() {
         return false;
     }
 
@@ -71,7 +71,7 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
         try {
             if (remoteMessage.getData().containsKey(StringSet.sendbird)) {
                 String jsonStr = remoteMessage.getData().get(StringSet.sendbird);
-                SendBird.markAsDelivered(remoteMessage.getData());
+                SendbirdChat.markAsDelivered(remoteMessage.getData());
                 if (jsonStr != null) {
                     sendNotification(context, new JSONObject(jsonStr));
                 }
@@ -107,7 +107,10 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
 
         Intent intent = GroupChannelMainActivity.newRedirectToChannelIntent(context, channelUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
+        @SuppressLint("UnspecifiedImmutableFlag")
+        PendingIntent pendingIntent = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M ?
+                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE) :
+                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)

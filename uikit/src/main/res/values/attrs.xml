@@ -16,7 +16,7 @@
         <attr name="sb_module_open_channel_settings" format="reference"/>
         <attr name="sb_module_operator_list" format="reference"/>
         <attr name="sb_module_participant_list" format="reference"/>
-        <attr name="sb_module_promote_operator_list" format="reference"/>
+        <attr name="sb_module_register_operator_list" format="reference"/>
         <attr name="sb_module_channel_push_setting" format="reference"/>
     </declare-styleable>
 

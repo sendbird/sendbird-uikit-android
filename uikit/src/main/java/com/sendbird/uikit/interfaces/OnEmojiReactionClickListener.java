@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 
 /**
  * Interface definition for a callback to be invoked when a item is clicked.

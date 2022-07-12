@@ -12,8 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.OpenChannelMessageListAdapter;
@@ -24,6 +25,8 @@ import com.sendbird.uikit.interfaces.OnItemEventListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.model.MessageUIConfig;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.widgets.MessageRecyclerView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
@@ -109,6 +112,9 @@ public class OpenChannelMessageListComponent {
      */
     public <T extends OpenChannelMessageListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
+        if (this.adapter.getMessageUIConfig() == null) {
+            this.adapter.setMessageUIConfig(params.messageUIConfig);
+        }
         if (this.adapter.getOnListItemClickListener() == null) {
             this.adapter.setOnListItemClickListener(this::onListItemClicked);
         }
@@ -280,8 +286,8 @@ public class OpenChannelMessageListComponent {
     }
 
     private void onListItemClicked(@NonNull View view, @NonNull String identifier, int position, @NonNull BaseMessage message) {
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return;
 
         switch (identifier) {
             case StringSet.Chat:
@@ -442,12 +448,16 @@ public class OpenChannelMessageListComponent {
         private boolean useGroupUI = true;
         private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
 
+        @NonNull
+        private final MessageUIConfig messageUIConfig;
+
         /**
          * Constructor
          *
          * @since 3.0.0
          */
         protected Params() {
+            this.messageUIConfig = new MessageUIConfig();
         }
 
         /**
@@ -468,6 +478,18 @@ public class OpenChannelMessageListComponent {
          */
         public void setUseUserProfile(boolean useUserProfile) {
             this.useUserProfile = useUserProfile;
+        }
+
+        /**
+         * Sets the UI configuration of searched text.
+         *
+         * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
+         * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
+         * @since 3.0.0
+         */
+        public void setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null) this.messageUIConfig.getMyEditedTextMarkUIConfig().apply(configSentFromMe);
+            if (configSentFromOthers != null) this.messageUIConfig.getOtherEditedTextMarkUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -509,6 +531,7 @@ public class OpenChannelMessageListComponent {
             if (args.containsKey(StringSet.KEY_USE_MESSAGE_GROUP_UI)) {
                 setUseMessageGroupUI(args.getBoolean(StringSet.KEY_USE_MESSAGE_GROUP_UI));
             }
+            setEditedTextMarkUIConfig(args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS));
             return this;
         }
     }

@@ -24,6 +24,7 @@
         android:id="@+id/input"
         android:layout_width="0dp"
         android:layout_height="@dimen/sb_size_56"
+        android:imeOptions="flagNoExtractUi"
         app:layout_constraintLeft_toRightOf="@id/leftButton"
         app:layout_constraintRight_toLeftOf="@id/emojiButton"
         app:layout_constraintTop_toBottomOf="@id/topLine"

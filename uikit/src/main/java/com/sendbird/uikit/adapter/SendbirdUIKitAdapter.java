@@ -5,12 +5,12 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.handlers.InitResultHandler;
+import com.sendbird.android.handler.InitResultHandler;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 
 /**
- * Adapters provides a binding from a {@link com.sendbird.android.SendBird} set to a connection
+ * Adapters provides a binding from a {@link com.sendbird.android.SendbirdChat} set to a connection
  * within a {@link SendbirdUIKit#init(SendbirdUIKitAdapter, Context)}.
  */
 public interface SendbirdUIKitAdapter {

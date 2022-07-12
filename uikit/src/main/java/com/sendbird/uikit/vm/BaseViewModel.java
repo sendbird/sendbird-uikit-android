@@ -3,7 +3,7 @@ package com.sendbird.uikit.vm;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.handler.ConnectHandler;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.log.Logger;
@@ -14,7 +14,7 @@ import com.sendbird.uikit.log.Logger;
  * @since 3.0.0
  */
 public abstract class BaseViewModel extends ViewModel {
-    void connect(@NonNull SendBird.ConnectHandler handler) {
+    void connect(@NonNull ConnectHandler handler) {
         Logger.dev(">> BaseViewModel::connect()");
         SendbirdUIKit.connect(handler);
     }

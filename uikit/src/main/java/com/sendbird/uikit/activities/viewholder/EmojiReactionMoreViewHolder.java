@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.sendbird.android.Reaction;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.widgets.EmojiReactionView;

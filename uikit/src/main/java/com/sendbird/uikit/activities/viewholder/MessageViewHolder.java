@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;

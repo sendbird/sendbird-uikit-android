@@ -12,22 +12,22 @@ import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.activities.adapter.PromoteOperatorListAdapter;
+import com.sendbird.uikit.activities.adapter.RegisterOperatorListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
 import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.ReadyStatus;
-import com.sendbird.uikit.modules.PromoteOperatorModule;
-import com.sendbird.uikit.modules.components.PromoteOperatorListComponent;
+import com.sendbird.uikit.modules.RegisterOperatorModule;
+import com.sendbird.uikit.modules.components.RegisterOperatorListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
-import com.sendbird.uikit.vm.PromoteOperatorViewModel;
+import com.sendbird.uikit.vm.RegisterOperatorViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
@@ -38,12 +38,12 @@ import java.util.List;
  *
  * @since 1.2.0
  */
-public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorModule, PromoteOperatorViewModel> {
+public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperatorModule, RegisterOperatorViewModel> {
 
     @Nullable
     private PagedQueryHandler<Member> pagedQueryHandler;
     @Nullable
-    private PromoteOperatorListAdapter adapter;
+    private RegisterOperatorListAdapter adapter;
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
     @Nullable
@@ -55,18 +55,18 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
 
     @NonNull
     @Override
-    protected PromoteOperatorModule onCreateModule(@NonNull Bundle args) {
-        return new PromoteOperatorModule(requireContext());
+    protected RegisterOperatorModule onCreateModule(@NonNull Bundle args) {
+        return new RegisterOperatorModule(requireContext());
     }
 
     @Override
-    protected void onConfigureParams(@NonNull PromoteOperatorModule module, @NonNull Bundle args) {
+    protected void onConfigureParams(@NonNull RegisterOperatorModule module, @NonNull Bundle args) {
     }
 
     @NonNull
     @Override
-    protected PromoteOperatorViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), pagedQueryHandler)).get(PromoteOperatorViewModel.class);
+    protected RegisterOperatorViewModel onCreateViewModel() {
+        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), pagedQueryHandler)).get(RegisterOperatorViewModel.class);
     }
 
     @Override
@@ -75,21 +75,21 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
     }
 
     @Override
-    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull PromoteOperatorModule module, @NonNull PromoteOperatorViewModel viewModel) {
-        Logger.d(">> PromoteOperatorFragment::onBeforeReady()");
-        module.getPromoteOperatorListComponent().setPagedDataLoader(viewModel);
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull RegisterOperatorModule module, @NonNull RegisterOperatorViewModel viewModel) {
+        Logger.d(">> RegisterOperatorFragment::onBeforeReady()");
+        module.getRegisterOperatorListComponent().setPagedDataLoader(viewModel);
         if (this.adapter != null) {
-            module.getPromoteOperatorListComponent().setAdapter(adapter);
+            module.getRegisterOperatorListComponent().setAdapter(adapter);
         }
         final GroupChannel channel = viewModel.getChannel();
         onBindHeaderComponent(module.getHeaderComponent(), viewModel, channel);
-        onBindPromoteOperatorListComponent(module.getPromoteOperatorListComponent(), viewModel, channel);
+        onBindRegisterOperatorListComponent(module.getRegisterOperatorListComponent(), viewModel, channel);
         onBindStatusComponent(module.getStatusComponent(), viewModel, channel);
     }
 
     @Override
-    protected void onReady(@NonNull ReadyStatus status, @NonNull PromoteOperatorModule module, @NonNull PromoteOperatorViewModel viewModel) {
-        Logger.d(">> PromoteOperatorFragment::onReady(ReadyStatus=%s)", status);
+    protected void onReady(@NonNull ReadyStatus status, @NonNull RegisterOperatorModule module, @NonNull RegisterOperatorViewModel viewModel) {
+        Logger.d(">> RegisterOperatorFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
             if (isDeleted) shouldActivityFinish();
@@ -99,46 +99,46 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
     }
 
     /**
-     * Called to bind events to the SelectUserHeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, PromoteOperatorModule, PromoteOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the SelectUserHeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, RegisterOperatorModule, RegisterOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
      *
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
      * @since 3.0.0
      */
-    protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull PromoteOperatorViewModel viewModel, @Nullable GroupChannel channel) {
-        Logger.d(">> PromoteOperatorFragment::onBindHeaderComponent()");
+    protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> RegisterOperatorFragment::onBindHeaderComponent()");
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> getModule().getPromoteOperatorListComponent().notifySelectionComplete());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> getModule().getRegisterOperatorListComponent().notifySelectionComplete());
     }
 
     /**
-     * Called to bind events to the PromoteOperatorListComponent. This is called from {@link #onBeforeReady(ReadyStatus, PromoteOperatorModule, PromoteOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the RegisterOperatorListComponent. This is called from {@link #onBeforeReady(ReadyStatus, RegisterOperatorModule, RegisterOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
      *
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
      * @since 3.0.0
      */
-    protected void onBindPromoteOperatorListComponent(@NonNull PromoteOperatorListComponent listComponent, @NonNull PromoteOperatorViewModel viewModel, @Nullable GroupChannel channel) {
-        Logger.d(">> PromoteOperatorFragment::onBindPromoteOperatorListComponent()");
+    protected void onBindRegisterOperatorListComponent(@NonNull RegisterOperatorListComponent listComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> RegisterOperatorFragment::onBindRegisterOperatorListComponent()");
 
         listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
-        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : PromoteOperatorFragment.this::onUserSelectionCompleted);
+        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : RegisterOperatorFragment.this::onUserSelectionCompleted);
 
         viewModel.getUserList().observe(getViewLifecycleOwner(), listComponent::notifyDataSetChanged);
     }
 
     /**
-     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, PromoteOperatorModule, PromoteOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, RegisterOperatorModule, RegisterOperatorViewModel)} regardless of the value of {@link ReadyStatus}.
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
      * @since 3.0.0
      */
-    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull PromoteOperatorViewModel viewModel, @Nullable GroupChannel channel) {
-        Logger.d(">> PromoteOperatorFragment::onBindStatusComponent()");
+    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
+        Logger.d(">> RegisterOperatorFragment::onBindStatusComponent()");
         statusComponent.setOnActionButtonClickListener(v -> {
             statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
             shouldAuthenticate();
@@ -154,10 +154,10 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
      * @since 3.0.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
-        Logger.d(">> PromoteOperators::onUserSelectComplete()");
+        Logger.d(">> RegisterOperators::onUserSelectComplete()");
         getViewModel().addOperators(selectedUsers, e -> {
             if (e != null) {
-                toastError(R.string.sb_text_error_promote_operator);
+                toastError(R.string.sb_text_error_register_operator);
                 Logger.e(e);
                 return;
             }
@@ -179,11 +179,11 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
 
     public static class Builder {
         @NonNull
-        private Bundle bundle;
+        private final Bundle bundle;
         @Nullable
         private PagedQueryHandler<Member> pagedQueryHandler;
         @Nullable
-        private PromoteOperatorListAdapter adapter;
+        private RegisterOperatorListAdapter adapter;
         @Nullable
         private View.OnClickListener headerLeftButtonClickListener;
         @Nullable
@@ -344,7 +344,7 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
          * @since 3.0.0
          */
         @NonNull
-        public Builder setPromoteOperatorListAdapter(@NonNull PromoteOperatorListAdapter adapter) {
+        public Builder setRegisterOperatorListAdapter(@NonNull RegisterOperatorListAdapter adapter) {
             this.adapter = adapter;
             return this;
         }
@@ -443,14 +443,14 @@ public class PromoteOperatorFragment extends BaseModuleFragment<PromoteOperatorM
         }
 
         /**
-         * Creates an {@link PromoteOperatorFragment} with the arguments supplied to this
+         * Creates an {@link RegisterOperatorFragment} with the arguments supplied to this
          * builder.
          *
-         * @return The {@link PromoteOperatorFragment} applied to the {@link Bundle}.
+         * @return The {@link RegisterOperatorFragment} applied to the {@link Bundle}.
          */
         @NonNull
         public Fragment build() {
-            PromoteOperatorFragment fragment = new PromoteOperatorFragment();
+            RegisterOperatorFragment fragment = new RegisterOperatorFragment();
             fragment.setArguments(bundle);
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;

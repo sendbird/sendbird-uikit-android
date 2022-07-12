@@ -9,7 +9,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageComponentBinding;
 

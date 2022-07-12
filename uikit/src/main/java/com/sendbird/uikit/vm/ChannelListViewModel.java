@@ -5,12 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelCollection;
-import com.sendbird.android.GroupChannelListQuery;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.handlers.GroupChannelCollectionHandler;
-import com.sendbird.android.handlers.GroupChannelContext;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.query.GroupChannelListQuery;
+import com.sendbird.android.collection.GroupChannelCollection;
+import com.sendbird.android.collection.GroupChannelContext;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.GroupChannelCollectionHandler;
+import com.sendbird.android.params.GroupChannelCollectionCreateParams;
+import com.sendbird.android.params.GroupChannelListQueryParams;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
@@ -81,7 +84,7 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
         if (this.collection != null) {
             disposeChannelCollection();
         }
-        this.collection = new GroupChannelCollection.Builder(query).build();
+        this.collection = SendbirdChat.createGroupChannelCollection(new GroupChannelCollectionCreateParams(query));
         this.collection.setGroupChannelCollectionHandler(collectionHandler);
     }
 
@@ -130,7 +133,7 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
 
     @Override
     public boolean hasNext() {
-        return collection != null && collection.hasMore();
+        return collection != null && collection.getHasMore();
     }
 
     /**
@@ -176,7 +179,7 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
         if (collection == null) return Collections.emptyList();
 
         final CountDownLatch lock = new CountDownLatch(1);
-        final AtomicReference<SendBirdException> error = new AtomicReference<>();
+        final AtomicReference<SendbirdException> error = new AtomicReference<>();
         final AtomicReference<List<GroupChannel>> channelListRef = new AtomicReference<>();
         collection.loadMore((channelList, e) -> {
             channelListRef.set(channelList);
@@ -245,6 +248,6 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
      */
     @NonNull
     protected GroupChannelListQuery createGroupChannelListQuery() {
-        return GroupChannel.createMyGroupChannelListQuery();
+        return GroupChannel.createMyGroupChannelListQuery(new GroupChannelListQueryParams());
     }
 }

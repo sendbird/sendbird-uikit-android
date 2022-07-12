@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.utils.MessageUtils;
 

@@ -10,15 +10,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.Member;
-import com.sendbird.uikit.activities.adapter.PromoteOperatorListAdapter;
+import com.sendbird.android.user.Member;
+import com.sendbird.uikit.activities.adapter.RegisterOperatorListAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
 
 /**
- * Implements the customized <code>PromoteOperatorListAdapter</code> to adapt the promote operators list items.
+ * Implements the customized <code>RegisterOperatorListAdapter</code> to adapt the register as operators list items.
  */
-public class CustomPromoteOperatorListAdapter extends PromoteOperatorListAdapter {
+public class CustomRegisterOperatorListAdapter extends RegisterOperatorListAdapter {
     @NonNull
     @Override
     public BaseViewHolder<Member> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

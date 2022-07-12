@@ -30,12 +30,13 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.OGMetaData;
-import com.sendbird.android.Sender;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.OGMetaData;
+import com.sendbird.android.message.Thumbnail;
+import com.sendbird.android.user.Sender;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -168,11 +169,9 @@ public class ViewUtils {
     @Nullable
     private static User getMentionedUser(@NonNull BaseMessage message, @NonNull String targetUserId) {
         final List<User> mentionedUserList = message.getMentionedUsers();
-        if (mentionedUserList != null) {
-            for (User user : mentionedUserList) {
-                if (user.getUserId().equals(targetUserId)) {
-                    return user;
-                }
+        for (User user : mentionedUserList) {
+            if (user.getUserId().equals(targetUserId)) {
+                return user;
             }
         }
         return null;
@@ -265,9 +264,9 @@ public class ViewUtils {
                                       @DimenRes int iconSize
                                       ) {
         String url = message.getUrl();
-        if (TextUtils.isEmpty(url) && message.getMessageParams() != null &&
-                message.getMessageParams().getFile() != null) {
-            url = message.getMessageParams().getFile().getAbsolutePath();
+        if (TextUtils.isEmpty(url) && message.getMessageCreateParams() != null &&
+                message.getMessageCreateParams().getFile() != null) {
+            url = message.getMessageCreateParams().getFile().getAbsolutePath();
         }
         Context context = view.getContext();
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL);
@@ -287,8 +286,8 @@ public class ViewUtils {
                 url = fileInfo.getThumbnailPath();
             }
         } else {
-            List<FileMessage.Thumbnail> thumbnails = message.getThumbnails();
-            FileMessage.Thumbnail thumbnail = null;
+            List<Thumbnail> thumbnails = message.getThumbnails();
+            Thumbnail thumbnail = null;
             if (thumbnails.size() > 0) {
                 thumbnail = thumbnails.get(0);
             }
@@ -317,7 +316,7 @@ public class ViewUtils {
         }
 
         Logger.d("-- will load thumbnail url : %s", url);
-        builder.load(url).centerCrop().thumbnail(0.3f).listener(new RequestListener<Drawable>() {
+        builder.load(url).centerCrop().sizeMultiplier(0.3f).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 if (requestListener != null) {

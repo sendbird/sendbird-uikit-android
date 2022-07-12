@@ -2,19 +2,23 @@ package com.sendbird.uikit.customsample;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
-import com.sendbird.android.ApplicationUserListQuery;
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.OpenChannelParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessageParams;
-import com.sendbird.android.handlers.InitResultHandler;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.InitResultHandler;
+import com.sendbird.android.params.ApplicationUserListQueryParams;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.GroupChannelCreateParams;
+import com.sendbird.android.params.GroupChannelUpdateParams;
+import com.sendbird.android.params.OpenChannelUpdateParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
+import com.sendbird.android.user.User;
+import com.sendbird.android.user.query.ApplicationUserListQuery;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.customsample.consts.InitState;
@@ -91,7 +95,7 @@ public class BaseApplication extends MultiDexApplication {
                     }
 
                     @Override
-                    public void onInitFailed(@NonNull SendBirdException e) {
+                    public void onInitFailed(@NonNull SendbirdException e) {
                         initState.setValue(InitState.FAILED);
                     }
 
@@ -104,7 +108,8 @@ public class BaseApplication extends MultiDexApplication {
                         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
                         // set whether to use user profile
                         SendbirdUIKit.setUseDefaultUserProfile(false);
-
+                        // set custom user list query
+                        SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
                         initState.setValue(InitState.SUCCEED);
                     }
                 };
@@ -114,38 +119,36 @@ public class BaseApplication extends MultiDexApplication {
         // set custom params
         SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
             @Override
-            public void onBeforeCreateGroupChannel(@NonNull GroupChannelParams groupChannelParams) {
+            public void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams groupChannelParams) {
                 // You can set GroupChannelParams globally before creating a channel.
             }
 
             @Override
-            public void onBeforeUpdateGroupChannel(@NonNull GroupChannelParams groupChannelParams) {
+            public void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams groupChannelParams) {
                 // You can set GroupChannelParams globally before updating a channel.
             }
 
             @Override
-            public void onBeforeSendUserMessage(@NonNull UserMessageParams userMessageParams) {
+            public void onBeforeSendUserMessage(@NonNull UserMessageCreateParams userMessageParams) {
                 // You can set UserMessageParams globally before sending a text message.
             }
 
             @Override
-            public void onBeforeSendFileMessage(@NonNull FileMessageParams fileMessageParams) {
+            public void onBeforeSendFileMessage(@NonNull FileMessageCreateParams fileMessageParams) {
                 // You can set FileMessageParams globally before sending a binary file message.
             }
 
             @Override
-            public void onBeforeUpdateUserMessage(@NonNull UserMessageParams userMessageParams) {
+            public void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams userMessageParams) {
                 // You can set UserMessageParams globally before updating a text message.
             }
 
             @Override
-            public void onBeforeUpdateOpenChannel(@NonNull OpenChannelParams openChannelParams) {
+            public void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams openChannelParams) {
                 // You can set OpenChannelParams globally before updating a channel.
             }
         });
 
-        // set custom user list query
-        SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
         // set custom UIKit fragment factory
         SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
         // set whether to use user mention
@@ -174,14 +177,16 @@ public class BaseApplication extends MultiDexApplication {
      */
     @NonNull
     public static CustomUserListQueryHandler getCustomUserListQuery() {
-        final ApplicationUserListQuery userListQuery = SendBird.createApplicationUserListQuery();
         return new CustomUserListQueryHandler() {
-
+            @Nullable
+            ApplicationUserListQuery userListQuery = null;
             @Override
             public void loadInitial(@NonNull OnListResultHandler<UserInfo> handler) {
-                userListQuery.setLimit(5);
+                final ApplicationUserListQueryParams params = new ApplicationUserListQueryParams();
+                params.setLimit(3);
+                userListQuery = SendbirdChat.createApplicationUserListQuery(params);
                 userListQuery.next((list, e) -> {
-                    if (e != null) {
+                    if (e != null || list == null) {
                         return;
                     }
 
@@ -195,8 +200,9 @@ public class BaseApplication extends MultiDexApplication {
 
             @Override
             public void loadMore(@NonNull OnListResultHandler<UserInfo> handler) {
+                if (userListQuery == null) return;
                 userListQuery.next((list, e) -> {
-                    if (e != null) {
+                    if (e != null || list == null) {
                         return;
                     }
 
@@ -210,7 +216,8 @@ public class BaseApplication extends MultiDexApplication {
 
             @Override
             public boolean hasMore() {
-                return userListQuery.hasNext();
+                if (userListQuery == null) return false;
+                return userListQuery.getHasNext();
             }
         };
     }

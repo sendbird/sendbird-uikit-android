@@ -15,10 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.MutedState;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
@@ -388,7 +389,7 @@ public class MessageInputComponent {
         final MessageInputView inputView = this.messageInputView;
         setHintMessageText(inputView, channel);
 
-        boolean isOperator = channel.getMyRole() == Member.Role.OPERATOR;
+        boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isBroadcastChannel = channel.isBroadcast();
         if (isBroadcastChannel) {
             inputView.setVisibility(isOperator ? View.VISIBLE : View.GONE);
@@ -465,8 +466,8 @@ public class MessageInputComponent {
     }
 
     private void setHintMessageText(@NonNull MessageInputView inputView, @NonNull GroupChannel channel) {
-        boolean isOperator = channel.getMyRole() == Member.Role.OPERATOR;
-        boolean isMuted = channel.getMyMutedState() == Member.MutedState.MUTED;
+        boolean isOperator = channel.getMyRole() == Role.OPERATOR;
+        boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;
         inputView.setEnabled(!isMuted && !isFrozen);
 

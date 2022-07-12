@@ -10,9 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.MemberState;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.BannedUserListActivity;
 import com.sendbird.uikit.activities.MutedMemberListActivity;
@@ -80,10 +81,10 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
         }
 
         viewModel.getMyMemberStateChanges().observe(getViewLifecycleOwner(), memberState -> {
-            if (memberState == Member.MemberState.NONE) shouldActivityFinish();
+            if (memberState == MemberState.NONE) shouldActivityFinish();
         });
         viewModel.getMyRoleChanges().observe(getViewLifecycleOwner(), role -> {
-            if (role != Member.Role.OPERATOR) shouldActivityFinish();
+            if (role != Role.OPERATOR) shouldActivityFinish();
         });
 
         viewModel.getIsChannelDeleted().observe(getViewLifecycleOwner(), s -> shouldActivityFinish());

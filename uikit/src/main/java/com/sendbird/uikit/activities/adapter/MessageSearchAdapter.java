@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.User;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewSearchResultPreviewBinding;
@@ -219,19 +219,19 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
             }
 
             String oldNickname = oldSender.getNickname();
-            String newNickname = newSender.getNickname() != null ? newSender.getNickname() : "";
+            String newNickname = newSender.getNickname();
             if (!newNickname.equals(oldNickname)) {
                 return false;
             }
 
             String oldProfileUrl = oldSender.getProfileUrl();
-            String newProfileUrl = newSender.getProfileUrl() != null ? newSender.getProfileUrl() : "";
+            String newProfileUrl = newSender.getProfileUrl();
             if (!newProfileUrl.equals(oldProfileUrl)) {
                 return false;
             }
 
             String oldMessageText = oldMessage.getMessage();
-            String newMessageText = newMessage.getMessage() != null ? newMessage.getMessage() : "";
+            String newMessageText = newMessage.getMessage();
             return newMessageText.equals(oldMessageText);
         }
     }

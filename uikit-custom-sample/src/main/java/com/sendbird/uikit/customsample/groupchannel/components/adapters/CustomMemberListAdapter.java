@@ -10,7 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MemberListAdapter;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.customsample.R;
@@ -25,7 +26,7 @@ public class CustomMemberListAdapter extends MemberListAdapter {
     private OnItemClickListener<Member> actionItemClickListener;
     private OnItemClickListener<Member> profileClickListener;
     @NonNull
-    private Member.Role myRole = Member.Role.NONE;
+    private Role myRole = Role.NONE;
 
     @NonNull
     @Override
@@ -45,7 +46,7 @@ public class CustomMemberListAdapter extends MemberListAdapter {
     }
 
     @Override
-    public void setItems(@NonNull List<Member> userList, @NonNull Member.Role myRole) {
+    public void setItems(@NonNull List<Member> userList, @NonNull Role myRole) {
         super.setItems(userList, myRole);
         this.myRole = myRole;
     }
@@ -55,14 +56,14 @@ public class CustomMemberListAdapter extends MemberListAdapter {
             super(itemView);
 
             itemView.findViewById(R.id.ivAction).setOnClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && actionItemClickListener != null) {
                     actionItemClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }
             });
 
             itemView.findViewById(R.id.ivProfile).setOnClickListener(v -> {
-                int userPosition = getAdapterPosition();
+                int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && profileClickListener != null) {
                     profileClickListener.onItemClick(v, userPosition, getItem(userPosition));
                 }
@@ -71,7 +72,7 @@ public class CustomMemberListAdapter extends MemberListAdapter {
 
         @Override
         public void bind(@NonNull Member user) {
-            if (myRole == Member.Role.OPERATOR && actionItemClickListener != null) {
+            if (myRole == Role.OPERATOR && actionItemClickListener != null) {
                 itemView.findViewById(R.id.ivAction).setVisibility(View.VISIBLE);
             } else {
                 itemView.findViewById(R.id.ivAction).setVisibility(View.GONE);

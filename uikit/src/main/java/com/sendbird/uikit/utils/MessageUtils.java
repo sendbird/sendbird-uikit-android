@@ -3,12 +3,13 @@ package com.sendbird.uikit.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.AdminMessage;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
-import com.sendbird.android.UserMessage;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.AdminMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -23,7 +24,7 @@ public class MessageUtils {
     }
 
     public static boolean isMine(@Nullable String senderId) {
-        User currentUser = SendBird.getCurrentUser();
+        User currentUser = SendbirdChat.getCurrentUser();
         if (currentUser != null) {
             return currentUser.getUserId().equals(senderId);
         }
@@ -43,8 +44,8 @@ public class MessageUtils {
     }
 
     public static boolean isFailed(@NonNull BaseMessage message) {
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        return status == BaseMessage.SendingStatus.FAILED || status == BaseMessage.SendingStatus.CANCELED;
+        final SendingStatus status = message.getSendingStatus();
+        return status == SendingStatus.FAILED || status == SendingStatus.CANCELED;
     }
 
     public static boolean isGroupChanged(@Nullable BaseMessage frontMessage, @Nullable BaseMessage backMessage) {
@@ -58,15 +59,15 @@ public class MessageUtils {
                 backMessage instanceof AdminMessage ||
                 backMessage instanceof TimelineMessage ||
                 hasParentMessage(backMessage) ||
-                !backMessage.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED) ||
-                !frontMessage.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED) ||
+                !backMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
+                !frontMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
                 !frontMessage.getSender().equals(backMessage.getSender()) ||
                 !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt());
     }
 
     @NonNull
     public static MessageGroupType getMessageGroupType(@Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
-        if (!message.getSendingStatus().equals(BaseMessage.SendingStatus.SUCCEEDED)) {
+        if (!message.getSendingStatus().equals(SendingStatus.SUCCEEDED)) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
 

@@ -11,9 +11,9 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.InviteUserActivity;
@@ -171,7 +171,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull Member member) {
         if (getContext() == null) return;
-        boolean useChannelCreateButton = !member.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean useChannelCreateButton = !member.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), member, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
 
@@ -186,13 +186,13 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull Member member, @Nullable GroupChannel channel) {
         if (getContext() == null || channel == null) return;
         boolean isMuted = member.isMuted();
-        boolean isOperator = member.getRole() == Member.Role.OPERATOR;
-        DialogListItem promoteOperator = new DialogListItem(isOperator ? R.string.sb_text_dismiss_operator : R.string.sb_text_promote_operator);
+        boolean isOperator = member.getRole() == Role.OPERATOR;
+        DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
         DialogListItem muteMember = new DialogListItem(isMuted ? R.string.sb_text_unmute_member : R.string.sb_text_mute_member);
         DialogListItem banMember = new DialogListItem(R.string.sb_text_ban_member, 0, true);
         DialogListItem[] items = !channel.isBroadcast() ?
-                new DialogListItem[]{promoteOperator, muteMember, banMember} :
-                new DialogListItem[]{promoteOperator, banMember};
+                new DialogListItem[]{registerOperator, muteMember, banMember} :
+                new DialogListItem[]{registerOperator, banMember};
 
         final MemberListModule module = getModule();
         final MemberListViewModel viewModel = getViewModel();
@@ -202,9 +202,9 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
                     final OnCompleteHandler handler = e -> {
                         module.shouldDismissLoadingDialog();
                         if (e != null) {
-                            int errorTextResId = R.string.sb_text_error_promote_operator;
-                            if (key == R.string.sb_text_dismiss_operator) {
-                                errorTextResId = R.string.sb_text_error_dismiss_operator;
+                            int errorTextResId = R.string.sb_text_error_register_operator;
+                            if (key == R.string.sb_text_unregister_operator) {
+                                errorTextResId = R.string.sb_text_error_unregister_operator;
                             } else if (key == R.string.sb_text_mute_member) {
                                 errorTextResId = R.string.sb_text_error_mute_member;
                             } else if (key == R.string.sb_text_unmute_member) {
@@ -217,9 +217,9 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
                     };
                     if (getContext() == null) return;
                     module.shouldShowLoadingDialog(getContext());
-                    if (key == R.string.sb_text_promote_operator) {
+                    if (key == R.string.sb_text_register_operator) {
                         viewModel.addOperator(member.getUserId(), handler);
-                    } else if (key == R.string.sb_text_dismiss_operator) {
+                    } else if (key == R.string.sb_text_unregister_operator) {
                         viewModel.removeOperator(member.getUserId(), handler);
                     } else if (key == R.string.sb_text_mute_member) {
                         viewModel.muteUser(member.getUserId(), handler);

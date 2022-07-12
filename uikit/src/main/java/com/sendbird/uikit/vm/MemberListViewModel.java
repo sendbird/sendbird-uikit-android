@@ -2,7 +2,7 @@ package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.Member;
+import com.sendbird.android.user.Member;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.vm.queries.ChannelMemberListQuery;
 

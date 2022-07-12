@@ -14,8 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
@@ -427,8 +428,8 @@ public class MessageListComponent {
     }
 
     private void onListItemClicked(@NonNull View view, @NonNull String identifier, int position, @NonNull BaseMessage message) {
-        final BaseMessage.SendingStatus status = message.getSendingStatus();
-        if (status == BaseMessage.SendingStatus.PENDING) return;
+        final SendingStatus status = message.getSendingStatus();
+        if (status == SendingStatus.PENDING) return;
 
         switch (identifier) {
             case StringSet.Chat:

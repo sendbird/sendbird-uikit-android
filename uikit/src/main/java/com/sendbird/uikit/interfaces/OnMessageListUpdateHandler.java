@@ -2,7 +2,7 @@ package com.sendbird.uikit.interfaces;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 
 import java.util.List;
 

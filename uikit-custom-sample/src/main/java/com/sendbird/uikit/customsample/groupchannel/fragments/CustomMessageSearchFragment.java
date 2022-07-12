@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.customsample.groupchannel.components.CustomMessageSearchHeaderComponent;
 import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomMessageSearchAdapter;
 import com.sendbird.uikit.fragments.MessageSearchFragment;

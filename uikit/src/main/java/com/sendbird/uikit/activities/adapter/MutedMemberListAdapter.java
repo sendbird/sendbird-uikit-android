@@ -1,6 +1,6 @@
 package com.sendbird.uikit.activities.adapter;
 
-import com.sendbird.android.Member;
+import com.sendbird.android.user.Member;
 
 /**
  * MutedMemberListAdapter provides a binding from a {@link Member} type data set to views that are displayed within a RecyclerView.

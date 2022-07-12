@@ -17,23 +17,9 @@ import com.sendbird.uikit.customsample.groupchannel.fragments.CustomMessageSearc
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomModerationFragment;
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomMutedMemberListFragment;
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomOperatorListFragment;
-import com.sendbird.uikit.customsample.groupchannel.fragments.CustomParticipantsListFragment;
-import com.sendbird.uikit.customsample.groupchannel.fragments.CustomPromoteOperatorsFragment;
+import com.sendbird.uikit.customsample.groupchannel.fragments.CustomParticipantListFragment;
+import com.sendbird.uikit.customsample.groupchannel.fragments.CustomRegisterOperatorFragment;
 import com.sendbird.uikit.customsample.openchannel.CustomOpenChannelSettingsFragment;
-import com.sendbird.uikit.fragments.BannedUserListFragment;
-import com.sendbird.uikit.fragments.ChannelFragment;
-import com.sendbird.uikit.fragments.ChannelListFragment;
-import com.sendbird.uikit.fragments.ChannelSettingsFragment;
-import com.sendbird.uikit.fragments.CreateChannelFragment;
-import com.sendbird.uikit.fragments.InviteUserFragment;
-import com.sendbird.uikit.fragments.MemberListFragment;
-import com.sendbird.uikit.fragments.MessageSearchFragment;
-import com.sendbird.uikit.fragments.ModerationFragment;
-import com.sendbird.uikit.fragments.MutedMemberListFragment;
-import com.sendbird.uikit.fragments.OpenChannelSettingsFragment;
-import com.sendbird.uikit.fragments.OperatorListFragment;
-import com.sendbird.uikit.fragments.ParticipantListFragment;
-import com.sendbird.uikit.fragments.PromoteOperatorFragment;
 import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 
 /**
@@ -90,8 +76,8 @@ public class CustomFragmentFactory extends UIKitFragmentFactory {
 
     @NonNull
     @Override
-    public Fragment newPromoteOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
-        final Fragment fragment = new CustomPromoteOperatorsFragment();
+    public Fragment newRegisterOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        final Fragment fragment = new CustomRegisterOperatorFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -139,7 +125,7 @@ public class CustomFragmentFactory extends UIKitFragmentFactory {
     @NonNull
     @Override
     public Fragment newParticipantListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
-        final Fragment fragment = new CustomParticipantsListFragment();
+        final Fragment fragment = new CustomParticipantListFragment();
         fragment.setArguments(args);
         return fragment;
     }

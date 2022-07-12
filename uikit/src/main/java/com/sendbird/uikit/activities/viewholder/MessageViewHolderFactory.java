@@ -5,10 +5,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.AdminMessage;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.UserMessage;
+import com.sendbird.android.message.AdminMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewAdminMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileImageMessageBinding;

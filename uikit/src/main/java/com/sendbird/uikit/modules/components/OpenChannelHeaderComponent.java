@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.widgets.HeaderView;
@@ -92,7 +92,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
             headerView.getDescriptionTextView().setText(String.format(context.getString(R.string.sb_text_header_participants_count), ChannelUtils.makeMemberCountText(count)));
         }
 
-        int headerRightButtonIconResId = channel.isOperator(SendBird.getCurrentUser()) ? R.drawable.icon_info : R.drawable.icon_members;
+        int headerRightButtonIconResId = channel.isOperator(SendbirdChat.getCurrentUser()) ? R.drawable.icon_info : R.drawable.icon_members;
         if (getParams().getRightButtonIcon() == null) {
             headerView.setRightButtonImageDrawable(AppCompatResources.getDrawable(headerView.getContext(), headerRightButtonIconResId));
         }

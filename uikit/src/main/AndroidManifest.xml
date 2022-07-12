@@ -65,7 +65,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
-            android:name=".activities.PromoteOperatorActivity"
+            android:name=".activities.RegisterOperatorActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity

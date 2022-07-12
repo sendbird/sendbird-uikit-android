@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.Emoji;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiMoreViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiViewHolder;
@@ -109,7 +109,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
         } else {
             if (!reactionUserMap.isEmpty() && current != null) {
                 List<String> userIds = reactionUserMap.get(current.getKey());
-                holder.itemView.setSelected(userIds != null && SendBird.getCurrentUser() != null && userIds.contains(SendBird.getCurrentUser().getUserId()));
+                holder.itemView.setSelected(userIds != null && SendbirdChat.getCurrentUser() != null && userIds.contains(SendbirdChat.getCurrentUser().getUserId()));
             }
 
             holder.itemView.setOnClickListener(v -> {

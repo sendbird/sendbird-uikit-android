@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.OperatorListAdapter;
 
 /**

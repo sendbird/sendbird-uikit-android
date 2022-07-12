@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -167,7 +167,7 @@ public class ChannelSettingsMenuComponent {
         notificationItemView.setDescription(ChannelUtils.makePushSettingStatusText(menuView.getContext(), pushTriggerOption));
 
         final SingleMenuItemView moderationsItemView = menuView.findViewById(R.id.moderations);
-        moderationsItemView.setVisibility(channel.getMyRole() == Member.Role.OPERATOR ? View.VISIBLE : View.GONE);
+        moderationsItemView.setVisibility(channel.getMyRole() == Role.OPERATOR ? View.VISIBLE : View.GONE);
         final SingleMenuItemView messageSearchItemView = menuView.findViewById(R.id.messageSearch);
         messageSearchItemView.setVisibility(Available.isSupportMessageSearch() ? View.VISIBLE : View.GONE);
     }

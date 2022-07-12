@@ -2,7 +2,7 @@ package com.sendbird.uikit.interfaces;
 
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.exception.SendbirdException;
 
 /**
  * Interface definition that delivers the results of the request.
@@ -15,5 +15,5 @@ public interface OnCompleteHandler {
      * @param e The object of exception.
      * @since 3.0.0
      */
-    void onComplete(@Nullable SendBirdException e);
+    void onComplete(@Nullable SendbirdException e);
 }

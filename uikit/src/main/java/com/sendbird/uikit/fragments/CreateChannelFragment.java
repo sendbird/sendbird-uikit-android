@@ -11,9 +11,9 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
@@ -164,11 +164,11 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * @since 3.0.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
-        GroupChannelParams params = new GroupChannelParams();
-        params.addUserIds(selectedUsers);
+        GroupChannelCreateParams params = new GroupChannelCreateParams();
+        params.setUserIds(selectedUsers);
         params.setName("");
         params.setCoverUrl("");
-        params.setOperators(Collections.singletonList(SendBird.getCurrentUser()));
+        params.setOperators(Collections.singletonList(SendbirdChat.getCurrentUser()));
         if (getArguments() != null && getArguments().containsKey(StringSet.KEY_DISTINCT)) {
             params.setDistinct(getArguments().getBoolean(StringSet.KEY_DISTINCT));
         }
@@ -192,19 +192,19 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * It will be called before creating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeCreateGroupChannel(@NonNull GroupChannelParams params) {
+    protected void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params) {
     }
 
     /**
      * Creates <code>GroupChannel</code> with GroupChannelParams.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.0.4
      */
-    protected void createGroupChannel(@NonNull GroupChannelParams params) {
+    protected void createGroupChannel(@NonNull GroupChannelCreateParams params) {
         Logger.dev(">> CreateChannelFragment::createGroupChannel()");
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
@@ -218,7 +218,9 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
                 toastError(R.string.sb_text_error_create_channel);
                 Logger.e(e);
             } else {
-                onNewChannelCreated(channel);
+                if (channel != null) {
+                    onNewChannelCreated(channel);
+                }
             }
         });
     }

@@ -12,8 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.Member;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewUserPreviewBinding;
@@ -38,7 +39,7 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
     @Nullable
     private OnItemClickListener<T> actionItemClickListener;
     @NonNull
-    private Member.Role myRole = Member.Role.NONE;
+    private Role myRole = Role.NONE;
     @Nullable
     private OnItemClickListener<T> profileClickListener;
 
@@ -198,7 +199,7 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
      *
      * @param userList list to be displayed
      */
-    public void setItems(@NonNull List<T> userList, @NonNull Member.Role myRole) {
+    public void setItems(@NonNull List<T> userList, @NonNull Role myRole) {
         final UserTypeDiffCallback<T> diffCallback = new UserTypeDiffCallback<>(this.users, userList, this.myRole, myRole);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
@@ -249,7 +250,7 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
 
         @Override
         public void bind(@NonNull T user) {
-            binding.userViewHolder.useActionMenu(myRole == Member.Role.OPERATOR && actionItemClickListener != null);
+            binding.userViewHolder.useActionMenu(myRole == Role.OPERATOR && actionItemClickListener != null);
             if (user instanceof Member) {
                 UserPreview.drawMember(binding.userViewHolder, (Member) user);
             } else {
@@ -264,11 +265,11 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
         @NonNull
         private final List<T> newUserList;
         @NonNull
-        private final Member.Role oldMyRole;
+        private final Role oldMyRole;
         @NonNull
-        private final Member.Role newMyRole;
+        private final Role newMyRole;
 
-        UserTypeDiffCallback(@NonNull List<T> oldUserList, @NonNull List<T> newUserList, @NonNull Member.Role oldMyRole, @NonNull Member.Role newMyRole) {
+        UserTypeDiffCallback(@NonNull List<T> oldUserList, @NonNull List<T> newUserList, @NonNull Role oldMyRole, @NonNull Role newMyRole) {
             this.oldUserList = oldUserList;
             this.newUserList = newUserList;
             this.oldMyRole = oldMyRole;
@@ -303,13 +304,13 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
             }
 
             final String oldNickname = oldUser.getNickname();
-            final String newNickname = newUser.getNickname() != null ? newUser.getNickname() : "";
+            final String newNickname = newUser.getNickname();
             if (!newNickname.equals(oldNickname)) {
                 return false;
             }
 
             final String oldProfileUrl = oldUser.getProfileUrl();
-            final String newProfileUrl = newUser.getProfileUrl() != null ? newUser.getProfileUrl() : "";
+            final String newProfileUrl = newUser.getProfileUrl();
 
             if (newUser instanceof Member && oldUser instanceof Member) {
                 final Member oldMember = (Member) oldUser;

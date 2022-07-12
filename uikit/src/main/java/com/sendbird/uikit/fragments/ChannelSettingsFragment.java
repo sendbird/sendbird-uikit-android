@@ -16,10 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.params.GroupChannelUpdateParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelPushSettingActivity;
@@ -87,7 +87,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
@@ -113,13 +113,14 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
             }
 
             @Override
-            public void onResultForUiThread(@Nullable File file, @Nullable SendBirdException e) {
+            public void onResultForUiThread(@Nullable File file, @Nullable SendbirdException e) {
                 if (e != null) {
                     Logger.w(e);
                     return;
                 }
                 if (isFragmentAlive()) {
-                    GroupChannelParams params = new GroupChannelParams().setCoverImage(file);
+                    GroupChannelUpdateParams params = new GroupChannelUpdateParams();
+                    params.setCoverImage(file);
                     toastSuccess(R.string.sb_text_toast_success_start_upload_file);
                     updateGroupChannel(params);
                 }
@@ -130,7 +131,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
     }
 
     @Override
@@ -251,13 +252,13 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
 
                 Logger.dev("change channel name");
                 OnEditTextResultListener listener = res -> {
-                    GroupChannelParams params = new GroupChannelParams().setName(res);
+                    GroupChannelUpdateParams params = new GroupChannelUpdateParams();
+                    params.setName(res);
                     updateGroupChannel(params);
                 };
 
                 DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
-                assert getFragmentManager() != null;
                 DialogUtils.showInputDialog(
                         requireContext(),
                         getString(R.string.sb_text_channel_settings_change_channel_name),
@@ -305,19 +306,19 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * It will be called before updating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeUpdateGroupChannel(@NonNull GroupChannelParams params) {
+    protected void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params) {
     }
 
     /**
      * Update this channel with GroupChannelParams.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
      * @since 1.0.4
      */
-    protected void updateGroupChannel(@NonNull GroupChannelParams params) {
+    protected void updateGroupChannel(@NonNull GroupChannelUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
         if (customHandler != null) {
             customHandler.onBeforeUpdateGroupChannel(params);
@@ -374,7 +375,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
-                        SendBird.setAutoBackgroundDetection(false);
+                        SendbirdChat.setAutoBackgroundDetection(false);
                         if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
@@ -398,7 +399,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
     }
 

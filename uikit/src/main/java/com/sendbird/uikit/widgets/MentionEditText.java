@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.MutableBaseAdapter;
 import com.sendbird.uikit.interfaces.OnMentionEventListener;
 import com.sendbird.uikit.log.Logger;

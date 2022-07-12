@@ -21,7 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.sendbird.android.OGMetaData;
+import com.sendbird.android.message.OGMetaData;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewOpenChannelOgtagBinding;
@@ -76,14 +76,14 @@ public class OpenChannelOgtagView extends FrameLayout {
             return;
         }
 
-        if (metaData.getOGImage() != null &&
-                (metaData.getOGImage().getSecureUrl() != null || metaData.getOGImage().getUrl() != null)) {
+        if (metaData.getOgImage() != null &&
+                (metaData.getOgImage().getSecureUrl() != null || metaData.getOgImage().getUrl() != null)) {
             binding.ivOgImage.setVisibility(VISIBLE);
             String ogImageUrl;
-            if (metaData.getOGImage().getSecureUrl() != null) {
-                ogImageUrl = metaData.getOGImage().getSecureUrl();
+            if (metaData.getOgImage().getSecureUrl() != null) {
+                ogImageUrl = metaData.getOgImage().getSecureUrl();
             } else {
-                ogImageUrl = metaData.getOGImage().getUrl();
+                ogImageUrl = metaData.getOgImage().getUrl();
             }
 
             int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;

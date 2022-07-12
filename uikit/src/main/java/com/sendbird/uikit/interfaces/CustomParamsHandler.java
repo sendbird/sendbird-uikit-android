@@ -2,10 +2,12 @@ package com.sendbird.uikit.interfaces;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.FileMessageParams;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.OpenChannelParams;
-import com.sendbird.android.UserMessageParams;
+import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.GroupChannelCreateParams;
+import com.sendbird.android.params.GroupChannelUpdateParams;
+import com.sendbird.android.params.OpenChannelUpdateParams;
+import com.sendbird.android.params.UserMessageCreateParams;
+import com.sendbird.android.params.UserMessageUpdateParams;
 
 /**
  * Interface definition for a callback to be invoked before when each operation called.
@@ -18,53 +20,53 @@ public interface CustomParamsHandler {
      * It will be called before creating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeCreateGroupChannel(@NonNull GroupChannelParams params);
+    void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params);
 
     /**
      * It will be called before updating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
      * @since 1.2.2
      */
-    void onBeforeUpdateGroupChannel(@NonNull GroupChannelParams params);
+    void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params);
 
     /**
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeSendUserMessage(@NonNull UserMessageParams params);
+    void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params);
 
     /**
      * It will be called before sending message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of file message. Refer to {@link FileMessageParams}.
+     * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeSendFileMessage(@NonNull FileMessageParams params);
+    void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params);
 
     /**
      * It will be called before updating message.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of user message. Refer to {@link UserMessageParams}.
+     * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
      * @since 1.2.2
      */
-    void onBeforeUpdateUserMessage(@NonNull UserMessageParams params);
+    void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params);
 
     /**
      * It will be called before updating open channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link OpenChannelParams}.
+     * @param params Params of channel. Refer to {@link OpenChannelUpdateParams}.
      * @since 2.0.0
      */
-    void onBeforeUpdateOpenChannel(@NonNull OpenChannelParams params);
+    void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams params);
 }

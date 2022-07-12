@@ -11,13 +11,12 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.activities.PromoteOperatorActivity;
+import com.sendbird.uikit.activities.RegisterOperatorActivity;
 import com.sendbird.uikit.activities.adapter.OperatorListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
@@ -98,7 +97,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
     protected void onReady(@NonNull ReadyStatus status, @NonNull OperatorListModule module, @NonNull OperatorListViewModel viewModel) {
         Logger.d(">> OperatorListFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
-        viewModel.getOperatorDismissed().observe(getViewLifecycleOwner(), isDismissed -> {
+        viewModel.getOperatorUnregistered().observe(getViewLifecycleOwner(), isDismissed -> {
             if (isDismissed) shouldActivityFinish();
         });
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
@@ -106,7 +105,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
         });
 
         if (channel == null) return;
-        if (channel.getMyRole() != Member.Role.OPERATOR) shouldActivityFinish();
+        if (channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
         viewModel.loadInitial();
     }
 
@@ -123,7 +122,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
         headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
             if (isFragmentAlive() && getContext() != null && channel != null) {
-                startActivity(PromoteOperatorActivity.newIntent(getContext(), channel.getUrl()));
+                startActivity(RegisterOperatorActivity.newIntent(getContext(), channel.getUrl()));
             }
         });
     }
@@ -181,7 +180,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
         if (getContext() == null) return;
         Logger.d(">> OperatorListFragment::onActionItemClicked()");
         DialogListItem[] items;
-        DialogListItem removeOperator = new DialogListItem(R.string.sb_text_dismiss_operator);
+        DialogListItem removeOperator = new DialogListItem(R.string.sb_text_unregister_operator);
         items = new DialogListItem[]{removeOperator};
         DialogUtils.showListDialog(getContext(), user.getNickname(),
                 items,
@@ -190,7 +189,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
                     getViewModel().removeOperator(user.getUserId(), e -> {
                         shouldDismissLoadingDialog();
                         if (e != null) {
-                            toastError(R.string.sb_text_error_dismiss_operator);
+                            toastError(R.string.sb_text_error_unregister_operator);
                         }
                     });
                 }
@@ -207,7 +206,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
         if (getContext() == null) return;
-        boolean useChannelCreateButton = !user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean useChannelCreateButton = !user.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), user, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
 

@@ -3,7 +3,7 @@ package com.sendbird.uikit.customsample.groupchannel.viewmodels;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.MessageListParams;
+import com.sendbird.android.params.MessageListParams;
 import com.sendbird.uikit.customsample.models.CustomMessageType;
 import com.sendbird.uikit.vm.ChannelViewModel;
 

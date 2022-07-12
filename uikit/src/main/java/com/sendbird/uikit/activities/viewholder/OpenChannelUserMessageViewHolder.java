@@ -4,9 +4,9 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageBinding;
@@ -27,6 +27,7 @@ public final class OpenChannelUserMessageViewHolder extends MessageViewHolder {
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        openChannelUserMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof OpenChannel) {
             openChannelUserMessageView.drawMessage((OpenChannel) channel, message, messageGroupType);
         }

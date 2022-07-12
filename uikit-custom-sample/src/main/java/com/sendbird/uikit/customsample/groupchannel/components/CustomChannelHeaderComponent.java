@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;

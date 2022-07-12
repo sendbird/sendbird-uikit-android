@@ -11,10 +11,9 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.BannedUserListAdapter;
@@ -91,7 +90,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         onBindBannedUserListComponent(module.getBannedUserListComponent(), viewModel, channel);
         onBindStatusComponent(module.getStatusComponent(), viewModel, channel);
 
-        viewModel.getOperatorDismissed().observe(getViewLifecycleOwner(), isDismissed -> {
+        viewModel.getOperatorUnregistered().observe(getViewLifecycleOwner(), isDismissed -> {
             if (isDismissed) shouldActivityFinish();
         });
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
@@ -110,7 +109,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
 
         final GroupChannel channel = viewModel.getChannel();
         if (channel == null) return;
-        if (channel.getMyRole() != Member.Role.OPERATOR) shouldActivityFinish();
+        if (channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
         viewModel.loadInitial();
     }
 
@@ -180,7 +179,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
         if (getContext() == null) return;
-        boolean useChannelCreateButton = !user.getUserId().equals(SendBird.getCurrentUser().getUserId());
+        boolean useChannelCreateButton = !user.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), user, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
 

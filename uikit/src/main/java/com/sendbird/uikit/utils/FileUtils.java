@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 
