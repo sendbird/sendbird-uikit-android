@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +31,7 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
     }
 
     @Override
-    public void setLayoutManager(LayoutManager layoutManager) {
+    public void setLayoutManager(@Nullable LayoutManager layoutManager) {
         if (!(layoutManager instanceof LinearLayoutManager)) throw new IllegalArgumentException("LinearLayoutManager supports only.");
         this.layoutManager = (LinearLayoutManager) layoutManager;
         if (this.scrollListener != null) {
@@ -49,7 +51,7 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         return layoutManager;
     }
 
-    public void setPager(@NonNull Pageable<?> pager) {
+    public void setPager(@NonNull OnPagedDataLoader<?> pager) {
         this.scrollListener.setPager(pager);
         this.scrollListener.setLayoutManager(this.layoutManager);
         addOnScrollListener(this.scrollListener);
@@ -80,7 +82,7 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
 
     private final static class OnScrollListener extends RecyclerView.OnScrollListener {
         private int threshold = 1;
-        private Pageable<?> pager;
+        private OnPagedDataLoader<?> pager;
         private LinearLayoutManager layoutManager;
         private OnScrollEndDetectListener scrollEndDetectListener;
         private final ExecutorService topLoadingWorker = Executors.newSingleThreadExecutor();
@@ -91,7 +93,7 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         public OnScrollListener() {
         }
 
-        public void setPager(@NonNull Pageable<?> pager) {
+        public void setPager(@NonNull OnPagedDataLoader<?> pager) {
             this.pager = pager;
         }
 
@@ -163,23 +165,8 @@ public class PagerRecyclerView extends ThemeableRecyclerView {
         }
     }
 
-    public interface Pageable<T> {
-        /**
-         * Synchronized function call must be used.
-         */
-        T loadPrevious() throws Exception;
-
-        /**
-         * Synchronized function call must be used.
-         */
-        T loadNext() throws Exception;
-
-        boolean hasNext();
-        boolean hasPrevious();
-    }
-
     public interface OnScrollEndDetectListener {
-        void onScrollEnd(ScrollDirection direction);
+        void onScrollEnd(@NonNull ScrollDirection direction);
     }
 
     public enum ScrollDirection {

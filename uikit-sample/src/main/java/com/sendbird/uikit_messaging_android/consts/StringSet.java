@@ -17,7 +17,6 @@ public class StringSet {
     public static final String message = "message";
     public static final String sender = "sender";
     public static final String name = "name";
-    public static final String group_channel_url = "group_channel_url";
     public static final String profile_url = "profile_url";
 
     public static final String id = "id";

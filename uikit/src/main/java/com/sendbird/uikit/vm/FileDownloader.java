@@ -7,8 +7,9 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.Thumbnail;
 import com.sendbird.uikit.interfaces.OnResultHandler;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.tasks.JobResultTask;
@@ -32,6 +33,7 @@ public class FileDownloader {
     }
     private final Set<String> downloadingFileSet = new HashSet<>();
 
+    @NonNull
     private File getDownloadFile(@NonNull Context context, @NonNull FileMessage message) {
         String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
         return FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
@@ -48,6 +50,7 @@ public class FileDownloader {
         return false;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException {
         final String url = message.getUrl();
@@ -56,9 +59,9 @@ public class FileDownloader {
         }
         try {
             downloadingFileSet.add(url);
-            String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
-            File destFile = FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
+            File destFile = Glide.with(context).asFile().load(url).submit().get();;
             Logger.dev("__ file size : " + destFile.length());
+            Logger.d("__ destFile path : " + destFile.getAbsolutePath());
 
             if (destFile.exists()) {
                 if (destFile.length() == message.getSize()) {
@@ -68,8 +71,8 @@ public class FileDownloader {
                 destFile.delete();
             }
 
-            File file = Glide.with(context).asFile().load(message.getUrl()).submit().get();
-            if (file != null && file.exists() && file.renameTo(destFile)) {
+            destFile = Glide.with(context).asFile().load(url).submit().get();
+            if (destFile != null && destFile.exists()) {
                 return destFile;
             }
         } finally {
@@ -82,9 +85,9 @@ public class FileDownloader {
         return downloadingFileSet.contains(url);
     }
 
-    public void saveFile(Context context, @NonNull String url,
+    public void saveFile(@NonNull Context context, @NonNull String url,
                          @NonNull String type, @NonNull String filename) throws Exception {
-        if (downloadingFileSet.contains(url) || context == null) {
+        if (downloadingFileSet.contains(url)) {
             return;
         }
 
@@ -98,6 +101,7 @@ public class FileDownloader {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static boolean downloadFile(@NonNull Context context, @NonNull FileMessage message, @NonNull OnResultHandler<File> handler) {
         boolean isDownloading = FileDownloader.getInstance().isDownloading(message.getUrl());
         Logger.d("++ request download file url=%s", message.getUrl());
@@ -113,12 +117,13 @@ public class FileDownloader {
             }
 
             @Override
-            public void onResultForUiThread(File file, SendBirdException e) {
-                if (e != null) {
+            public void onResultForUiThread(@Nullable File file, @Nullable SendbirdException e) {
+                if (e != null || file == null) {
                     Logger.e(e);
                     handler.onError(e);
                     return;
                 }
+
                 Logger.d("++ file download Complete file path : " + file.getAbsolutePath());
                 handler.onResult(file);
             }
@@ -127,8 +132,8 @@ public class FileDownloader {
     }
 
     public static void downloadThumbnail(@NonNull Context context, @NonNull FileMessage message) {
-        List<FileMessage.Thumbnail> thumbnails = message.getThumbnails();
-        FileMessage.Thumbnail thumbnail = null;
+        List<Thumbnail> thumbnails = message.getThumbnails();
+        Thumbnail thumbnail = null;
         if (thumbnails.size() > 0) {
             thumbnail = thumbnails.get(0);
         }

@@ -1,254 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/sb_size_12"
+    android:paddingTop="@dimen/sb_size_5"
+    android:paddingRight="@dimen/sb_size_12"
+    android:paddingBottom="@dimen/sb_size_5"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/sb_size_12"
-        android:paddingTop="@dimen/sb_size_5"
-        android:paddingRight="@dimen/sb_size_12"
-        android:paddingBottom="@dimen/sb_size_5"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivProfileView"
+        android:layout_width="@dimen/sb_size_28"
+        android:layout_height="@dimen/sb_size_28"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivProfileView"
-            android:layout_width="@dimen/sb_size_28"
-            android:layout_height="@dimen/sb_size_28"
-            android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvNickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/sb_size_12"
-            android:layout_marginLeft="@dimen/sb_size_12"
-            android:layout_marginEnd="@dimen/sb_size_4"
-            android:layout_marginRight="@dimen/sb_size_4"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/sb_size_2"
-            android:singleLine="true"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@+id/tvSentAt"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@id/ivProfileView"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSentAt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvNickname"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contentPanel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/sb_size_12"
-            android:layout_marginLeft="@dimen/sb_size_12"
-            android:layout_marginTop="@dimen/sb_size_4"
-            android:padding="@dimen/sb_size_8"
-            app:layout_constraintWidth_max="@dimen/sb_open_channel_max_message_width"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintStart_toEndOf="@id/ivProfileView"
-            app:layout_constraintTop_toBottomOf="@id/tvNickname"
-            app:layout_constraintEnd_toEndOf="@id/guideline" >
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="@dimen/sb_size_40"
-                android:layout_height="@dimen/sb_size_40"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvFileName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:ellipsize="middle"
-                android:layout_marginLeft="@dimen/sb_size_8"
-                android:layout_marginStart="@dimen/sb_size_8"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivIcon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.sendbird.uikit.widgets.MyMessageStatusView
-            android:id="@+id/ivStatus"
-            android:layout_width="@dimen/sb_size_16"
-            android:layout_height="@dimen/sb_size_16"
-            android:layout_marginTop="@dimen/sb_size_2"
-            android:layout_marginLeft="@dimen/sb_size_40"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contentPanel" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvNickname"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/sb_size_12"
-        android:paddingTop="@{(messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? @dimen/sb_size_1 : @dimen/sb_size_8}"
-        android:paddingRight="@dimen/sb_size_12"
-        android:paddingBottom="@{(messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? @dimen/sb_size_1 : @dimen/sb_size_8}">
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:layout_marginLeft="@dimen/sb_size_12"
+        android:layout_marginEnd="@dimen/sb_size_4"
+        android:layout_marginRight="@dimen/sb_size_4"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/sb_size_2"
+        android:singleLine="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/tvSentAt"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/ivProfileView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSentAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvNickname"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:layout_marginLeft="@dimen/sb_size_12"
+        android:layout_marginTop="@dimen/sb_size_4"
+        android:padding="@dimen/sb_size_8"
+        app:layout_constraintWidth_max="@dimen/sb_open_channel_max_message_width"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/ivProfileView"
+        app:layout_constraintTop_toBottomOf="@id/tvNickname"
+        app:layout_constraintEnd_toEndOf="@id/guideline" >
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivProfileView"
-            android:layout_width="@dimen/sb_size_26"
-            android:layout_height="@dimen/sb_size_26"
+            android:id="@+id/ivIcon"
+            android:layout_width="@dimen/sb_size_40"
+            android:layout_height="@dimen/sb_size_40"
             android:scaleType="centerCrop"
-            android:visibility="@{(messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == messageGroupType.GROUPING_TYPE_TAIL) ? View.VISIBLE : View.INVISIBLE}"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintBottom_toTopOf="@id/brBottom"
-            app:layout_constraintEnd_toStartOf="@id/contentPanelBox"
             app:layout_constraintStart_toStartOf="parent"
-            bind:draw_user_profile="@{message}" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvNickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/sb_size_50"
-            android:paddingRight="@dimen/sb_size_50"
-            android:paddingBottom="@dimen/sb_size_4"
-            android:visibility="@{(messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == messageGroupType.GROUPING_TYPE_HEAD) ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/contentPanelBox"
-            app:layout_constraintStart_toStartOf="parent"
-            bind:draw_user_nickname="@{message}" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contentPanelBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="@dimen/sb_message_max_width"
-            android:layout_marginStart="@dimen/sb_size_12"
-            android:layout_marginLeft="@dimen/sb_size_12"
-            android:layout_marginEnd="@dimen/sb_size_4"
-            android:layout_marginRight="@dimen/sb_size_4"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintBottom_toTopOf="@id/brBottom"
-            app:layout_constraintEnd_toStartOf="@id/tvSentAt"
-            app:layout_constraintStart_toEndOf="@id/ivProfileView"
-            app:layout_constraintTop_toBottomOf="@id/tvNickname" >
-
-            <LinearLayout
-                android:id="@+id/contentPanel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/sb_size_7"
-                android:paddingBottom="@dimen/sb_size_7"
-                android:paddingRight="@dimen/sb_size_12"
-                android:paddingLeft="@dimen/sb_size_12"
-                android:paddingStart="@dimen/sb_size_12"
-                android:paddingEnd="@dimen/sb_size_12"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/contentBarrier" >
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivIcon"
-                    android:layout_width="@dimen/sb_size_28"
-                    android:layout_height="@dimen/sb_size_28"
-                    android:background="@drawable/sb_rounded_rectangle_light_corner_10"
-                    android:padding="@dimen/sb_size_4"
-                    android:layout_marginRight="@dimen/sb_size_8"
-                    bind:file_icon="@{message}"
-                    />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvFileName"
-                    android:maxWidth="@dimen/sb_file_name_max_width"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{message.name}"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:ellipsize="middle"
-                    />
-
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/contentBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="contentPanel"
-                app:barrierDirection="end" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSentAt"
+            android:id="@+id/tvFileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{DateUtils.formatTime(context, message.getCreatedAt())}"
-            android:visibility="@{(messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == messageGroupType.GROUPING_TYPE_TAIL) ? View.VISIBLE : View.GONE}"
-            android:layout_marginRight="@dimen/sb_size_0"
-            android:layout_marginLeft="@dimen/sb_size_4"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:layout_marginLeft="@dimen/sb_size_8"
+            android:layout_marginStart="@dimen/sb_size_8"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/brBottom"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@id/contentPanelBox" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/brBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="ivProfileView,contentPanelBox,tvSentAt" />
+            app:layout_constraintStart_toEndOf="@id/ivIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <data>
+    <com.sendbird.uikit.widgets.MyMessageStatusView
+        android:id="@+id/ivStatus"
+        android:layout_width="@dimen/sb_size_16"
+        android:layout_height="@dimen/sb_size_16"
+        android:layout_marginTop="@dimen/sb_size_2"
+        android:layout_marginLeft="@dimen/sb_size_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contentPanel" />
 
-        <import type="com.sendbird.android.BaseMessage.SendingStatus" />
-        <import type="com.sendbird.uikit.utils.DateUtils" />
-        <import type="android.view.View" />
-        <import type="com.sendbird.uikit.consts.MessageGroupType"/>
-
-        <variable
-            name="message"
-            type="com.sendbird.android.FileMessage" />
-
-        <variable
-            name="channel"
-            type="com.sendbird.android.OpenChannel" />
-
-        <variable
-            name="messageGroupType"
-            type="com.sendbird.uikit.consts.MessageGroupType" />
-
-    </data>
-    -->
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

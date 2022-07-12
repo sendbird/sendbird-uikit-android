@@ -8,12 +8,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.databinding.DataBindingUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OGMetaData;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.OGMetaData;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBinding;
@@ -23,35 +24,32 @@ import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class OpenChannelUserMessageView extends OpenChannelMessageView {
-    private SbViewOpenChannelUserMessageComponentBinding binding;
-    private int editedAppearance;
-    private int operatorAppearance;
-    private int nicknameAppearance;
-    private int marginLeftEmpty;
-    private int marginLeftNor;
+    private final SbViewOpenChannelUserMessageComponentBinding binding;
+    private final int operatorAppearance;
+    private final int nicknameAppearance;
+    private final int editedAppearance;
+    private final int marginLeftEmpty;
+    private final int marginLeftNor;
 
+    @NonNull
     @Override
     public SbViewOpenChannelUserMessageComponentBinding getBinding() {
         return binding;
     }
 
-    public OpenChannelUserMessageView(Context context) {
+    public OpenChannelUserMessageView(@NonNull Context context) {
         this(context, null);
     }
 
-    public OpenChannelUserMessageView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_open_channel_message_user_style);
+    public OpenChannelUserMessageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_user_message);
     }
 
-    public OpenChannelUserMessageView(Context context, AttributeSet attrs, int defStyle) {
+    public OpenChannelUserMessageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyle, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_open_channel_user_message_component, this, true);
+            this.binding = SbViewOpenChannelUserMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int timeAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
             int messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
             int contentBackground = a.getResourceId(R.styleable.MessageView_sb_message_background, R.drawable.selector_rectangle_light);
@@ -81,14 +79,19 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
         }
     }
 
+    @NonNull
     @Override
     public View getLayout() {
         return binding.getRoot();
     }
 
     @Override
-    public void drawMessage(OpenChannel channel, BaseMessage message, MessageGroupType messageGroupType) {
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance);
+    public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        if (messageUIConfig != null) {
+            messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+            messageUIConfig.getOtherEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+        }
+        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig);
 
         binding.ogTag.drawOgtag(message.getOgMetaData());
         binding.ivStatus.drawStatus(message, channel);
@@ -114,7 +117,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
         } else {
             binding.ivProfileView.setVisibility(View.GONE);
             binding.tvNickname.setVisibility(View.GONE);
-            binding.tvSentAt.setVisibility(View.GONE);
+            binding.tvSentAt.setVisibility(View.INVISIBLE);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.tvMessage.getLayoutParams();
             params.leftMargin = marginLeftEmpty;

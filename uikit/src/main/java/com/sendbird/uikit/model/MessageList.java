@@ -3,8 +3,8 @@ package com.sendbird.uikit.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.log.Logger;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -17,13 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageList {
     enum Order {
         ASC,
-        DESC,
-        ;
+        DESC
     }
 
+    @NonNull
     private final Order order;
     @NonNull
     private final TreeSet<BaseMessage> messages;
+    @NonNull
     private final Map<String, BaseMessage> timelineMap = new ConcurrentHashMap<>();
 
     private static BaseMessage createTimelineMessage(@NonNull BaseMessage anchorMessage) {
@@ -46,6 +47,7 @@ public class MessageList {
         });
     }
 
+    @NonNull
     public List<BaseMessage> toList() {
         return new ArrayList<>(messages);
     }
@@ -89,7 +91,7 @@ public class MessageList {
         messages.add(BaseMessage.clone(message));
     }
 
-    public void addAll(@NonNull List<BaseMessage> messages) {
+    public void addAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::addAll()");
         if (messages.isEmpty()) return;
 
@@ -115,9 +117,9 @@ public class MessageList {
             }
 
             // check above item.
-            final BaseMessage higer = messages.higher(message);
-            if (higer != null && DateUtils.hasSameDate(createdAt, higer.getCreatedAt())) {
-                if (!timeline.equals(higer)) {
+            final BaseMessage higher = messages.higher(message);
+            if (higher != null && DateUtils.hasSameDate(createdAt, higher.getCreatedAt())) {
+                if (!timeline.equals(higher)) {
                     return true;
                 }
             }
@@ -129,7 +131,7 @@ public class MessageList {
         return removed;
     }
 
-    public void deleteAll(@NonNull List<BaseMessage> messages) {
+    public void deleteAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::deleteAllMessages() size = %s", messages.size());
         if (messages.isEmpty()) return;
 
@@ -138,6 +140,7 @@ public class MessageList {
         }
     }
 
+    @Nullable
     public synchronized BaseMessage deleteByMessageId(long msgId) {
         BaseMessage removedMessage = null;
         if (messages.size() > 0) {
@@ -166,6 +169,7 @@ public class MessageList {
         return deleted;
     }
 
+    @Nullable
     public synchronized BaseMessage deleteByRequestId(@NonNull String requestId) {
         BaseMessage removedMessage = null;
         if (messages.size() > 0) {
@@ -186,7 +190,7 @@ public class MessageList {
         messages.add(BaseMessage.clone(message));
     }
 
-    public void updateAll(@NonNull List<BaseMessage> messages) {
+    public void updateAll(@NonNull List<? extends BaseMessage> messages) {
         Logger.d(">> MessageList::updateAllMessages() size=%s", messages.size());
         if (messages.isEmpty()) return;
 
@@ -213,6 +217,7 @@ public class MessageList {
         return order == Order.DESC ? messages.last() : messages.first();
     }
 
+    @Nullable
     public synchronized BaseMessage getById(long messageId) {
         for (BaseMessage message : messages) {
             if (message.getMessageId() == messageId) {
@@ -222,6 +227,7 @@ public class MessageList {
         return null;
     }
 
+    @NonNull
     public synchronized List<BaseMessage> getByCreatedAt(long createdAt) {
         if (createdAt == 0L) return Collections.emptyList();
 

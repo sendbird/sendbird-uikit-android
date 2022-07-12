@@ -1,4 +1,3 @@
-include ':uikit'
-include ':uikit-sample'
 include ':uikit-custom-sample'
-rootProject.name='sendbird_uikit_android_sources'
+include ':uikit-sample', ':uikit'
+rootProject.name='sendbird-uikit-android-sources'

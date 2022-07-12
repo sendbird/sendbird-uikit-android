@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/tools">
-
-    <com.sendbird.uikit.widgets.ChannelPreview
-        android:id="@+id/channelPreview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        bind:bind_channel="@{channel}"
-        />
-
-    <data>
-        <import type="com.sendbird.android.GroupChannel" />
-        <import type="android.view.View" />
-
-        <variable
-            name="channel"
-            type="com.sendbird.android.GroupChannel" />
-    </data>
-</layout>
+<com.sendbird.uikit.widgets.ChannelPreview
+    android:id="@+id/channelPreview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    />

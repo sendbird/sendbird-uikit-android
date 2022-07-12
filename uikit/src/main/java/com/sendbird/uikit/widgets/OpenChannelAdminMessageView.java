@@ -6,41 +6,39 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageComponentBinding;
 
 public class OpenChannelAdminMessageView extends BaseMessageView {
-    private SbViewOpenChannelAdminMessageComponentBinding binding;
+    private final SbViewOpenChannelAdminMessageComponentBinding binding;
 
+    @NonNull
     public SbViewOpenChannelAdminMessageComponentBinding getBinding() {
         return binding;
     }
 
+    @NonNull
     public View getLayout() {
         return binding.getRoot();
     }
 
-    public OpenChannelAdminMessageView(Context context) {
+    public OpenChannelAdminMessageView(@NonNull Context context) {
         this(context, null);
     }
 
-    public OpenChannelAdminMessageView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_open_channel_message_admin_style);
+    public OpenChannelAdminMessageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_admin_message);
     }
 
-    public OpenChannelAdminMessageView(Context context, AttributeSet attrs, int defStyle) {
+    public OpenChannelAdminMessageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyle, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_open_channel_admin_message_component, this, true);
+            this.binding = SbViewOpenChannelAdminMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int textAppearance = a.getResourceId(R.styleable.MessageView_Admin_sb_admin_message_text_appearance, R.style.SendbirdCaption2OnLight02);
             int backgroundResourceId = a.getResourceId(R.styleable.MessageView_Admin_sb_admin_message_background, R.drawable.sb_shape_admin_message_background_light);
 
@@ -51,12 +49,7 @@ public class OpenChannelAdminMessageView extends BaseMessageView {
         }
     }
 
-    public void drawMessage(BaseMessage message) {
+    public void drawMessage(@NonNull BaseMessage message) {
         binding.tvMessage.setText(message.getMessage());
-    }
-
-    @BindingAdapter("message")
-    public static void drawMessage(OpenChannelAdminMessageView view, BaseMessage message) {
-        view.drawMessage(message);
     }
 }

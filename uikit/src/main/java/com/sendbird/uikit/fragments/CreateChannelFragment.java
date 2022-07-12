@@ -9,48 +9,171 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
-import com.sendbird.uikit.activities.adapter.UserListAdapter;
-import com.sendbird.uikit.consts.CreateableChannelType;
+import com.sendbird.uikit.activities.adapter.CreateChannelUserListAdapter;
+import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
-import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
+import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
+import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
+import com.sendbird.uikit.interfaces.PagedQueryHandler;
+import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.CreateChannelModule;
+import com.sendbird.uikit.modules.components.CreateChannelUserListComponent;
+import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
+import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.vm.CreateChannelViewModel;
+import com.sendbird.uikit.vm.ViewModelFactory;
+import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Fragment displaying the user list to create the channel.
  */
-public class CreateChannelFragment extends SelectUserFragment {
-    private boolean isDistinct;
-    private CreateableChannelType selectedChannelType;
-    private final AtomicBoolean isCreatingChannel = new AtomicBoolean();
+public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModule, CreateChannelViewModel> {
 
+    @Nullable
+    private PagedQueryHandler<UserInfo> pagedQueryHandler;
+    @Nullable
+    private CreateChannelUserListAdapter adapter;
+    @Nullable
+    private View.OnClickListener headerLeftButtonClickListener;
+    @Nullable
+    private View.OnClickListener headerRightButtonClickListener;
+    @Nullable
+    private OnUserSelectChangedListener userSelectChangedListener;
+    @Nullable
+    private OnUserSelectionCompleteListener userSelectionCompleteListener;
+
+    @NonNull
     @Override
-    protected void onConfigure() {
-        Bundle args = getArguments();
-        this.selectedChannelType = args != null && args.containsKey(StringSet.KEY_SELECTED_CHANNEL_TYPE) ? (CreateableChannelType) args.getSerializable(StringSet.KEY_SELECTED_CHANNEL_TYPE) : CreateableChannelType.Normal;
-        this.isDistinct = args != null && args.getBoolean(StringSet.KEY_DISTINCT, false);
+    protected CreateChannelModule onCreateModule(@NonNull Bundle args) {
+        return new CreateChannelModule(requireContext());
     }
 
     @Override
-    protected void onUserSelectComplete(List<String> selectedUsers) {
-        GroupChannelParams params = new GroupChannelParams();
-        params.addUserIds(selectedUsers);
-        params.setDistinct(isDistinct);
+    protected void onConfigureParams(@NonNull CreateChannelModule module, @NonNull Bundle args) {
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        getModule().getStatusComponent().notifyStatusChanged(StatusFrameView.Status.LOADING);
+    }
+
+    @NonNull
+    @Override
+    protected CreateChannelViewModel onCreateViewModel() {
+        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(pagedQueryHandler)).get(CreateChannelViewModel.class);
+    }
+
+    @Override
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull CreateChannelModule module, @NonNull CreateChannelViewModel viewModel) {
+        Logger.d(">> CreateChannelFragment::onBeforeReady(ReadyStatus=%s)", status);
+        module.getUserListComponent().setPagedDataLoader(viewModel);
+        if (this.adapter != null) {
+            module.getUserListComponent().setAdapter(adapter);
+        }
+        onBindHeaderComponent(module.getHeaderComponent(), viewModel);
+        onBindUserListComponent(module.getUserListComponent(), viewModel);
+        onBindStatusComponent(module.getStatusComponent(), viewModel);
+    }
+
+    @Override
+    protected void onReady(@NonNull ReadyStatus status, @NonNull CreateChannelModule module, @NonNull CreateChannelViewModel viewModel) {
+        Logger.d(">> CreateChannelFragment::onReady()");
+        viewModel.loadInitial();
+    }
+
+    /**
+     * Called to bind events to the SelectUserHeaderComponent. This is called from {@link #onBeforeReady(ReadyStatus, CreateChannelModule, CreateChannelViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param headerComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull CreateChannelViewModel viewModel) {
+        Logger.d(">> CreateChannelFragment::onBindHeaderComponent()");
+
+        headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
+            final CreateChannelUserListComponent listComponent = getModule().getUserListComponent();
+            listComponent.notifySelectionComplete();
+        });
+    }
+
+    /**
+     * Called to bind events to the CreateChannelUserListComponent. This is called from {@link #onBeforeReady(ReadyStatus, CreateChannelModule, CreateChannelViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param listComponent The component to which the event will be bound
+     * @param viewModel     A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindUserListComponent(@NonNull CreateChannelUserListComponent listComponent, @NonNull CreateChannelViewModel viewModel) {
+        Logger.d(">> CreateChannelFragment::onBindUserListComponent()");
+        listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> {
+            final SelectUserHeaderComponent headerComponent = getModule().getHeaderComponent();
+            headerComponent.notifySelectedUserChanged(selectedUserIds.size());
+        });
+        listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : CreateChannelFragment.this::onUserSelectionCompleted);
+        viewModel.getUserList().observe(getViewLifecycleOwner(), listComponent::notifyDataSetChanged);
+    }
+
+    /**
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, CreateChannelModule, CreateChannelViewModel)} regardless of the value of {@link ReadyStatus}.
+     *
+     * @param statusComponent The component to which the event will be bound
+     * @param viewModel       A view model that provides the data needed for the fragment
+     * @since 3.0.0
+     */
+    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull CreateChannelViewModel viewModel) {
+        Logger.d(">> CreateChannelFragment::onBindStatusComponent()");
+
+        statusComponent.setOnActionButtonClickListener(v -> {
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
+            shouldAuthenticate();
+        });
+        viewModel.getStatusFrame().observe(getViewLifecycleOwner(), statusComponent::notifyStatusChanged);
+    }
+
+    /**
+     * Returns the lists of user ids that you want to disable.
+     *
+     * @return The user id list.
+     * @since 1.2.0
+     */
+    @NonNull
+    protected List<String> getDisabledUserIds() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Called when the user selection completed.
+     *
+     * @param selectedUsers selected user's ids.
+     * @since 3.0.0
+     */
+    protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
+        GroupChannelCreateParams params = new GroupChannelCreateParams();
+        params.setUserIds(selectedUsers);
         params.setName("");
         params.setCoverUrl("");
-        params.setOperators(Collections.singletonList(SendBird.getCurrentUser()));
+        params.setOperators(Collections.singletonList(SendbirdChat.getCurrentUser()));
+        if (getArguments() != null && getArguments().containsKey(StringSet.KEY_DISTINCT)) {
+            params.setDistinct(getArguments().getBoolean(StringSet.KEY_DISTINCT));
+        }
 
+        final CreatableChannelType selectedChannelType = getModule().getParams().getSelectedChannelType();
         Logger.d("=++ selected channel type : " + selectedChannelType);
         switch (selectedChannelType) {
             case Super:
@@ -69,39 +192,37 @@ public class CreateChannelFragment extends SelectUserFragment {
      * It will be called before creating group channel.
      * If you want add more data, you can override this and set the data.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.0.4
      */
-    protected void onBeforeCreateGroupChannel(@NonNull GroupChannelParams params) {
+    protected void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params) {
     }
 
     /**
      * Creates <code>GroupChannel</code> with GroupChannelParams.
      *
-     * @param params Params of channel. Refer to {@link GroupChannelParams}.
+     * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.0.4
      */
-    protected void createGroupChannel(@NonNull GroupChannelParams params) {
+    protected void createGroupChannel(@NonNull GroupChannelCreateParams params) {
         Logger.dev(">> CreateChannelFragment::createGroupChannel()");
-        CustomParamsHandler cutsomHandler = SendBirdUIKit.getCustomParamsHandler();
-        if (cutsomHandler != null) {
-            cutsomHandler.onBeforeCreateGroupChannel(params);
+        CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeCreateGroupChannel(params);
         }
         onBeforeCreateGroupChannel(params);
 
         Logger.dev("++ createGroupChannel params : " + params);
-        Logger.dev("++ createGroupChannel isCreatingChannel : " + isCreatingChannel.get());
-        if (isCreatingChannel.compareAndSet(false, true)) {
-            GroupChannel.createChannel(params, (channel, e) -> {
-                if (e != null) {
-                    toastError(R.string.sb_text_error_create_channel);
-                    Logger.e(e);
-                    isCreatingChannel.set(false);
-                } else {
+        getViewModel().createChannel(params, (channel, e) -> {
+            if (e != null) {
+                toastError(R.string.sb_text_error_create_channel);
+                Logger.e(e);
+            } else {
+                if (channel != null) {
                     onNewChannelCreated(channel);
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -111,62 +232,52 @@ public class CreateChannelFragment extends SelectUserFragment {
      * @since 1.0.4
      */
     protected void onNewChannelCreated(@NonNull GroupChannel channel) {
-        if (isActive()) {
-            startActivity(ChannelActivity.newIntent(getContext(), channel.getUrl()));
-            finish();
+        if (isFragmentAlive()) {
+            startActivity(ChannelActivity.newIntent(requireContext(), channel.getUrl()));
+            shouldActivityFinish();
         }
     }
 
-    /**
-     * Sets the create button text.
-     *
-     * @param text {@link CharSequence} set on the create button
-     * @since 1.1.1
-     */
-    protected void setCreateButtonText(CharSequence text) {
-        setRightButtonText(text);
-    }
-
-    /**
-     * Sets the create button enabled.
-     *
-     * @param enabled whether the create button is enabled or not
-     * @since 1.1.1
-     */
-    protected void setCreateButtonEnabled(boolean enabled) {
-        setRightButtonEnabled(enabled);
-    }
-
     public static class Builder {
+        @NonNull
         private final Bundle bundle;
-        private CreateChannelFragment customFragment;
-        private CustomUserListQueryHandler customUserListQueryHandler = null;
-        private UserListAdapter adapter;
-        private View.OnClickListener headerLeftButtonListener;
+        @Nullable
+        private PagedQueryHandler<UserInfo> pagedQueryHandler;
+        @Nullable
+        private CreateChannelUserListAdapter adapter;
+        @Nullable
+        private View.OnClickListener headerLeftButtonClickListener;
+        @Nullable
+        private View.OnClickListener headerRightButtonClickListener;
+        @Nullable
+        private OnUserSelectChangedListener userSelectChangedListener;
+        @Nullable
+        private OnUserSelectionCompleteListener userSelectionCompleteListener;
 
         /**
          * Constructor
          */
         public Builder() {
-            this(SendBirdUIKit.getDefaultThemeMode());
+            this(SendbirdUIKit.getDefaultThemeMode());
         }
 
         /**
          * Constructor
          *
-         * @param themeMode {@link SendBirdUIKit.ThemeMode}
+         * @param themeMode {@link SendbirdUIKit.ThemeMode}
          */
-        public Builder(SendBirdUIKit.ThemeMode themeMode) {
+        public Builder(@NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(themeMode.getResId());
         }
 
         /**
          * Constructor
          *
-         * @param type A type of channel. Default is a {@link CreateableChannelType#Normal}
+         * @param type A type of channel. Default is a {@link CreatableChannelType#Normal}
+         * @since 3.0.0
          */
-        public Builder(@NonNull CreateableChannelType type) {
-            this(SendBirdUIKit.getDefaultThemeMode().getResId(), type);
+        public Builder(@NonNull CreatableChannelType type) {
+            this(SendbirdUIKit.getDefaultThemeMode().getResId(), type);
         }
 
         /**
@@ -175,31 +286,32 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @param customThemeResId the resource identifier for custom theme.
          */
         public Builder(@StyleRes int customThemeResId) {
-            this(customThemeResId, CreateableChannelType.Normal);
+            this(customThemeResId, CreatableChannelType.Normal);
         }
 
         /**
          * Constructor
          *
          * @param customThemeResId the resource identifier for custom theme.
-         * @param type             A type of channel. Default is a {@link CreateableChannelType#Normal}
-         * @since 1.2.0
+         * @param type             A type of channel. Default is a {@link CreatableChannelType#Normal}
+         * @since 3.0.0
          */
-        public Builder(@StyleRes int customThemeResId, @NonNull CreateableChannelType type) {
+        public Builder(@StyleRes int customThemeResId, @NonNull CreatableChannelType type) {
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putSerializable(StringSet.KEY_SELECTED_CHANNEL_TYPE, type);
         }
 
         /**
-         * Sets the custom create channel fragment. It must inherit {@link CreateChannelFragment}.
+         * Sets arguments to this fragment.
          *
-         * @param fragment custom create channel fragment.
+         * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.0.4
+         * @since 3.0.0
          */
-        public <T extends CreateChannelFragment> Builder setCustomCreateChannelFragment(T fragment) {
-            this.customFragment = fragment;
+        @NonNull
+        public Builder withArguments(@NonNull Bundle args) {
+            this.bundle.putAll(args);
             return this;
         }
 
@@ -210,7 +322,8 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 1.2.0
          */
-        public Builder setCreateButtonText(String createButtonText) {
+        @NonNull
+        public Builder setCreateButtonText(@NonNull String createButtonText) {
             bundle.putString(StringSet.KEY_HEADER_RIGHT_BUTTON_TEXT, createButtonText);
             return this;
         }
@@ -220,9 +333,11 @@ public class CreateChannelFragment extends SelectUserFragment {
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setCustomUserListQueryHandler(CustomUserListQueryHandler handler) {
-            this.customUserListQueryHandler = handler;
+        @NonNull
+        public Builder setCustomPagedQueryHandler(@NonNull PagedQueryHandler<UserInfo> handler) {
+            this.pagedQueryHandler = handler;
             return this;
         }
 
@@ -232,7 +347,8 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
-        public Builder setHeaderTitle(String title) {
+        @NonNull
+        public Builder setHeaderTitle(@NonNull String title) {
             bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
@@ -243,6 +359,7 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeader(boolean useHeader) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER, useHeader);
             return this;
@@ -256,6 +373,7 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 1.2.3
          */
+        @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useHeaderRightButton);
             return this;
@@ -268,6 +386,7 @@ public class CreateChannelFragment extends SelectUserFragment {
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
             bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
             return this;
@@ -279,6 +398,7 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
             return setHeaderLeftButtonIcon(resId, null);
         }
@@ -287,10 +407,11 @@ public class CreateChannelFragment extends SelectUserFragment {
          * Sets the icon on the left button of the header.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.0
          */
+        @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT, tint);
@@ -303,6 +424,7 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @param isDistinct true if distinct mode channel.
          * @return This Builder object to allow for chaining of calls to set methods.
          */
+        @NonNull
         public Builder setIsDistinct(boolean isDistinct) {
             bundle.putBoolean(StringSet.KEY_DISTINCT, isDistinct);
             return this;
@@ -313,8 +435,10 @@ public class CreateChannelFragment extends SelectUserFragment {
          *
          * @param adapter the adapter for the user list.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setUserListAdapter(UserListAdapter adapter) {
+        @NonNull
+        public Builder setCreateChannelUserListAdapter(@NonNull CreateChannelUserListAdapter adapter) {
             this.adapter = adapter;
             return this;
         }
@@ -324,9 +448,24 @@ public class CreateChannelFragment extends SelectUserFragment {
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
          */
-        public Builder setHeaderLeftButtonListener(View.OnClickListener listener) {
-            this.headerLeftButtonListener = listener;
+        @NonNull
+        public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerLeftButtonClickListener = listener;
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the right button of the header.
+         *
+         * @param listener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
+            this.headerRightButtonClickListener = listener;
             return this;
         }
 
@@ -334,10 +473,11 @@ public class CreateChannelFragment extends SelectUserFragment {
          * Sets the icon when the data is not exists.
          *
          * @param resId the resource identifier of the drawable.
-         * @param tint Color state list to use for tinting this resource, or null to clear the tint.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.6
          */
+        @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
             bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
             bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
@@ -351,8 +491,48 @@ public class CreateChannelFragment extends SelectUserFragment {
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 2.1.6
          */
+        @NonNull
         public Builder setEmptyText(@StringRes int resId) {
             bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the user is selected.
+         *
+         * @param userSelectChangedListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
+            this.userSelectChangedListener = userSelectChangedListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when selecting users is completed.
+         *
+         * @param userSelectionCompleteListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.0.0
+         */
+        @NonNull
+        public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
+            this.userSelectionCompleteListener = userSelectionCompleteListener;
             return this;
         }
 
@@ -362,12 +542,16 @@ public class CreateChannelFragment extends SelectUserFragment {
          *
          * @return The {@link CreateChannelFragment} applied to the {@link Bundle}.
          */
+        @NonNull
         public CreateChannelFragment build() {
-            CreateChannelFragment fragment = customFragment != null ? customFragment : new CreateChannelFragment();
+            final CreateChannelFragment fragment = new CreateChannelFragment();
             fragment.setArguments(bundle);
-            fragment.setCustomUserListQueryHandler(customUserListQueryHandler);
-            fragment.setUserListAdapter(adapter);
-            fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
+            fragment.pagedQueryHandler = pagedQueryHandler;
+            fragment.adapter = adapter;
+            fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
+            fragment.headerRightButtonClickListener = headerRightButtonClickListener;
+            fragment.userSelectChangedListener = userSelectChangedListener;
+            fragment.userSelectionCompleteListener = userSelectionCompleteListener;
             return fragment;
         }
     }

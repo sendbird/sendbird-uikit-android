@@ -3,26 +3,31 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.uikit.BR;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
+import com.sendbird.uikit.widgets.TimelineMessageView;
 
 import java.util.Map;
 
 public final class TimelineViewHolder extends MessageViewHolder {
-    TimelineViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
+    @NonNull
+    private final TimelineMessageView timelineMessageView;
+
+    TimelineViewHolder(@NonNull SbViewTimeLineMessageBinding binding, boolean useMessageGroupUI) {
+        super(binding.getRoot(), useMessageGroupUI);
+        timelineMessageView = binding.timelineMessageView;
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
-        binding.setVariable(BR.message, message);
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        timelineMessageView.drawTimeline(message);
     }
 
     @Override
+    @NonNull
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;
     }

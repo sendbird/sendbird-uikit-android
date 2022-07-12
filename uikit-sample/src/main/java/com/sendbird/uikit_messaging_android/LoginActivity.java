@@ -3,13 +3,14 @@ package com.sendbird.uikit_messaging_android;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.BuildConfig;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.widgets.WaitingDialog;
@@ -18,18 +19,23 @@ import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
+/**
+ * Displays a login screen.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityLoginBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         binding.etUserId.setSelectAllOnFocus(true);
         binding.etNickname.setSelectAllOnFocus(true);
 
-        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendBird.getSDKVersion());
+        String sdkVersion = String.format(getResources().getString(R.string.text_version_info), BuildConfig.VERSION_NAME, SendbirdChat.getSdkVersion());
         binding.tvVersionInfo.setText(sdkVersion);
 
         binding.btSignIn.setOnClickListener(v -> {
@@ -46,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             PreferenceUtils.setNickname(userNickname.toString());
 
             WaitingDialog.show(this);
-            SendBirdUIKit.connect((user, e) -> {
+            SendbirdUIKit.connect((user, e) -> {
                 if (e != null) {
                     Logger.e(e);
                     WaitingDialog.dismiss();

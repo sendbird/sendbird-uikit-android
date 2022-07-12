@@ -1,25 +1,28 @@
 package com.sendbird.uikit_messaging_android.groupchannel;
 
+import static com.sendbird.uikit_messaging_android.consts.StringSet.PUSH_REDIRECT_CHANNEL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.sendbird.android.GroupChannelTotalUnreadMessageCountParams;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.handler.UserEventHandler;
+import com.sendbird.android.params.GroupChannelTotalUnreadMessageCountParams;
+import com.sendbird.android.user.User;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
-import com.sendbird.uikit.fragments.ChannelListFragment;
 import com.sendbird.uikit_messaging_android.R;
-import com.sendbird.uikit_messaging_android.databinding.ActivityGroupChannelMainBinding;
 import com.sendbird.uikit_messaging_android.SettingsFragment;
+import com.sendbird.uikit_messaging_android.databinding.ActivityGroupChannelMainBinding;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.widgets.CustomTabView;
 
@@ -27,8 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.sendbird.uikit_messaging_android.consts.StringSet.PUSH_REDIRECT_CHANNEL;
-
+/**
+ * Displays a group channel list screen.
+ */
 public class GroupChannelMainActivity extends AppCompatActivity {
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY" + System.currentTimeMillis();
 
@@ -36,9 +40,12 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     private CustomTabView unreadCountTab;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_group_channel_main);
+        setTheme(SendbirdUIKit.getDefaultThemeMode().getResId());
+        binding = ActivityGroupChannelMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         initPage();
     }
 
@@ -69,7 +76,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SendBird.getTotalUnreadMessageCount(new GroupChannelTotalUnreadMessageCountParams(), (totalCount, e) -> {
+        SendbirdChat.getTotalUnreadMessageCount(new GroupChannelTotalUnreadMessageCountParams(), (totalCount, e) -> {
             if (e != null) {
                 return;
             }
@@ -84,12 +91,12 @@ public class GroupChannelMainActivity extends AppCompatActivity {
             }
         });
 
-        SendBird.addUserEventHandler(USER_EVENT_HANDLER_KEY, new SendBird.UserEventHandler() {
+        SendbirdChat.addUserEventHandler(USER_EVENT_HANDLER_KEY, new UserEventHandler() {
             @Override
-            public void onFriendsDiscovered(List<User> list) {}
+            public void onFriendsDiscovered(@NonNull List<User> list) {}
 
             @Override
-            public void onTotalUnreadMessageCountChanged(int totalCount, Map<String, Integer> totalCountByCustomType) {
+            public void onTotalUnreadMessageCountChanged(int totalCount, @NonNull Map<String, Integer> totalCountByCustomType) {
                 if (totalCount > 0) {
                     unreadCountTab.setBadgeVisibility(View.VISIBLE);
                     unreadCountTab.setBadgeCount(totalCount > 99 ?
@@ -105,15 +112,16 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        SendBird.removeUserEventHandler(USER_EVENT_HANDLER_KEY);
+        SendbirdChat.removeUserEventHandler(USER_EVENT_HANDLER_KEY);
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@Nullable Intent intent) {
         super.onNewIntent(intent);
         redirectChannelIfNeeded(intent);
     }
 
+    @NonNull
     public static Intent newRedirectToChannelIntent(@NonNull Context context, @NonNull String channelUrl) {
         Intent intent = new Intent(context, GroupChannelMainActivity.class);
         intent.putExtra(PUSH_REDIRECT_CHANNEL, channelUrl);
@@ -128,6 +136,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         }
         if (intent.hasExtra(PUSH_REDIRECT_CHANNEL)) {
             String channelUrl = intent.getStringExtra(PUSH_REDIRECT_CHANNEL);
+            if (channelUrl == null) return;
             startActivity(ChannelActivity.newIntent(this, channelUrl));
             intent.removeExtra(PUSH_REDIRECT_CHANNEL);
         }
@@ -144,10 +153,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new ChannelListFragment.Builder()
-                        .setUseHeader(true)
-                        .setUseHeaderLeftButton(false)
-                        .build();
+                return SendbirdUIKit.getFragmentFactory().newChannelListFragment(new Bundle());
             } else {
                 return new SettingsFragment();
             }

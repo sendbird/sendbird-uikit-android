@@ -1,5 +1,11 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,21 +13,21 @@ import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
-import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
-import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
+import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.TextUtils;
 
 import java.util.ArrayList;
@@ -32,80 +38,47 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 /**
- * Adapters provide a binding from a {@link BaseMessage} set to views that are displayed
+ * OpenChannelMessageListAdapter provides a binding from a {@link BaseMessage} set to views that are displayed
  * within a {@link RecyclerView}. This adapter is used to be only {@link OpenChannel}.
  *
  * @since 2.0.0
  */
 public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageViewHolder> {
+    @NonNull
     private List<BaseMessage> messageList = new ArrayList<>();
+    @Nullable
     private OpenChannel channel;
-    private OnItemClickListener<BaseMessage> profileClickListener;
-    private OnItemClickListener<BaseMessage> listener;
-    private OnItemLongClickListener<BaseMessage> longClickListener;
+    @Nullable
     private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
+    @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
+    @Nullable
+    private MessageUIConfig messageUIConfig;
+
+    @NonNull
     private final ExecutorService service = Executors.newSingleThreadExecutor();
-
-    /**
-     * Constructor
-     */
-    public OpenChannelMessageListAdapter() {
-        this(null);
-    }
+    @NonNull
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Constructor
      *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
-     */
-    public OpenChannelMessageListAdapter(OpenChannel channel) {
-        this(channel, true);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @deprecated As of 2.2.0, replaced by {@link OpenChannelMessageListAdapter(OpenChannel, boolean)}.
-     */
-    @Deprecated
-    public OpenChannelMessageListAdapter(OpenChannel channel, OnItemClickListener<BaseMessage> listener) {
-        this(channel, listener, null);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @param longClickListener The listener performing when the {@link MessageViewHolder} is long clicked.
-     * @deprecated As of 2.2.0, replaced by {@link OpenChannelMessageListAdapter(OpenChannel, boolean)}.
-     */
-    @Deprecated
-    public OpenChannelMessageListAdapter(OpenChannel channel, OnItemClickListener<BaseMessage> listener, OnItemLongClickListener<BaseMessage> longClickListener) {
-        this (channel, listener, longClickListener, true);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @param longClickListener The listener performing when the {@link MessageViewHolder} is long clicked.
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @deprecated As of 2.2.0, replaced by {@link OpenChannelMessageListAdapter(OpenChannel, boolean)}.
+     * @since 3.0.0
      */
-    @Deprecated
-    public OpenChannelMessageListAdapter(OpenChannel channel, OnItemClickListener<BaseMessage> listener, OnItemLongClickListener<BaseMessage> longClickListener, boolean useMessageGroupUI) {
-        this(channel, useMessageGroupUI);
-        this.listener = listener;
-        this.longClickListener = longClickListener;
+    public OpenChannelMessageListAdapter(boolean useMessageGroupUI) {
+        this(null, useMessageGroupUI);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
+     */
+    public OpenChannelMessageListAdapter(@Nullable OpenChannel channel) {
+        this(channel, true);
     }
 
     /**
@@ -115,8 +88,8 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
      * @since 2.2.0
      */
-    public OpenChannelMessageListAdapter(OpenChannel channel, boolean useMessageGroupUI) {
-        this.channel = channel != null ? OpenChannel.clone(channel) : null;
+    public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI) {
+        if (channel != null) this.channel = OpenChannel.clone(channel);
         this.useMessageGroupUI = useMessageGroupUI;
         setHasStableIds(true);
     }
@@ -136,61 +109,50 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        final TypedValue values = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
+        final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
+        LayoutInflater inflater = LayoutInflater.from(contextWrapper);
         final MessageViewHolder viewHolder = MessageViewHolderFactory.createOpenChannelViewHolder(inflater,
                 parent,
                 MessageType.from(viewType),
                 useMessageGroupUI);
+        viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
-        if (views != null) {
-            for (Map.Entry<String, View> entry : views.entrySet()) {
-                final String identifier = entry.getKey();
-                entry.getValue().setOnClickListener(v -> {
-                    int messagePosition = viewHolder.getAdapterPosition();
-                    if (messagePosition != NO_POSITION) {
-                        if (listItemClickListener != null) {
-                            listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
-
-                        // for backward compatibilities
-                        if (listener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
-                            listener.onItemClick(v, messagePosition, getItem(messagePosition));
-                        }
-                        if (profileClickListener != null && identifier.equals(ClickableViewIdentifier.Profile.name())) {
-                            profileClickListener.onItemClick(v, messagePosition, getItem(messagePosition));
-                        }
+        for (Map.Entry<String, View> entry : views.entrySet()) {
+            final String identifier = entry.getKey();
+            entry.getValue().setOnClickListener(v -> {
+                int messagePosition = viewHolder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION) {
+                    if (listItemClickListener != null) {
+                        listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
                     }
-                });
+                }
+            });
 
-                entry.getValue().setOnLongClickListener(v -> {
-                    int messagePosition = viewHolder.getAdapterPosition();
-                    if (messagePosition != NO_POSITION) {
-                        if (listItemLongClickListener != null) {
-                            listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
-
-                        // for backward compatibilities
-                        if (longClickListener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
-                            longClickListener.onItemLongClick(v, messagePosition, getItem(messagePosition));
-                        }
+            entry.getValue().setOnLongClickListener(v -> {
+                int messagePosition = viewHolder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION) {
+                    if (listItemLongClickListener != null) {
+                        listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
                         return true;
                     }
-                    return false;
-                });
-            }
+                }
+                return false;
+            });
         }
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull List<Object> payloads) {
-        if (payloads != null && !payloads.isEmpty()) {
+        if (!payloads.isEmpty()) {
             final Object lastPayload = payloads.get(payloads.size() - 1);
             if (lastPayload instanceof Animation) {
                 Animation animation = (Animation) lastPayload;
                 final Map<String, View> clickableViewMap = holder.getClickableViewMap();
-                if (clickableViewMap != null && !clickableViewMap.isEmpty()) {
+                if (!clickableViewMap.isEmpty()) {
                     final View view = clickableViewMap.get(ClickableViewIdentifier.Chat.name());
                     if (view != null) {
                         view.setAnimation(animation);
@@ -224,10 +186,10 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
             next = getItem(position - 1);
         }
 
-        holder.onBindViewHolder(channel, prev, current, next);
+        if (channel != null) {
+            holder.onBindViewHolder(channel, prev, current, next);
+        }
     }
-
-
 
     /**
      * Return the view type of the {@link MessageViewHolder} at <code>position</code> for the purposes
@@ -263,25 +225,13 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         }
     }
 
+    /**
+     * Sets channel that related with a list of messages
+     *
+     * @param channel {@code OpenChannel} that related with a list of messages
+     */
     public void setChannel(@NonNull OpenChannel channel) {
         this.channel = OpenChannel.clone(channel);
-    }
-
-    /**
-     * Sets the {@link List<BaseMessage>} to be displayed.
-     *
-     * @param messageList list to be displayed
-     * @deprecated As of 2.2.0, replaced by {@link OpenChannelMessageListAdapter#setItems(OpenChannel, List, OnMessageListUpdateHandler)}.
-     */
-    @Deprecated
-    public void setItems(OpenChannel channel, List<BaseMessage> messageList) {
-        final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(this.channel, channel, this.messageList, messageList, useMessageGroupUI);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        this.messageList.clear();
-        this.messageList.addAll(messageList);
-        this.channel = OpenChannel.clone(channel);
-        diffResult.dispatchUpdatesTo(this);
     }
 
     /**
@@ -298,7 +248,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
             final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(OpenChannelMessageListAdapter.this.channel, channel, OpenChannelMessageListAdapter.this.messageList, messageList, useMessageGroupUI);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-            SendBird.runOnUIThread(() -> {
+            mainHandler.post(() -> {
                 try {
                     OpenChannelMessageListAdapter.this.messageList = copiedMessage;
                     OpenChannelMessageListAdapter.this.channel = copiedChannel;
@@ -315,6 +265,12 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         });
     }
 
+    /**
+     * Animates the view holder with the corresponding position.
+     *
+     * @param animation Animation you want to apply to the view holder
+     * @param position Position of the view holder to be applied
+     */
     public void startAnimation(@NonNull Animation animation, int position) {
         notifyItemChanged(position, animation);
     }
@@ -322,7 +278,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     @Override
     public void onViewRecycled(@NonNull MessageViewHolder holder) {
         final Map<String, View> clickableViewMap = holder.getClickableViewMap();
-        if (clickableViewMap != null && !clickableViewMap.isEmpty()) {
+        if (!clickableViewMap.isEmpty()) {
             final View view = clickableViewMap.get(ClickableViewIdentifier.Chat.name());
             if (view != null && view.getAnimation() != null) {
                 view.getAnimation().cancel();
@@ -341,6 +297,17 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     }
 
     /**
+     * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
+     *
+     * @return {@code OnIdentifiableItemClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnIdentifiableItemClickListener<BaseMessage> getOnListItemClickListener() {
+        return listItemClickListener;
+    }
+
+    /**
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @param listener The callback that will run
@@ -351,36 +318,14 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     }
 
     /**
-     * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
+     * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
-     * @param listener The callback that will run
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemClickListener(OnIdentifiableItemClickListener)}
+     * @return OnIdentifiableItemLongClickListener<BaseMessage> to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
+     * @since 3.0.0
      */
-    @Deprecated
-    public void setOnItemClickListener(@Nullable OnItemClickListener<BaseMessage> listener) {
-        this.listener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
-     *
-     * @param listener The callback that will run
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemLongClickListener(OnIdentifiableItemLongClickListener)}
-     */
-    @Deprecated
-    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> listener) {
-        this.longClickListener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when the profile view is clicked.
-     *
-     * @param profileClickListener The callback that will run
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemClickListener(OnIdentifiableItemClickListener)}
-     */
-    @Deprecated
-    public void setOnProfileClickListener(OnItemClickListener<BaseMessage> profileClickListener) {
-        this.profileClickListener = profileClickListener;
+    @Nullable
+    public OnIdentifiableItemLongClickListener<BaseMessage> getOnListItemLongClickListener() {
+        return listItemLongClickListener;
     }
 
     /**
@@ -390,7 +335,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      */
     @Override
     public int getItemCount() {
-        return messageList == null ? 0 : messageList.size();
+        return messageList.size();
     }
 
     /**
@@ -400,6 +345,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * @return The {@link BaseMessage} to retrieve the position of in this adapter.
      */
     @Override
+    @NonNull
     public BaseMessage getItem(int position) {
         return messageList.get(position);
     }
@@ -410,7 +356,30 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * @return The {@link List<BaseMessage>} in this adapter.
      */
     @Override
+    @NonNull
     public List<BaseMessage> getItems() {
-        return messageList != null ? Collections.unmodifiableList(messageList) : null;
+        return Collections.unmodifiableList(messageList);
+    }
+
+    /**
+     * Sets the configurations of the message's properties to highlight text.
+     *
+     * @param messageUIConfig the configurations of the message's properties to highlight text.
+     * @see com.sendbird.uikit.model.TextUIConfig
+     * @since 3.0.0
+     */
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
+    }
+
+    /**
+     * Returns the configurations of the message's properties to highlight text.
+     *
+     * @return the configurations of the message's properties to highlight text.
+     * @since 3.0.0
+     */
+    @Nullable
+    public MessageUIConfig getMessageUIConfig() {
+        return this.messageUIConfig;
     }
 }

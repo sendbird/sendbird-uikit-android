@@ -4,7 +4,14 @@
     <item
         android:id="@+id/action_create_channel"
         android:title="@string/sb_text_button_create"
-        app:actionLayout="@layout/view_custom_menu_create_button"
-        app:showAsAction="always"
+        app:actionLayout="@layout/view_custom_channels_menu_create_button"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/sb_text_go_to_settings"
+        app:actionLayout="@layout/view_custom_channels_menu_settings_button"
+        app:showAsAction="ifRoom"
         />
 </menu>

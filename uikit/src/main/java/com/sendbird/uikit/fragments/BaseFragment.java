@@ -1,99 +1,112 @@
 package com.sendbird.uikit.fragments;
 
-import android.os.Bundle;
-import android.view.View;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
-import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.interfaces.DialogProvider;
-import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.widgets.WaitingDialog;
 
-abstract class BaseFragment extends PermissionFragment implements DialogProvider {
-    private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
-
-    public abstract void onReady(User user, ReadyStatus status);
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        connect();
-    }
-
-    protected boolean isActive() {
-        boolean isDeactivated = isRemoving() || isDetached() || getContext() == null;
-        return !isDeactivated;
-    }
-
-    protected void connect() {
-        Logger.dev(">> BaseFragment::connect()");
-        SendBirdUIKit.connect((user, e) -> {
-            Logger.dev("++ BaseFragment::connect e : " + e);
-            if (!isActive()) return;
-
-            // Regardless of the error state, the user data exists when the local caching is used.
-            if (user != null) {
-                onReady(SendBird.getCurrentUser(), ReadyStatus.READY);
-            } else {
-                onReady(null, ReadyStatus.ERROR);
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
-    }
-
+/**
+ * Fragment that is the basis of fragments provided by UIKit.
+ */
+public abstract class BaseFragment extends Fragment implements DialogProvider {
+    /**
+     * Shows a waiting Dialog.
+     */
     @Override
     public void showWaitingDialog() {
-        WaitingDialog.show(getContext());
+        if (!isFragmentAlive()) return;
+        WaitingDialog.show(requireContext());
     }
 
+    /**
+     * Dismisses a waiting Dialog.
+     */
     @Override
     public void dismissWaitingDialog() {
         WaitingDialog.dismiss();
     }
 
+    /**
+     * Shows an error toast.
+     *
+     * @param messageRes String resource ID displayed on error toast
+     */
     @Override
     public void toastError(int messageRes) {
-        ContextUtils.toastError(getContext(), messageRes);
+        toastError(messageRes, false);
     }
 
+    /**
+     * Shows an error toast.
+     *
+     * @param messageRes String resource ID displayed on error toast
+     * @param useOverlay Whether to apply overlay style
+     */
+    @Override
+    public void toastError(int messageRes, boolean useOverlay) {
+        if (isFragmentAlive()) ContextUtils.toastError(requireContext(), messageRes);
+    }
+
+    /**
+     * Shows an error toast.
+     *
+     * @param message String displayed on error toast
+     */
     @Override
     public void toastError(@NonNull String message) {
-        ContextUtils.toastError(getContext(), message);
+        toastError(message, false);
     }
 
+    /**
+     * Shows an error toast.
+     *
+     * @param message    String displayed on error toast
+     * @param useOverlay Whether to apply overlay style
+     */
+    @Override
+    public void toastError(@NonNull String message, boolean useOverlay) {
+        if (isFragmentAlive()) ContextUtils.toastError(requireContext(), message);
+    }
+
+    /**
+     * Shows an success toast.
+     *
+     * @param messageRes String resource ID displayed on success toast
+     */
     @Override
     public void toastSuccess(int messageRes) {
-        ContextUtils.toastSuccess(getContext(), messageRes);
+        toastSuccess(messageRes, false);
     }
 
-    protected void finish() {
+    /**
+     * Shows an success toast.
+     *
+     * @param messageRes String resource ID displayed on success toast
+     * @param useOverlay Whether to apply overlay style
+     */
+    @Override
+    public void toastSuccess(int messageRes, boolean useOverlay) {
+        if (isFragmentAlive()) ContextUtils.toastSuccess(requireContext(), messageRes);
+    }
+
+    /**
+     * Determines whether the current fragment is alive on the window.
+     *
+     * @return {@code true} if the current fragment is alive, {@code false} otherwise
+     */
+    protected boolean isFragmentAlive() {
+        boolean isDeactivated = isRemoving() || isDetached() || getContext() == null;
+        return !isDeactivated;
+    }
+
+    /**
+     * Finishes the activity that has the current fragment.
+     */
+    protected void shouldActivityFinish() {
         if (getActivity() != null) {
             getActivity().finish();
         }
-    }
-
-    protected boolean containsExtra(String key) {
-        Bundle args = getArguments();
-        return args != null && args.containsKey(key);
-    }
-
-    @Nullable
-    protected String getStringExtra(String key) {
-        Bundle args = getArguments();
-        if (args != null) {
-            return args.getString(key);
-        }
-        return null;
     }
 }

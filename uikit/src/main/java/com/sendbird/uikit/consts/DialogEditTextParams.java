@@ -1,12 +1,16 @@
 package com.sendbird.uikit.consts;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class DialogEditTextParams {
+    @Nullable
     private String hintText;
     private boolean enableSingleLine;
+    @Nullable
     private android.text.TextUtils.TruncateAt ellipsis;
     private int selection;
+    @Nullable
     private String text;
 
     public DialogEditTextParams() {
@@ -16,7 +20,7 @@ public class DialogEditTextParams {
         this.hintText = hintText;
     }
 
-    public void setHintText(String hintText) {
+    public void setHintText(@NonNull String hintText) {
         this.hintText = hintText;
     }
 
@@ -24,7 +28,7 @@ public class DialogEditTextParams {
         this.enableSingleLine = enableSingleLine;
     }
 
-    public void setEllipsis(android.text.TextUtils.TruncateAt ellipsis) {
+    public void setEllipsis(@NonNull android.text.TextUtils.TruncateAt ellipsis) {
         this.ellipsis = ellipsis;
     }
 
@@ -32,10 +36,11 @@ public class DialogEditTextParams {
         this.selection = selection;
     }
 
-    public void setText(String text) {
+    public void setText(@NonNull String text) {
         this.text = text;
     }
 
+    @Nullable
     public String getHintText() {
         return hintText;
     }
@@ -44,6 +49,7 @@ public class DialogEditTextParams {
         return enableSingleLine;
     }
 
+    @Nullable
     public android.text.TextUtils.TruncateAt getEllipsis() {
         return ellipsis;
     }
@@ -52,6 +58,7 @@ public class DialogEditTextParams {
         return selection;
     }
 
+    @Nullable
     public String getText() {
         return text;
     }

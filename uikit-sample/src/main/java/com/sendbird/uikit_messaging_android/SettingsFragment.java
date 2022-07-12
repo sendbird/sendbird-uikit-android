@@ -1,5 +1,7 @@
 package com.sendbird.uikit_messaging_android;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -20,15 +22,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.sendbird.android.SendBird;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.params.UserUpdateParams;
+import com.sendbird.android.user.User;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.modules.components.StateHeaderComponent;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
@@ -43,13 +49,13 @@ import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static android.app.Activity.RESULT_OK;
-
+/**
+ * Displays a settings screen.
+ */
 public class SettingsFragment extends Fragment {
     private String[] REQUIRED_PERMISSIONS;
 
@@ -59,12 +65,18 @@ public class SettingsFragment extends Fragment {
     private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 2002;
 
     private FragmentSettingsBinding binding;
+    private final StateHeaderComponent headerComponent = new StateHeaderComponent();
     private Uri mediaUri;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        headerComponent.getParams().setTitle(getString(R.string.text_settings_header_title));
+        headerComponent.getParams().setUseLeftButton(false);
+        headerComponent.getParams().setRightButtonText(getString(R.string.text_settings_header_edit_button));
+        final View header = headerComponent.onCreateView(requireContext(), inflater, binding.headerComponent, savedInstanceState);
+        binding.headerComponent.addView(header);
         return binding.getRoot();
     }
 
@@ -84,7 +96,10 @@ public class SettingsFragment extends Fragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         final MenuItem editMenuItem = menu.findItem(R.id.action_edit_profile);
         ViewCustomMenuTextButtonBinding binding = ViewCustomMenuTextButtonBinding.inflate(getLayoutInflater());
+        boolean isDark = PreferenceUtils.isUsingDarkTheme();
         binding.text.setText(R.string.text_settings_header_edit_button);
+        binding.text.setBackgroundResource(isDark ? R.drawable.sb_button_uncontained_background_dark : R.drawable.sb_button_uncontained_background_light);
+        binding.text.setTextColor(getResources().getColor(isDark ? R.color.primary_200 : R.color.primary_300));
         View rootView = binding.getRoot();
         rootView.setOnClickListener(v -> onOptionsItemSelected(editMenuItem));
         editMenuItem.setActionView(rootView);
@@ -109,17 +124,18 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SendBird.setAutoBackgroundDetection(true);
+        SendbirdChat.setAutoBackgroundDetection(true);
 
         if (resultCode != RESULT_OK) return;
 
         if (requestCode == PERMISSION_SETTINGS_REQUEST_ID) {
+            if (getContext() == null) return;
             final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
             if (hasPermission) {
                 showMediaSelectDialog();
@@ -157,12 +173,13 @@ public class SettingsFragment extends Fragment {
             if (isAllGranted) {
                 showMediaSelectDialog();
             } else {
+                if (getContext() == null || getActivity() == null) return;
                 String[] notGranted = PermissionUtils.getNotGrantedPermissions(getContext(), permissions);
                 List<String> deniedList = PermissionUtils.getShowRequestPermissionRationale(getActivity(), permissions);
                 if (deniedList.size() == 0 && getActivity() != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getActivity().getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
-                    builder.setMessage(getPermissionGuildeMessage(getActivity(), notGranted[0]));
+                    builder.setMessage(getPermissionGuideMessage(getActivity(), notGranted[0]));
                     builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -174,6 +191,7 @@ public class SettingsFragment extends Fragment {
                     });
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                    if (getContext() == null) return;
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), com.sendbird.uikit.R.color.secondary_300));
                 }
             }
@@ -184,6 +202,23 @@ public class SettingsFragment extends Fragment {
         if (getContext() == null) {
             return;
         }
+
+        boolean isDark = PreferenceUtils.isUsingDarkTheme();
+        binding.background.setBackgroundResource(isDark ? R.color.background_600 : R.color.background_50);
+        binding.tvNickname.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.idDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
+        binding.tvUserIdBadge.setTextColor(getResources().getColor(isDark ? R.color.ondark_02 : R.color.onlight_02));
+        binding.tvUserId.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.profileDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
+        binding.itemDarkTheme.setBackgroundResource(isDark ? R.drawable.selector_rectangle_dark600 : R.drawable.selector_rectangle_light);
+        binding.tvDarkThemeName.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.darkThemeDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
+        binding.itemDisturb.setBackgroundResource(isDark ? R.drawable.selector_rectangle_dark600 : R.drawable.selector_rectangle_light);
+        binding.tvDisturbName.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.disturbDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
+        binding.itemHome.setBackgroundResource(isDark ? R.drawable.selector_rectangle_dark600 : R.drawable.selector_rectangle_light);
+        binding.tvHomeName.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
+        binding.signOutDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
@@ -201,19 +236,20 @@ public class SettingsFragment extends Fragment {
             useDoNotDisturb = getArguments().getBoolean(StringSet.SETTINGS_USE_DO_NOT_DISTURB, true);
         }
 
-        binding.abHeader.setVisibility(useHeader ? View.VISIBLE : View.GONE);
-        binding.abHeader.setUseLeftImageButton(false);
-        binding.abHeader.getRightTextButton().setOnClickListener(v -> {
+        if (headerComponent.getRootView() != null) {
+            headerComponent.getRootView().setVisibility(useHeader ? View.VISIBLE : View.GONE);
+        }
+        headerComponent.setOnRightButtonClickListener(v -> {
             Logger.d("++ edit button clicked");
             showEditProfileDialog();
         });
 
-        if (SendBird.getCurrentUser() != null) {
-            binding.ivProfileView.loadImages(Collections.singletonList(SendBird.getCurrentUser().getProfileUrl()));
-            binding.tvUserId.setText(SendBird.getCurrentUser().getUserId());
-            binding.tvNickname.setText(SendBird.getCurrentUser().getNickname());
+        if (SendbirdChat.getCurrentUser() != null) {
+            loadUserProfileUrl(SendbirdChat.getCurrentUser().getProfileUrl());
+            binding.tvUserId.setText(SendbirdChat.getCurrentUser().getUserId());
+            binding.tvNickname.setText(SendbirdChat.getCurrentUser().getNickname());
         } else {
-            binding.ivProfileView.loadImages(Collections.singletonList(PreferenceUtils.getProfileUrl()));
+            loadUserProfileUrl(PreferenceUtils.getProfileUrl());
             binding.tvUserId.setText(PreferenceUtils.getUserId());
             binding.tvNickname.setText(PreferenceUtils.getNickname());
         }
@@ -228,21 +264,21 @@ public class SettingsFragment extends Fragment {
         });
 
 
-        int iconTint = SendBirdUIKit.isDarkMode() ? R.color.background_700 : R.color.background_50;
-        int themeBackgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_300 : R.color.background_400;
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.background_700 : R.color.background_50;
+        int themeBackgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_300 : R.color.background_400;
         binding.ivDarkThemeIcon.setImageDrawable(DrawableUtils.setTintList(getContext(), R.drawable.icon_theme, iconTint));
         binding.ivDarkThemeIcon.setBackgroundDrawable(DrawableUtils.setTintList(getContext(), R.drawable.shape_oval, themeBackgroundTint));
         binding.scDarkThemeSwitch.setTrackTintList(AppCompatResources.getColorStateList(getContext(), switchTrackTint));
         binding.scDarkThemeSwitch.setThumbTintList(AppCompatResources.getColorStateList(getContext(), switchThumbTint));
         binding.scDarkThemeSwitch.setChecked(PreferenceUtils.isUsingDarkTheme());
-        SendBirdUIKit.setDefaultThemeMode(PreferenceUtils.isUsingDarkTheme() ?
-                SendBirdUIKit.ThemeMode.Dark : SendBirdUIKit.ThemeMode.Light);
+        SendbirdUIKit.setDefaultThemeMode(PreferenceUtils.isUsingDarkTheme() ?
+                SendbirdUIKit.ThemeMode.Dark : SendbirdUIKit.ThemeMode.Light);
         binding.scDarkThemeSwitch.setOnClickListener(v -> {
             Logger.d("++ dark theme clicked");
             updateDarkTheme();
         });
 
-        int disturbBackgroundTint = SendBirdUIKit.isDarkMode() ? R.color.secondary_200 : R.color.secondary_300;
+        int disturbBackgroundTint = SendbirdUIKit.isDarkMode() ? R.color.secondary_200 : R.color.secondary_300;
         binding.ivDisturbIcon.setImageDrawable(DrawableUtils.setTintList(getContext(), R.drawable.icon_notifications_filled, iconTint));
         binding.ivDisturbIcon.setBackgroundDrawable(DrawableUtils.setTintList(getContext(), R.drawable.shape_oval, disturbBackgroundTint));
         binding.itemDisturb.setVisibility(useDoNotDisturb ? View.VISIBLE : View.GONE);
@@ -254,7 +290,7 @@ public class SettingsFragment extends Fragment {
 
             binding.scDisturbSwitch.setTrackTintList(AppCompatResources.getColorStateList(getContext(), switchTrackTint));
             binding.scDisturbSwitch.setThumbTintList(AppCompatResources.getColorStateList(getContext(), switchThumbTint));
-            SendBird.getDoNotDisturb((b, i, i1, i2, i3, s, e) -> {
+            SendbirdChat.getDoNotDisturb((b, i, i1, i2, i3, s, e) -> {
                 PreferenceUtils.setDoNotDisturb(b);
                 if (isActive()) {
                     binding.scDisturbSwitch.setChecked(PreferenceUtils.getDoNotDisturb());
@@ -266,7 +302,7 @@ public class SettingsFragment extends Fragment {
             });
         }
 
-        int homeBackgroundTint = SendBirdUIKit.isDarkMode() ? R.color.error_200 : R.color.error_300;
+        int homeBackgroundTint = SendbirdUIKit.getDefaultThemeMode().getErrorColorResId();
         binding.ivHomeIcon.setImageDrawable(DrawableUtils.setTintList(getContext(), R.drawable.icon_leave, iconTint));
         binding.ivHomeIcon.setBackgroundDrawable(DrawableUtils.setTintList(getContext(), R.drawable.shape_oval, homeBackgroundTint));
         binding.itemHome.setOnClickListener(v -> {
@@ -278,14 +314,14 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showEditProfileDialog() {
-        if (getContext() == null || getFragmentManager() == null) return;
+        if (getContext() == null) return;
 
         DialogListItem[] items = {
                 new DialogListItem(R.string.text_settings_change_user_nickname),
                 new DialogListItem(R.string.text_settings_change_user_profile_image)
         };
 
-        DialogUtils.buildItemsBottom(items, (v, p, item) -> {
+        DialogUtils.showListBottomDialog(requireContext(), items, (v, p, item) -> {
             final int key = item.getKey();
             if (key == R.string.text_settings_change_user_nickname) {
                 Logger.dev("change user nickname");
@@ -298,15 +334,16 @@ public class SettingsFragment extends Fragment {
 
                 DialogEditTextParams params = new DialogEditTextParams(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
-                DialogUtils.buildEditText(
+                DialogUtils.showInputDialog(
+                        requireContext(),
                         getString(R.string.text_settings_change_user_nickname),
-                        (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
                         params, listener,
                         getString(com.sendbird.uikit.R.string.sb_text_button_save), null,
-                        getString(com.sendbird.uikit.R.string.sb_text_button_cancel), null).showSingle(getFragmentManager());
+                        getString(com.sendbird.uikit.R.string.sb_text_button_cancel), null);
             } else if (key == R.string.text_settings_change_user_profile_image) {
                 Logger.dev("change user profile");
 
+                if (getContext() == null) return;
                 final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
                 if (hasPermission) {
                     showMediaSelectDialog();
@@ -315,18 +352,15 @@ public class SettingsFragment extends Fragment {
 
                 requestPermissions(REQUIRED_PERMISSIONS, STORAGE_PERMISSIONS_REQUEST_CODE);
             }
-        }).showSingle(getFragmentManager());
+        });
     }
 
     private void updateUserNickname(@NonNull String nickname) {
+        if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        if (SendBird.getCurrentUser() == null) {
-            WaitingDialog.dismiss();
-            ContextUtils.toastError(getContext(), R.string.text_error_connection_must_be_made);
-            return;
-        }
-
-        SendBirdUIKit.updateUserInfo(nickname, SendBird.getCurrentUser().getProfileUrl(), e -> {
+        final UserUpdateParams params = new UserUpdateParams();
+        params.setNickname(nickname);
+        SendbirdUIKit.updateUserInfo(params, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
@@ -342,14 +376,11 @@ public class SettingsFragment extends Fragment {
     }
 
     private void updateUserProfileImage(@NonNull File profileImage) {
+        if (getContext() == null) return;
         WaitingDialog.show(getContext());
-        if (SendBird.getCurrentUser() == null) {
-            WaitingDialog.dismiss();
-            ContextUtils.toastError(getContext(), R.string.text_error_connection_must_be_made);
-            return;
-        }
-
-        SendBird.updateCurrentUserInfoWithProfileImage(SendBird.getCurrentUser().getNickname(), profileImage, e -> {
+        final UserUpdateParams params = new UserUpdateParams();
+        params.setProfileImageFile(profileImage);
+        SendbirdChat.updateCurrentUserInfo(params, e -> {
             WaitingDialog.dismiss();
             if (e != null) {
                 Logger.e(e);
@@ -357,19 +388,20 @@ public class SettingsFragment extends Fragment {
                 return;
             }
 
-            String profileUrl = SendBird.getCurrentUser().getProfileUrl();
-            PreferenceUtils.setProfileUrl(profileUrl);
-            if (isActive()) {
-                binding.ivProfileView.loadImages(Collections.singletonList(profileUrl));
+            final User currentUser = SendbirdChat.getCurrentUser();
+            if (currentUser != null) {
+                final String profileUrl = currentUser.getProfileUrl();
+                PreferenceUtils.setProfileUrl(profileUrl);
+                loadUserProfileUrl(profileUrl);
             }
         });
     }
 
     private void updateDarkTheme() {
-        SendBirdUIKit.setDefaultThemeMode(SendBirdUIKit.isDarkMode() ?
-                SendBirdUIKit.ThemeMode.Light : SendBirdUIKit.ThemeMode.Dark);
-        PreferenceUtils.setUseDarkTheme(SendBirdUIKit.isDarkMode());
-        binding.scDarkThemeSwitch.setChecked(SendBirdUIKit.isDarkMode());
+        SendbirdUIKit.setDefaultThemeMode(SendbirdUIKit.isDarkMode() ?
+                SendbirdUIKit.ThemeMode.Light : SendbirdUIKit.ThemeMode.Dark);
+        PreferenceUtils.setUseDarkTheme(SendbirdUIKit.isDarkMode());
+        binding.scDarkThemeSwitch.setChecked(SendbirdUIKit.isDarkMode());
         if (getActivity() != null) {
             getActivity().finish();
             startActivity(getActivity().getIntent());
@@ -379,7 +411,7 @@ public class SettingsFragment extends Fragment {
     private void updateDoNotDisturb() {
         binding.scDisturbSwitch.setChecked(!PreferenceUtils.getDoNotDisturb());
         Logger.d("update do not disturb : " + !PreferenceUtils.getDoNotDisturb());
-        SendBird.setDoNotDisturb(!PreferenceUtils.getDoNotDisturb(), 0, 0, 23, 59, TimeZone.getDefault().getID(), e -> {
+        SendbirdChat.setDoNotDisturb(!PreferenceUtils.getDoNotDisturb(), 0, 0, 23, 59, TimeZone.getDefault().getID(), e -> {
             if (e != null) {
                 ContextUtils.toastError(getContext(), R.string.text_error_update_do_not_disturb);
                 if (isActive()) {
@@ -393,17 +425,17 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showMediaSelectDialog() {
-        if (getContext() == null || getFragmentManager() == null) return;
+        if (getContext() == null) return;
         DialogListItem[] items = {
                 new DialogListItem(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera),
                 new DialogListItem(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery)};
 
-        DialogUtils.buildItems(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image),
-                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
+        DialogUtils.showListDialog(requireContext(),
+                getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image),
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
-                        SendBird.setAutoBackgroundDetection(false);
+                        SendbirdChat.setAutoBackgroundDetection(false);
                         if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery) {
@@ -412,7 +444,7 @@ public class SettingsFragment extends Fragment {
                     } catch (Exception e) {
                         Logger.e(e);
                     }
-                }).showSingle(getFragmentManager());
+                });
     }
 
     private void takeCamera() {
@@ -428,11 +460,11 @@ public class SettingsFragment extends Fragment {
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
-    private static String getPermissionGuildeMessage(@NonNull Context context, @NonNull String permission) {
+    private static String getPermissionGuideMessage(@NonNull Context context, @NonNull String permission) {
         int textResId;
         if (Manifest.permission.CAMERA.equals(permission)) {
             textResId = com.sendbird.uikit.R.string.sb_text_need_to_allow_permission_camera;
@@ -445,5 +477,16 @@ public class SettingsFragment extends Fragment {
     protected boolean isActive() {
         boolean isDeactivated = isRemoving() || isDetached() || getContext() == null;
         return !isDeactivated;
+    }
+
+    private void loadUserProfileUrl(final String url) {
+        if (isActive()) {
+            Glide.with(requireContext())
+                    .load(url)
+                    .circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(DrawableUtils.setTintList(requireContext(), R.drawable.icon_user, SendbirdUIKit.getDefaultThemeMode().getMonoTintResId()))
+                    .into(binding.ivProfileView);
+        }
     }
 }

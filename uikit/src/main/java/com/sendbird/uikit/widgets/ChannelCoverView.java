@@ -6,12 +6,13 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.TextUtils;
 
@@ -20,15 +21,15 @@ import java.util.List;
 public class ChannelCoverView extends ImageWaffleView {
     private int defaultImageResId;
 
-    public ChannelCoverView(Context context) {
+    public ChannelCoverView(@NonNull Context context) {
         super(context);
     }
 
-    public ChannelCoverView(Context context, AttributeSet attrs) {
+    public ChannelCoverView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ChannelCoverView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChannelCoverView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -36,11 +37,9 @@ public class ChannelCoverView extends ImageWaffleView {
         this.defaultImageResId = defaultImageResId;
     }
 
-    public void loadImage(String url) {
+    public void loadImage(@NonNull String url) {
         ImageView imageView = prepareSingleImageView();
-        if (imageView != null) {
-            drawImageFromUrl(imageView, url);
-        }
+        drawImageFromUrl(imageView, url);
     }
 
     public void loadImages(@NonNull List<String> imageUrlList) {
@@ -75,25 +74,26 @@ public class ChannelCoverView extends ImageWaffleView {
                 .into(imageView);
     }
 
+    @Nullable
     private Drawable getDefaultDrawable() {
         if (defaultImageResId > 0) {
             return AppCompatResources.getDrawable(getContext(), defaultImageResId);
         } else {
-            int iconTint = SendBirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+            int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
             int backgroundTint = R.color.background_300;
             return DrawableUtils.createOvalIcon(getContext(),
                     backgroundTint, R.drawable.icon_user, iconTint);
         }
     }
 
-    private void drawImage(@NonNull ImageView imageView, Drawable drawable) {
+    private void drawImage(@NonNull ImageView imageView, @Nullable Drawable drawable) {
         imageView.setImageDrawable(drawable);
     }
 
     public void drawBroadcastChannelCover() {
         ImageView imageView = prepareSingleImageView();
-        int iconTint = SendBirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
-        int backgroundTint = SendBirdUIKit.getDefaultThemeMode().getSecondaryTintResId();
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+        int backgroundTint = SendbirdUIKit.getDefaultThemeMode().getSecondaryTintResId();
         imageView.setImageDrawable(DrawableUtils.createOvalIcon(getContext(), backgroundTint, R.drawable.icon_broadcast, iconTint));
     }
 }

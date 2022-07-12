@@ -1,5 +1,11 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,26 +13,25 @@ import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
-import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.TextUtils;
 
@@ -38,86 +43,52 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 /**
- * Adapters provide a binding from a {@link BaseMessage} set to views that are displayed
- * within a {@link RecyclerView}.
+ * MessageListAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
  */
 public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageViewHolder> {
+    @NonNull
     private List<BaseMessage> messageList = new ArrayList<>();
+    @Nullable
     private GroupChannel channel;
-    private OnItemClickListener<BaseMessage> profileClickListener;
-    private OnItemClickListener<BaseMessage> listener;
-    private OnItemLongClickListener<BaseMessage> longClickListener;
+    @Nullable
     private OnEmojiReactionClickListener emojiReactionClickListener;
+    @Nullable
     private OnEmojiReactionLongClickListener emojiReactionLongClickListener;
+    @Nullable
     private OnItemClickListener<BaseMessage> emojiReactionMoreButtonClickListener;
 
+    @Nullable
     private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
+    @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
-    private HighlightMessageInfo highlight;
+    @Nullable
+    private MessageUIConfig messageUIConfig;
 
     // the worker must be a single thread.
+    @NonNull
     private final ExecutorService differWorker = Executors.newSingleThreadExecutor();
-
-    /**
-     * Constructor
-     */
-    public MessageListAdapter() {
-        this(null);
-    }
+    @NonNull
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Constructor
      *
-     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
-     */
-    public MessageListAdapter(GroupChannel channel) {
-        this(channel, true);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter(GroupChannel, boolean)}
-     */
-    @Deprecated
-    public MessageListAdapter(GroupChannel channel, OnItemClickListener<BaseMessage> listener) {
-        this(channel, listener, null);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @param longClickListener The listener performing when the {@link MessageViewHolder} is long clicked.
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter(GroupChannel, boolean)}
-     */
-    @Deprecated
-    public MessageListAdapter(GroupChannel channel, OnItemClickListener<BaseMessage> listener, OnItemLongClickListener<BaseMessage> longClickListener) {
-        this (channel, listener, longClickListener, true);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
-     * @param listener The listener performing when the {@link MessageViewHolder} is clicked.
-     * @param longClickListener The listener performing when the {@link MessageViewHolder} is long clicked.
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @since 1.2.1
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter(GroupChannel, boolean)}
+     * @since 3.0.0
      */
-    @Deprecated
-    public MessageListAdapter(GroupChannel channel, OnItemClickListener<BaseMessage> listener, OnItemLongClickListener<BaseMessage> longClickListener, boolean useMessageGroupUI) {
-        this(channel, useMessageGroupUI);
-        this.listener = listener;
-        this.longClickListener = longClickListener;
+    public MessageListAdapter(boolean useMessageGroupUI) {
+        this(null, useMessageGroupUI);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
+     */
+    public MessageListAdapter(@Nullable GroupChannel channel) {
+        this(channel, true);
     }
 
     /**
@@ -127,8 +98,8 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
      * @since 2.2.0
      */
-    public MessageListAdapter(GroupChannel channel, boolean useMessageGroupUI) {
-        this.channel = channel != null ? GroupChannel.clone(channel) : null;
+    public MessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI) {
+        if (channel != null) this.channel = GroupChannel.clone(channel);
         this.useMessageGroupUI = useMessageGroupUI;
         setHasStableIds(true);
     }
@@ -148,54 +119,40 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        final TypedValue values = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
+        final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
+        LayoutInflater inflater = LayoutInflater.from(contextWrapper);
         MessageViewHolder viewHolder = MessageViewHolderFactory.createViewHolder(inflater,
                 parent,
                 MessageType.from(viewType),
                 useMessageGroupUI);
 
-        viewHolder.setHighlightInfo(highlight);
+        viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
-        if (views != null) {
-            for (Map.Entry<String, View> entry : views.entrySet()) {
-                final String identifier = entry.getKey();
-                entry.getValue().setOnClickListener(v -> {
-                    int messagePosition = viewHolder.getAdapterPosition();
-                    if (messagePosition != NO_POSITION) {
-                        // for backward compatibilities
-                        if (listener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
-                            listener.onItemClick(v, messagePosition, getItem(messagePosition));
-                            return;
-                        }
-                        if (profileClickListener != null && identifier.equals(ClickableViewIdentifier.Profile.name())) {
-                            profileClickListener.onItemClick(v, messagePosition, getItem(messagePosition));
-                            return;
-                        }
-
-                        if (listItemClickListener != null) {
-                            listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
+        for (Map.Entry<String, View> entry : views.entrySet()) {
+            final String identifier = entry.getKey();
+            entry.getValue().setOnClickListener(v -> {
+                int messagePosition = viewHolder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION) {
+                    if (listItemClickListener != null) {
+                        listItemClickListener.onIdentifiableItemClick(v, identifier, messagePosition, getItem(messagePosition));
                     }
-                });
+                }
+            });
 
-                entry.getValue().setOnLongClickListener(v -> {
-                    int messagePosition = viewHolder.getAdapterPosition();
-                    if (messagePosition != NO_POSITION) {
-                        // for backward compatibilities
-                        if (longClickListener != null && identifier.equals(ClickableViewIdentifier.Chat.name())) {
-                            longClickListener.onItemLongClick(v, messagePosition, getItem(messagePosition));
-                            return true;
-                        }
-
-                        if (listItemLongClickListener != null) {
-                            listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
-                        }
-                        return true;
+            entry.getValue().setOnLongClickListener(v -> {
+                int messagePosition = viewHolder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION) {
+                    if (listItemLongClickListener != null) {
+                        listItemLongClickListener.onIdentifiableItemLongClick(v, identifier, messagePosition, getItem(messagePosition));
                     }
-                    return false;
-                });
-            }
+
+                    return true;
+                }
+                return false;
+            });
         }
         return viewHolder;
     }
@@ -226,6 +183,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         BaseMessage prev = null;
         BaseMessage next = null;
         BaseMessage current = getItem(position);
+
         int itemCount = getItemCount();
         if (position < itemCount - 1) {
             prev = getItem(position + 1);
@@ -237,8 +195,9 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
 
         if (ReactionUtils.useReaction(channel) && holder instanceof GroupChannelMessageViewHolder) {
             GroupChannelMessageViewHolder groupChannelHolder = (GroupChannelMessageViewHolder) holder;
-            groupChannelHolder.setEmojiReaction(current.getReactions(), (view, reactionPosition, reactionKey) -> {
-                int messagePosition = holder.getAdapterPosition();
+            List<Reaction> reactionList = current.getReactions();
+            groupChannelHolder.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
+                int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
                     emojiReactionClickListener.onEmojiReactionClick(
                             view,
@@ -248,7 +207,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                     );
                 }
             }, (view, reactionPosition, reactionKey) -> {
-                int messagePosition = groupChannelHolder.getAdapterPosition();
+                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionLongClickListener != null) {
                     emojiReactionLongClickListener.onEmojiReactionLongClick(
                             view,
@@ -258,7 +217,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
                     );
                 }
             }, v -> {
-                int messagePosition = groupChannelHolder.getAdapterPosition();
+                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionMoreButtonClickListener != null) {
                     emojiReactionMoreButtonClickListener.onItemClick(
                             v,
@@ -269,17 +228,31 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             });
         }
 
-        holder.onBindViewHolder(channel, prev, current, next);
+        if (channel != null) {
+            holder.onBindViewHolder(channel, prev, current, next);
+        }
     }
 
     /**
-     * Sets the information of the message to highlight.
+     * Sets the configurations of the message's properties to highlight text.
      *
-     * @param highlightInfo The information of the message to highlight.
-     * @since 2.1.0
+     * @param messageUIConfig the configurations of the message's properties to highlight text.
+     * @see com.sendbird.uikit.model.TextUIConfig
+     * @since 3.0.0
      */
-    public void setHighlightInfo(@Nullable HighlightMessageInfo highlightInfo) {
-        this.highlight = highlightInfo;
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
+    }
+
+    /**
+     * Returns the configurations of the message's properties to highlight text.
+     *
+     * @return the configurations of the message's properties to highlight text.
+     * @since 3.0.0
+     */
+    @Nullable
+    public MessageUIConfig getMessageUIConfig() {
+        return this.messageUIConfig;
     }
 
     /**
@@ -320,25 +293,13 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         }
     }
 
+    /**
+     * Sets channel that related with a list of messages
+     *
+     * @param channel {@code GroupChannel} that related with a list of messages
+     */
     public void setChannel(@NonNull GroupChannel channel) {
         this.channel = GroupChannel.clone(channel);
-    }
-
-    /**
-     * Sets the {@link List<BaseMessage>} to be displayed.
-     *
-     * @param messageList list to be displayed
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setItems(GroupChannel, List, OnMessageListUpdateHandler)}.
-     */
-    @Deprecated
-    public void setItems(@NonNull final GroupChannel channel, @NonNull final List<BaseMessage> messageList) {
-        final MessageDiffCallback diffCallback = new MessageDiffCallback(this.channel, channel, this.messageList, messageList, useMessageGroupUI);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        this.messageList.clear();
-        this.messageList.addAll(messageList);
-        this.channel = GroupChannel.clone(channel);
-        diffResult.dispatchUpdatesTo(this);
     }
 
     /**
@@ -355,7 +316,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             final MessageDiffCallback diffCallback = new MessageDiffCallback(MessageListAdapter.this.channel, channel, MessageListAdapter.this.messageList, messageList, useMessageGroupUI);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-            SendBird.runOnUIThread(() -> {
+            mainHandler.post(() -> {
                 try {
                     MessageListAdapter.this.messageList = copiedMessage;
                     MessageListAdapter.this.channel = copiedChannel;
@@ -372,6 +333,12 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         });
     }
 
+    /**
+     * Animates the view holder with the corresponding message id.
+     *
+     * @param animation Animation you want to apply to the view holder
+     * @param messageId Message id of the view holder to be applied
+     */
     public void startAnimation(@NonNull Animation animation, long messageId) {
         BaseMessage target = null;
         int position = -1;
@@ -386,11 +353,17 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
             }
         }
 
-        if (target != null && position >= 0) {
+        if (target != null) {
             startAnimation(animation, position);
         }
     }
 
+    /**
+     * Animates the view holder with the corresponding position.
+     *
+     * @param animation Animation you want to apply to the view holder
+     * @param position Position of the view holder to be applied
+     */
     public void startAnimation(@NonNull Animation animation, int position) {
         Logger.d(">> MessageListAdapter::startAnimation(), position=%s", position);
         notifyItemChanged(position, animation);
@@ -415,6 +388,17 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     }
 
     /**
+     * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked
+     *
+     * @return {@code OnIdentifiableItemClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnIdentifiableItemClickListener<BaseMessage> getOnListItemClickListener() {
+        return listItemClickListener;
+    }
+
+    /**
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @param listener The callback that will run
@@ -425,35 +409,35 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     }
 
     /**
-     * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
+     * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
-     * @param listener The callback that will run
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemClickListener(OnIdentifiableItemClickListener)}
+     * @return {@code OnIdentifiableItemLongClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
+     * @since 3.0.0
      */
-    @Deprecated
-    public void setOnItemClickListener(@Nullable OnItemClickListener<BaseMessage> listener) {
-        this.listener = listener;
+    @Nullable
+    public OnIdentifiableItemLongClickListener<BaseMessage> getOnListItemLongClickListener() {
+        return listItemLongClickListener;
     }
 
     /**
-     * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
-     *
-     * @param listener The callback that will run
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemLongClickListener(OnIdentifiableItemLongClickListener)}
-     */
-    @Deprecated
-    public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> listener) {
-        this.longClickListener = listener;
-    }
-
-    /**
-     * Register a callback to be invoked when the emoji reaction is clicked and held.
+     * Register a callback to be invoked when the emoji reaction is clicked.
      *
      * @param listener The callback that will run
      * @since 1.1.0
      */
     public void setEmojiReactionClickListener(@Nullable OnEmojiReactionClickListener listener) {
         this.emojiReactionClickListener = listener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the emoji reaction is clicked.
+     *
+     * @return {@code OnEmojiReactionClickListener} to be invoked when the emoji reaction is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnEmojiReactionClickListener getEmojiReactionClickListener() {
+        return emojiReactionClickListener;
     }
 
     /**
@@ -467,7 +451,18 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     }
 
     /**
-     * Register a callback to be invoked when the emoji reaction more button is clicked and held.
+     * Returns a callback to be invoked when the emoji reaction is long clicked and held.
+     *
+     * @return {@code OnEmojiReactionLongClickListener} to be invoked when the emoji reaction is long clicked and held.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnEmojiReactionLongClickListener getEmojiReactionLongClickListener() {
+        return emojiReactionLongClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the emoji reaction more button is clicked.
      *
      * @param listener The callback that will run
      * @since 1.1.0
@@ -477,15 +472,14 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     }
 
     /**
-     * Register a callback to be invoked when the profile view is clicked.
+     * Returns a callback to be invoked when the emoji reaction more button is clicked.
      *
-     * @param profileClickListener The callback that will run
-     * @since 1.2.2
-     * @deprecated As of 2.2.0, replaced by {@link MessageListAdapter#setOnListItemClickListener(OnIdentifiableItemClickListener)}
+     * @return {OnItemClickListener<BaseMessage>} to be invoked when the emoji reaction more button is clicked.
+     * @since 3.0.0
      */
-    @Deprecated
-    public void setOnProfileClickListener(OnItemClickListener<BaseMessage> profileClickListener) {
-        this.profileClickListener = profileClickListener;
+    @Nullable
+    public OnItemClickListener<BaseMessage> getEmojiReactionMoreButtonClickListener() {
+        return emojiReactionMoreButtonClickListener;
     }
 
     /**
@@ -495,7 +489,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
      */
     @Override
     public int getItemCount() {
-        return messageList == null ? 0 : messageList.size();
+        return messageList.size();
     }
 
     /**
@@ -504,6 +498,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
      * @param position The position of the item within the adapter's data set.
      * @return The {@link BaseMessage} to retrieve the position of in this adapter.
      */
+    @NonNull
     @Override
     public BaseMessage getItem(int position) {
         return messageList.get(position);
@@ -514,8 +509,9 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
      *
      * @return The {@link List<BaseMessage>} in this adapter.
      */
+    @NonNull
     @Override
     public List<BaseMessage> getItems() {
-        return messageList != null ? Collections.unmodifiableList(messageList) : null;
+        return Collections.unmodifiableList(messageList);
     }
 }

@@ -3,24 +3,29 @@ package com.sendbird.uikit.activities.adapter;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Reaction;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
 
 class MessageDiffCallback extends DiffUtil.Callback {
+    @NonNull
     private final List<BaseMessage> oldMessageList;
+    @NonNull
     private final List<BaseMessage> newMessageList;
+    @Nullable
     private final GroupChannel oldChannel;
+    @NonNull
     private final GroupChannel newChannel;
     private final boolean useMessageGroupUI;
 
-    public MessageDiffCallback(@NonNull GroupChannel oldChannel, @NonNull GroupChannel newChannel, @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList, boolean useMessageGroupUI) {
+    public MessageDiffCallback(@Nullable GroupChannel oldChannel, @NonNull GroupChannel newChannel, @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList, boolean useMessageGroupUI) {
         this.oldChannel = oldChannel;
         this.newChannel = newChannel;
         this.oldMessageList = oldMessageList;
@@ -49,6 +54,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        if (oldChannel == null) return false;
         BaseMessage oldMessage = oldMessageList.get(oldItemPosition);
         BaseMessage newMessage = newMessageList.get(newItemPosition);
 
@@ -91,8 +97,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
                 return false;
             }
 
-            if (oldReaction.getUserIds() != null &&
-                    !oldReaction.getUserIds().equals(newReaction.getUserIds())) {
+            if (!oldReaction.getUserIds().equals(newReaction.getUserIds())) {
                 return false;
             }
         }
@@ -103,6 +108,14 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
+        BaseMessage oldParentMessage = oldMessage.getParentMessage();
+        BaseMessage newParentMessage = newMessage.getParentMessage();
+        if (oldParentMessage != null && newParentMessage != null) {
+            if (oldParentMessage.getUpdatedAt() != newParentMessage.getUpdatedAt()) {
+                return false;
+            }
+        }
+
         if (useMessageGroupUI) {
             BaseMessage oldPrevMessage = oldItemPosition - 1 < 0 ? null : oldMessageList.get(oldItemPosition - 1);
             BaseMessage newPrevMessage = newItemPosition - 1 < 0 ? null : newMessageList.get(newItemPosition - 1);
@@ -111,9 +124,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
             MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage);
             MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage);
 
-            if (oldMessageGroupType != newMessageGroupType) {
-                return false;
-            }
+            return oldMessageGroupType == newMessageGroupType;
         }
 
         return true;

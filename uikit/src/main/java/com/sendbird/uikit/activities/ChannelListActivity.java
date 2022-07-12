@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.fragments.ChannelListFragment;
 import com.sendbird.uikit.utils.TextUtils;
 
 /**
@@ -25,6 +26,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * @param context A Context of the application package implementing this class.
      * @return ChannelListActivity Intent.
      */
+    @NonNull
     public static Intent newIntent(@NonNull Context context) {
         return new Intent(context, ChannelListActivity.class);
     }
@@ -37,6 +39,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @return ChannelListActivity Intent
      */
+    @NonNull
     public static Intent newRedirectToChannelIntent(@NonNull Context context, @NonNull String channelUrl) {
         return newIntentFromCustomActivity(context, ChannelListActivity.class, channelUrl);
     }
@@ -50,6 +53,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * @return Returns a newly created Intent that can be used to launch the activity.
      * @since 1.1.2
      */
+    @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelListActivity> cls, @NonNull String channelUrl) {
         Intent intent = new Intent(context, cls);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -57,12 +61,12 @@ public class ChannelListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
+        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
         setContentView(R.layout.sb_activity);
 
-        ChannelListFragment fragment = createChannelListFragment();
+        Fragment fragment = createFragment();
 
         FragmentManager manager = getSupportFragmentManager();
         manager.popBackStack();
@@ -74,34 +78,35 @@ public class ChannelListActivity extends AppCompatActivity {
     }
 
     /**
-     * It will be called when the ChannelListActiviy is being created.
-     * @return a new channel list fragment
-     *
-     * @since 1.0.4
+     * It will be called when the {@link ChannelListActivity} is being created.
+     * The data contained in Intent is delivered to Fragment's Bundle.
+     * 
+     * @return {@link com.sendbird.uikit.fragments.ChannelListFragment}
+     * @since 3.0.0
      */
-    protected ChannelListFragment createChannelListFragment() {
-        return new ChannelListFragment.Builder()
-                .setUseHeader(true)
-                .build();
+    @NonNull
+    protected Fragment createFragment() {
+        return SendbirdUIKit.getFragmentFactory().newChannelListFragment(new Bundle());
     }
 
     /**
      * It will be called when it needs to redirect {@link ChannelActivity} from the push notification
-     * @return ChannelActivity {@link Intent}
      *
+     * @return ChannelActivity {@link Intent}
      * @since 1.0.4
      */
+    @NonNull
     protected Intent createRedirectChannelActivityIntent(@NonNull String channelUrl) {
         return ChannelActivity.newIntent(this, channelUrl);
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@Nullable Intent intent) {
         super.onNewIntent(intent);
         redirectChannelIfNeeded(intent);
     }
 
-    private void redirectChannelIfNeeded(Intent intent) {
+    private void redirectChannelIfNeeded(@Nullable Intent intent) {
         if (intent == null) return;
 
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) {

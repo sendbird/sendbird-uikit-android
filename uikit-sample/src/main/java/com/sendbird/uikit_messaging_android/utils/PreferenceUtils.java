@@ -1,8 +1,14 @@
 package com.sendbird.uikit_messaging_android.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
+/**
+ * This provides methods to manage preferences data.
+ */
 public class PreferenceUtils {
 
     private static final String PREFERENCE_KEY_USER_ID = "PREFERENCE_KEY_USER_ID";
@@ -11,13 +17,14 @@ public class PreferenceUtils {
     private static final String PREFERENCE_KEY_USE_DARK_THEME = "PREFERENCE_KEY_USE_DARK_THEME";
     private static final String PREFERENCE_KEY_DO_NOT_DISTURB = "PREFERENCE_KEY_DO_NOT_DISTURB";
 
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
 
     // Prevent instantiation
     private PreferenceUtils() {
     }
 
-    public static void init(Context appContext) {
+    public static void init(@NonNull Context appContext) {
         context = appContext.getApplicationContext();
     }
 
@@ -25,31 +32,37 @@ public class PreferenceUtils {
         return context.getSharedPreferences("sendbird", Context.MODE_PRIVATE);
     }
 
-    public static void setUserId(String userId) {
+    public static void setUserId(@NonNull String userId) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(PREFERENCE_KEY_USER_ID, userId).apply();
     }
 
+    @NonNull
     public static String getUserId() {
-        return getSharedPreferences().getString(PREFERENCE_KEY_USER_ID, "");
+        final String value = getSharedPreferences().getString(PREFERENCE_KEY_USER_ID, "");
+        return value == null ? "" : value;
     }
 
-    public static void setNickname(String nickname) {
+    public static void setNickname(@NonNull String nickname) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(PREFERENCE_KEY_NICKNAME, nickname).apply();
     }
 
+    @NonNull
     public static String getNickname() {
-        return getSharedPreferences().getString(PREFERENCE_KEY_NICKNAME, "");
+        final String value = getSharedPreferences().getString(PREFERENCE_KEY_NICKNAME, "");
+        return value == null ? "" : value;
     }
 
-    public static void setProfileUrl(String profileUrl) {
+    public static void setProfileUrl(@NonNull String profileUrl) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(PREFERENCE_KEY_PROFILE_URL, profileUrl).apply();
     }
 
+    @NonNull
     public static String getProfileUrl() {
-        return getSharedPreferences().getString(PREFERENCE_KEY_PROFILE_URL, "");
+        final String value = getSharedPreferences().getString(PREFERENCE_KEY_PROFILE_URL, "");
+        return value == null ? "" : value;
     }
 
     public static void setUseDarkTheme(boolean useDarkTheme) {

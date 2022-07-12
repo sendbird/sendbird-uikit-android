@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -21,9 +20,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.sendbird.android.OGMetaData;
+import com.sendbird.android.message.OGMetaData;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewOgtagBinding;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ImageUtils;
@@ -31,36 +30,33 @@ import com.sendbird.uikit.utils.TextUtils;
 
 public class OgtagView extends FrameLayout {
 
-    private SbViewOgtagBinding binding;
+    private final SbViewOgtagBinding binding;
 
     public OgtagView(@NonNull Context context) {
         this(context, null);
     }
 
     public OgtagView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_message_user_style);
+        this(context, attrs, R.attr.sb_widget_ogtag);
     }
 
     public OgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, null);
     }
 
+    @NonNull
     public static OgtagView inflate(@NonNull Context context, @Nullable ViewGroup parent) {
-        return new OgtagView(context, null, R.attr.sb_message_user_style, parent);
+        return new OgtagView(context, null, R.attr.sb_widget_ogtag, parent);
     }
 
-    private OgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
+    private OgtagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, @Nullable ViewGroup parent) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, parent);
-    }
-
-    private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyleAttr, 0);
         try {
             if (parent == null) {
                 parent = this;
             }
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_ogtag, parent, true);
+            this.binding = SbViewOgtagBinding.inflate(LayoutInflater.from(getContext()), parent, true);
             int ogtagTitleAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_ogtag_title_appearance, R.style.SendbirdBody2OnLight01);
             int ogtagDescriptionAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_ogtag_description_appearance, R.style.SendbirdCaption2OnLight01);
             int ogtagUrlAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_ogtag_url_appearance, R.style.SendbirdCaption2OnLight02);
@@ -73,22 +69,22 @@ public class OgtagView extends FrameLayout {
         }
     }
 
-    public void drawOgtag(OGMetaData ogMetaData) {
+    public void drawOgtag(@Nullable OGMetaData ogMetaData) {
         if (ogMetaData == null || binding == null) {
             return;
         }
 
-        if (ogMetaData.getOGImage() != null &&
-                (ogMetaData.getOGImage().getSecureUrl() != null || ogMetaData.getOGImage().getUrl() != null)) {
+        if (ogMetaData.getOgImage() != null &&
+                (ogMetaData.getOgImage().getSecureUrl() != null || ogMetaData.getOgImage().getUrl() != null)) {
             binding.ivOgImage.setVisibility(VISIBLE);
             String ogImageUrl;
-            if (ogMetaData.getOGImage().getSecureUrl() != null) {
-                ogImageUrl = ogMetaData.getOGImage().getSecureUrl();
+            if (ogMetaData.getOgImage().getSecureUrl() != null) {
+                ogImageUrl = ogMetaData.getOgImage().getSecureUrl();
             } else {
-                ogImageUrl = ogMetaData.getOGImage().getUrl();
+                ogImageUrl = ogMetaData.getOgImage().getUrl();
             }
 
-            int thumbnailIconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+            int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
             RequestBuilder<Drawable> builder = Glide.with(getContext())
                     .asDrawable()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -97,7 +93,7 @@ public class OgtagView extends FrameLayout {
                             AppCompatResources.getColorStateList(getContext(), thumbnailIconTint)))
                     .error(DrawableUtils.setTintList(
                             ImageUtils.resize(getContext().getResources(), AppCompatResources.getDrawable(getContext(), R.drawable.icon_thumbnail_none), R.dimen.sb_size_48, R.dimen.sb_size_48),
-                            AppCompatResources.getColorStateList(getContext(), thumbnailIconTint)));;
+                            AppCompatResources.getColorStateList(getContext(), thumbnailIconTint)));
 
             binding.ivOgImage.setScaleType(ImageView.ScaleType.CENTER);
             builder.load(ogImageUrl).centerCrop().thumbnail(0.3f).listener(new RequestListener<Drawable>() {

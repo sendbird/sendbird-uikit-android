@@ -1,9 +1,14 @@
 package com.sendbird.uikit_messaging_android.openchannel.livestream;
 
-import com.sendbird.android.OpenChannel;
+import androidx.annotation.Nullable;
+
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListFragment;
 
+/**
+ * Displays an open channel list screen used for live stream.
+ */
 public class LiveStreamListFragment extends OpenChannelListFragment {
     public LiveStreamListFragment() {
         super(new LiveStreamListAdapter());
@@ -11,7 +16,7 @@ public class LiveStreamListFragment extends OpenChannelListFragment {
     }
 
     @Override
-    protected void clickOpenChannelItem(OpenChannel openChannel) {
+    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
         if (getContext() == null || openChannel == null) return;
         startActivity(LiveStreamActivity.newIntent(getContext(), openChannel.getUrl()));
     }

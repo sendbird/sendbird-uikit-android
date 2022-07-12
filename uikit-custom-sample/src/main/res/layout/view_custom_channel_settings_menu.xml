@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/moderationPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvModeration"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_56"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:gravity="center_vertical"
+            android:text="@string/sb_text_channel_settings_moderations"
+            android:textAppearance="@style/SendbirdBody1OnLight01"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_1"
+            android:background="@color/onlight_04"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvMemberList"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_56"
+        android:paddingLeft="@dimen/sb_size_16"
+        android:gravity="center_vertical"
+        android:text="@string/sb_text_channel_settings_members"
+        android:textAppearance="@style/SendbirdBody1OnLight01"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_1"
+        android:background="@color/onlight_04"/>
+
+    <TextView
+        android:id="@+id/tvLeaveChannel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_56"
+        android:paddingLeft="@dimen/sb_size_16"
+        android:gravity="center_vertical"
+        android:text="@string/sb_text_channel_settings_leave_channel"
+        android:textAppearance="@style/SendbirdBody1OnLight01"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_1"
+        android:background="@color/onlight_04"/>
+
+</LinearLayout>

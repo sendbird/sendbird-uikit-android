@@ -13,10 +13,11 @@ import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 
@@ -32,7 +33,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class FileUtils {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @NonNull
     public static File getDocumentCacheDir(@NonNull Context context) {
         File dir = new File(context.getCacheDir(), "documents");
         if (!dir.exists()) {
@@ -42,12 +46,14 @@ public class FileUtils {
         return dir;
     }
 
+    @NonNull
     public static File createDownloadFile(@NonNull String fileName) {
         String imageFileName = "Downloaded_file_" + System.currentTimeMillis() + "_" + fileName;
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         return new File(dir, imageFileName);
     }
 
+    @NonNull
     public static File getDownloadFileFromMessage(@NonNull FileMessage message) {
         String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -59,39 +65,49 @@ public class FileUtils {
         return file.exists() && file.length() > 0;
     }
 
+    @NonNull
     public static Uri fileToUri(@NonNull Context context, @NonNull File file) {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
     }
 
+    @NonNull
     public static String extractExtension(@NonNull Context context, @NonNull Uri uri) {
-        String extension;
+        String extension = "temp";
 
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            extension = extractExtension(context.getContentResolver().getType(uri));
+        final String scheme = uri.getScheme();
+        if (scheme != null && scheme.equals(ContentResolver.SCHEME_CONTENT)) {
+            final String type = context.getContentResolver().getType(uri);
+            if (type != null) {
+                extension = extractExtension(type);
+            }
         } else {
-            extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+            extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
         }
 
+        if (TextUtils.isEmpty(extension)) extension = "temp";
         return extension;
     }
 
+    @Nullable
     public static String extractExtension(@NonNull String mimeType) {
         final MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(mimeType);
     }
 
+    @NonNull
     public static Bitmap.CompressFormat extractBitmapFormat(@NonNull String mimeType) {
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
-        if (mimeType.endsWith(StringSet.jpeg) || mimeType.endsWith(StringSet.jpg)) {
-            format = Bitmap.CompressFormat.JPEG;
-        } else if (mimeType.endsWith(StringSet.png)) {
+        Bitmap.CompressFormat format;
+        if (mimeType.endsWith(StringSet.png)) {
             format = Bitmap.CompressFormat.PNG;
         } else if (mimeType.endsWith(StringSet.webp)) {
             format = Bitmap.CompressFormat.WEBP;
+        } else {
+            format = Bitmap.CompressFormat.JPEG;
         }
         return format;
     }
 
+    @NonNull
     private static String copyFromUri(@NonNull Context context, @NonNull Uri uri, @NonNull File dstFile) {
         if (!dstFile.exists() || dstFile.length() <= 0) {
             InputStream inputStream;
@@ -106,12 +122,14 @@ public class FileUtils {
         return dstFile.getAbsolutePath();
     }
 
+    @NonNull
     public static String uriToPath(@NonNull Context context, @NonNull Uri uri) {
         String tempFileName = "Temp_" + System.currentTimeMillis() + "." + extractExtension(context, uri);
         File dstFile = createCachedDirFile(context, tempFileName);
         return copyFromUri(context, uri, dstFile);
     }
 
+    @NonNull
     public static File uriToFile(@NonNull Context context, @NonNull Uri uri) {
         return new File(uriToPath(context, uri));
     }
@@ -120,6 +138,7 @@ public class FileUtils {
                                 @NonNull String type, @NonNull String fileName) throws Exception {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Uri newFileUri = createDownloadFileUri(context, type, fileName);
+            assert newFileUri != null;
             saveFile(context, src, newFileUri);
         } else {
             File newFile = createDownloadFile(fileName);
@@ -127,6 +146,7 @@ public class FileUtils {
         }
     }
 
+    @NonNull
     public static File saveFile(@NonNull Context context, @NonNull File src, @NonNull File dest) throws Exception {
         FileInputStream input = new FileInputStream(src);
         FileOutputStream output = new FileOutputStream(dest);
@@ -137,18 +157,19 @@ public class FileUtils {
 
     private static void saveFile(@NonNull Context context, @NonNull File src, @NonNull Uri dest) throws Exception {
         FileInputStream input = new FileInputStream(src);
-        ParcelFileDescriptor pfd = context.getContentResolver().
-                openFileDescriptor(dest, "w");
-        FileOutputStream output =
-                new FileOutputStream(pfd.getFileDescriptor());
+        ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(dest, "w");
+        assert pfd != null;
+        FileOutputStream output = new FileOutputStream(pfd.getFileDescriptor());
         copy(input, output);
         galleryAddPic(context, dest);
     }
 
+    @NonNull
     public static File bitmapToFile(@NonNull Bitmap image, @NonNull File dest, @NonNull Bitmap.CompressFormat format) throws IOException {
         return bitmapToFile(image, dest, 100, format);
     }
 
+    @NonNull
     public static File bitmapToFile(@NonNull Bitmap image, @NonNull File dest, int quality, @NonNull Bitmap.CompressFormat format) throws IOException {
         try (OutputStream outputStream = new FileOutputStream(dest, false)) {
             Logger.d("++ Create bitmap to file, quality=%s, format=%s", quality, format);
@@ -157,13 +178,13 @@ public class FileUtils {
         return dest;
     }
 
-    private static void galleryAddPic(Context context, Uri uri) {
+    private static void galleryAddPic(@NonNull Context context, @NonNull Uri uri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(uri);
         context.sendBroadcast(mediaScanIntent);
     }
 
-    private static int copy(InputStream input, OutputStream output) throws Exception {
+    private static int copy(@Nullable InputStream input, @NonNull OutputStream output) throws Exception {
         int BUFFER_SIZE = 1024 * 2;
         byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -183,6 +204,7 @@ public class FileUtils {
         return count;
     }
 
+    @Nullable
     public static Uri createPictureImageUri(@NonNull Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues cv = new ContentValues();
@@ -191,6 +213,7 @@ public class FileUtils {
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
     }
 
+    @Nullable
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static Uri createDownloadFileUri(@NonNull Context context,
                                             @NonNull String mimeType,
@@ -204,7 +227,7 @@ public class FileUtils {
         return contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
     }
 
-    private static void deleteRecursive(File fileOrDirectory) {
+    private static boolean deleteRecursive(@NonNull File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
             File[] list = fileOrDirectory.listFiles();
             if (list != null) {
@@ -213,7 +236,7 @@ public class FileUtils {
                 }
             }
         }
-        fileOrDirectory.delete();
+        return fileOrDirectory.delete();
     }
 
     public static void removeDeletableDir(@NonNull Context context) {
@@ -221,6 +244,8 @@ public class FileUtils {
         deleteRecursive(dir);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @NonNull
     public static File getDeletableDir(@NonNull Context context) {
         File dir = context.getCacheDir();
         File file = new File(dir, "deletable");
@@ -230,10 +255,12 @@ public class FileUtils {
         return file;
     }
 
+    @NonNull
     public static File createDeletableFile(@NonNull Context context, @NonNull String fileName) {
         return new File(getDeletableDir(context), fileName);
     }
 
+    @NonNull
     public static File createCachedDirFile(@NonNull Context context, @NonNull String fileName) {
         File dir = context.getCacheDir();
         return new File(dir, fileName);

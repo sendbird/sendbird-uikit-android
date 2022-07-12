@@ -2,11 +2,11 @@ package com.sendbird.uikit.activities.viewholder;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.Reaction;
-import com.sendbird.uikit.BR;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionBinding;
 
 public class EmojiReactionViewHolder extends BaseViewHolder<Reaction> {
+    @NonNull
     private final SbViewEmojiReactionBinding binding;
 
     public EmojiReactionViewHolder(@NonNull SbViewEmojiReactionBinding binding) {
@@ -15,8 +15,7 @@ public class EmojiReactionViewHolder extends BaseViewHolder<Reaction> {
     }
 
     @Override
-    public void bind(Reaction item) {
-        binding.setVariable(BR.reaction, item);
-        binding.executePendingBindings();
+    public void bind(@NonNull Reaction item) {
+        this.binding.emojiReactionView.drawReaction(item);
     }
 }

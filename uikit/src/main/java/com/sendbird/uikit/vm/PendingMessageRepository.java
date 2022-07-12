@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.model.FileInfo;
 
 import java.util.ArrayList;
@@ -15,7 +15,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PendingMessageRepository {
 
+    private PendingMessageRepository() {}
+
+    private static class PendingMessageManagerHolder {
+        static final PendingMessageRepository INSTANCE = new PendingMessageRepository();
+    }
+
     @NonNull
+    public static PendingMessageRepository getInstance() {
+        return PendingMessageManagerHolder.INSTANCE;
+    }
+
+    private final Map<String, List<BaseMessage>> pendingMessageMap = new ConcurrentHashMap<>();
+    private final Map<String, FileInfo> cachedFileInfos = new ConcurrentHashMap<>();
     private final List<Observer<BaseMessage>> pendingMessageStatusChanged = new ArrayList<>();
 
     boolean addPendingMessageStatusChanged(@NonNull Observer<BaseMessage> subscriber) {
@@ -31,18 +43,6 @@ public class PendingMessageRepository {
             subscriber.onChanged(message);
         }
     }
-
-    private PendingMessageRepository() {}
-
-    private static class PendingMessageManagerHolder {
-        static final PendingMessageRepository INSTANCE = new PendingMessageRepository();
-    }
-    public static PendingMessageRepository getInstance() {
-        return PendingMessageManagerHolder.INSTANCE;
-    }
-
-    private final Map<String, List<BaseMessage>> pendingMessageMap = new ConcurrentHashMap<>();
-    private final Map<String, FileInfo> cachedFileInfos = new ConcurrentHashMap<>();
 
     @Nullable
     public FileInfo getFileInfo(@NonNull BaseMessage message) {
@@ -81,6 +81,7 @@ public class PendingMessageRepository {
         pendingMessages.add(0, message);
         pendingMessageMap.put(channelUrl, pendingMessages);
         notifyPendingMessageStatusChanged(message);
+
     }
 
     void updatePendingMessage(@NonNull String channelUrl, @Nullable BaseMessage message) {
@@ -110,7 +111,7 @@ public class PendingMessageRepository {
             clearFileInfo((FileMessage) message);
         }
 
-        if (pendingMessages != null && reqId != null) {
+        if (pendingMessages != null) {
             // because this is temp message so it must compare by request id not using equals function.
             for (BaseMessage pendingMessage : pendingMessages) {
                 if (message.getClass() != pendingMessage.getClass()) {
@@ -124,7 +125,6 @@ public class PendingMessageRepository {
             }
             pendingMessageMap.put(channelUrl, pendingMessages);
         }
-
         if (isRemoved) {
             notifyPendingMessageStatusChanged(message);
         }

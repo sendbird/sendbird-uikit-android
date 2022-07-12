@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -11,15 +12,15 @@ class WrapHeightImageView extends AppCompatImageView {
     private int targetWidth = 0;
     private int targetHeight = 0;
 
-    public WrapHeightImageView(Context context) {
+    public WrapHeightImageView(@NonNull Context context) {
         this(context, null);
     }
 
-    public WrapHeightImageView(Context context, @Nullable AttributeSet attrs) {
+    public WrapHeightImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WrapHeightImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WrapHeightImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

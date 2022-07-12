@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOpenChannelList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvOpenChannelList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    <FrameLayout
+        android:id="@+id/statusComponent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <com.sendbird.uikit.widgets.StatusFrameView
-            android:id="@+id/statusFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:sb_status_frame_error_text="@string/sb_text_error_get_channel_list"
-            app:sb_status_frame_empty_text="@string/sb_text_channel_list_empty"/>
-
-    </FrameLayout>
-
-</layout>
+</FrameLayout>

@@ -5,15 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.fragments.ModerationFragment;
-import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.utils.TextUtils;
 
 /**
  * Activity displays moderation menus
@@ -31,6 +30,7 @@ public class ModerationActivity extends AppCompatActivity {
      *
      * @since 1.2.0
      */
+    @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
         return newIntentFromCustomActivity(context, ModerationActivity.class, channelUrl);
     }
@@ -44,6 +44,7 @@ public class ModerationActivity extends AppCompatActivity {
      * @return Returns a newly created Intent that can be used to launch the activity.
      * @since 1.2.0
      */
+    @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ModerationActivity> cls, @NonNull String channelUrl) {
         Intent intent = new Intent(context, cls);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
@@ -51,35 +52,29 @@ public class ModerationActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
+        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
         setContentView(R.layout.sb_activity);
 
-        String url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
-
-        if (TextUtils.isEmpty(url)) {
-            ContextUtils.toastError(this, R.string.sb_text_error_get_channel);
-        } else {
-            ModerationFragment fragment = createModerationFragment(url);
-
-            FragmentManager manager = getSupportFragmentManager();
-            manager.popBackStack();
-            manager.beginTransaction()
-                    .replace(R.id.sb_fragment_container, fragment)
-                    .commit();
-        }
+        Fragment fragment = createFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.popBackStack();
+        manager.beginTransaction()
+                .replace(R.id.sb_fragment_container, fragment)
+                .commit();
     }
 
     /**
-     * It will be called when the ModerationActivity is being created.
-     * @return a new moderation fragment.
+     * It will be called when the {@link ModerationActivity} is being created.
+     * The data contained in Intent is delivered to Fragment's Bundle.
      *
-     * @since 1.2.0
+     * @return {@link com.sendbird.uikit.fragments.ModerationFragment}
+     * @since 3.0.0
      */
-    protected ModerationFragment createModerationFragment(@NonNull String channelUrl) {
-        return new ModerationFragment.Builder(channelUrl)
-                .setUseHeader(true)
-                .build();
+    @NonNull
+    protected Fragment createFragment() {
+        final Bundle args = getIntent() != null && getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle();
+        return SendbirdUIKit.getFragmentFactory().newModerationFragment(args.getString(StringSet.KEY_CHANNEL_URL, ""), args);
     }
 }

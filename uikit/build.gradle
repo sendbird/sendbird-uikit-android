@@ -1,25 +1,29 @@
 apply plugin: 'com.android.library'
 
+version = UIKIT_VERSION
 android {
-    compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 32
 
     version = UIKIT_VERSION
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 21
+        targetSdkVersion 32
         versionCode Integer.parseInt(UIKIT_VERSION_CODE)
         versionName UIKIT_VERSION
+
+        buildConfigField "String", "VERSION_NAME", "\"$UIKIT_VERSION\""
     }
 
     buildTypes {
         release {
             debuggable false
             minifyEnabled false
+            consumerProguardFile 'consumer-rules.pro'
+            versionNameSuffix UIKIT_VERSION
 
             libraryVariants.all { variant ->
                 variant.outputs.all {
-                    def aarName = "sendbird-uikit-${project.version}-${variant.buildType.name}.aar"
+                    def aarName = "sendbird-uikit-${project.version}.aar"
 
                     println "\n============================================================"
                     println "project module : Sendbird UIKit"
@@ -35,13 +39,14 @@ android {
             debuggable true
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
-    }
-
-    dataBinding {
-        enabled = true
     }
 
     packagingOptions {
@@ -57,19 +62,16 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Sendbird
-    api 'com.sendbird.sdk:sendbird-android-sdk:3.1.9'
+    api 'com.sendbird.sdk:sendbird-chat:4.0.4'
 
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-    implementation 'com.google.android.material:material:1.2.1'
-
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.google.android.material:material:1.5.0'
 }
+

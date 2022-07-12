@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_50"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingDefaultResource">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/leftButton"
+        android:layout_width="@dimen/sb_size_56"
+        android:layout_height="@dimen/sb_size_56"
+        android:src="@drawable/icon_add"
+        android:padding="@dimen/sb_size_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/input"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"
+        />
+
+    <com.sendbird.uikit.widgets.MentionEditText
+        android:id="@+id/input"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/sb_size_56"
+        android:imeOptions="flagNoExtractUi"
+        app:layout_constraintLeft_toRightOf="@id/leftButton"
+        app:layout_constraintRight_toLeftOf="@id/emojiButton"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/emojiButton"
+        android:layout_width="@dimen/sb_size_56"
+        android:layout_height="@dimen/sb_size_56"
+        android:src="@drawable/icon_emoji_more"
+        android:padding="@dimen/sb_size_8"
+        app:layout_constraintLeft_toRightOf="@id/input"
+        app:layout_constraintRight_toLeftOf="@id/sendButton"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/sendButton"
+        android:layout_width="@dimen/sb_size_56"
+        android:layout_height="@dimen/sb_size_56"
+        android:src="@drawable/icon_send"
+        android:padding="@dimen/sb_size_8"
+        app:layout_constraintLeft_toRightOf="@id/emojiButton"
+        app:layout_constraintRight_toLeftOf="@id/highlightSwitch"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/highlightSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/sb_size_56"
+        app:layout_constraintLeft_toRightOf="@id/sendButton"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emojiPanel"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topLine"/>
+
+    <TextView
+        android:id="@+id/replyPanel"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:visibility="gone"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="@dimen/sb_size_16"
+        android:textAppearance="@style/SendbirdBody1OnLight01"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topLine"/>
+
+    <LinearLayout
+        android:id="@+id/menuPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input">
+
+        <TextView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_60"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:textAppearance="@style/SendbirdBody1OnLight01"
+            android:gravity="center_vertical|left"
+            android:text="@string/sb_text_channel_input_camera"/>
+
+        <TextView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_60"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:textAppearance="@style/SendbirdBody1OnLight01"
+            android:gravity="center_vertical|left"
+            android:text="@string/sb_text_channel_input_gallery"/>
+
+        <TextView
+            android:id="@+id/file"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_60"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:textAppearance="@style/SendbirdBody1OnLight01"
+            android:gravity="center_vertical|left"
+            android:text="@string/sb_text_channel_input_document"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

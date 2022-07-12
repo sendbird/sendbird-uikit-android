@@ -6,29 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewCommunityListItemBinding;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListAdapter;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListViewHolder;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
 
-
+/**
+ * RecyclerView adapter for <code>OpenChannel</code> list used for community.
+ */
 public class CommunityListAdapter extends OpenChannelListAdapter<CommunityListAdapter.CommunityListViewHolder> {
     @NonNull
     @Override
     public CommunityListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewCommunityListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_community_list_item, parent, false);
+        ViewCommunityListItemBinding binding = ViewCommunityListItemBinding.inflate(inflater, parent, false);
         return new CommunityListViewHolder(binding);
     }
 
     static class CommunityListViewHolder extends OpenChannelListViewHolder {
-        private ViewCommunityListItemBinding binding;
+        private final ViewCommunityListItemBinding binding;
 
         public CommunityListViewHolder(@NonNull ViewCommunityListItemBinding binding) {
             super(binding.getRoot());

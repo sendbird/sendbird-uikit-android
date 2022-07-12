@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/sb_text_channel_settings_message_search"
+        app:actionLayout="@layout/view_custom_channel_menu_search_button"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/sb_text_go_to_settings"
+        app:actionLayout="@layout/view_custom_channel_menu_settings_button"
+        app:showAsAction="ifRoom"
+        />
+</menu>

@@ -1,14 +1,15 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.MessageChangeLogsParams;
-import com.sendbird.android.MessageListParams;
-import com.sendbird.android.SendBirdError;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.exception.SendbirdError;
+import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.GetMessageChangeLogsHandler;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.params.MessageChangeLogsParams;
+import com.sendbird.android.params.MessageListParams;
 import com.sendbird.uikit.log.Logger;
 
 import java.util.ArrayList;
@@ -20,14 +21,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 class MessageChangeLogsPager {
     interface MessageChangeLogsResultHandler {
-        void onError(SendBirdException e);
-        void onResult(List<BaseMessage> addedMessageList, List<BaseMessage> updatedMessageList, List<Long> deletedMessageIdList);
+        void onError(@NonNull SendbirdException e);
+
+        void onResult(@NonNull List<BaseMessage> addedMessageList, @NonNull List<BaseMessage> updatedMessageList, @NonNull List<Long> deletedMessageIdList);
     }
 
     private final BaseChannel channel;
     private final long lastSyncAt;
     private final MessageChangeLogsParams params;
     private final MessageListParams messageListParams;
+
     MessageChangeLogsPager(@NonNull BaseChannel channel, long lastSyncAt, @NonNull MessageListParams params) {
         this.channel = channel;
         this.lastSyncAt = lastSyncAt;
@@ -37,11 +40,11 @@ class MessageChangeLogsPager {
         this.messageListParams.setNextResultSize(100);
     }
 
-    void load(final MessageChangeLogsResultHandler handler) {
+    void load(@Nullable final MessageChangeLogsResultHandler handler) {
         load(true, handler);
     }
 
-    void load(boolean fetchAll, final MessageChangeLogsResultHandler handler) {
+    void load(boolean fetchAll, @Nullable final MessageChangeLogsResultHandler handler) {
         Executors.newSingleThreadExecutor().execute(() -> {
             final List<BaseMessage> updatedMessageList = new ArrayList<>();
             final List<BaseMessage> addedMessageList = new ArrayList<>();
@@ -49,12 +52,37 @@ class MessageChangeLogsPager {
 
             CountDownLatch lock = new CountDownLatch(1);
             final AtomicReference<String> tokenRef = new AtomicReference<>();
-            final AtomicReference<SendBirdException> error = new AtomicReference<>();
+            final AtomicReference<SendbirdException> error = new AtomicReference<>();
             final AtomicBoolean hasMoreRef = new AtomicBoolean();
 
             try {
-                if (channel instanceof GroupChannel) {
-                    load(lastSyncAt, params, (updated, deletedMessageIds, hasMore, token, e) -> {
+                load(lastSyncAt, params, (updated, deletedMessageIds, hasMore, token, e) -> {
+                    try {
+                        if (e != null) {
+                            error.set(e);
+                            if (handler != null) {
+                                handler.onError(e);
+                            }
+                            return;
+                        }
+                        tokenRef.set(token);
+                        hasMoreRef.set(hasMore);
+
+                        if (updated != null) {
+                            updatedMessageList.addAll(updated);
+                        }
+                        if (deletedMessageIds != null) {
+                            deletedMessageIdList.addAll(deletedMessageIds);
+                        }
+                    } finally {
+                        lock.countDown();
+                    }
+                });
+                lock.await();
+
+                while (hasMoreRef.get() && error.get() == null) {
+                    CountDownLatch moreLock = new CountDownLatch(1);
+                    more(tokenRef.get(), params, (updated, deletedMessageIds, hasMore, token, e) -> {
                         try {
                             if (e != null) {
                                 error.set(e);
@@ -63,40 +91,21 @@ class MessageChangeLogsPager {
                                 }
                                 return;
                             }
+
                             tokenRef.set(token);
                             hasMoreRef.set(hasMore);
 
-                            updatedMessageList.addAll(updated);
-                            deletedMessageIdList.addAll(deletedMessageIds);
+                            if (updated != null) {
+                                updatedMessageList.addAll(updated);
+                            }
+                            if (deletedMessageIds != null) {
+                                deletedMessageIdList.addAll(deletedMessageIds);
+                            }
                         } finally {
-                            lock.countDown();
+                            moreLock.countDown();
                         }
                     });
-                    lock.await();
-
-                    while (hasMoreRef.get() && error.get() == null) {
-                        CountDownLatch moreLock = new CountDownLatch(1);
-                        more(tokenRef.get(), params, (updated, deletedMessageIds, hasMore, token, e) -> {
-                            try {
-                                if (e != null) {
-                                    error.set(e);
-                                    if (handler != null) {
-                                        handler.onError(e);
-                                    }
-                                    return;
-                                }
-
-                                tokenRef.set(token);
-                                hasMoreRef.set(hasMore);
-
-                                updatedMessageList.addAll(updated);
-                                deletedMessageIdList.addAll(deletedMessageIds);
-                            } finally {
-                                moreLock.countDown();
-                            }
-                        });
-                        moreLock.await();
-                    }
+                    moreLock.await();
                 }
 
                 if (error.get() != null) {
@@ -118,7 +127,7 @@ class MessageChangeLogsPager {
                 if (handler != null) {
                     handler.onResult(addedMessageList, updatedMessageList, deletedMessageIdList);
                 }
-            } catch (SendBirdException e) {
+            } catch (SendbirdException e) {
                 Logger.e(e);
                 if (handler != null) {
                     handler.onError(e);
@@ -126,17 +135,17 @@ class MessageChangeLogsPager {
             } catch (Exception e) {
                 Logger.e(e);
                 if (handler != null) {
-                    handler.onError(new SendBirdException(e.getMessage(), SendBirdError.ERR_REQUEST_FAILED));
+                    handler.onError(new SendbirdException(e.getMessage(), SendbirdError.ERR_REQUEST_FAILED));
                 }
             }
         });
     }
 
-    private void load(long ts, MessageChangeLogsParams params, BaseChannel.GetMessageChangeLogsHandler handler) {
+    private void load(long ts, MessageChangeLogsParams params, GetMessageChangeLogsHandler handler) {
         this.channel.getMessageChangeLogsSinceTimestamp(ts, params, handler);
     }
 
-    private void more(String token, MessageChangeLogsParams params, BaseChannel.GetMessageChangeLogsByTokenHandler handler) {
+    private void more(String token, MessageChangeLogsParams params, GetMessageChangeLogsHandler handler) {
         this.channel.getMessageChangeLogsSinceToken(token, params, handler);
     }
 

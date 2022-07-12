@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivStatus"
+        android:layout_width="@dimen/sb_size_16"
+        android:layout_height="@dimen/sb_size_16"
+        android:visibility="gone"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivStatus"
-            android:layout_width="@dimen/sb_size_16"
-            android:layout_height="@dimen/sb_size_16"
-            android:visibility="gone"/>
+    <com.sendbird.uikit.widgets.MessageProgressView
+        android:id="@+id/mpvProgressStatus"
+        android:layout_width="@dimen/sb_size_16"
+        android:layout_height="@dimen/sb_size_16"
+        android:visibility="gone"/>
 
-        <com.sendbird.uikit.widgets.MessageProgressView
-            android:id="@+id/mpvProgressStatus"
-            android:layout_width="@dimen/sb_size_16"
-            android:layout_height="@dimen/sb_size_16"
-            android:visibility="gone"/>
-
-    </FrameLayout>
-
-</layout>
+</FrameLayout>

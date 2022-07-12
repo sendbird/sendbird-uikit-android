@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.sendbird.uikit.widgets.ThemeableRecyclerView
-        android:id="@+id/rvEmojiList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="@dimen/sb_size_10"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
-        android:clipToPadding="false"
-        app:sb_pager_recycler_view_use_divide_line="false"
-        app:spanCount="6"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
-
-</layout>
+<com.sendbird.uikit.widgets.ThemeableRecyclerView
+    android:id="@+id/rvEmojiList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/sb_size_10"
+    android:scrollbars="vertical"
+    android:scrollbarStyle="outsideOverlay"
+    android:clipToPadding="false"
+    app:sb_recycler_view_background="@android:color/transparent"
+    app:spanCount="6"
+    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"/>

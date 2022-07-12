@@ -14,6 +14,7 @@ import android.util.Size;
 
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.sendbird.uikit.consts.StringSet;
@@ -23,9 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+@SuppressWarnings("unused")
 public class ImageUtils {
-    public final static int DEFAULT_THUMBNAIL_WIDTH = 600;
-    public final static int DEFAULT_THUMBNAIL_HEIGHT = 600;
+    private final static int DEFAULT_THUMBNAIL_WIDTH = 600;
+    private final static int DEFAULT_THUMBNAIL_HEIGHT = 600;
     public static int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
@@ -37,16 +39,16 @@ public class ImageUtils {
         return 0;
     }
 
-    public static Bitmap rotate(Bitmap bitmap, float degree) {
+    @NonNull
+    public static Bitmap rotate(@NonNull Bitmap bitmap, float degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public static int calculateInSampleSize(InputStream input, int width, int height) {
+    public static int calculateInSampleSize(@NonNull InputStream input, int width, int height) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        options.inPurgeable = true;
         options.inDither = true;
         BitmapFactory.decodeStream(input, null, options);
         return calculateInSampleSize(options.outWidth, options.outHeight, width, height);
@@ -55,7 +57,6 @@ public class ImageUtils {
     public static int calculateInSampleSize(@NonNull String filePath, int width, int height) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        options.inPurgeable = true;
         options.inDither = true;
         BitmapFactory.decodeFile(filePath, options);
         return calculateInSampleSize(options.outWidth, options.outHeight, width, height);
@@ -80,6 +81,7 @@ public class ImageUtils {
         return inSampleSize;
     }
 
+    @NonNull
     public static Bitmap getBitmap(@NonNull String path, int width, int height) throws IOException {
         ExifInterface exif = new ExifInterface(path);
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
@@ -97,6 +99,8 @@ public class ImageUtils {
         return bitmap;
     }
 
+    @SuppressWarnings("deprecation")
+    @Nullable
     public static Bitmap getThumbnailBitmap(@NonNull String path, @NonNull String mimeType) throws IOException {
         if (mimeType.startsWith(StringSet.image)) {
             return getBitmap(path, DEFAULT_THUMBNAIL_WIDTH, DEFAULT_THUMBNAIL_HEIGHT);
@@ -110,6 +114,7 @@ public class ImageUtils {
         return null;
     }
 
+    @NonNull
     public static Pair<Integer, Integer> getDimensions(@NonNull String path, @NonNull String mimeType) {
         int width = 0, height = 0;
         if (mimeType.startsWith(StringSet.image)) {
@@ -138,7 +143,8 @@ public class ImageUtils {
         return new Pair<>(width, height);
     }
 
-    public static Drawable resize(Resources resources, Drawable drawable, @DimenRes int width, @DimenRes int height) {
+    @Nullable
+    public static Drawable resize(@NonNull Resources resources, @Nullable Drawable drawable, @DimenRes int width, @DimenRes int height) {
         if (drawable == null) {
             return null;
         }

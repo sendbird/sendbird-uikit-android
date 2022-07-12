@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Pair;
 import android.view.View;
@@ -14,11 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
@@ -30,24 +30,31 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
-import com.sendbird.android.OGMetaData;
-import com.sendbird.android.Sender;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.OGMetaData;
+import com.sendbird.android.message.Thumbnail;
+import com.sendbird.android.user.Sender;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
-import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MentionSpan;
+import com.sendbird.uikit.model.MessageUIConfig;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.OgtagView;
 import com.sendbird.uikit.widgets.RoundCornerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -56,13 +63,14 @@ import java.util.List;
 public class ViewUtils {
     private final static int MINIMUM_THUMBNAIL_WIDTH = 100;
     private final static int MINIMUM_THUMBNAIL_HEIGHT = 100;
+    public static final Pattern MENTION = Pattern.compile("[@][{](.*?)([}])");
 
-    private static void drawUnknownMessage(TextView view, boolean isMine) {
+    private static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
         int unknownHintAppearance;
         if (isMine) {
-            unknownHintAppearance = SendBirdUIKit.isDarkMode() ? R.style.SendbirdBody3OnLight02 : R.style.SendbirdBody3OnDark02;
+            unknownHintAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdBody3OnLight02 : R.style.SendbirdBody3OnDark02;
         } else {
-            unknownHintAppearance = SendBirdUIKit.isDarkMode() ? R.style.SendbirdBody3OnDark03 : R.style.SendbirdBody3OnLight02;
+            unknownHintAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdBody3OnDark03 : R.style.SendbirdBody3OnLight02;
         }
 
         final int sizeOfFirstLine = 23;
@@ -72,11 +80,11 @@ public class ViewUtils {
         view.setText(spannable);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, BaseMessage message, @StyleRes int editedTextAppearance) {
-        drawTextMessage(textView, message, editedTextAppearance, null, 0, 0);
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+        drawTextMessage(textView, message, uiConfig, null);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, BaseMessage message, @StyleRes int editedTextAppearance, HighlightMessageInfo highlightMessageInfo, @ColorRes int backgroundColor, @ColorRes int foregroundColor) {
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         if (message == null) {
             return;
         }
@@ -86,25 +94,90 @@ public class ViewUtils {
             return;
         }
 
-        CharSequence text = message.getMessage();
-        if (highlightMessageInfo != null && highlightMessageInfo.getMessageId() == message.getMessageId() && highlightMessageInfo.getUpdatedAt() == message.getUpdatedAt()) {
-            SpannableStringBuilder builder = new SpannableStringBuilder(textView.getContext(), text);
-            builder.addHighlightTextSpan(text.toString(), text.toString(), backgroundColor, foregroundColor);
-            text = builder.build();
-        }
-        textView.setText(text);
-        if (message.getUpdatedAt() <= 0L) {
-            return;
+        final boolean isMine = MessageUtils.isMine(message);
+        final Context context = textView.getContext();
+        final CharSequence text = getDisplayableText(context, message, uiConfig, mentionedCurrentUserUIConfig, true);
+        final SpannableStringBuilder builder = new SpannableStringBuilder(text);
+        if (message.getUpdatedAt() > 0L) {
+            final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
+            final Spannable editedString = new SpannableString(edited);
+            if (uiConfig != null) {
+                final TextUIConfig editedTextMarkUIConfig = isMine ? uiConfig.getMyEditedTextMarkUIConfig() : uiConfig.getOtherEditedTextMarkUIConfig();
+                editedTextMarkUIConfig.bind(editedString, 0, editedString.length());
+            }
+            builder.append(editedString);
         }
 
-        String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
-        final Spannable spannable = new SpannableString(edited);
-        spannable.setSpan(new TextAppearanceSpan(textView.getContext(), editedTextAppearance),
-                0, edited.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.append(spannable);
+        textView.setText(builder);
     }
 
-    public static void drawOgtag(@NonNull ViewGroup parent, OGMetaData ogMetaData) {
+    @NonNull
+    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, boolean mentionClickable) {
+        final String mentionedText = message.getMentionedMessageTemplate();
+        CharSequence text = message.getMessage();
+
+        if (SendbirdUIKit.isUsingUserMention() && !message.getMentionedUsers().isEmpty() && !TextUtils.isEmpty(mentionedText)) {
+            final Matcher matcher = MENTION.matcher(mentionedText);
+            final List<String> sources = new ArrayList<>();
+            final List<CharSequence> destinations = new ArrayList<>();
+            while (matcher.find()) {
+                if (matcher.groupCount() < 2) break;
+                Logger.d("_____ matched group[0] = %s, group[1] = %s, start=%d, end=%d, count=%d", matcher.group(0), matcher.group(1), matcher.start(), matcher.end(), matcher.groupCount());
+
+                final String mentionedUserId = matcher.group(1);
+                if (mentionedUserId != null) {
+                    final User mentionedUser = getMentionedUser(message, mentionedUserId);
+                    if (mentionedUser != null) {
+                        final boolean isMine = MessageUtils.isMine(message);
+                        final boolean isMentionedCurrentUser = MessageUtils.isMine(mentionedUserId);
+                        final String trigger = SendbirdUIKit.getUserMentionConfig().getTrigger();
+                        final SpannableString spannable;
+                        if (uiConfig != null) {
+                            final TextUIConfig config = isMine ? uiConfig.getMyMentionUIConfig() : uiConfig.getOtherMentionUIConfig();
+                            final String nickname = UserUtils.getDisplayName(context, mentionedUser);
+                            final MentionSpan mentionSpan = new MentionSpan(trigger, nickname, mentionedUser, config, isMentionedCurrentUser ? mentionedCurrentUserUIConfig : null);
+                            spannable = new SpannableString(mentionSpan.getDisplayText());
+                            spannable.setSpan(mentionSpan, 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            spannable = new SpannableString(trigger + mentionedUser.getNickname());
+                        }
+                        if (mentionClickable) {
+                            spannable.setSpan(new ClickableSpan() {
+                                @Override
+                                public void onClick(@NonNull View widget) {
+                                    SoftInputUtils.hideSoftKeyboard(widget);
+                                    DialogUtils.showUserProfileDialog(context, mentionedUser, !isMentionedCurrentUser, null, null);
+                                }
+
+                                @Override
+                                public void updateDrawState(@NonNull TextPaint paint) {
+                                    paint.setUnderlineText(false);
+                                }
+                            }, 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                        destinations.add(spannable);
+                        sources.add(matcher.group(0));
+                    }
+                }
+            }
+            int arraySize = sources.size();
+            text = TextUtils.replace(mentionedText, sources.toArray(new String[arraySize]), destinations.toArray(new CharSequence[arraySize]));
+        }
+        return text;
+    }
+
+    @Nullable
+    private static User getMentionedUser(@NonNull BaseMessage message, @NonNull String targetUserId) {
+        final List<User> mentionedUserList = message.getMentionedUsers();
+        for (User user : mentionedUserList) {
+            if (user.getUserId().equals(targetUserId)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static void drawOgtag(@NonNull ViewGroup parent, @Nullable OGMetaData ogMetaData) {
         if (ogMetaData == null) {
             return;
         }
@@ -126,7 +199,7 @@ public class ViewUtils {
         });
     }
 
-    public static void drawReactionEnabled(EmojiReactionListView view, BaseChannel channel) {
+    public static void drawReactionEnabled(@NonNull EmojiReactionListView view, @NonNull BaseChannel channel) {
         boolean canSendReaction = ReactionUtils.canSendReaction(channel);
         view.setClickable(canSendReaction);
         if (view.useMoreButton() != canSendReaction) {
@@ -135,7 +208,7 @@ public class ViewUtils {
         }
     }
 
-    public static void drawNickname(TextView tvNickname, BaseMessage message) {
+    public static void drawNickname(@NonNull TextView tvNickname, @Nullable BaseMessage message) {
         if (message == null) {
             return;
         }
@@ -145,7 +218,7 @@ public class ViewUtils {
         tvNickname.setText(nickname);
     }
 
-    public static void drawProfile(ImageView ivProfile, BaseMessage message) {
+    public static void drawProfile(@NonNull ImageView ivProfile, @Nullable BaseMessage message) {
         if (message == null) {
             return;
         }
@@ -159,12 +232,13 @@ public class ViewUtils {
         drawProfile(ivProfile, url);
     }
 
-    public static void drawProfile(ImageView ivProfile, String url) {
-        int iconTint = SendBirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+    public static void drawProfile(@NonNull ImageView ivProfile, @Nullable String url) {
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
         int backgroundTint = R.color.background_300;
         Drawable errorDrawable = DrawableUtils.createOvalIcon(ivProfile.getContext(),
                 backgroundTint, R.drawable.icon_user, iconTint);
 
+        if (url == null) return;
         Glide.with(ivProfile.getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -190,9 +264,9 @@ public class ViewUtils {
                                       @DimenRes int iconSize
                                       ) {
         String url = message.getUrl();
-        if (TextUtils.isEmpty(url) && message.getMessageParams() != null &&
-                message.getMessageParams().getFile() != null) {
-            url = message.getMessageParams().getFile().getAbsolutePath();
+        if (TextUtils.isEmpty(url) && message.getMessageCreateParams() != null &&
+                message.getMessageCreateParams().getFile() != null) {
+            url = message.getMessageCreateParams().getFile().getAbsolutePath();
         }
         Context context = view.getContext();
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL);
@@ -200,7 +274,7 @@ public class ViewUtils {
                 .asDrawable()
                 .apply(options);
 
-        Pair<Integer, Integer> defaultResizingSize = SendBirdUIKit.getResizingSize();
+        Pair<Integer, Integer> defaultResizingSize = SendbirdUIKit.getResizingSize();
         int width = defaultResizingSize.first / 2;
         int height = defaultResizingSize.second / 2;
         FileInfo fileInfo = PendingMessageRepository.getInstance().getFileInfo(message);
@@ -212,8 +286,8 @@ public class ViewUtils {
                 url = fileInfo.getThumbnailPath();
             }
         } else {
-            List<FileMessage.Thumbnail> thumbnails = message.getThumbnails();
-            FileMessage.Thumbnail thumbnail = null;
+            List<Thumbnail> thumbnails = message.getThumbnails();
+            Thumbnail thumbnail = null;
             if (thumbnails.size() > 0) {
                 thumbnail = thumbnails.get(0);
             }
@@ -231,7 +305,7 @@ public class ViewUtils {
 
         if (message.getType().toLowerCase().contains(StringSet.image) && !message.getType().toLowerCase().contains(StringSet.gif)) {
             view.getContent().setScaleType(ImageView.ScaleType.CENTER);
-            int thumbnailIconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+            int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
             builder = builder
                     .placeholder(DrawableUtils.setTintList(
                             ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_photo), iconSize, iconSize),
@@ -242,7 +316,7 @@ public class ViewUtils {
         }
 
         Logger.d("-- will load thumbnail url : %s", url);
-        builder.load(url).centerCrop().thumbnail(0.3f).listener(new RequestListener<Drawable>() {
+        builder.load(url).centerCrop().sizeMultiplier(0.3f).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 if (requestListener != null) {
@@ -262,7 +336,7 @@ public class ViewUtils {
         }).into(view.getContent());
     }
 
-    public static void drawThumbnailIcon(ImageView imageView, FileMessage fileMessage) {
+    public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
         String type = fileMessage.getType();
         Context context = imageView.getContext();
         int backgroundTint = R.color.ondark_01;
@@ -276,10 +350,10 @@ public class ViewUtils {
         }
     }
 
-    public static void drawFileIcon(ImageView imageView, FileMessage fileMessage) {
+    public static void drawFileIcon(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
         Context context = imageView.getContext();
-        int backgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
-        int iconTint = SendBirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
+        int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
+        int iconTint = SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
         int inset = (int) context.getResources().getDimension(R.dimen.sb_size_4);
         Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
         if ((fileMessage.getType().toLowerCase().startsWith(StringSet.audio))) {
@@ -291,11 +365,11 @@ public class ViewUtils {
         }
     }
 
-    public static void drawFileMessageIconToReply(ImageView imageView, FileMessage fileMessage) {
+    public static void drawFileMessageIconToReply(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
         String type = fileMessage.getType();
         Context context = imageView.getContext();
-        int backgroundTint = SendBirdUIKit.isDarkMode() ? R.color.background_500 : R.color.background_100;
-        int iconTint = SendBirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+        int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_500 : R.color.background_100;
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
         int inset = (int) context.getResources().getDimension(R.dimen.sb_size_8);
         Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
 

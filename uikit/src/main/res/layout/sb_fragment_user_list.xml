@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.sendbird.uikit.widgets.PagerRecyclerView
-        android:id="@+id/rvUserList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
-        app:sb_pager_recycler_view_use_divide_line="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-</layout>
+<com.sendbird.uikit.widgets.PagerRecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rvUserList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    android:scrollbarStyle="outsideOverlay"
+    app:sb_recycler_view_background="@android:color/transparent"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

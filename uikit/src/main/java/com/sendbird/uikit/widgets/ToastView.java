@@ -10,11 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.ImageViewCompat;
-import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.databinding.SbViewToastBinding;
 
 public class ToastView extends FrameLayout {
@@ -25,7 +23,7 @@ public class ToastView extends FrameLayout {
     }
 
     public ToastView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_toast_view_style);
+        this(context, attrs, 0);
     }
 
     public ToastView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -33,20 +31,20 @@ public class ToastView extends FrameLayout {
         init(context, attrs, defStyleAttr);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+    private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ToastView, defStyleAttr, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_toast, this, true);
+            this.binding = SbViewToastBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int background = a.getResourceId(R.styleable.ToastView_sb_toast_background, R.drawable.sb_toast_background_light);
             int textAppearance = a.getResourceId(R.styleable.ToastView_sb_toast_text_appearance, R.style.SendbirdBody3OnDark01);
 
-            int successTint = SendBirdUIKit.isDarkMode() ? R.color.secondary_500 : R.color.secondary_200;
-            int errorTint = SendBirdUIKit.isDarkMode() ? R.color.error_300 : R.color.error_200;
+            int successTint = SendbirdUIKit.isDarkMode() ? R.color.secondary_500 : R.color.secondary_200;
+            int errorTint = SendbirdUIKit.isDarkMode() ? R.color.error_300 : R.color.error_200;
             binding.toastPanel.setBackgroundResource(background);
             binding.toastPanel.getBackground().setAlpha(163);
             binding.tvToastText.setTextAppearance(context, textAppearance);
-            ImageViewCompat.setImageTintList(binding.ivSuccess, AppCompatResources.getColorStateList(context, successTint));
-            ImageViewCompat.setImageTintList(binding.ivError, AppCompatResources.getColorStateList(context, errorTint));
+            binding.ivSuccess.setImageTintList(AppCompatResources.getColorStateList(context, successTint));
+            binding.ivError.setImageTintList(AppCompatResources.getColorStateList(context, errorTint));
         } finally {
             a.recycle();
         }

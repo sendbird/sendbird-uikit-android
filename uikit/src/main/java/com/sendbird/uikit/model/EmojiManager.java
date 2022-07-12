@@ -3,11 +3,11 @@ package com.sendbird.uikit.model;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.sendbird.android.Emoji;
-import com.sendbird.android.EmojiCategory;
-import com.sendbird.android.EmojiContainer;
-import com.sendbird.android.SendBird;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.EmojiCategory;
+import com.sendbird.android.message.EmojiContainer;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.UIKitPrefs;
@@ -34,20 +34,27 @@ public final class EmojiManager {
      * @return The {@link EmojiManager}
      * @since 1.1.0
      */
+    @NonNull
     public static EmojiManager getInstance() {
         return EmojiManagerHolder.INSTANCE;
     }
 
+    @Nullable
     private String emojiHash = null;
+    @NonNull
     private final Object emojiLock = new Object();
+    @NonNull
     private LinkedHashMap<Long, EmojiCategory> emojiCategoryMap = new LinkedHashMap<>();
+    @NonNull
     private LinkedHashMap<String, Emoji> allEmojiMap = new LinkedHashMap<>();
 
     public void init() {
         String emojiContainerStr = UIKitPrefs.getString(StringSet.KEY_EMOJI_CONTAINER);
         if (!TextUtils.isEmpty(emojiContainerStr)) {
             EmojiContainer container = decodeEmojiContainer(emojiContainerStr);
-            upsertEmojiContainer(container, false);
+            if (container != null) {
+                upsertEmojiContainer(container, false);
+            }
         }
     }
 
@@ -80,6 +87,7 @@ public final class EmojiManager {
      * @return The emoji hash
      * @since 1.1.0
      */
+    @Nullable
     public String getEmojiHash() {
         return emojiHash;
     }
@@ -91,13 +99,12 @@ public final class EmojiManager {
      * @return The emoji url corresponding to emoji key
      * @since 1.1.0
      */
-    public String getEmojiUrl(final String key) {
+    @Nullable
+    public String getEmojiUrl(final @NonNull String key) {
         synchronized (emojiLock) {
-            if (allEmojiMap != null) {
-                Emoji emoji = allEmojiMap.get(key);
-                if (emoji != null) {
-                    return emoji.getUrl();
-                }
+            Emoji emoji = allEmojiMap.get(key);
+            if (emoji != null) {
+                return emoji.getUrl();
             }
         }
         return null;
@@ -109,6 +116,7 @@ public final class EmojiManager {
      * @return The {@link List<EmojiCategory>} Emoji category list
      * @since 1.1.0
      */
+    @NonNull
     public List<EmojiCategory> getAllEmojiCategories() {
         List<EmojiCategory> emojiCategoryList = new ArrayList<>(emojiCategoryMap.values());
         return Collections.unmodifiableList(emojiCategoryList);
@@ -120,6 +128,7 @@ public final class EmojiManager {
      * @return The {@link List<Emoji>} registering Sendbird server
      * @since 1.1.0
      */
+    @NonNull
     public List<Emoji> getAllEmojis() {
         List<Emoji> emojiList = new ArrayList<>(allEmojiMap.values());
         return Collections.unmodifiableList(emojiList);
@@ -132,6 +141,7 @@ public final class EmojiManager {
      * @return The {@link List<Emoji>} corresponding to emoji category id
      * @since 1.1.0
      */
+    @Nullable
     public List<Emoji> getEmojis(long emojiCategoryId) {
         synchronized (emojiLock) {
             EmojiCategory emojiCategory = emojiCategoryMap.get(emojiCategoryId);
@@ -142,10 +152,12 @@ public final class EmojiManager {
         return null;
     }
 
+    @NonNull
     private String encodeEmojiContainer(@NonNull EmojiContainer container) {
         return Base64.encodeToString(container.serialize(), Base64.DEFAULT);
     }
 
+    @Nullable
     private EmojiContainer decodeEmojiContainer(@NonNull String data) {
         byte[] array = Base64.decode(data, Base64.DEFAULT);
         return EmojiContainer.buildFromSerializedData(array);

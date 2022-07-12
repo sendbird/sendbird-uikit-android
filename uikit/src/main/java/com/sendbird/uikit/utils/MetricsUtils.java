@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings("unused")
 public class MetricsUtils {
 
     private final static int DEFAULT_DENSITY_DPI = 240;
@@ -19,11 +20,11 @@ public class MetricsUtils {
     private MetricsUtils() {
     }
 
-    public static int getDensityDpi(Context context) {
+    public static int getDensityDpi(@NonNull Context context) {
         return context.getResources().getDisplayMetrics().densityDpi;
     }
 
-    public static float getDensity(Context context) {
+    public static float getDensity(@NonNull Context context) {
         return context.getResources().getDisplayMetrics().density;
     }
 
@@ -31,23 +32,24 @@ public class MetricsUtils {
         return DEFAULT_DENSITY_DPI;
     }
 
-    public static int dipToPixel(Context context, float dip) {
+    public static int dipToPixel(@NonNull Context context, float dip) {
         return (int) (dip * getDensity(context));
     }
 
-    public static float pixelInDensityF(Context context, int pixel) {
+    public static float pixelInDensityF(@NonNull Context context, int pixel) {
         return pixel / DEFAULT_DENSITY * getDensity(context);
     }
 
-    public static int pixelInDensity(Context context, int pixel) {
+    public static int pixelInDensity(@NonNull Context context, int pixel) {
         return (int) pixelInDensityF(context, pixel);
     }
 
-    public static float spToPixel(Context context, float sp) {
+    public static float spToPixel(@NonNull Context context, float sp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
     }
 
-    public static RectF rotateRect(RectF originRect, float pivotX, float pivotY, double degree) {
+    @NonNull
+    public static RectF rotateRect(@NonNull RectF originRect, float pivotX, float pivotY, double degree) {
         double angle = Math.toRadians(degree);
 
         float pointLeftTopX = (originRect.left-pivotX) * (float)Math.cos(angle) - (originRect.top-pivotY) * (float)Math.sin(angle) + pivotX;
@@ -64,7 +66,7 @@ public class MetricsUtils {
                 Math.max(pointLeftTopY, pointRightBottomY));
     }
 
-    public static int getStatusBarHeight(Context context) {
+    public static int getStatusBarHeight(@NonNull Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -73,11 +75,12 @@ public class MetricsUtils {
         return result;
     }
 
+    @NonNull
     public static Pair<Integer, Integer> getScreenSize(@NonNull Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
-        return new Pair(point.x, point.y);
+        return new Pair<>(point.x, point.y);
     }
 }

@@ -13,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +28,6 @@ import java.util.Queue;
 
 class ImageWaffleView extends ViewGroup {
     protected final int DIVIDER_WIDTH = 1;
-    private final int ROUNDING_RADIUS = 1;
     private static final int ROUND_BORDER = 1;
 
     private final Paint roundingPaint = new Paint();
@@ -61,31 +62,33 @@ class ImageWaffleView extends ViewGroup {
         }
     }
 
-    public ImageWaffleView(Context context) {
+    public ImageWaffleView(@NonNull Context context) {
         this(context, null);
     }
 
-    public ImageWaffleView(Context context, AttributeSet attrs) {
+    public ImageWaffleView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ImageWaffleView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ImageWaffleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         roundingPaint.setAntiAlias(true);
         roundingPaint.setFilterBitmap(true);
         borderPaint.setAntiAlias(true);
     }
 
+    @NonNull
     protected ImageView prepareSingleImageView() {
         return prepareImageViews(1).get(0);
     }
 
+    @NonNull
     protected List<ImageView> prepareImageViews(int length) {
         if (length > 4 || length < 0) {
             throw new IllegalArgumentException("Invalid length : " + length);
         }
 
-        Queue<ImageView> prevImageViews = new LinkedList<>();
+        final Queue<ImageView> prevImageViews = new LinkedList<>();
         if (getChildCount() == length) {
             for (int i = 0; i < getChildCount(); i++) {
                 prevImageViews.add((ImageView) getChildAt(i));
@@ -94,7 +97,7 @@ class ImageWaffleView extends ViewGroup {
             removeAllViews();
         }
 
-        List<ImageView> prepared = new ArrayList<>(length);
+        final List<ImageView> prepared = new ArrayList<>(length);
 
         for (int i = 0; i < length; i++) {
             prepared.add(pollOrNewImageView(prevImageViews));
@@ -108,25 +111,27 @@ class ImageWaffleView extends ViewGroup {
         return Collections.unmodifiableList(prepared);
     }
 
-    private ImageView pollOrNewImageView(Queue<ImageView> prevImageViews) {
+    @NonNull
+    private ImageView pollOrNewImageView(@NonNull Queue<ImageView> prevImageViews) {
         ImageView polled = prevImageViews.poll();
         if (polled != null) {
             return polled;
         }
 
-        ImageView imageView = new KillerWaffleChildImageView(this);
+        final ImageView imageView = new KillerWaffleChildImageView(this);
         addView(imageView);
         return imageView;
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(@NonNull Canvas canvas) {
         int width = getWidth();
         int height = getHeight();
 
         if (isInEditMode()) {
             Paint debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             debugPaint.setColor(getResources().getColor(R.color.background_400));
+            int ROUNDING_RADIUS = 1;
             canvas.drawRoundRect(new RectF(0, 0, width, height), ROUNDING_RADIUS, ROUNDING_RADIUS, debugPaint);
             return;
         }
@@ -163,7 +168,7 @@ class ImageWaffleView extends ViewGroup {
         int paddingTop = getPaddingTop();
         int paddingBottom = getPaddingBottom();
         canvasBounds.set(0, 0, width, height);
-        borderPaint.setColor(getResources().getColor(SendBirdUIKit.isDarkMode() ? R.color.ondark_04 : R.color.onlight_04));
+        borderPaint.setColor(getResources().getColor(SendbirdUIKit.isDarkMode() ? R.color.ondark_04 : R.color.onlight_04));
 
         canvas.drawRoundRect(canvasBounds, (float)(width / 2), (float)(height / 2), borderPaint);
         canvasBounds.set(ROUND_BORDER + paddingLeft, ROUND_BORDER + paddingTop, width - ROUND_BORDER - paddingRight, height - ROUND_BORDER - paddingBottom);
@@ -202,7 +207,7 @@ class ImageWaffleView extends ViewGroup {
         setMeasuredDimension(specWidth, specHeight);
     }
 
-    private void measureInGrid(View view, int width, int height) {
+    private void measureInGrid(@NonNull View view, int width, int height) {
         view.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }
 

@@ -1,68 +1,75 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class MyUserMessageView extends GroupChannelMessageView {
-    private SbViewMyUserMessageComponentBinding binding;
-    private int editedAppearance;
+    private final SbViewMyUserMessageComponentBinding binding;
+    private final int editedAppearance;
+    private final int mentionAppearance;
+    @NonNull
+    private final TextUIConfig mentionedCurrentUserUIConfig;
 
+    @NonNull
     @Override
     public SbViewMyUserMessageComponentBinding getBinding() {
         return binding;
     }
 
-    public MyUserMessageView(Context context) {
+    public MyUserMessageView(@NonNull Context context) {
         this(context, null);
     }
 
-    public MyUserMessageView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_message_user_style);
+    public MyUserMessageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_my_user_message);
     }
 
-    public MyUserMessageView(Context context, AttributeSet attrs, int defStyle) {
+    public MyUserMessageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0);
         try {
-            this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_my_user_message_component, this, true);
+            this.binding = SbViewMyUserMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int timeAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
             int messageAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_me_text_appearance, R.style.SendbirdBody3OnDark01);
             int messageBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_me_background, R.drawable.sb_shape_chat_bubble);
-            int messageBackgroundTint = a.getResourceId(R.styleable.MessageView_User_sb_message_me_background_tint, R.color.sb_message_me_tint_light);
+            ColorStateList messageBackgroundTint = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_background_tint);
             int emojiReactionListBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_emoji_reaction_list_background, R.drawable.sb_shape_chat_bubble_reactions_light);
             int ogtagBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_me_ogtag_background, R.drawable.sb_message_og_background);
-            int ogtagBackgroundTint = a.getResourceId(R.styleable.MessageView_User_sb_message_me_ogtag_background_tint, R.color.sb_message_other_tint_light);
-            int linkTextColor = a.getResourceId(R.styleable.MessageView_User_sb_message_me_link_text_color, R.color.ondark_01);
+            ColorStateList ogtagBackgroundTint = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_ogtag_background_tint);
+            ColorStateList linkTextColor = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_link_text_color);
             int clickedLinkBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_me_clicked_link_background_color, R.color.primary_400);
-            editedAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_edited_mark_text_appearance, R.style.SendbirdBody3OnDark02);
-            this.highlightBackgroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_background_color, R.color.highlight);
-            this.highlightForegroundColor = a.getResourceId(R.styleable.MessageView_User_sb_message_highlight_foreground_color, R.color.background_600);
+            this.editedAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_edited_mark_text_appearance, R.style.SendbirdBody3OnDark02);
+            this.mentionAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_mentioned_text_appearance, R.style.SendbirdMentionLightMe);
+            int mentionedCurrentUserTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_background, R.color.highlight);
+            int mentionedCurrentUserAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_appearance, R.style.MentionedCurrentUserMessage);
+            this.mentionedCurrentUserUIConfig = new TextUIConfig();
+            this.mentionedCurrentUserUIConfig.mergeFromTextAppearance(context, mentionedCurrentUserAppearance, mentionedCurrentUserTextBackground);
 
             binding.tvMessage.setTextAppearance(context, messageAppearance);
-            binding.tvMessage.setLinkTextColor(context.getResources().getColor(linkTextColor));
+            binding.tvMessage.setLinkTextColor(linkTextColor);
             binding.tvSentAt.setTextAppearance(context, timeAppearance);
-            binding.contentPanel.setBackground(DrawableUtils.setTintList(getContext(), messageBackground, messageBackgroundTint));
+            binding.contentPanel.setBackground(DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint));
             binding.emojiReactionListBackground.setBackgroundResource(emojiReactionListBackground);
-            binding.ogtagBackground.setBackground(DrawableUtils.setTintList(getContext(), ogtagBackground, ogtagBackgroundTint));
-            binding.ovOgtag.setBackground(DrawableUtils.setTintList(getContext(), ogtagBackground, ogtagBackgroundTint));
+            binding.ogtagBackground.setBackground(DrawableUtils.setTintList(context, ogtagBackground, ogtagBackgroundTint));
+            binding.ovOgtag.setBackground(DrawableUtils.setTintList(context, ogtagBackground, ogtagBackgroundTint));
 
             binding.tvMessage.setOnClickListener(v -> binding.contentPanel.performClick());
             binding.tvMessage.setOnLongClickListener(v -> binding.contentPanel.performLongClick());
@@ -74,14 +81,15 @@ public class MyUserMessageView extends GroupChannelMessageView {
         }
     }
 
+    @NonNull
     @Override
     public View getLayout() {
         return binding.getRoot();
     }
 
     @Override
-    public void drawMessage(GroupChannel channel, BaseMessage message, MessageGroupType messageGroupType) {
-        boolean sendingState = message.getSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED;
+    public void drawMessage(@NonNull GroupChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        boolean sendingState = message.getSendingStatus() == SendingStatus.SUCCEEDED;
         boolean hasOgTag = message.getOgMetaData() != null;
         boolean hasReaction = message.getReactions() != null && message.getReactions().size() > 0;
 
@@ -93,7 +101,12 @@ public class MyUserMessageView extends GroupChannelMessageView {
         binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
         binding.ivStatus.drawStatus(message, channel);
 
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance, highlightMessageInfo, highlightBackgroundColor, highlightForegroundColor);
+        if (messageUIConfig != null) {
+            messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+            messageUIConfig.getMyMentionUIConfig().mergeFromTextAppearance(getContext(), mentionAppearance);
+        }
+
+        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig, mentionedCurrentUserUIConfig);
         ViewUtils.drawOgtag(binding.ovOgtag, message.getOgMetaData());
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/sb_size_16"
@@ -47,8 +48,6 @@
         android:id="@+id/tvMemberCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/sb_size_0"
-        android:layout_marginRight="@dimen/sb_size_4"
         android:gravity="center_vertical"
         android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
@@ -76,17 +75,28 @@
         android:src="@drawable/icon_notifications_off_filled"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
-        app:layout_constraintEnd_toStartOf="@id/tvUpdatedAt"
+        app:layout_constraintEnd_toStartOf="@id/ivLastMessageStatus"
         app:layout_constraintStart_toEndOf="@id/ivFrozenIcon"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivLastMessageStatus"
+        android:layout_width="@dimen/sb_size_15"
+        android:layout_height="@dimen/sb_size_15"
+        android:layout_marginStart="@dimen/sb_size_4"
+        android:src="@drawable/icon_done_all"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/brBottom"
+        app:layout_constraintEnd_toStartOf="@+id/tvUpdatedAt"
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvUpdatedAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:paddingLeft="@dimen/sb_size_10"
-        android:paddingRight="@dimen/sb_size_0"
+        android:paddingStart="@dimen/sb_size_4"
+        android:paddingEnd="@dimen/sb_size_0"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -97,12 +107,24 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
-        android:layout_marginLeft="@dimen/sb_size_4"
-        android:layout_marginRight="@dimen/sb_size_10"
+        android:layout_marginStart="@dimen/sb_size_4"
+        android:layout_marginEnd="@dimen/sb_size_10"
         android:layout_marginTop="@dimen/sb_size_2"
         app:layout_constraintLeft_toRightOf="@id/vgCoverView"
-        app:layout_constraintRight_toLeftOf="@+id/tvUnreadCount"
+        app:layout_constraintRight_toLeftOf="@+id/tvUnreadMentionCount"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvUnreadMentionCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_5"
+        android:layout_marginEnd="@dimen/sb_size_4"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/tvLastMessage"
+        app:layout_constraintRight_toLeftOf="@+id/tvUnreadCount"
+        app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvUnreadCount"
@@ -111,7 +133,7 @@
         android:layout_marginTop="@dimen/sb_size_5"
         android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@id/tvLastMessage"
+        app:layout_constraintLeft_toRightOf="@id/tvUnreadMentionCount"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
@@ -120,12 +142,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvTitle,ivPushEnabledIcon,tvMemberCount,tvUpdatedAt" />
+        app:constraint_referenced_ids="tvTitle,ivPushEnabledIcon,tvMemberCount,tvUpdatedAt, tvUpdatedAt" />
 
     <FrameLayout
         android:id="@+id/vgCoverView"
-        android:paddingLeft="@dimen/sb_size_0"
-        android:paddingRight="@dimen/sb_size_12"
+        android:paddingStart="@dimen/sb_size_0"
+        android:paddingEnd="@dimen/sb_size_12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

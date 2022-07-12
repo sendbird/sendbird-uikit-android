@@ -7,14 +7,17 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelListFragment;
 import com.sendbird.uikit.log.Logger;
 
-
+/**
+ * Displays an open channel list screen used for community.
+ */
 public class CommunityListFragment extends OpenChannelListFragment {
     public CommunityListFragment() {
         super(new CommunityListAdapter());
@@ -52,7 +55,7 @@ public class CommunityListFragment extends OpenChannelListFragment {
     }
 
     @Override
-    protected void clickOpenChannelItem(OpenChannel openChannel) {
+    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
         if (getContext() == null || openChannel == null) return;
         startActivity(CommunityActivity.newIntent(getContext(), openChannel.getUrl()));
     }

@@ -90,6 +90,7 @@ public class DialogListItem {
      *
      * @return <code>true</code> if the item is disabled, <code>false</code> otherwise.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isDisabled() {
         return disabled;
     }

@@ -3,14 +3,10 @@
     <string name="text_title_login_activity">Sendbird UIKit Sample</string>
 
     <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
-    <string name="text_theme_light">Light theme</string>
-    <string name="text_theme_dark">Dark theme</string>
     <string name="text_hint_user_id">User ID</string>
     <string name="text_hint_nickname">Nickname</string>
     <string name="text_sign_in">SIGN IN</string>
     <string name="text_sign_out">SIGN OUT</string>
-    <string name="text_splash_title">SENDBIRD</string>
-    <string name="text_start_chat">START CHAT</string>
 
     <string name="text_settings_header_title">My settings</string>
     <string name="text_settings_header_edit_button">Edit</string>
@@ -19,7 +15,6 @@
     <string name="text_settings_disturb_title">Do not disturb</string>
     <string name="text_settings_home_title">Exit to home</string>
     <string name="text_settings_change_user_nickname">Change nickname</string>
-    <string name="text_settings_change_user_nickname_hint">Enter nickname</string>
     <string name="text_settings_change_user_profile_image">Change profile image</string>
 
     <string name="text_tab_channels">Channels</string>
@@ -40,7 +35,6 @@
     <string name="text_remove_photo">Remove photo</string>
     <string name="text_live">LIVE</string>
     <string name="text_participants">%s participants</string>
-    <string name="text_error_connection_must_be_made">Connection must be made.</string>
     <string name="text_error_update_user_information">Couldn\&#39;t update user information.</string>
     <string name="text_error_update_do_not_disturb">Couldn\&#39;t update disturb setting.</string>
 </resources>

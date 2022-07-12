@@ -1,12 +1,21 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.BaseMessage;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.User;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewSearchResultPreviewBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -15,41 +24,95 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
+/**
+ * MessageSearchAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
+ *
+ * @since 3.0.0
+ */
 public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolder<BaseMessage>> {
-    private List<BaseMessage> items = new ArrayList<>();
+    @NonNull
+    private final List<BaseMessage> items = new ArrayList<>();
+    @Nullable
     private OnItemClickListener<BaseMessage> listener;
 
+    /**
+     * Called when RecyclerView needs a new {@code BaseViewHolder<BaseMessage>} of the given type to represent
+     * an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return A new {@code BaseViewHolder<BaseMessage>} that holds a View of the given view type.
+     * @see #getItemViewType(int)
+     * @see #onBindViewHolder(BaseViewHolder, int)
+     */
     @NonNull
     @Override
     public BaseViewHolder<BaseMessage> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SearchResultViewHolder(SbViewSearchResultPreviewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        final TypedValue values = new TypedValue();
+        parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
+        final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
+        return new SearchResultViewHolder(SbViewSearchResultPreviewBinding.inflate(LayoutInflater.from(contextWrapper), parent, false));
     }
 
+    /**
+     * Called by RecyclerView to display the data at the specified position. This method should
+     * update the contents of the {@link BaseViewHolder#itemView} to reflect the item at the given
+     * position.
+     *
+     * @param holder The {@link BaseViewHolder<BaseMessage>} which should be updated to represent
+     *               the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<BaseMessage> holder, int position) {
         holder.bind(getItem(position));
     }
 
+    /**
+     * Returns the {@link BaseMessage} in the data set held by the adapter.
+     *
+     * @param position The position of the item within the adapter's data set.
+     * @return The {@link BaseMessage} to retrieve the position of in this adapter.
+     */
     @Override
+    @NonNull
     public BaseMessage getItem(int position) {
         return this.items.get(position);
     }
 
+    /**
+     * Returns the {@link List<BaseMessage>} in the data set held by the adapter.
+     *
+     * @return The {@link List<BaseMessage>} in this adapter.
+     */
+    @SuppressLint("KotlinPropertyAccess")
     @Override
+    @NonNull
     public List<BaseMessage> getItems() {
-        return items != null ? Collections.unmodifiableList(items) : null;
+        return Collections.unmodifiableList(items);
     }
 
+    /**
+     * Return hashcode for the item at <code>position</code>.
+     *
+     * @param position Adapter position to query
+     * @return the stable ID of the item at position
+     */
     @Override
     public long getItemId(int position) {
         return getItem(position).getMessageId();
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
-        return items != null ? items.size() : 0;
+        return items.size();
     }
 
     /**
@@ -58,9 +121,13 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      * @param items list to be displayed
      * @since 2.1.0
      */
-    public void setItems(List<BaseMessage> items) {
-        this.items = items;
-        notifyDataSetChanged();
+    public void setItems(@NonNull List<BaseMessage> items) {
+        final MessageSearchDiffCallback diffCallback = new MessageSearchDiffCallback(this.items, items);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.items.clear();
+        this.items.addAll(items);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     /**
@@ -73,7 +140,19 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
         this.listener = listener;
     }
 
+    /**
+     * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     *
+     * @return {@code OnItemClickListener<BaseMessage>} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
+     * @since 3.0.0
+     */
+    @Nullable
+    public OnItemClickListener<BaseMessage> getOnItemClickListener() {
+        return listener;
+    }
+
     private class SearchResultViewHolder extends BaseViewHolder<BaseMessage> {
+        @NonNull
         private final SbViewSearchResultPreviewBinding binding;
 
         public SearchResultViewHolder(@NonNull SbViewSearchResultPreviewBinding binding) {
@@ -81,7 +160,7 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
             this.binding = binding;
 
             this.binding.getRoot().setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
                 if (position != NO_POSITION && listener != null) {
                     BaseMessage message = getItem(position);
                     listener.onItemClick(v, position, message);
@@ -90,9 +169,70 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
         }
 
         @Override
-        public void bind(BaseMessage message) {
-            binding.setMessage(message);
-            binding.executePendingBindings();
+        public void bind(@NonNull BaseMessage message) {
+            binding.messagePreview.drawMessage(message);
+        }
+    }
+
+    private static class MessageSearchDiffCallback extends DiffUtil.Callback {
+        @NonNull
+        private final List<BaseMessage> oldMessageList;
+        @NonNull
+        private final List<BaseMessage> newMessageList;
+
+        public MessageSearchDiffCallback(@NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList) {
+            this.oldMessageList = oldMessageList;
+            this.newMessageList = newMessageList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldMessageList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newMessageList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            BaseMessage oldMessage = oldMessageList.get(oldItemPosition);
+            BaseMessage newMessage = newMessageList.get(newItemPosition);
+            return oldMessage.equals(newMessage);
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            BaseMessage oldMessage = oldMessageList.get(oldItemPosition);
+            BaseMessage newMessage = newMessageList.get(newItemPosition);
+
+            final User oldSender = oldMessage.getSender();
+            final User newSender = newMessage.getSender();
+
+            if (oldSender == null) {
+                return false;
+            }
+
+            if (!oldSender.equals(newSender)) {
+                return false;
+            }
+
+            String oldNickname = oldSender.getNickname();
+            String newNickname = newSender.getNickname();
+            if (!newNickname.equals(oldNickname)) {
+                return false;
+            }
+
+            String oldProfileUrl = oldSender.getProfileUrl();
+            String newProfileUrl = newSender.getProfileUrl();
+            if (!newProfileUrl.equals(oldProfileUrl)) {
+                return false;
+            }
+
+            String oldMessageText = oldMessage.getMessage();
+            String newMessageText = newMessage.getMessage();
+            return newMessageText.equals(oldMessageText);
         }
     }
 }

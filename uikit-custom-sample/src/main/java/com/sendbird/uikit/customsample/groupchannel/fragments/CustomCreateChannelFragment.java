@@ -1,77 +1,42 @@
 package com.sendbird.uikit.customsample.groupchannel.fragments;
 
-import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.GroupChannelParams;
-import com.sendbird.uikit.activities.adapter.UserListAdapter;
 import com.sendbird.uikit.customsample.R;
-import com.sendbird.uikit.customsample.groupchannel.activities.CustomChannelActivity;
-import com.sendbird.uikit.customsample.groupchannel.activities.adapters.CustomUserListAdapter;
+import com.sendbird.uikit.customsample.groupchannel.components.CustomSelectUserHeaderComponent;
+import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomCreateChannelUserListAdapter;
 import com.sendbird.uikit.fragments.CreateChannelFragment;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.CreateChannelModule;
+import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
+import com.sendbird.uikit.vm.CreateChannelViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Implements the customized <code>CreateChannelFragment</code>.
+ */
 public class CustomCreateChannelFragment extends CreateChannelFragment {
-    private List<String> userIds = new ArrayList<>();
-
+    @NonNull
     @Override
-    protected void onUserSelectComplete(List<String> selectedUsers) {
-        super.onUserSelectComplete(selectedUsers);
-    }
-
-    @Override
-    protected void onBeforeCreateGroupChannel(@NonNull GroupChannelParams params) {
-        super.onBeforeCreateGroupChannel(params);
-        params.addUserIds(userIds);
+    protected CreateChannelModule onCreateModule(@NonNull Bundle args) {
+        CreateChannelModule module = super.onCreateModule(args);
+        module.setHeaderComponent(new CustomSelectUserHeaderComponent());
+        return module;
     }
 
     @Override
-    protected void createGroupChannel(@NonNull GroupChannelParams params) {
-        super.createGroupChannel(params);
-    }
-
-    @Override
-    protected void onNewChannelCreated(@NonNull GroupChannel channel) {
-        showCustomChannelActivity(channel.getUrl());
-    }
-
-    @Override
-    public void setCreateButtonText(CharSequence text) {
-        super.setCreateButtonText(text);
-    }
-
-    @Override
-    public void setCreateButtonEnabled(boolean enabled) {
-        super.setCreateButtonEnabled(enabled);
-    }
-
-    @Override
-    protected <T extends UserListAdapter> void setUserListAdapter(T adapter) {
-        super.setUserListAdapter(createCustomUserListAdapter());
-    }
-
-    private CustomUserListAdapter createCustomUserListAdapter() {
-        CustomUserListAdapter customAdapter = new CustomUserListAdapter();
-        customAdapter.setOnUserCheckedListener((selectedUsers, isChecked) -> {
-            userIds.clear();
-            userIds.addAll(selectedUsers);
-
-            int count = selectedUsers.size();
-            setCreateButtonEnabled(count > 0);
-            setCreateButtonText(count > 0 ? count + " " + getString(R.string.sb_text_button_create) : getString(R.string.sb_text_button_create));
-        });
-        return customAdapter;
-    }
-
-    private void showCustomChannelActivity(String channelUrl) {
-        if (getActivity() != null && getContext() != null) {
-            Intent intent = CustomChannelActivity.newIntentFromCustomActivity(getActivity(), CustomChannelActivity.class, channelUrl);
-            startActivity(intent);
-            getActivity().finish();
+    protected void onConfigureParams(@NonNull CreateChannelModule module, @NonNull Bundle args) {
+        super.onConfigureParams(module, args);
+        SelectUserHeaderComponent.Params headerParams = module.getHeaderComponent().getParams();
+        if (isFragmentAlive()) {
+            headerParams.setTitle(requireContext().getString(R.string.sb_text_header_create_channel));
         }
+    }
+
+    @Override
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull CreateChannelModule module, @NonNull CreateChannelViewModel viewModel) {
+        super.onBeforeReady(status, module, viewModel);
+        module.getUserListComponent().setAdapter(new CustomCreateChannelUserListAdapter());
     }
 }

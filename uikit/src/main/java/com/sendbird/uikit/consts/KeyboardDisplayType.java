@@ -7,6 +7,12 @@ package com.sendbird.uikit.consts;
  * @since 2.0.0
  */
 public enum KeyboardDisplayType {
+    /**
+     * Shows the keyboard within the same screen.
+     */
     Plane,
+    /**
+     * Shows the keyboard above the dialog.
+     */
     Dialog
 }

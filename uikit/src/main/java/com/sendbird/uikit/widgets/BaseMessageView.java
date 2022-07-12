@@ -7,14 +7,13 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 
-import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.MessageUIConfig;
 
 public abstract class BaseMessageView extends FrameLayout {
-    protected HighlightMessageInfo highlightMessageInfo;
-    protected int highlightBackgroundColor;
-    protected int highlightForegroundColor;
+    @Nullable
+    protected MessageUIConfig messageUIConfig;
 
     public BaseMessageView(@NonNull Context context) {
         super(context);
@@ -28,11 +27,13 @@ public abstract class BaseMessageView extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    @NonNull
     abstract public View getLayout();
 
-    abstract public ViewDataBinding getBinding();
+    @NonNull
+    abstract public ViewBinding getBinding();
 
-    public void setHighlightMessageInfo(HighlightMessageInfo highlightMessageInfo) {
-        this.highlightMessageInfo = highlightMessageInfo;
+    public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
+        this.messageUIConfig = messageUIConfig;
     }
 }

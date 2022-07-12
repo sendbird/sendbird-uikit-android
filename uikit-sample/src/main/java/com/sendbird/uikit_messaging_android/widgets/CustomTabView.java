@@ -11,11 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
+/**
+ * View displaying icon and badge in tabs.
+ */
 public class CustomTabView extends FrameLayout {
     private int tintColorRedId;
     private TextView badgeView;
@@ -52,14 +56,14 @@ public class CustomTabView extends FrameLayout {
         badgeView.setTextAppearance(context, badgeTextAppearance);
         badgeView.setBackgroundResource(badgeBackgroundRes);
         titleView.setTextAppearance(context, titleTextAppearance);
-        titleView.setTextColor(context.getResources().getColorStateList(tintColorRedId));
+        titleView.setTextColor(AppCompatResources.getColorStateList(context, tintColorRedId));
     }
 
     public void setBadgeVisibility(int visibility) {
         badgeView.setVisibility(visibility);
     }
 
-    public void setBadgeCount(String countString) {
+    public void setBadgeCount(@Nullable String countString) {
         badgeView.setText(countString);
     }
 
@@ -67,7 +71,7 @@ public class CustomTabView extends FrameLayout {
         iconView.setImageDrawable(DrawableUtils.setTintList(getContext(), iconResId, tintColorRedId));
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@Nullable String title) {
         titleView.setText(title);
     }
 }

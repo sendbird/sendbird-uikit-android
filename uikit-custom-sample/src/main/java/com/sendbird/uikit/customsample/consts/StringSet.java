@@ -22,6 +22,7 @@ public class StringSet {
     public static final String creator_info = "creator_info";
     public static final String thumbnail_url = "thumbnail_url";
     public static final String live_channel_url = "live_channel_url";
+    public static final String emoji_type = "emoji_type";
 
     public static final String SB_LIVE_TYPE = "SB_LIVE_TYPE";
     public static final String SB_COMMUNITY_TYPE = "SB_COMMUNITY_TYPE";

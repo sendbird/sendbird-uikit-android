@@ -2,6 +2,9 @@ package com.sendbird.uikit.log;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.sendbird.uikit.BuildConfig;
 
 import java.util.HashSet;
@@ -12,6 +15,7 @@ public class Logger {
     private Logger() {
     }
 
+    @NonNull
     private static LoggerConfig loggerConfig = initLogConfig();
     private static final int LOG_SEGMENT_SIZE = 2000;
     private static int logLevel = LoggerConfig.DEV;
@@ -21,6 +25,7 @@ public class Logger {
         loggerConfig = initLogConfig();
     }
 
+    @NonNull
     private static LoggerConfig initLogConfig() {
         int printLogLevel = LoggerConfig.DEV;
         if (logLevel == LoggerConfig.DEV) {
@@ -34,25 +39,16 @@ public class Logger {
         LoggerConfig.Builder builder = new LoggerConfig.Builder();
         builder = builder.setDefaultTag(Tag.DEFAULT).setStackPrefix(Tag.DEFAULT.tag()).setPrintLoggerLevel(printLogLevel);
 
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         set.add(Logger.class.getName());
         builder.setIgnoreSet(set);
         return builder.build();
     }
 
-    private static int printLog(Tag tag, int logLevel, String msg) {
-        if (msg == null) {
-            return 0;
-        }
+    private static int printLog(@NonNull Tag tag, int logLevel, @NonNull String msg) {
         boolean withStack = true;
         String message = loggerConfig.getMessage(withStack, msg);
         if (!loggerConfig.isPrintLoggable(logLevel)) {
-            return 0;
-        }
-        if (message == null) {
-            message = loggerConfig.getMessage(withStack, msg);
-        }
-        if (message == null) {
             return 0;
         }
 
@@ -73,7 +69,7 @@ public class Logger {
         return totalPrintLen;
     }
 
-    private static int printLogPartially(int logLevel, String tagMsg, String msg, int depth) {
+    private static int printLogPartially(int logLevel, @NonNull String tagMsg, @NonNull String msg, int depth) {
         int msgLen = msg.length();
 
         int writtenLen = 0;
@@ -115,15 +111,17 @@ public class Logger {
         return writtenLen;
     }
 
+
+    @NonNull
     public static String getCallerTraceInfo(@SuppressWarnings("rawtypes")
-    Class klass) {
+                                            @NonNull Class klass) {
         if (!loggerConfig.isPrintLoggable(LoggerConfig.DEBUG)) {
             return "unknown caller";
         }
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
         String threadName = Thread.currentThread().getName();
         StackTraceElement stack = null;
-        String className = null;
+        String className;
         String callerClassName = klass.getName();
         boolean found = false;
         for (StackTraceElement stack1 : stacks) {
@@ -146,23 +144,24 @@ public class Logger {
         return String.format(Locale.US, "{%s}-[%s.%s():%d]", threadName, klassName, method, line);
     }
 
-    private static String getStackTraceString(Throwable tr) {
+    @NonNull
+    private static String getStackTraceString(@Nullable Throwable tr) {
         if (tr == null) return "";
         return Log.getStackTraceString(tr);
     }
 
-    public static int vt(Tag tag, Throwable tr) {
+    public static int vt(@NonNull Tag tag, @Nullable Throwable tr) {
         return vt(tag, getStackTraceString(tr));
     }
 
-    public static int vt(Tag tag, String msg, Throwable tr) {
+    public static int vt(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return vt(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int vt(Tag tag, String format, Object... args) {
+    private static int vt(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.VERBOSE)) {
-            String message = null;
-            if (args != null && args.length > 0) {
+            String message;
+            if (args.length > 0) {
                 message = String.format(format, args);
             } else {
                 message = format;
@@ -173,35 +172,35 @@ public class Logger {
         }
     }
 
-    public static int vt(Tag tag, String msg) {
+    public static int vt(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.VERBOSE, msg);
     }
 
     // verbose with default tag
-    public static int v(String format, Object... args) {
+    public static int v(@NonNull String format, @NonNull Object... args) {
         return vt(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int v(Throwable tr) {
+    public static int v(@Nullable Throwable tr) {
         return vt(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int v(String msg, Throwable tr) {
+    public static int v(@NonNull String msg, @Nullable Throwable tr) {
         return vt(loggerConfig.getDefaultTag(), msg, tr);
     }
 
-    public static int dt(Tag tag, Throwable tr) {
+    public static int dt(@NonNull Tag tag, @Nullable Throwable tr) {
         return dt(tag, getStackTraceString(tr));
     }
 
-    public static int dt(Tag tag, String msg, Throwable tr) {
+    public static int dt(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return dt(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int dt(Tag tag, String format, Object... args) {
+    private static int dt(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.DEBUG)) {
-            String message = null;
-            if (args != null && args.length > 0) {
+            String message;
+            if (args.length > 0) {
                 message = String.format(format, args);
             } else {
                 message = format;
@@ -212,38 +211,38 @@ public class Logger {
         }
     }
 
-    public static int dt(Tag tag, String msg) {
+    public static int dt(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.DEBUG, msg);
     }
 
-    public static int d(String format, Object... args) {
+    public static int d(@NonNull String format, @NonNull Object... args) {
         return dt(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int d(String msg) {
+    public static int d(@NonNull String msg) {
         return dt(loggerConfig.getDefaultTag(), msg);
     }
 
-    public static int d(Throwable tr) {
+    public static int d(@Nullable Throwable tr) {
         return dt(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int d(String msg, Throwable tr) {
+    public static int d(@NonNull String msg, @Nullable Throwable tr) {
         return dt(loggerConfig.getDefaultTag(), msg, tr);
     }
 
-    public static int it(Tag tag, Throwable tr) {
+    public static int it(@NonNull Tag tag, @Nullable Throwable tr) {
         return it(tag, getStackTraceString(tr));
     }
 
-    public static int it(Tag tag, String msg, Throwable tr) {
+    public static int it(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return it(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int it(Tag tag, String format, Object... args) {
+    private static int it(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.INFO)) {
-            String message = null;
-            if (args != null && args.length > 0) {
+            String message;
+            if (args.length > 0) {
                 message = String.format(format, args);
             } else {
                 message = format;
@@ -254,31 +253,31 @@ public class Logger {
         }
     }
 
-    public static int it(Tag tag, String msg) {
+    public static int it(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.INFO, msg);
     }
 
-    public static int i(String format, Object... args) {
+    public static int i(@NonNull String format, @NonNull Object... args) {
         return it(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int i(Throwable tr) {
+    public static int i(@Nullable Throwable tr) {
         return it(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int i(String msg, Throwable tr) {
+    public static int i(@NonNull String msg, @Nullable Throwable tr) {
         return it(loggerConfig.getDefaultTag(), msg, tr);
     }
 
-    public static int wt(Tag tag, Throwable tr) {
+    public static int wt(@NonNull Tag tag, @Nullable Throwable tr) {
         return wt(tag, getStackTraceString(tr));
     }
 
-    public static int wt(Tag tag, String msg, Throwable tr) {
+    public static int wt(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return wt(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int wt(Tag tag, String format, Object... args) {
+    private static int wt(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.WARN)) {
             String message = String.format(format, args);
             return printLog(tag, LoggerConfig.WARN, message);
@@ -287,38 +286,38 @@ public class Logger {
         }
     }
 
-    public static int wt(Tag tag, String msg) {
+    public static int wt(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.WARN, msg);
     }
 
-    public static int w(String format, Object... args) {
+    public static int w(@NonNull String format, @NonNull Object... args) {
         return wt(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int w(String msg) {
+    public static int w(@NonNull String msg) {
         return wt(loggerConfig.getDefaultTag(), msg);
     }
 
-    public static int w(Throwable tr) {
+    public static int w(@Nullable Throwable tr) {
         return wt(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int w(String msg, Throwable tr) {
+    public static int w(@NonNull String msg, @Nullable Throwable tr) {
         return wt(loggerConfig.getDefaultTag(), msg, tr);
     }
 
-    public static int et(Tag tag, Throwable tr) {
+    public static int et(@NonNull Tag tag, @Nullable Throwable tr) {
         return et(tag, getStackTraceString(tr));
     }
 
-    public static int et(Tag tag, String msg, Throwable tr) {
+    public static int et(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return et(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int et(Tag tag, String format, Object... args) {
+    private static int et(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.ERROR)) {
-            String message = null;
-            if (args != null && args.length > 0) {
+            String message;
+            if (args.length > 0) {
                 message = String.format(format, args);
             } else {
                 message = format;
@@ -329,38 +328,38 @@ public class Logger {
         }
     }
 
-    public static int et(Tag tag, String msg) {
+    public static int et(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.ERROR, msg);
     }
 
-    public static int e(String format, Object... args) {
+    public static int e(@NonNull String format, @NonNull Object... args) {
         return et(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int e(String msg) {
+    public static int e(@NonNull String msg) {
         return et(loggerConfig.getDefaultTag(), msg);
     }
 
-    public static int e(Throwable tr) {
+    public static int e(@Nullable Throwable tr) {
         return et(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int e(String msg, Throwable tr) {
+    public static int e(@NonNull String msg, @Nullable Throwable tr) {
         return et(loggerConfig.getDefaultTag(), msg, tr);
     }
 
-    public static int devt(Tag tag, Throwable tr) {
+    public static int devt(@NonNull Tag tag, @Nullable Throwable tr) {
         return devt(tag, getStackTraceString(tr));
     }
 
-    public static int devt(Tag tag, String msg, Throwable tr) {
+    public static int devt(@NonNull Tag tag, @NonNull String msg, @Nullable Throwable tr) {
         return devt(tag, "%s\n%s", msg, getStackTraceString(tr));
     }
 
-    private static int devt(Tag tag, String format, Object... args) {
+    private static int devt(@NonNull Tag tag, @NonNull String format, @NonNull Object... args) {
         if (loggerConfig.isPrintLoggable(LoggerConfig.DEV)) {
-            String message = null;
-            if (args != null && args.length > 0) {
+            String message;
+            if (args.length > 0) {
                 message = String.format(format, args);
             } else {
                 message = format;
@@ -371,23 +370,23 @@ public class Logger {
         }
     }
 
-    public static int devt(Tag tag, String msg) {
+    public static int devt(@NonNull Tag tag, @NonNull String msg) {
         return printLog(tag, LoggerConfig.DEV, msg);
     }
 
-    public static int dev(String format, Object... args) {
+    public static int dev(@NonNull String format, @NonNull Object... args) {
         return devt(loggerConfig.getDefaultTag(), format, args);
     }
 
-    public static int dev(String msg) {
+    public static int dev(@NonNull String msg) {
         return devt(loggerConfig.getDefaultTag(), msg);
     }
 
-    public static int dev(Throwable tr) {
+    public static int dev(@Nullable Throwable tr) {
         return devt(loggerConfig.getDefaultTag(), tr);
     }
 
-    public static int dev(String msg, Throwable tr) {
+    public static int dev(@NonNull String msg, @Nullable Throwable tr) {
         return devt(loggerConfig.getDefaultTag(), msg, tr);
     }
 }

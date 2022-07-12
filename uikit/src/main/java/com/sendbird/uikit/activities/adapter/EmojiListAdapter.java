@@ -6,16 +6,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.Emoji;
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
-import com.sendbird.uikit.R;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.Emoji;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiMoreViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiViewHolder;
+import com.sendbird.uikit.databinding.SbViewEmojiBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.widgets.EmojiView;
 
@@ -24,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Adapters provide a binding from a {@link Emoji} set to views that are displayed
- * within a {@link RecyclerView}.
+ * Adapters provides a binding from an {@link Emoji} data set to views that are displayed within a RecyclerView.
  *
  * @since 1.1.0
  */
@@ -33,9 +30,13 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
     private static final int VIEW_EMOJI = 0;
     private static final int VIEW_EMOJI_MORE = 1;
 
+    @NonNull
     private final List<Emoji> emojiList;
+    @NonNull
     private final Map<String, List<String>> reactionUserMap = new HashMap<>();
+    @Nullable
     private OnItemClickListener<String> emojiClickListener;
+    @Nullable
     private View.OnClickListener moreButtonClickListener;
     private final boolean showMoreButton;
 
@@ -48,8 +49,8 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      *                       <code>false</code> otherwise.
      * @since 1.1.0
      */
-    public EmojiListAdapter(List<Emoji> emojiList,
-                            List<Reaction> reactionList,
+    public EmojiListAdapter(@NonNull List<Emoji> emojiList,
+                            @Nullable List<Reaction> reactionList,
                             boolean showMoreButton) {
         this.emojiList = emojiList;
         if (reactionList != null) {
@@ -80,8 +81,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
         if (viewType == VIEW_EMOJI_MORE) {
             return new EmojiMoreViewHolder(new EmojiView(parent.getContext()));
         } else {
-            return new EmojiViewHolder(DataBindingUtil.inflate(inflater,
-                    R.layout.sb_view_emoji, parent, false));
+            return new EmojiViewHolder(SbViewEmojiBinding.inflate(inflater, parent, false));
         }
     }
 
@@ -107,25 +107,22 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
                 }
             });
         } else {
-            if (reactionUserMap != null && !reactionUserMap.isEmpty() && current != null) {
+            if (!reactionUserMap.isEmpty() && current != null) {
                 List<String> userIds = reactionUserMap.get(current.getKey());
-                if (userIds != null && SendBird.getCurrentUser() != null && userIds.contains(SendBird.getCurrentUser().getUserId())) {
-                    holder.itemView.setSelected(true);
-                } else {
-                    holder.itemView.setSelected(false);
-                }
+                holder.itemView.setSelected(userIds != null && SendbirdChat.getCurrentUser() != null && userIds.contains(SendbirdChat.getCurrentUser().getUserId()));
             }
 
             holder.itemView.setOnClickListener(v -> {
-                Emoji emoji = getItem(holder.getAdapterPosition());
+                Emoji emoji = getItem(holder.getBindingAdapterPosition());
                 if (emojiClickListener != null && emoji != null) {
                     emojiClickListener.onItemClick(v,
-                            holder.getAdapterPosition(),
+                            holder.getBindingAdapterPosition(),
                             emoji.getKey());
                 }
             });
         }
 
+        if (current == null) return;
         holder.bind(current);
     }
 
@@ -137,10 +134,6 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      */
     @Override
     public int getItemCount() {
-        if (emojiList == null) {
-            return 0;
-        }
-
         if (showMoreButton) {
             return emojiList.size()+1;
         } else {
@@ -156,8 +149,9 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * @since 1.1.0
      */
     @Override
+    @Nullable
     public Emoji getItem(int position) {
-        if (emojiList == null || position >= emojiList.size()) {
+        if (position >= emojiList.size()) {
             return null;
         }
         return emojiList.get(position);
@@ -170,6 +164,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * @since 1.1.0
      */
     @Override
+    @NonNull
     public List<Emoji> getItems() {
         return emojiList;
     }

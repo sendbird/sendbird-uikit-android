@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true"
-        >
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,7 +67,7 @@
                     android:background="@drawable/shape_rect_transparent"
                     android:textSize="16sp"
                     android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionNext|flagNoExtractUi"
                     android:inputType="text">
                     <requestFocus />
                 </com.google.android.material.textfield.TextInputEditText>
@@ -99,7 +98,7 @@
                     android:textSize="16sp"
                     android:hint="@string/text_hint_nickname"
                     android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionDone|flagNoExtractUi"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -127,9 +126,7 @@
                 android:textColor="@color/onlight_02"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                />
+                android:layout_height="0dp" />
         </LinearLayout>
-
     </ScrollView>
 </LinearLayout>

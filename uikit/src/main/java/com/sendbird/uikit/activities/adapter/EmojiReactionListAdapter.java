@@ -1,21 +1,22 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.Reaction;
-import com.sendbird.android.SendBird;
-import com.sendbird.uikit.R;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiReactionMoreViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiReactionViewHolder;
+import com.sendbird.uikit.databinding.SbViewEmojiReactionBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
@@ -25,11 +26,8 @@ import com.sendbird.uikit.widgets.EmojiReactionView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 /**
- * Adapters provide a binding from a {@link Reaction} set to views that are displayed
- * within a {@link RecyclerView}.
+ * EmojiReactionListAdapter provides a binding from a {@link Reaction} set to views that are displayed within a RecyclerView.
  *
  * @since 1.1.0
  */
@@ -37,9 +35,13 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
     private static final int VIEW_EMOJI_REACTION = 0;
     private static final int VIEW_EMOJI_REACTION_MORE = 1;
 
+    @NonNull
     private final List<Reaction> reactionList = new ArrayList<>();
+    @Nullable
     private OnItemClickListener<String> emojiReactionClickListener;
+    @Nullable
     private OnItemLongClickListener<String> emojiReactionLongClickListener;
+    @Nullable
     private View.OnClickListener moreButtonClickListener;
     private boolean useMoreButton = true;
     private boolean clickable = true;
@@ -63,8 +65,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
     public BaseViewHolder<Reaction> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == VIEW_EMOJI_REACTION) {
-            return new EmojiReactionViewHolder(DataBindingUtil.inflate(inflater,
-                    R.layout.sb_view_emoji_reaction, parent, false));
+            return new EmojiReactionViewHolder(SbViewEmojiReactionBinding.inflate(inflater, parent, false));
         } else {
             return new EmojiReactionMoreViewHolder(new EmojiReactionView(parent.getContext()));
         }
@@ -86,7 +87,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
         if (type == VIEW_EMOJI_REACTION_MORE) {
             holder.itemView.setOnClickListener(v -> {
-                int reactionPosition = holder.getAdapterPosition();
+                int reactionPosition = holder.getBindingAdapterPosition();
                 if (reactionPosition != NO_POSITION && moreButtonClickListener != null) {
                     moreButtonClickListener.onClick(v);
                 }
@@ -96,22 +97,19 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
             if (current != null) {
                 List<String> userIds = current.getUserIds();
-                if (userIds != null && SendBird.getCurrentUser() != null &&  userIds.contains(
-                        SendBird.getCurrentUser().getUserId())) {
-                    holder.itemView.setSelected(true);
-                } else {
-                    holder.itemView.setSelected(false);
-                }
+                holder.itemView.setSelected(SendbirdChat.getCurrentUser() != null && userIds.contains(
+                        SendbirdChat.getCurrentUser().getUserId()));
             }
 
             Logger.d("++ isClickable = %s, longClickable=%s", clickable, longClickable);
             if (this.clickable) {
                 holder.itemView.setOnClickListener(v -> {
-                    int reactionPosition = holder.getAdapterPosition();
+                    int reactionPosition = holder.getBindingAdapterPosition();
                     if (reactionPosition != NO_POSITION && emojiReactionClickListener != null) {
+                        final Reaction reaction = getItem(reactionPosition);
                         emojiReactionClickListener.onItemClick(v,
                                 reactionPosition,
-                                getItem(reactionPosition) != null ? getItem(reactionPosition).getKey() : "");
+                                reaction != null ? reaction.getKey() : "");
                     }
                 });
             } else {
@@ -120,11 +118,12 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
 
             if (this.longClickable) {
                 holder.itemView.setOnLongClickListener(v -> {
-                    int reactionPosition = holder.getAdapterPosition();
+                    int reactionPosition = holder.getBindingAdapterPosition();
                     if (reactionPosition != NO_POSITION && emojiReactionLongClickListener != null) {
+                        final Reaction reaction = getItem(reactionPosition);
                         emojiReactionLongClickListener.onItemLongClick(v,
                                 reactionPosition,
-                                getItem(reactionPosition) != null ? getItem(reactionPosition).getKey() : "");
+                                reaction != null ? reaction.getKey() : "");
                         return true;
                     }
                     return false;
@@ -133,6 +132,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
                 holder.itemView.setOnLongClickListener(null);
             }
 
+            if (current == null) return;
             holder.bind(current);
         }
     }
@@ -145,10 +145,6 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      */
     @Override
     public int getItemCount() {
-        if (reactionList == null) {
-            return 0;
-        }
-
         if (reactionList.size() >= EmojiManager.getInstance().getAllEmojis().size()) {
             return reactionList.size();
         } else {
@@ -164,8 +160,9 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @since 1.1.0
      */
     @Override
+    @Nullable
     public Reaction getItem(int position) {
-        if (reactionList == null || position >= reactionList.size()) {
+        if (position >= reactionList.size()) {
             return null;
         }
         return reactionList.get(position);
@@ -178,6 +175,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @since 1.1.0
      */
     @Override
+    @NonNull
     public List<Reaction> getItems() {
         return reactionList;
     }
@@ -192,7 +190,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      */
     @Override
     public int getItemViewType(int position) {
-        if (reactionList == null || position >= reactionList.size()) {
+        if (position >= reactionList.size()) {
             return VIEW_EMOJI_REACTION_MORE;
         }
         return VIEW_EMOJI_REACTION;
@@ -204,7 +202,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @param reactionList list to be displayed
      * @since 1.1.0
      */
-    public void setReactionList(List<Reaction> reactionList) {
+    public void setReactionList(@NonNull List<Reaction> reactionList) {
         final EmojiReactionDiffCallback diffCallback = new EmojiReactionDiffCallback(this.reactionList, reactionList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
@@ -260,6 +258,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @return true if the view is using more button, false otherwise
      * @since 1.1.2
      */
+    @SuppressLint("KotlinPropertyAccess")
     public boolean useMoreButton() {
         return useMoreButton;
     }

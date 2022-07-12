@@ -1,205 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ThemeableRecyclerView">
-        <attr name="sb_pager_recycler_view_use_divide_line" format="boolean"/>
-        <attr name="sb_pager_recycler_view_divide_line_color" format="color"/>
-        <attr name="sb_pager_recycler_view_divide_line_height" format="dimension"/>
-        <attr name="sb_pager_recycler_view_divide_margin_left" format="dimension"/>
-        <attr name="sb_pager_recycler_view_divide_margin_right" format="dimension"/>
+    <declare-styleable name="Modules">
+        <attr name="sb_module_banned_user_list" format="reference"/>
+        <attr name="sb_module_channel_list" format="reference"/>
+        <attr name="sb_module_channel" format="reference"/>
+        <attr name="sb_module_channel_overlay" format="reference"/>
+        <attr name="sb_module_channel_settings" format="reference"/>
+        <attr name="sb_module_create_channel" format="reference"/>
+        <attr name="sb_module_invite_user" format="reference"/>
+        <attr name="sb_module_member_list" format="reference"/>
+        <attr name="sb_module_message_search" format="reference"/>
+        <attr name="sb_module_moderation" format="reference"/>
+        <attr name="sb_module_muted_member_list" format="reference"/>
+        <attr name="sb_module_open_channel" format="reference"/>
+        <attr name="sb_module_open_channel_settings" format="reference"/>
+        <attr name="sb_module_operator_list" format="reference"/>
+        <attr name="sb_module_participant_list" format="reference"/>
+        <attr name="sb_module_register_operator_list" format="reference"/>
+        <attr name="sb_module_channel_push_setting" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="ChannelPreview">
-        <attr name="sb_channel_preview_title_appearance" format="reference"/>
-        <attr name="sb_channel_preview_member_count_appearance" format="reference"/>
-        <attr name="sb_channel_preview_updated_at_appearance" format="reference"/>
-        <attr name="sb_channel_preview_unread_count_appearance" format="reference"/>
-        <attr name="sb_channel_preview_last_message_appearance" format="reference"/>
+    <declare-styleable name="Components">
+        <attr name="sb_component_channel_message_input" format="reference"/>
+        <attr name="sb_component_channel_settings_info" format="reference"/>
+        <attr name="sb_component_channel_settings_menu" format="reference"/>
+        <attr name="sb_component_message_search_header" format="reference"/>
+        <attr name="sb_component_moderation_list" format="reference"/>
+        <attr name="sb_component_open_channel_message_input" format="reference"/>
+        <attr name="sb_component_open_channel_settings_info" format="reference"/>
+        <attr name="sb_component_open_channel_settings_menu" format="reference"/>
+        <attr name="sb_component_header" format="reference"/>
+        <attr name="sb_component_state_header" format="reference"/>
+        <attr name="sb_component_list" format="reference"/>
+        <attr name="sb_component_status" format="reference"/>
+        <attr name="sb_component_channel_push_setting" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="UserPreview">
-        <attr name="sb_user_preview_nickname_appearance" format="reference"/>
-        <attr name="sb_user_preview_use_selection" format="boolean"/>
-    </declare-styleable>
-
-    <declare-styleable name="MemberPreview">
-        <attr name="sb_member_preview_nickname_appearance" format="reference"/>
-        <attr name="sb_member_preview_description_appearance" format="reference"/>
-        <attr name="sb_member_preview_use_action_menu" format="boolean"/>
-        <attr name="sb_member_preview_action_menu_background" format="reference"/>
-    </declare-styleable>
-
-    <declare-styleable name="SingleMenuItemView">
-        <attr name="sb_menu_item_background" format="reference"/>
-        <attr name="sb_menu_item_name_appearance" format="reference"/>
-        <attr name="sb_menu_item_name" format="string"/>
-        <attr name="sb_menu_item_icon" format="reference"/>
-        <attr name="sb_menu_item_icon_tint" format="reference"/>
-        <attr name="sb_menu_item_action_drawable" format="reference"/>
-        <attr name="sb_menu_item_type" format="enum">
-            <enum name="next" value="0"/>
-            <enum name="switcher" value="1"/>
-        </attr>
-    </declare-styleable>
-
-    <declare-styleable name="SendBirdTheme">
-        <attr name="sb_appbar_style" format="reference"/>
-        <attr name="sb_recycler_view_style" format="reference"/>
-        <attr name="sb_channel_preview_style" format="reference"/>
-        <attr name="sb_user_preview_style" format="reference"/>
-        <attr name="sb_member_preview_style" format="reference"/>
-        <attr name="sb_channel_message_list_style" format="reference"/>
-        <attr name="sb_dialog_view_style" format="reference"/>
-        <attr name="sb_status_frame_style" format="reference"/>
-        <attr name="sb_message_user_style" format="reference"/>
-        <attr name="sb_message_file_style" format="reference"/>
-        <attr name="sb_message_admin_style" format="reference"/>
-        <attr name="sb_message_timeline_style" format="reference"/>
-        <attr name="sb_channel_settings_style" format="reference"/>
-        <attr name="sb_toast_view_style" format="reference"/>
-        <attr name="sb_message_input_style" format="reference"/>
-        <attr name="sb_emoji_reaction_style" format="reference"/>
-        <attr name="sb_select_channel_type_style" format="reference"/>
-        <attr name="sb_single_menu_item_style" format="reference"/>
-        <attr name="sb_user_profile_style" format="reference"/>
-        <attr name="sb_search_bar_style" format="reference"/>
-        <attr name="sb_message_preview_style" format="reference"/>
-        <attr name="sb_my_quoted_message_style" format="reference"/>
-        <attr name="sb_other_quoted_message_style" format="reference"/>
-
-        <attr name="sb_open_channel_message_user_style" format="reference"/>
-        <attr name="sb_open_channel_message_file_style" format="reference"/>
-        <attr name="sb_open_channel_message_admin_style" format="reference"/>
-        <attr name="sb_open_channel_settings_style" format="reference"/>
-    </declare-styleable>
-
-    <declare-styleable name="AppBarView">
+    <declare-styleable name="HeaderComponent">
+        <attr name="sb_appbar_background" format="reference"/>
         <attr name="sb_appbar_title" format="string"/>
         <attr name="sb_appbar_title_appearance" format="reference" />
         <attr name="sb_appbar_description" format="string"/>
         <attr name="sb_appbar_description_appearance" format="reference" />
-        <attr name="sb_appbar_button_tint" format="reference"/>
         <attr name="sb_appbar_divider_color" format="reference"/>
         <attr name="sb_appbar_left_button_text" format="string"/>
         <attr name="sb_appbar_left_button_icon" format="reference"/>
         <attr name="sb_appbar_right_button_text" format="string"/>
         <attr name="sb_appbar_right_button_icon" format="reference"/>
-
-        <attr name="sb_appbar_left_button_text_appearance" format="reference"/>
-        <attr name="sb_appbar_left_button_text_color" format="reference"/>
         <attr name="sb_appbar_left_button_tint" format="reference"/>
         <attr name="sb_appbar_left_button_background" format="reference"/>
         <attr name="sb_appbar_right_button_text_appearance" format="reference"/>
-        <attr name="sb_appbar_right_button_text_color" format="reference"/>
-        <attr name="sb_appbar_right_button_tint" format="reference"/>
+        <attr name="sb_appbar_right_button_text_color" format="reference|color"/>
+        <attr name="sb_appbar_right_button_tint" format="reference|color"/>
         <attr name="sb_appbar_right_button_background" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="DialogView">
-        <attr name="sb_dialog_view_background" format="reference"/>
-        <attr name="sb_dialog_view_background_bottom" format="reference"/>
-        <attr name="sb_dialog_view_background_anchor" format="reference"/>
-        <attr name="sb_dialog_view_title_appearance" format="reference"/>
-        <attr name="sb_dialog_view_message_appearance" format="reference"/>
-        <attr name="sb_dialog_view_list_item_appearance" format="reference"/>
-        <attr name="sb_dialog_view_list_item_text_color" format="reference"/>
-        <attr name="sb_dialog_view_list_item_background" format="reference"/>
-        <attr name="sb_dialog_view_edit_text_appearance" format="reference"/>
-        <attr name="sb_dialog_view_edit_text_tint" format="reference"/>
-        <attr name="sb_dialog_view_edit_text_cursor_drawable" format="reference"/>
-        <attr name="sb_dialog_view_edit_text_hint_color" format="reference"/>
-        <attr name="sb_dialog_view_icon_tint" format="reference"/>
-
-        <attr name="sb_dialog_view_positive_button_text_appearance" format="reference"/>
-        <attr name="sb_dialog_view_positive_button_text_color" format="reference"/>
-        <attr name="sb_dialog_view_positive_button_background" format="reference"/>
-        <attr name="sb_dialog_view_neutral_button_text_appearance" format="reference"/>
-        <attr name="sb_dialog_view_neutral_button_text_color" format="reference"/>
-        <attr name="sb_dialog_view_neutral_button_background" format="reference"/>
-        <attr name="sb_dialog_view_negative_button_text_appearance" format="reference"/>
-        <attr name="sb_dialog_view_negative_button_text_color" format="reference"/>
-        <attr name="sb_dialog_view_negative_button_background" format="reference"/>
+    <declare-styleable name="ListComponent">
+        <attr name="sb_recycler_view_background" format="reference"/>
+        <attr name="sb_recycler_view_divide_line_color" format="color"/>
+        <attr name="sb_recycler_view_divide_line_height" format="dimension"/>
+        <attr name="sb_recycler_view_divide_margin_left" format="dimension"/>
+        <attr name="sb_recycler_view_divide_margin_right" format="dimension"/>
+        <attr name="sb_recycler_view_top_line_color" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="ProfileView">
-        <attr name="SBProfileImageAdapter" format="string"/>
-    </declare-styleable>
-
-    <declare-styleable name="StatusFrameView">
+    <declare-styleable name="StatusComponent">
         <attr name="sb_status_frame_background" format="reference"/>
         <attr name="sb_status_frame_text_appearance" format="reference"/>
         <attr name="sb_status_frame_action_text_appearance" format="reference"/>
         <attr name="sb_status_frame_action_background" format="reference"/>
-        <attr name="sb_status_frame_icon_tint" format="reference"/>
         <attr name="sb_status_frame_error_text" format="string"/>
         <attr name="sb_status_frame_empty_text" format="string"/>
         <attr name="sb_status_frame_action_text" format="string"/>
         <attr name="sb_status_frame_error_icon" format="reference"/>
+        <attr name="sb_status_frame_error_icon_tint" format="reference|color"/>
         <attr name="sb_status_frame_empty_icon" format="reference"/>
+        <attr name="sb_status_frame_empty_icon_tint" format="reference|color"/>
         <attr name="sb_status_frame_action_icon" format="reference"/>
-        <attr name="sb_status_frame_show_action" format="boolean"/>
+        <attr name="sb_status_frame_action_icon_tint" format="reference|color"/>
     </declare-styleable>
 
-    <declare-styleable name="ChannelSettings">
-        <attr name="sb_channel_settings_background" format="reference"/>
-        <attr name="sb_channel_settings_item_background" format="reference"/>
-        <attr name="sb_channel_settings_name_appearance" format="reference"/>
-        <attr name="sb_channel_settings_item_appearance" format="reference"/>
-        <attr name="sb_channel_settings_description_appearance" format="reference"/>
-        <attr name="sb_channel_information_title_appearance" format="reference"/>
-        <attr name="sb_channel_information_content_appearance" format="reference"/>
+    <declare-styleable name="Widgets">
+        <attr name="sb_widget_channel_preview" format="reference"/>
+        <attr name="sb_widget_user_preview" format="reference"/>
+        <attr name="sb_widget_suggested_mention_preview" format="reference"/>
+        <attr name="sb_widget_select_user_preview" format="reference"/>
+        <attr name="sb_widget_select_channel_type" format="reference"/>
+        <attr name="sb_widget_message_preview" format="reference"/>
+
+        <attr name="sb_widget_ogtag" format="reference"/>
+        <attr name="sb_widget_user_message" format="reference"/>
+        <attr name="sb_widget_file_message" format="reference"/>
+        <attr name="sb_widget_my_message" format="reference"/>
+        <attr name="sb_widget_other_message" format="reference"/>
+        <attr name="sb_widget_my_user_message" format="reference"/>
+        <attr name="sb_widget_my_file_message" format="reference"/>
+        <attr name="sb_widget_other_user_message" format="reference"/>
+        <attr name="sb_widget_other_file_message" format="reference"/>
+        <attr name="sb_widget_admin_message" format="reference"/>
+        <attr name="sb_widget_timeline_message" format="reference"/>
+        <attr name="sb_widget_emoji_message" format="reference"/>
+
+        <attr name="sb_widget_channel_settings_view" format="reference"/>
+        <attr name="sb_widget_single_menu_item_view" format="reference"/>
+        <attr name="sb_widget_dialog" format="reference"/>
+        <attr name="sb_widget_themeable_snackbar" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="MessageInput">
-        <attr name="sb_message_input_background" format="reference"/>
-        <attr name="sb_message_input_text_background" format="reference"/>
-        <attr name="sb_message_input_text_appearance" format="reference"/>
-        <attr name="sb_message_input_text_hint_color" format="reference"/>
-        <attr name="sb_message_input_text_cursor_drawable" format="reference"/>
-        <attr name="sb_message_input_enable" format="boolean"/>
-
-        <attr name="sb_message_input_left_button_tint" format="reference"/>
-        <attr name="sb_message_input_left_button_background" format="reference"/>
-        <attr name="sb_message_input_right_button_tint" format="reference"/>
-        <attr name="sb_message_input_right_button_background" format="reference"/>
-        <attr name="sb_message_input_edit_save_button_text_appearance" format="reference"/>
-        <attr name="sb_message_input_edit_save_button_text_color" format="reference"/>
-        <attr name="sb_message_input_edit_save_button_background" format="reference"/>
-        <attr name="sb_message_input_edit_cancel_button_text_appearance" format="reference"/>
-        <attr name="sb_message_input_edit_cancel_button_text_color" format="reference"/>
-        <attr name="sb_message_input_edit_cancel_button_background" format="reference"/>
-
-        <attr name="sb_message_input_quote_reply_title_text_appearance" format="reference"/>
-        <attr name="sb_message_input_quoted_message_text_appearance" format="reference"/>
-        <attr name="sb_message_input_quote_reply_right_icon" format="reference"/>
-        <attr name="sb_message_input_quote_reply_right_icon_tint" format="reference"/>
-        <attr name="sb_message_input_quote_reply_right_icon_background" format="reference"/>
+    <declare-styleable name="ChannelPreview">
+        <attr name="sb_channel_preview_background" format="reference"/>
+        <attr name="sb_channel_preview_title_appearance" format="reference"/>
+        <attr name="sb_channel_preview_member_count_appearance" format="reference"/>
+        <attr name="sb_channel_preview_updated_at_appearance" format="reference"/>
+        <attr name="sb_channel_preview_unread_count_appearance" format="reference"/>
+        <attr name="sb_channel_preview_unread_mention_count_appearance" format="reference"/>
+        <attr name="sb_channel_preview_last_message_appearance" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="SelectChannelTypeView">
-        <attr name="sb_select_channel_type_menu_background" format="reference"/>
-        <attr name="sb_select_channel_type_menu_title_appearance" format="reference"/>
-        <attr name="sb_select_channel_type_menu_name_appearance" format="reference"/>
-        <attr name="sb_select_channel_type_menu_icon_tint" format="reference"/>
-    </declare-styleable>
-    
-    <!-- Message List-->
-    <declare-styleable name="MessageListView">
-        <attr name="sb_message_recyclerview_background" format="reference"/>
-        <attr name="sb_message_recyclerview_tooltip_background" format="reference"/>
-        <attr name="sb_message_recyclerview_tooltip_textappearance" format="reference"/>
-        <attr name="sb_message_typing_indicator_textappearance" format="reference"/>
-        <attr name="sb_message_scroll_bottom_background" format="reference"/>
-        <attr name="sb_message_scroll_bottom_icon" format="reference"/>
-        <attr name="sb_message_scroll_bottom_icon_tint" format="color"/>
-
-        <attr name="sb_pager_recycler_view_use_divide_line" />
-        <attr name="sb_pager_recycler_view_divide_line_color" />
-        <attr name="sb_pager_recycler_view_divide_line_height" />
+    <declare-styleable name="SelectUserPreview">
+        <attr name="sb_select_user_preview_background" format="reference"/>
+        <attr name="sb_select_user_preview_nickname_appearance" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="ToastView">
-        <attr name="sb_toast_background" format="reference"/>
-        <attr name="sb_toast_text_appearance" format="reference"/>
+    <declare-styleable name="UserPreview">
+        <attr name="sb_member_preview_background" format="reference"/>
+        <attr name="sb_member_preview_nickname_appearance" format="reference"/>
+        <attr name="sb_member_preview_description_appearance" format="reference"/>
+        <attr name="sb_member_preview_action_menu_background" format="reference"/>
+        <attr name="sb_mention_empty_nickname_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ThemeableSnackbar">
+        <attr name="sb_snackbar_roof_line_color" format="reference|color"/>
+        <attr name="sb_snackbar_background" format="reference"/>
+        <attr name="sb_snackbar_text_appearance" format="reference"/>
+        <attr name="sb_snackbar_icon" format="reference"/>
+        <attr name="sb_snackbar_icon_tint" format="reference|color"/>
     </declare-styleable>
 
     <!-- Message View -->
@@ -208,10 +144,10 @@
         <attr name="sb_message_other_text_appearance" format="reference"/>
         <attr name="sb_message_me_background" format="reference"/>
         <attr name="sb_message_other_background" format="reference"/>
-        <attr name="sb_message_me_background_tint" format="reference"/>
-        <attr name="sb_message_other_background_tint" format="reference"/>
-        <attr name="sb_message_my_edited_mark_text_appearance" format="reference"/>
-        <attr name="sb_message_other_edited_mark_text_appearance" format="reference"/>
+        <attr name="sb_message_me_background_tint" format="reference|color"/>
+        <attr name="sb_message_other_background_tint" format="reference|color"/>
+        <attr name="sb_message_my_edited_mark_text_appearance" format="reference|color"/>
+        <attr name="sb_message_other_edited_mark_text_appearance" format="reference|color"/>
 
         <attr name="sb_message_time_text_appearance" format="reference"/>
         <attr name="sb_message_timeline_text_appearance" format="reference"/>
@@ -221,15 +157,15 @@
         <attr name="sb_message_emoji_reaction_list_background" format="reference"/>
 
         <attr name="sb_message_me_ogtag_background" format="reference"/>
-        <attr name="sb_message_me_ogtag_background_tint" format="reference"/>
+        <attr name="sb_message_me_ogtag_background_tint" format="reference|color"/>
         <attr name="sb_message_other_ogtag_background" format="reference"/>
-        <attr name="sb_message_other_ogtag_background_tint" format="reference"/>
+        <attr name="sb_message_other_ogtag_background_tint" format="reference|color"/>
         <attr name="sb_message_ogtag_title_appearance" format="reference"/>
         <attr name="sb_message_ogtag_description_appearance" format="reference"/>
         <attr name="sb_message_ogtag_url_appearance" format="reference"/>
 
-        <attr name="sb_message_me_link_text_color" format="reference"/>
-        <attr name="sb_message_other_link_text_color" format="reference"/>
+        <attr name="sb_message_me_link_text_color" format="reference|color"/>
+        <attr name="sb_message_other_link_text_color" format="reference|color"/>
         <attr name="sb_message_me_clicked_link_background_color" format="reference"/>
         <attr name="sb_message_other_clicked_link_background_color" format="reference"/>
 
@@ -241,8 +177,26 @@
         <attr name="sb_message_clicked_link_background_color" format="reference"/>
         <attr name="sb_message_edited_mark_text_appearance" format="reference"/>
 
-        <attr name="sb_message_highlight_background_color" format="reference"/>
-        <attr name="sb_message_highlight_foreground_color" format="reference"/>
+
+        <attr name="sb_message_my_mentioned_text_appearance" format="reference|color"/>
+        <attr name="sb_message_other_mentioned_text_appearance" format="reference|color"/>
+        <attr name="sb_message_mentioned_current_user_text_appearance" format="reference"/>
+        <attr name="sb_message_mentioned_current_user_text_background" format="reference|color"/>
+
+        <attr name="sb_quoted_message_me_title_icon" format="reference"/>
+        <attr name="sb_quoted_message_other_title_icon" format="reference"/>
+        <attr name="sb_quoted_message_me_title_icon_tint" format="reference|color"/>
+        <attr name="sb_quoted_message_other_title_icon_tint" format="reference|color"/>
+        <attr name="sb_quoted_message_me_title_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_other_title_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_me_background" format="reference"/>
+        <attr name="sb_quoted_message_other_background" format="reference"/>
+        <attr name="sb_quoted_message_me_background_tint" format="reference|color"/>
+        <attr name="sb_quoted_message_other_background_tint" format="reference|color"/>
+        <attr name="sb_quoted_message_me_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_other_text_appearance" format="reference"/>
+        <attr name="sb_quoted_message_me_file_icon_tint" format="reference|color"/>
+        <attr name="sb_quoted_message_other_file_icon_tint" format="reference|color"/>
     </declare-styleable>
 
     <declare-styleable name="MessageView.User">
@@ -254,6 +208,10 @@
         <attr name="sb_message_other_background_tint" />
         <attr name="sb_message_my_edited_mark_text_appearance" />
         <attr name="sb_message_other_edited_mark_text_appearance" />
+        <attr name="sb_message_my_mentioned_text_appearance" />
+        <attr name="sb_message_other_mentioned_text_appearance" />
+        <attr name="sb_message_mentioned_current_user_text_background" />
+        <attr name="sb_message_mentioned_current_user_text_appearance" />
 
         <attr name="sb_message_time_text_appearance" />
         <attr name="sb_message_sender_name_text_appearance"/>
@@ -273,8 +231,20 @@
         <attr name="sb_message_me_clicked_link_background_color" />
         <attr name="sb_message_other_clicked_link_background_color" />
 
-        <attr name="sb_message_highlight_background_color"/>
-        <attr name="sb_message_highlight_foreground_color"/>
+        <attr name="sb_quoted_message_me_title_icon"/>
+        <attr name="sb_quoted_message_other_title_icon"/>
+        <attr name="sb_quoted_message_me_title_icon_tint"/>
+        <attr name="sb_quoted_message_other_title_icon_tint"/>
+        <attr name="sb_quoted_message_me_title_text_appearance"/>
+        <attr name="sb_quoted_message_other_title_text_appearance"/>
+        <attr name="sb_quoted_message_me_background"/>
+        <attr name="sb_quoted_message_other_background"/>
+        <attr name="sb_quoted_message_me_background_tint"/>
+        <attr name="sb_quoted_message_other_background_tint"/>
+        <attr name="sb_quoted_message_me_text_appearance"/>
+        <attr name="sb_quoted_message_other_text_appearance"/>
+        <attr name="sb_quoted_message_me_file_icon_tint"/>
+        <attr name="sb_quoted_message_other_file_icon_tint"/>
     </declare-styleable>
 
     <declare-styleable name="MessageView.File">
@@ -289,8 +259,21 @@
         <attr name="sb_message_sender_name_text_appearance"/>`
 
         <attr name="sb_message_emoji_reaction_list_background" />
-        <attr name="sb_message_highlight_background_color"/>
-        <attr name="sb_message_highlight_foreground_color"/>
+
+        <attr name="sb_quoted_message_me_title_icon"/>
+        <attr name="sb_quoted_message_other_title_icon"/>
+        <attr name="sb_quoted_message_me_title_icon_tint"/>
+        <attr name="sb_quoted_message_other_title_icon_tint"/>
+        <attr name="sb_quoted_message_me_title_text_appearance"/>
+        <attr name="sb_quoted_message_other_title_text_appearance"/>
+        <attr name="sb_quoted_message_me_background"/>
+        <attr name="sb_quoted_message_other_background"/>
+        <attr name="sb_quoted_message_me_background_tint"/>
+        <attr name="sb_quoted_message_other_background_tint"/>
+        <attr name="sb_quoted_message_me_text_appearance"/>
+        <attr name="sb_quoted_message_other_text_appearance"/>
+        <attr name="sb_quoted_message_me_file_icon_tint"/>
+        <attr name="sb_quoted_message_other_file_icon_tint"/>
     </declare-styleable>
 
     <declare-styleable name="MessageView.Admin">
@@ -301,16 +284,16 @@
     <declare-styleable name="Emoji">
         <attr name="sb_emoji_background" format="reference"/>
         <attr name="sb_emoji_more_button_src" format="reference"/>
-        <attr name="sb_emoji_more_button_src_tint" format="reference"/>
+        <attr name="sb_emoji_more_button_src_tint" format="reference|color"/>
         <attr name="sb_emoji_failed_src" format="reference"/>
-        <attr name="sb_emoji_failed_src_tint" format="reference"/>
+        <attr name="sb_emoji_failed_src_tint" format="reference|color"/>
     </declare-styleable>
 
     <declare-styleable name="EmojiReaction">
         <attr name="sb_emoji_reaction_background" format="reference"/>
         <attr name="sb_emoji_reaction_text_appearance" format="reference"/>
         <attr name="sb_emoji_reaction_more_button_src" format="reference"/>
-        <attr name="sb_emoji_reaction_more_button_src_tint" format="reference"/>
+        <attr name="sb_emoji_reaction_more_button_src_tint" format="reference|color"/>
         <attr name="sb_emoji_failed_src" />
         <attr name="sb_emoji_failed_src_tint" />
     </declare-styleable>
@@ -342,14 +325,118 @@
         <attr name="sb_auto_link_text_view_clicked_text_color" format="reference"/>
         <attr name="sb_auto_link_text_view_clicked_background_color" format="reference"/>
     </declare-styleable>
+
+    <!-- Message List-->
+    <declare-styleable name="MessageListView">
+        <attr name="sb_message_recyclerview_background" format="reference"/>
+        <attr name="sb_message_recyclerview_tooltip_background" format="reference"/>
+        <attr name="sb_message_recyclerview_tooltip_textappearance" format="reference"/>
+        <attr name="sb_message_typing_indicator_textappearance" format="reference"/>
+        <attr name="sb_message_recyclerview_banner_background" format="reference"/>
+        <attr name="sb_message_recyclerview_banner_textappearance" format="reference"/>
+        <attr name="sb_message_scroll_bottom_background" format="reference"/>
+        <attr name="sb_message_scroll_bottom_icon" format="reference"/>
+        <attr name="sb_message_scroll_bottom_icon_tint" format="color|reference"/>
+
+        <attr name="sb_recycler_view_divide_line_color" />
+        <attr name="sb_recycler_view_divide_line_height" />
+    </declare-styleable>
+
+    <!-- Message Input -->
+    <declare-styleable name="MessageInputComponent">
+        <attr name="sb_message_input_background" format="reference"/>
+        <attr name="sb_message_input_text_background" format="reference"/>
+        <attr name="sb_message_input_text_appearance" format="reference"/>
+        <attr name="sb_message_input_text_hint" format="string"/>
+        <attr name="sb_message_input_text_hint_color" format="reference|color"/>
+        <attr name="sb_message_input_text_cursor_drawable" format="reference"/>
+
+        <attr name="sb_message_input_left_button_icon" format="reference"/>
+        <attr name="sb_message_input_left_button_tint" format="reference|color"/>
+        <attr name="sb_message_input_left_button_background" format="reference"/>
+        <attr name="sb_message_input_right_button_icon" format="reference"/>
+        <attr name="sb_message_input_right_button_tint" format="reference|color"/>
+        <attr name="sb_message_input_right_button_background" format="reference"/>
+        <attr name="sb_message_input_edit_save_button_text_appearance" format="reference"/>
+        <attr name="sb_message_input_edit_save_button_text_color" format="reference|color"/>
+        <attr name="sb_message_input_edit_save_button_background" format="reference"/>
+        <attr name="sb_message_input_edit_cancel_button_text_appearance" format="reference"/>
+        <attr name="sb_message_input_edit_cancel_button_text_color" format="reference|color"/>
+        <attr name="sb_message_input_edit_cancel_button_background" format="reference"/>
+
+        <attr name="sb_message_input_quote_reply_title_text_appearance" format="reference"/>
+        <attr name="sb_message_input_quoted_message_text_appearance" format="reference"/>
+        <attr name="sb_message_input_quote_reply_right_icon" format="reference"/>
+        <attr name="sb_message_input_quote_reply_right_icon_tint" format="reference|color"/>
+        <attr name="sb_message_input_quote_reply_right_icon_background" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="DialogView">
+        <attr name="sb_dialog_view_background" format="reference"/>
+        <attr name="sb_dialog_view_background_bottom" format="reference"/>
+        <attr name="sb_dialog_view_background_anchor" format="reference"/>
+        <attr name="sb_dialog_view_title_appearance" format="reference"/>
+        <attr name="sb_dialog_view_message_appearance" format="reference"/>
+        <attr name="sb_dialog_view_list_item_appearance" format="reference"/>
+        <attr name="sb_dialog_view_list_item_text_color" format="reference|color"/>
+        <attr name="sb_dialog_view_list_item_background" format="reference"/>
+        <attr name="sb_dialog_view_edit_text_appearance" format="reference"/>
+        <attr name="sb_dialog_view_edit_text_tint" format="reference|color"/>
+        <attr name="sb_dialog_view_edit_text_cursor_drawable" format="reference"/>
+        <attr name="sb_dialog_view_edit_text_hint_color" format="reference|color"/>
+        <attr name="sb_dialog_view_icon_tint" format="reference|color"/>
+
+        <attr name="sb_dialog_view_positive_button_text_appearance" format="reference"/>
+        <attr name="sb_dialog_view_positive_button_text_color" format="reference|color"/>
+        <attr name="sb_dialog_view_positive_button_background" format="reference"/>
+        <attr name="sb_dialog_view_neutral_button_text_appearance" format="reference"/>
+        <attr name="sb_dialog_view_neutral_button_text_color" format="reference|color"/>
+        <attr name="sb_dialog_view_neutral_button_background" format="reference"/>
+        <attr name="sb_dialog_view_negative_button_text_appearance" format="reference"/>
+        <attr name="sb_dialog_view_negative_button_text_color" format="reference|color"/>
+        <attr name="sb_dialog_view_negative_button_background" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ToastView">
+        <attr name="sb_toast_background" format="reference"/>
+        <attr name="sb_toast_text_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SelectChannelTypeView">
+        <attr name="sb_select_channel_type_background" format="reference"/>
+        <attr name="sb_select_channel_type_menu_background" format="reference"/>
+        <attr name="sb_select_channel_type_menu_title_appearance" format="reference"/>
+        <attr name="sb_select_channel_type_menu_name_appearance" format="reference"/>
+        <attr name="sb_select_channel_type_menu_icon_tint" format="reference|color"/>
+    </declare-styleable>
+
     <declare-styleable name="UserProfile">
         <attr name="sb_user_profile_background" format="reference"/>
         <attr name="sb_user_profile_user_name_text_appearance" format="reference"/>
         <attr name="sb_user_profile_button_background" format="reference"/>
         <attr name="sb_user_profile_button_text_appearance" format="reference"/>
-        <attr name="sb_user_profile_divider_color" format="color"/>
+        <attr name="sb_user_profile_divider_color" format="reference"/>
         <attr name="sb_user_profile_information_title_text_appearance" format="reference"/>
         <attr name="sb_user_profile_information_text_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SingleMenuItemView">
+        <attr name="sb_menu_item_background" format="reference"/>
+        <attr name="sb_menu_item_name_appearance" format="reference"/>
+        <attr name="sb_menu_item_description_appearance" format="reference"/>
+        <attr name="sb_menu_item_icon_tint" format="reference|color"/>
+        <attr name="sb_menu_item_action_drawable" format="reference"/>
+        <attr name="sb_menu_item_type" format="enum">
+            <enum name="next" value="0"/>
+            <enum name="switcher" value="1"/>
+            <enum name="none" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ChannelSettings">
+        <attr name="sb_channel_settings_background" format="reference"/>
+        <attr name="sb_channel_settings_name_appearance" format="reference"/>
+        <attr name="sb_channel_settings_description_appearance" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="SearchBar">
@@ -358,14 +445,14 @@
         <attr name="sb_search_bar_text_input_background" format="reference"/>
         <attr name="sb_search_bar_text_appearance" format="reference"/>
         <attr name="sb_search_bar_hint_text" format="string"/>
-        <attr name="sb_search_bar_hint_text_color" format="reference"/>
+        <attr name="sb_search_bar_hint_text_color" format="reference|color"/>
         <attr name="sb_search_bar_clear_icon" format="reference"/>
-        <attr name="sb_search_bar_clear_icon_tint_color" format="reference"/>
+        <attr name="sb_search_bar_clear_icon_tint_color" format="reference|color"/>
         <attr name="sb_search_bar_search_text" format="string"/>
         <attr name="sb_search_bar_search_icon" format="reference"/>
-        <attr name="sb_search_bar_search_icon_tint_color" format="reference"/>
+        <attr name="sb_search_bar_search_icon_tint_color" format="reference|color"/>
         <attr name="sb_search_bar_search_text_appearance" format="reference"/>
-        <attr name="sb_search_bar_search_text_color" format="reference"/>
+        <attr name="sb_search_bar_search_text_color" format="reference|color"/>
         <attr name="sb_search_bar_search_text_background" format="reference"/>
         <attr name="sb_search_bar_cursor_drawable" format="reference"/>
     </declare-styleable>
@@ -378,17 +465,18 @@
         <attr name="sb_message_preview_sent_at_text_appearance" format="reference"/>
         <attr name="sb_message_preview_divider_color" format="reference"/>
         <attr name="sb_message_preview_message_metaphor_background_color" format="reference"/>
-        <attr name="sb_message_preview_message_metaphor_icon_tint_color" format="reference"/>
+        <attr name="sb_message_preview_message_metaphor_icon_tint_color" format="reference|color"/>
     </declare-styleable>
 
-    <!-- Message View -->
-    <declare-styleable name="QuotedMessageView">
-        <attr name="sb_quoted_message_title_icon" format="reference"/>
-        <attr name="sb_quoted_message_title_icon_tint" format="reference"/>
-        <attr name="sb_quoted_message_title_text_appearance" format="reference"/>
-        <attr name="sb_quoted_message_background" format="reference"/>
-        <attr name="sb_quoted_message_background_tint" format="reference"/>
-        <attr name="sb_quoted_message_text_appearance" format="reference"/>
-        <attr name="sb_quoted_message_file_icon_tint" format="reference"/>
-    </declare-styleable>\
+    <declare-styleable name="ChannelPushSettings">
+        <attr name="sb_channel_push_settings_background" format="reference"/>
+        <attr name="sb_channel_push_settings_option_item_background" format="reference"/>
+        <attr name="sb_channel_push_settings_title_appearance" format="reference"/>
+        <attr name="sb_channel_push_settings_description_appearance" format="reference"/>
+        <attr name="sb_channel_push_option_item_appearance" format="reference"/>
+        <attr name="sb_channel_push_option_item_divider_color" format="reference|color"/>
+        <attr name="sb_channel_switch_track_tint" format="reference|color"/>
+        <attr name="sb_channel_switch_thumb_tint" format="reference|color"/>
+        <attr name="sb_channel_radio_button_background" format="reference|color"/>
+    </declare-styleable>
 </resources>

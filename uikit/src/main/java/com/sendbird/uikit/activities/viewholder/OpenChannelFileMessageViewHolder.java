@@ -3,32 +3,36 @@ package com.sendbird.uikit.activities.viewholder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.ViewDataBinding;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.uikit.BR;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageBinding;
 import com.sendbird.uikit.widgets.OpenChannelFileMessageView;
 
 import java.util.Map;
 
 public final class OpenChannelFileMessageViewHolder extends MessageViewHolder {
-    OpenChannelFileMessageViewHolder(@NonNull ViewDataBinding binding, boolean useMessageGroupUI) {
-        super(binding, useMessageGroupUI);
-        final OpenChannelFileMessageView root = ((OpenChannelFileMessageView) binding.getRoot());
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanel);
-        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), root.getBinding().ivProfileView);
+    @NonNull
+    private final OpenChannelFileMessageView openChannelFileMessageView;
+
+    OpenChannelFileMessageViewHolder(@NonNull SbViewOpenChannelFileMessageBinding binding, boolean useMessageGroupUI) {
+        super(binding.getRoot(), useMessageGroupUI);
+        openChannelFileMessageView = binding.openChannelFileMessageView;
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), openChannelFileMessageView.getBinding().contentPanel);
+        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), openChannelFileMessageView.getBinding().ivProfileView);
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
-        binding.setVariable(BR.channel, channel);
-        binding.setVariable(BR.message, message);
-        binding.setVariable(BR.messageGroupType, messageGroupType);
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        if (channel instanceof OpenChannel) {
+            openChannelFileMessageView.drawMessage((OpenChannel) channel, message, messageGroupType);
+        }
     }
 
+    @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;

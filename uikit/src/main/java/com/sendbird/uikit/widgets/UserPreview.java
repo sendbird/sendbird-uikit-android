@@ -2,6 +2,7 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -10,148 +11,161 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.CompoundButtonCompat;
-import androidx.databinding.BindingAdapter;
 
-import com.sendbird.android.SendBird;
+import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.Role;
+import com.sendbird.android.user.Member;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.databinding.SbViewUserListItemBinding;
-import com.sendbird.uikit.interfaces.UserInfo;
-import com.sendbird.uikit.utils.ChannelUtils;
+import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.databinding.SbViewMemberListItemBinding;
+import com.sendbird.uikit.utils.DrawableUtils;
+import com.sendbird.uikit.utils.UserUtils;
+import com.sendbird.uikit.utils.ViewUtils;
 
 public class UserPreview extends FrameLayout {
-    private SbViewUserListItemBinding binding;
-    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
-    private View.OnClickListener clickListener;
-    private View.OnLongClickListener longClickListener;
+    private final SbViewMemberListItemBinding binding;
 
-    public UserPreview(Context context) {
+    public UserPreview(@NonNull Context context) {
         this(context, null);
     }
 
-    public UserPreview(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_user_preview_style);
+    public UserPreview(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, R.attr.sb_widget_user_preview);
     }
 
-    public UserPreview(Context context, AttributeSet attrs, int defStyle) {
+    public UserPreview(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.UserPreview, defStyle, 0);
         try {
-            this.binding = SbViewUserListItemBinding.inflate(LayoutInflater.from(getContext()));
+            this.binding = SbViewMemberListItemBinding.inflate(LayoutInflater.from(getContext()));
             addView(binding.getRoot(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            int nicknameAppearance = a.getResourceId(R.styleable.UserPreview_sb_user_preview_nickname_appearance, R.style.SendbirdSubtitle2OnLight01);
-            boolean useSelection = a.getBoolean(R.styleable.UserPreview_sb_user_preview_use_selection, false);
-            binding.cbUserPreview.setVisibility(useSelection ? View.VISIBLE : View.GONE);
-
+            int background = a.getResourceId(R.styleable.UserPreview_sb_member_preview_background, R.drawable.selector_rectangle_light);
+            int nicknameAppearance = a.getResourceId(R.styleable.UserPreview_sb_member_preview_nickname_appearance, R.style.SendbirdSubtitle2OnLight01);
+            int descAppearance = a.getResourceId(R.styleable.UserPreview_sb_member_preview_description_appearance, R.style.SendbirdBody2OnLight02);
+            int actionMenuBgResId = a.getResourceId(R.styleable.UserPreview_sb_member_preview_action_menu_background, R.drawable.sb_button_uncontained_background_light);
+            binding.getRoot().setBackgroundResource(background);
             binding.tvNickname.setTextAppearance(context, nicknameAppearance);
             binding.tvNickname.setEllipsize(TextUtils.TruncateAt.END);
             binding.tvNickname.setMaxLines(1);
+            binding.tvDescription.setTextAppearance(context, descAppearance);
 
-            int checkBoxTint = SendBirdUIKit.isDarkMode() ? R.color.sb_checkbox_tint_dark : R.color.sb_checkbox_tint_light;
-            CompoundButtonCompat.setButtonTintList(binding.cbUserPreview, AppCompatResources.getColorStateList(context, checkBoxTint));
+            binding.ivAction.setBackgroundResource(actionMenuBgResId);
+            int moreTint = SendbirdUIKit.isDarkMode() ? R.color.sb_selector_icon_more_color_dark : R.color.sb_selector_icon_more_color_light;
+            binding.ivAction.setImageDrawable(DrawableUtils.setTintList(binding.ivAction.getDrawable(),
+                    AppCompatResources.getColorStateList(context, moreTint)));
 
-            binding.vgUserItem.setOnClickListener(v -> {
-                binding.cbUserPreview.toggle();
-                if (clickListener != null) {
-                    clickListener.onClick(v);
-                }
-
-                if (onCheckedChangeListener != null) {
-                    onCheckedChangeListener.onCheckedChanged(binding.cbUserPreview, !isSelected());
-                }
-            });
-
-            binding.cbUserPreview.setOnClickListener(v -> {
-                if (clickListener != null) {
-                    clickListener.onClick(v);
-                }
-
-                if (onCheckedChangeListener != null) {
-                    onCheckedChangeListener.onCheckedChanged(binding.cbUserPreview, !isSelected());
-                }
-            });
-
-            binding.vgUserItem.setOnLongClickListener(v -> {
-                if (longClickListener != null) {
-                    longClickListener.onLongClick(v);
-                }
-                return false;
-            });
+            Drawable muteDrawable = DrawableUtils.createOvalIcon(context,
+                    SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId(),
+                    255 / 2,
+                    R.drawable.icon_mute,
+                    R.color.background_50);
+            binding.ivProfileOverlay.setImageDrawable(muteDrawable);
         } finally {
             a.recycle();
         }
     }
 
+    @NonNull
     public View getLayout() {
         return this;
     }
 
-    public SbViewUserListItemBinding getBinding() {
+    @NonNull
+    public SbViewMemberListItemBinding getBinding() {
         return binding;
     }
 
     @Override
     public void setOnClickListener(@Nullable OnClickListener listener) {
-        this.clickListener = listener;
+        binding.vgMemberItem.setOnClickListener(listener);
     }
 
     @Override
-    public void setOnLongClickListener(View.OnLongClickListener listener) {
-        this.longClickListener = listener;
+    public void setOnLongClickListener(@Nullable OnLongClickListener listener) {
+        binding.vgMemberItem.setOnLongClickListener(listener);
     }
 
-    public void setOnSelectedStateChangedListener(CompoundButton.OnCheckedChangeListener listener) {
-        this.onCheckedChangeListener = listener;
+    public void useActionMenu(boolean use) {
+        binding.ivAction.setVisibility(use ? View.VISIBLE : View.GONE);
     }
 
-    public boolean isSelected() {
-        return this.binding.cbUserPreview.isChecked();
+    public void setOnActionMenuClickListener(@Nullable OnClickListener listener) {
+        binding.ivAction.setOnClickListener(listener);
     }
 
-    public void setUserSelected(boolean isSelected) {
-        this.binding.cbUserPreview.setChecked(isSelected);
+    public void setOnProfileClickListener(@Nullable OnClickListener listener) {
+        binding.ivProfile.setOnClickListener(listener);
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        binding.vgUserItem.setEnabled(enabled);
-        binding.cbUserPreview.setEnabled(enabled);
-        binding.tvNickname.setEnabled(enabled);
+    public void setDescription(@Nullable CharSequence text) {
+        binding.tvDescription.setText(text);
     }
 
-    public void drawUser(@NonNull UserInfo userInfo, boolean isSelected, boolean isEnabled) {
-        String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? getContext().getString(R.string.sb_text_channel_list_title_unknown) : userInfo.getNickname();
-        binding.tvNickname.setText(nickname);
-        ChannelUtils.loadImage(binding.ivUserCover, userInfo.getProfileUrl());
+    public void setName(@Nullable CharSequence name) {
+        binding.tvNickname.setText(name);
+    }
 
-        if (userInfo.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-            String meBadge = getResources().getString(R.string.sb_text_user_list_badge_me);
+    public void setImageFromUrl(@Nullable String url) {
+        ViewUtils.drawProfile(binding.ivProfile, url);
+    }
+
+    public void setVisibleOverlay(int visiblility) {
+        binding.ivProfileOverlay.setVisibility(visiblility);
+    }
+
+    public void enableActionMenu(boolean enabled) {
+        binding.ivAction.setEnabled(enabled);
+    }
+
+    public static void drawMember(@NonNull UserPreview preview, @NonNull Member member) {
+        Context context = preview.getContext();
+        boolean isOperatorMember = member.getRole() == Role.OPERATOR;
+        boolean isMe = member.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
+        final String nickname = UserUtils.getDisplayName(context, member);
+        preview.setName(nickname);
+
+        String description = isOperatorMember ? context.getString(R.string.sb_text_operator) : "";
+        preview.setDescription(description);
+        preview.setImageFromUrl(member.getProfileUrl());
+        preview.enableActionMenu(!isMe);
+        preview.setVisibleOverlay(member.isMuted() ? View.VISIBLE : View.GONE);
+
+        if (isMe) {
+            String meBadge = nickname + context.getResources().getString(R.string.sb_text_user_list_badge_me);
             final Spannable spannable = new SpannableString(meBadge);
-            int badgeAppearance = SendBirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;
-            spannable.setSpan(new TextAppearanceSpan(getContext(), badgeAppearance),
-                    0, meBadge.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            binding.tvNickname.append(spannable);
+            int badgeAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;
+            int originLen = nickname.length();
+            spannable.setSpan(new TextAppearanceSpan(context, badgeAppearance),
+                    originLen, meBadge.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            preview.setName(spannable);
         }
-
-        setUserSelected(isSelected);
-        setEnabled(isEnabled);
     }
 
-    @BindingAdapter({"userInfo", "isSelected", "isEnabled"})
-    public static void drawUser(UserPreview userPreview, UserInfo userInfo, boolean isSelected, boolean isEnabled) {
-        userPreview.drawUser(userInfo, isSelected, isEnabled);
+    public static void drawMemberFromUser(@NonNull UserPreview preview, @NonNull User user) {
+        Context context = preview.getContext();
+        boolean isMe = user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
+        final String nickname = UserUtils.getDisplayName(context, user);
+        preview.setName(nickname);
+
+        preview.setDescription("");
+        preview.setImageFromUrl(user.getProfileUrl());
+        preview.enableActionMenu(!isMe);
+
+        if (isMe) {
+            String meBadge = nickname + context.getResources().getString(R.string.sb_text_user_list_badge_me);
+            final Spannable spannable = new SpannableString(meBadge);
+            int badgeAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;
+            int originLen = nickname.length();
+            spannable.setSpan(new TextAppearanceSpan(context, badgeAppearance),
+                    originLen, meBadge.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            preview.setName(spannable);
+        }
     }
 }

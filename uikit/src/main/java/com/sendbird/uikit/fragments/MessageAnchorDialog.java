@@ -9,25 +9,38 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
+import com.sendbird.uikit.widgets.DialogView;
 
 class MessageAnchorDialog {
+    @NonNull
     private final static Handler mainHandler = new Handler(Looper.getMainLooper());
+    @NonNull
     private final View anchorView;
+    @NonNull
     private final DialogView contentView;
+    @NonNull
     private final View parent;
+    @Nullable
     private OnItemClickListener<DialogListItem> itemClickListener;
+    @NonNull
     private final PopupWindow window;
+    @NonNull
     private final Context context;
+    @NonNull
     private final View.OnLayoutChangeListener layoutChangeListener;
+    @Nullable
     private PopupWindow.OnDismissListener dismissListener;
 
-    private MessageAnchorDialog(@NonNull View anchorView, @NonNull View parent, @NonNull DialogListItem[] items) {
+    private MessageAnchorDialog(@NonNull View anchorView, @NonNull View parent, @NonNull DialogListItem[] items, boolean useOverlay) {
         this.context = anchorView.getContext();
         this.anchorView = anchorView;
         this.parent = parent;
@@ -35,11 +48,18 @@ class MessageAnchorDialog {
         this.window = new PopupWindow(width, WindowManager.LayoutParams.WRAP_CONTENT);
         this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        contentView = new DialogView(context);
-        contentView.setItems(items, (view, position, item) -> {
+        int themeResId;
+        if (useOverlay) {
+            themeResId = R.style.Widget_Sendbird_Overlay_DialogView;
+        } else {
+            themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
+        }
+        final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
+        contentView = new DialogView(themeWrapperContext);
+        contentView.setItems(items, (view, position, key) -> {
             window.dismiss();
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(view, position, item);
+                itemClickListener.onItemClick(view, position, key);
             }
         }, false, R.dimen.sb_size_16);
         contentView.setBackgroundAnchor();
@@ -75,10 +95,6 @@ class MessageAnchorDialog {
     }
 
     public boolean isShowing() {
-        if (window == null) {
-            return false;
-        }
-
         return window.isShowing();
     }
 
@@ -90,7 +106,7 @@ class MessageAnchorDialog {
 
         int x = getXoff(anchorView);
         int y = getYoff(parent, anchorView, contentView);
-        window.showAtLocation(anchorView, Gravity.START|Gravity.TOP, x, y);
+        window.showAtLocation(anchorView, Gravity.START | Gravity.TOP, x, y);
         anchorView.getRootView().addOnLayoutChangeListener(layoutChangeListener);
     }
 
@@ -107,9 +123,9 @@ class MessageAnchorDialog {
         anchorView.getLocationOnScreen(loc);
 
         if (isDropDown(parent, anchorView)) {
-            return loc[1]+anchorView.getMeasuredHeight();
+            return loc[1] + anchorView.getMeasuredHeight();
         }
-        return loc[1]-(contentViewMeasuredHeight);
+        return loc[1] - (contentViewMeasuredHeight);
     }
 
     private static boolean isDropDown(View parent, View anchorView) {
@@ -118,7 +134,7 @@ class MessageAnchorDialog {
         anchorView.getLocationOnScreen(loc);
         parent.getLocationOnScreen(parentLoc);
         int parentHeight = parent.getMeasuredHeight();
-        return (parentHeight / 2 > loc[1]-parentLoc[1]);
+        return (parentHeight / 2 > loc[1] - parentLoc[1]);
     }
 
     void setOnItemClickListener(OnItemClickListener<DialogListItem> itemClickListener) {
@@ -130,30 +146,45 @@ class MessageAnchorDialog {
     }
 
     public static class Builder {
+        @NonNull
         private final View anchorView;
+        @NonNull
         private final View parent;
+        @NonNull
         private final DialogListItem[] items;
+        @Nullable
         private OnItemClickListener<DialogListItem> itemClickListener;
+        @Nullable
         private PopupWindow.OnDismissListener dismissListener;
+        private boolean useOverlay = false;
 
-        public Builder(View anchorView, View parent, DialogListItem[] items) {
+        public Builder(@NonNull View anchorView, @NonNull View parent, @NonNull DialogListItem[] items) {
             this.anchorView = anchorView;
             this.parent = parent;
             this.items = items;
         }
 
-        public Builder setOnItemClickListener(OnItemClickListener<DialogListItem> itemClickListener) {
+        @NonNull
+        public Builder setOnItemClickListener(@Nullable OnItemClickListener<DialogListItem> itemClickListener) {
             this.itemClickListener = itemClickListener;
             return this;
         }
 
-        public Builder setOnDismissListener(PopupWindow.OnDismissListener dismissListener) {
+        @NonNull
+        public Builder setOnDismissListener(@Nullable PopupWindow.OnDismissListener dismissListener) {
             this.dismissListener = dismissListener;
             return this;
         }
 
+        @NonNull
+        public Builder setUseOverlay(boolean useOverlay) {
+            this.useOverlay = useOverlay;
+            return this;
+        }
+
+        @NonNull
         public MessageAnchorDialog build() {
-            MessageAnchorDialog dialog = new MessageAnchorDialog(anchorView, parent, items);
+            MessageAnchorDialog dialog = new MessageAnchorDialog(anchorView, parent, items, useOverlay);
             dialog.setOnItemClickListener(itemClickListener);
             dialog.setOnDismissListener(dismissListener);
             return dialog;

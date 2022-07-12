@@ -1,6 +1,8 @@
 package com.sendbird.uikit.interfaces;
 
-import com.sendbird.android.SendBirdException;
+import androidx.annotation.Nullable;
+
+import com.sendbird.android.exception.SendbirdException;
 
 import java.util.List;
 
@@ -15,5 +17,5 @@ public interface OnListResultHandler<T> {
      *
      * @param result The object of result.
      */
-    void onResult(List<T> result, SendBirdException e);
+    void onResult(@Nullable List<T> result, @Nullable SendbirdException e);
 }

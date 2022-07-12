@@ -1,103 +1,113 @@
 package com.sendbird.uikit.customsample.groupchannel.fragments;
 
-import android.content.Intent;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.sendbird.android.GroupChannel;
-import com.sendbird.uikit.activities.CreateChannelActivity;
-import com.sendbird.uikit.consts.CreateableChannelType;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.params.GroupChannelUpdateParams;
 import com.sendbird.uikit.customsample.R;
-import com.sendbird.uikit.customsample.groupchannel.activities.CustomCreateChannelActivity;
+import com.sendbird.uikit.customsample.groupchannel.GroupChannelMainActivity;
+import com.sendbird.uikit.customsample.groupchannel.components.CustomChannelListHeaderComponent;
+import com.sendbird.uikit.customsample.groupchannel.components.adapters.CustomChannelListAdapter;
 import com.sendbird.uikit.fragments.ChannelListFragment;
-import com.sendbird.uikit.fragments.SendBirdDialogFragment;
-import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.utils.Available;
-import com.sendbird.uikit.utils.DialogUtils;
-import com.sendbird.uikit.widgets.SelectChannelTypeView;
+import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.modules.ChannelListModule;
+import com.sendbird.uikit.modules.components.ChannelListComponent;
+import com.sendbird.uikit.modules.components.HeaderComponent;
+import com.sendbird.uikit.vm.ChannelListViewModel;
 
+/**
+ * Implements the customized <code>ChannelListFragment</code>.
+ */
 public class CustomChannelListFragment extends ChannelListFragment {
-    @Nullable
+
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        return super.onCreateView(inflater, container, savedInstanceState);
+    protected ChannelListModule onCreateModule(@NonNull Bundle args) {
+        ChannelListModule module = super.onCreateModule(args);
+        module.setHeaderComponent(new CustomChannelListHeaderComponent());
+        return module;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (getActivity() != null) {
-            getActivity().setTitle(getString(R.string.text_tab_channels));
-        }
+    protected void onConfigureParams(@NonNull ChannelListModule module, @NonNull Bundle args) {
+        super.onConfigureParams(module, args);
+        module.getParams().setUseHeader(true);
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.channels_menu, menu);
+    protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull ChannelListModule module, @NonNull ChannelListViewModel viewModel) {
+        super.onBeforeReady(status, module, viewModel);
+        module.getChannelListComponent().setAdapter(new CustomChannelListAdapter());
+        module.getChannelListComponent().setOnItemLongClickListener((view, position, channel) -> showListContextMenu(channel));
     }
 
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        final MenuItem createMenuItem = menu.findItem(R.id.action_create_channel);
-        View rootView = createMenuItem.getActionView();
-        rootView.setOnClickListener(v -> onOptionsItemSelected(createMenuItem));
-        super.onPrepareOptionsMenu(menu);
-    }
+    private void showListContextMenu(@NonNull GroupChannel channel) {
+        if (getContext() == null) return;
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_create_channel) {
-            if (getContext() != null && getFragmentManager() != null) {
-                if (Available.isSupportSuper() || Available.isSupportBroadcast()) {
-                    final SelectChannelTypeView layout = new SelectChannelTypeView(getContext());
-                    layout.canCreateSuperGroupChannel(Available.isSupportSuper());
-                    layout.canCreateBroadcastGroupChannel(Available.isSupportBroadcast());
-                    SendBirdDialogFragment dialogFragment = DialogUtils.buildContentViewTop(layout);
-                    layout.setOnItemClickListener((view, position, channelType) -> {
-                        if (dialogFragment != null) {
-                            dialogFragment.dismiss();
-                        }
-                        Logger.dev("++ channelType : " + channelType);
-                        if (isActive()) {
-                            onSelectedChannelType(channelType);
-                        }
-                    });
-                    dialogFragment.showSingle(getFragmentManager());
-                } else {
-                    if (isActive()) {
-                        onSelectedChannelType(CreateableChannelType.Normal);
-                    }
-                }
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        CharSequence titleItem = getString(R.string.sb_text_channel_settings_change_channel_name);
+        CharSequence leaveItem = getString(R.string.sb_text_channel_list_leave);
+        final boolean isOff = channel.getMyPushTriggerOption() == GroupChannel.PushTriggerOption.OFF;
+        CharSequence notificationItem = isOff ? getString(R.string.sb_text_channel_list_push_on) :
+                getString(R.string.sb_text_channel_list_push_off);
+        CharSequence[] items = {titleItem, leaveItem, notificationItem};
+        builder.setItems(items, (dialog, which) -> {
+            dialog.dismiss();
+            if (which == 0) {
+                showTitleChangeDialog(channel);
+            } else if (which == 1) {
+                getViewModel().leaveChannel(channel, e -> {
+                    if (e == null) return;
+                    Toast.makeText(requireContext(), R.string.sb_text_error_leave_channel, Toast.LENGTH_SHORT).show();
+                });
+                leaveChannel(channel);
+            } else {
+                getViewModel().setPushNotification(channel, isOff,
+                        e -> {
+                            if (e == null) return;
+                            int errorString = isOff ? R.string.sb_text_error_push_notification_on :
+                                    R.string.sb_text_error_push_notification_off;
+                            Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show();
+                        });
             }
-        }
-        return super.onOptionsItemSelected(item);
+        });
+        builder.show();
+    }
+
+    private void showTitleChangeDialog(final GroupChannel channel) {
+        final EditText input = new EditText(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setView(input)
+                .setTitle(R.string.sb_text_channel_settings_change_channel_name)
+                .setPositiveButton(R.string.text_confirm,
+                        (dialog, which) -> {
+                            final GroupChannelUpdateParams params = new GroupChannelUpdateParams();
+                            params.setName(input.getText().toString());
+                            channel.updateChannel(params, null);
+                        }
+                );
+        builder.show();
     }
 
     @Override
-    protected void onSelectedChannelType(@NonNull CreateableChannelType channelType) {
-        showCustomCreateChannelActivity(channelType);
+    protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ChannelListViewModel viewModel) {
+        super.onBindHeaderComponent(headerComponent, viewModel);
+        ((CustomChannelListHeaderComponent) headerComponent).setSettingsButtonClickListener(v -> {
+            if (getActivity() instanceof GroupChannelMainActivity) {
+                ((GroupChannelMainActivity) getActivity()).moveToSettings();
+            }
+        });
     }
 
     @Override
-    protected void leaveChannel(@NonNull GroupChannel channel) {
-        super.leaveChannel(channel);
-    }
-
-
-    private void showCustomCreateChannelActivity(@NonNull CreateableChannelType channelType) {
-        if (getContext() != null) {
-            Intent intent = CreateChannelActivity.newIntentFromCustomActivity(getContext(), CustomCreateChannelActivity.class, channelType);
-            startActivity(intent);
-        }
+    protected void onBindChannelListComponent(@NonNull ChannelListComponent channelListComponent, @NonNull ChannelListViewModel viewModel) {
+        super.onBindChannelListComponent(channelListComponent, viewModel);
+        channelListComponent.setOnItemLongClickListener((view, position, channel)
+                -> showListContextMenu(channel));
     }
 }

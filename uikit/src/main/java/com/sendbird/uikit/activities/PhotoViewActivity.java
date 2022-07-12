@@ -9,10 +9,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.FileMessage;
+import com.sendbird.android.channel.ChannelType;
+import com.sendbird.android.message.FileMessage;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.PhotoViewFragment;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -21,7 +21,8 @@ import com.sendbird.uikit.utils.MessageUtils;
  * Activity displays a image file.
  */
 public class PhotoViewActivity extends AppCompatActivity {
-    public static Intent newIntent(@NonNull Context context, @NonNull BaseChannel.ChannelType channelType, @NonNull FileMessage message) {
+    @NonNull
+    public static Intent newIntent(@NonNull Context context, @NonNull ChannelType channelType, @NonNull FileMessage message) {
         Intent intent = new Intent(context, PhotoViewActivity.class);
         intent.putExtra(StringSet.KEY_MESSAGE_ID, message.getMessageId());
         intent.putExtra(StringSet.KEY_MESSAGE_FILENAME, message.getName());
@@ -39,7 +40,7 @@ public class PhotoViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
+        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
         setContentView(R.layout.sb_activity);
 
 
@@ -52,12 +53,12 @@ public class PhotoViewActivity extends AppCompatActivity {
         final String mimeType = intent.getStringExtra(StringSet.KEY_MESSAGE_MIMETYPE);
         final String senderNickname = intent.getStringExtra(StringSet.KEY_MESSAGE_SENDER_NAME);
         final long createdAt = intent.getLongExtra(StringSet.KEY_MESSAGE_CREATEDAT, 0L);
-        final BaseChannel.ChannelType channelType = (BaseChannel.ChannelType) intent.getSerializableExtra(StringSet.KEY_CHANNEL_TYPE);
+        final ChannelType channelType = (ChannelType) intent.getSerializableExtra(StringSet.KEY_CHANNEL_TYPE);
         final boolean isDeletable = intent.getBooleanExtra(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isMine(senderId));
 
         final PhotoViewFragment fragment = new PhotoViewFragment.Builder(senderId, fileName,
                 channelUrl, url, mimeType, senderNickname, createdAt,
-                messageId, channelType, SendBirdUIKit.getDefaultThemeMode(), isDeletable)
+                messageId, channelType, SendbirdUIKit.getDefaultThemeMode(), isDeletable)
                 .build();
 
         final FragmentManager manager = getSupportFragmentManager();

@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.sendbird.android.OpenChannel;
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewLiveStreamListItemBinding;
 import com.sendbird.uikit.customsample.models.LiveStreamingChannelData;
@@ -25,17 +24,20 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+/**
+ * RecyclerView adapter for <code>OpenChannel</code> list used for live stream.
+ */
 public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamListAdapter.LiveStreamingListViewHolder> {
     @NonNull
     @Override
     public LiveStreamingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewLiveStreamListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_live_stream_list_item, parent, false);
+        ViewLiveStreamListItemBinding binding = ViewLiveStreamListItemBinding.inflate(inflater, parent, false);
         return new LiveStreamingListViewHolder(binding);
     }
 
     static class LiveStreamingListViewHolder extends OpenChannelListViewHolder {
-        private ViewLiveStreamListItemBinding binding;
+        private final ViewLiveStreamListItemBinding binding;
 
         public LiveStreamingListViewHolder(@NonNull ViewLiveStreamListItemBinding binding) {
             super(binding.getRoot());

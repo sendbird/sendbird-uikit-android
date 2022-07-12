@@ -13,10 +13,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.Sender;
+import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.user.Sender;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -26,16 +26,18 @@ import com.sendbird.uikit.customsample.utils.DrawableUtils;
 
 import java.util.Map;
 
-
+/**
+ * ViewHolder to draw the highlight message for <code>OpenChannel</code>.
+ */
 public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     private final ViewOpenChannelHighlightMessageHolderBinding binding;
     private final int operatorAppearance;
     private final int nicknameAppearance;
 
-    public HighlightOpenChannelMessageViewHolder(ViewOpenChannelHighlightMessageHolderBinding binding) {
+    public HighlightOpenChannelMessageViewHolder(@NonNull ViewOpenChannelHighlightMessageHolderBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
-        TypedArray a = binding.getRoot().getContext().getTheme().obtainStyledAttributes(null, com.sendbird.uikit.R.styleable.MessageView, com.sendbird.uikit.R.attr.sb_open_channel_message_user_style, 0);
+        TypedArray a = binding.getRoot().getContext().getTheme().obtainStyledAttributes(null, com.sendbird.uikit.R.styleable.MessageView, 0, 0);
         try {
             nicknameAppearance = a.getResourceId(com.sendbird.uikit.R.styleable.MessageView_sb_message_sender_name_text_appearance, com.sendbird.uikit.R.style.SendbirdCaption1OnLight02);
             operatorAppearance = a.getResourceId(com.sendbird.uikit.R.styleable.MessageView_sb_message_operator_name_text_appearance, com.sendbird.uikit.R.style.SendbirdCaption1Secondary300);
@@ -47,7 +49,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
         OpenChannel openChannel;
         if (channel instanceof OpenChannel) {
             openChannel = (OpenChannel) channel;
@@ -94,6 +96,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         binding.tvMessage.setText(message.getMessage());
     }
 
+    @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
         return clickableViewMap;

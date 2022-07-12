@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.utils.DrawableUtils;
 
 public class ProgressView extends ProgressBar {
@@ -26,7 +26,7 @@ public class ProgressView extends ProgressBar {
     }
 
     private void init(Context context) {
-        int loadingTint = SendBirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
+        int loadingTint = SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
         Drawable loading = DrawableUtils.setTintList(context, R.drawable.sb_progress, loadingTint);
         this.setIndeterminateDrawable(loading);
     }

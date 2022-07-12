@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/tools">
-
-    <com.sendbird.uikit.widgets.MessagePreview
-        android:id="@+id/messagePreview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        bind:message="@{message}"
-        />
-
-    <data>
-        <import type="com.sendbird.android.BaseMessage" />
-        <import type="android.view.View" />
-
-        <variable
-            name="message"
-            type="com.sendbird.android.BaseMessage" />
-    </data>
-</layout>
+<com.sendbird.uikit.widgets.MessagePreview
+    android:id="@+id/messagePreview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

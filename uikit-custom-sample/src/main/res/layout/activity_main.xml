@@ -5,24 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tbMain"
-        android:layout_width="@dimen/sb_size_0"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_300"
-        android:paddingLeft="@dimen/sb_size_20"
-        android:paddingRight="@dimen/sb_size_4"
-        app:titleTextAppearance="@style/SendbirdH1OnDark01"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/vpMain"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpMain"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_0"
-        app:layout_constraintTop_toBottomOf="@id/tbMain"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tlMain"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

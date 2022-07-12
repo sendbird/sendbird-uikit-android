@@ -1,32 +1,35 @@
 package com.sendbird.uikit.activities.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.User;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapters provide a binding from a {@link User} set to views that are displayed
- * within a {@link RecyclerView}.
+ * EmojiReactionUserListAdapter provides a binding from a {@link User} set to views that are displayed within a RecyclerView.
  *
  * @since 1.1.0
  */
 public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHolder<User>> {
-    private List<User> userList;
+    @NonNull
+    final private List<User> userList;
 
     /**
      * Constructor
      * @since 1.1.0
      */
     public EmojiReactionUserListAdapter() {
-        this(null);
+        this(new ArrayList<>());
     }
 
     /**
@@ -35,13 +38,13 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @param userList list to be displayed.
      * @since 1.1.0
      */
-    public EmojiReactionUserListAdapter(List<User> userList) {
+    public EmojiReactionUserListAdapter(@NonNull List<User> userList) {
         setHasStableIds(true);
         this.userList = userList;
     }
 
     /**
-     * Called when RecyclerView needs a new {@link BaseViewHolder<User>} of the given type to represent
+     * Called when RecyclerView needs a new {@link EmojiReactionUserViewHolder} of the given type to represent
      * an item.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to
@@ -72,7 +75,13 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<User> holder, int position) {
         User userInfo = getItem(position);
-        holder.bind(userInfo);
+        if (holder instanceof EmojiReactionUserViewHolder) {
+            ((EmojiReactionUserViewHolder) holder).bind(userInfo);
+        } else {
+            if (userInfo != null) {
+                holder.bind(userInfo);
+            }
+        }
     }
 
     /**
@@ -83,10 +92,8 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @since 1.1.0
      */
     @Override
+    @Nullable
     public User getItem(int position) {
-        if (userList == null) {
-            return null;
-        }
         return userList.get(position);
     }
 
@@ -96,7 +103,9 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @return The {@link List<User>} in this adapter.
      * @since 1.1.0
      */
+    @SuppressLint("KotlinPropertyAccess")
     @Override
+    @NonNull
     public List<User> getItems() {
         return userList;
     }
@@ -109,7 +118,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      */
     @Override
     public int getItemCount() {
-        return userList == null ? 0 : userList.size();
+        return userList.size();
     }
 
     /**
@@ -121,10 +130,9 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      */
     @Override
     public long getItemId(int position) {
-        if (getItem(position) == null) {
-            return -1;
-        }
-        return getItem(position).hashCode();
+        final User user = getItem(position);
+        if (user == null) return super.getItemId(position);
+        return user.hashCode();
     }
 
     /**
@@ -133,9 +141,13 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @param userList list to be displayed
      * @since 1.1.0
      */
-    public void setItems(List<User> userList) {
-        this.userList = userList;
-        notifyDataSetChanged();
+    public void setItems(@NonNull List<User> userList) {
+        final EmojiReactionUserDiffCallback diffCallback = new EmojiReactionUserDiffCallback(this.userList, userList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.userList.clear();
+        this.userList.addAll(userList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
 
@@ -148,9 +160,59 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
         }
 
         @Override
-        public void bind(User user) {
-            binding.setUser(user);
-            binding.executePendingBindings();
+        public void bind(@Nullable User user) {
+            binding.userViewHolder.drawUser(user);
+        }
+    }
+
+    private static class EmojiReactionUserDiffCallback extends DiffUtil.Callback {
+        @NonNull
+        private final List<User> oldUserList;
+        @NonNull
+        private final List<User> newUserList;
+
+        EmojiReactionUserDiffCallback(@NonNull List<User> oldUserList, @NonNull List<User> newUserList) {
+            this.oldUserList = oldUserList;
+            this.newUserList = newUserList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldUserList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newUserList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            final User oldUser = oldUserList.get(oldItemPosition);
+            final User newUser = newUserList.get(newItemPosition);
+            if (oldUser == null || newUser == null) return false;
+
+            return oldUser.equals(newUser);
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            final User oldUser = oldUserList.get(oldItemPosition);
+            final User newUser = newUserList.get(newItemPosition);
+
+            if (!areItemsTheSame(oldItemPosition, newItemPosition)) {
+                return false;
+            }
+
+            String oldNickname = oldUser.getNickname();
+            String newNickname = newUser.getNickname();
+            if (!newNickname.equals(oldNickname)) {
+                return false;
+            }
+
+            String oldProfileUrl = oldUser.getProfileUrl();
+            String newProfileUrl = newUser.getProfileUrl();
+            return newProfileUrl.equals(oldProfileUrl);
         }
     }
 }
