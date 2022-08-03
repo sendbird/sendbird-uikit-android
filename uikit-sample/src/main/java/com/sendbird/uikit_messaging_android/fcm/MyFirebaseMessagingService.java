@@ -1,21 +1,21 @@
-/**
- * Copyright 2016 Google Inc. All Rights Reserved.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+  Copyright 2016 Google Inc. All Rights Reserved.
+  <p>
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  <p>
+  http://www.apache.org/licenses/LICENSE-2.0
+  <p>
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
  */
-
 package com.sendbird.uikit_messaging_android.fcm;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -26,7 +26,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -35,9 +34,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
 import com.sendbird.android.SendBirdPushHandler;
-import com.sendbird.android.SendBirdPushHelper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
@@ -52,10 +49,6 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
 
     private static final String TAG = "MyFirebaseMsgService";
     private static final AtomicReference<String> pushToken = new AtomicReference<>();
-
-    public interface ITokenResult {
-        void onPushTokenReceived(String pushToken, SendBirdException e);
-    }
 
     @Override
     protected boolean isUniquePushToken() {
@@ -89,6 +82,7 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
             if (remoteMessage.getData().containsKey(StringSet.sendbird)) {
                 String jsonStr = remoteMessage.getData().get(StringSet.sendbird);
                 SendBird.markAsDelivered(remoteMessage.getData());
+                if (jsonStr == null) return;
                 sendNotification(context, new JSONObject(jsonStr));
 
             }
@@ -123,7 +117,10 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
 
         Intent intent = GroupChannelMainActivity.newRedirectToChannelIntent(context, channelUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
+        @SuppressLint("UnspecifiedImmutableFlag")
+        PendingIntent pendingIntent = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M ?
+                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE) :
+                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -139,25 +136,5 @@ public class MyFirebaseMessagingService extends SendBirdPushHandler {
         notificationBuilder.setContentText(message);
 
         notificationManager.notify(String.valueOf(System.currentTimeMillis()), 0, notificationBuilder.build());
-    }
-
-
-    public static void getPushToken(ITokenResult listener) {
-        String token = pushToken.get();
-        if (!TextUtils.isEmpty(token)) {
-            listener.onPushTokenReceived(token, null);
-            return;
-        }
-
-        SendBirdPushHelper.getPushToken((token1, e) -> {
-            Log.d(TAG, "FCM token : " + token1);
-            if (listener != null) {
-                listener.onPushTokenReceived(token1, e);
-            }
-
-            if (e == null) {
-                pushToken.set(token1);
-            }
-        });
     }
 }

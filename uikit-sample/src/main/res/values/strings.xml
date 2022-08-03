@@ -43,4 +43,5 @@
     <string name="text_error_connection_must_be_made">Connection must be made.</string>
     <string name="text_error_update_user_information">Couldn\&#39;t update user information.</string>
     <string name="text_error_update_do_not_disturb">Couldn\&#39;t update disturb setting.</string>
+    <string name="sb_text_need_to_allow_permission_notification">%s\nneeds permission to receive push notification. Go to Settings to allow access</string>
 </resources>

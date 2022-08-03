@@ -238,7 +238,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         Logger.d(">> ChannelViewModel::onMessagesAdded() from=%s", context.getCollectionEventSource());
         if (messages.isEmpty()) return;
 
-        if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
+        if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED || context.getMessagesSendingStatus() == BaseMessage.SendingStatus.NONE) {
             cachedMessages.addAll(messages);
             notifyDataSetChanged(context);
         }  else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {

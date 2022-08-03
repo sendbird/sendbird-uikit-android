@@ -78,7 +78,7 @@
                 android:paddingStart="@dimen/sb_size_12"
                 android:paddingEnd="@dimen/sb_size_12"
                 app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintTop_toBottomOf="@id/quoteReplyPanel"
+                app:layout_constraintTop_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
                 app:layout_constraintBottom_toTopOf="@id/rvEmojiReactionList" >

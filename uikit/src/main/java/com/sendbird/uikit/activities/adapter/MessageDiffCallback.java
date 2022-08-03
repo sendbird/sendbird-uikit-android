@@ -103,6 +103,14 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
+        BaseMessage oldParentMessage = oldMessage.getParentMessage();
+        BaseMessage newParentMessage = newMessage.getParentMessage();
+        if (oldParentMessage != null && newParentMessage != null) {
+            if (oldParentMessage.getUpdatedAt() != newParentMessage.getUpdatedAt()) {
+                return false;
+            }
+        }
+
         if (useMessageGroupUI) {
             BaseMessage oldPrevMessage = oldItemPosition - 1 < 0 ? null : oldMessageList.get(oldItemPosition - 1);
             BaseMessage newPrevMessage = newItemPosition - 1 < 0 ? null : newMessageList.get(newItemPosition - 1);

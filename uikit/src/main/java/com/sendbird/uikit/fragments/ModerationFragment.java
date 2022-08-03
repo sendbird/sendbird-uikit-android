@@ -168,6 +168,7 @@ public class ModerationFragment extends BaseGroupChannelFragment implements Load
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
+        if (channel == null) return false;
         return channelUrl.equals(channel.getUrl());
     }
 

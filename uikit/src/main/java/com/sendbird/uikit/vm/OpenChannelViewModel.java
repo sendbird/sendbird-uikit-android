@@ -84,6 +84,7 @@ public class OpenChannelViewModel extends BaseViewModel implements LifecycleObse
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
+        if (channel == null) return false;
         return channelUrl.equals(channel.getUrl());
     }
 

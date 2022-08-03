@@ -31,18 +31,37 @@ public class IntentUtils {
         return intent;
     }
 
+    @NonNull
+    public static Intent getImageGalleryIntent() {
+        return getGalleryIntent(new String[]{"image/*"});
+    }
+
+    @NonNull
     public static Intent getGalleryIntent() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        if ( Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ) {
-            intent.setType("*/*");
-            String[] mimetypes = {"image/*", "video/*"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        } else {
-            intent.setType("image/*|video/*");
+        return getGalleryIntent(new String[]{"image/*", "video/*"});
+    }
+
+    @NonNull
+    private static Intent getGalleryIntent(@NonNull String[] mimetypes) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            if ( Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ) {
+                intent.setType("*/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+            } else {
+                intent.setType("image/*|video/*");
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return Intent.createChooser(intent, null);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return Intent.createChooser(intent, null);
+
+        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        if (mimetypes.length == 1) {
+            // ACTION_PICK_IMAGES supports only two mimetypes.
+            intent.setType(mimetypes[0]);
+        }
+        return intent;
     }
 
     public static Intent getFileChooserIntent() {

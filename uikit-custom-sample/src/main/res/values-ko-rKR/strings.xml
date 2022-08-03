@@ -170,4 +170,25 @@
     <string name="text_remove_photo">사진 삭제</string>
     <string name="text_live">라이브</string>
     <string name="text_participants">%s명</string>
+
+    <!--  Custom sample  -->
+    <string name="text_dialog_leave_channel_title">채널을 나가시겠습니까?</string>
+    <string name="text_confirm">확인</string>
+    <string name="text_select_count">%d명 선택</string>
+
+    <string name="app_name">SendbirdUIKitCustomSample</string>
+    <string name="text_title_login_activity">Sendbird UIKit Sample</string>
+
+    <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
+    <string name="text_hint_user_id">사용자 ID</string>
+    <string name="text_hint_nickname">사용자 닉네임</string>
+    <string name="text_sign_in">SIGN IN</string>
+
+    <string name="text_sign_out">SIGN OUT</string>
+    <string name="text_home">Home</string>
+    <string name="text_group_channel">Group channel</string>
+    <string name="text_open_channel">Open channel</string>
+    <string name="text_group_channel_description">1 on 1, Group chat with members</string>
+    <string name="text_open_channel_description">Live streams, Open community chat</string>
+    <string name="sb_text_need_to_allow_permission_notification">%s\n푸시 알림을 받기위해 알림설정이 필요합니다. 권한을 받기위해 설정으로 이동하세요.</string>
 </resources>

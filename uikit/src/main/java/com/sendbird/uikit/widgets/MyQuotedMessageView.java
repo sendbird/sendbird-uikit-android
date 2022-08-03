@@ -85,7 +85,7 @@ public class MyQuotedMessageView extends BaseQuotedMessageView {
         binding.ivQuoteReplyMessageIcon.setVisibility(GONE);
         binding.quoteReplyThumbnailPanel.setVisibility(GONE);
         binding.tvQuoteReplyTitle.setText(String.format(getContext().getString(R.string.sb_text_replied_to),
-                getContext().getString(R.string.sb_text_you), UserUtils.getDisplayName(getContext(), parentMessage.getSender())));
+                getContext().getString(R.string.sb_text_you), UserUtils.getDisplayName(getContext(), parentMessage.getSender(), true)));
 
         binding.ivQuoteReplyThumbnailOveray.setVisibility(GONE);
         RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {

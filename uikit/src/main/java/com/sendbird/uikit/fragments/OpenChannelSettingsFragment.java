@@ -37,6 +37,7 @@ import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
+import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.widgets.OpenChannelSettingsView;
 
@@ -187,18 +188,13 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
+        if (channel == null) return false;
         return channelUrl.equals(channel.getUrl());
     }
 
     @Override
     public String[] getPermissions(int requestCode) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            return new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-        }
-        return new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
+        return PermissionUtils.CAMERA_PERMISSION;
     }
 
     @Override
@@ -336,7 +332,7 @@ public class OpenChannelSettingsFragment extends BaseOpenChannelFragment impleme
     }
 
     private void pickImage() {
-        Intent intent = IntentUtils.getGalleryIntent();
+        Intent intent = IntentUtils.getImageGalleryIntent();
         startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
     }
 

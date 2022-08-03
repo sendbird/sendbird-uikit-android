@@ -1,5 +1,11 @@
 # Change Log
 
+### v2.2.6 (Aug 3, 2022) with Core SDK `v3.1.18`
+* Support Android 13
+    * Set the `maxSdkVersion` of `android.permission.READ_EXTERNAL_STORAGE` to `32`
+* Removed `android.permission.REQUEST_INSTALL_PACKAGES` permission
+* Improved stability.
+
 ### v2.2.5 (Mar 29, 2022) with Core SDK `v3.1.9`
 * Improved stability.
 

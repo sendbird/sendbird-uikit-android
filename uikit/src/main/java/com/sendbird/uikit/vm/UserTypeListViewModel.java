@@ -1,6 +1,7 @@
 package com.sendbird.uikit.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
@@ -23,6 +24,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserTypeListViewModel extends BaseViewModel implements LifecycleObserver, PagerRecyclerView.Pageable<List<User>> {
@@ -35,6 +40,10 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
     private final CustomMemberListQueryHandler<User> queryHandler;
     protected BaseChannel channel;
     private volatile boolean isInitialRequest = true;
+    @NonNull
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    @Nullable
+    private Future<Boolean> currentFuture;
 
     @Override
     protected void onCleared() {
@@ -95,6 +104,7 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
     }
 
     private boolean isCurrentChannel(@NonNull String channelUrl) {
+        if (channel == null) return false;
         return channelUrl.equals(channel.getUrl());
     }
 
@@ -220,13 +230,17 @@ public class UserTypeListViewModel extends BaseViewModel implements LifecycleObs
         return false;
     }
 
-    public void loadInitial() {
+    public synchronized void loadInitial() {
         Logger.d(">> MemberListViewModel::loadInitial()");
-        List<? extends User> origin = this.memberList.getValue();
-        if (origin != null) {
-            origin.clear();
-        }
-        queryHandler.loadInitial(UserTypeListViewModel.this::onResult);
+        if (this.currentFuture != null) this.currentFuture.cancel(true);
+        this.currentFuture = executorService.schedule(() -> {
+            List<? extends User> origin = memberList.getValue();
+            if (origin != null) {
+                origin.clear();
+            }
+            queryHandler.loadInitial(UserTypeListViewModel.this::onResult);
+            return true;
+        }, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override

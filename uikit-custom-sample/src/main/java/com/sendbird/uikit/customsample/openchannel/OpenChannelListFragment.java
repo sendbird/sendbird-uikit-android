@@ -89,6 +89,7 @@ abstract public class OpenChannelListFragment extends Fragment implements SendBi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SendBird.addConnectionHandler(CONNECTION_HANDLER_ID, this);
+        SendBirdUIKit.connect(null);
     }
 
     @Override

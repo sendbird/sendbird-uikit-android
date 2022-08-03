@@ -83,6 +83,7 @@ import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.MessageUtils;
+import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
@@ -826,13 +827,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         checkPermission(PERMISSION_REQUEST_ALL, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
+                return PermissionUtils.CAMERA_PERMISSION;
             }
 
             @Override
@@ -856,11 +851,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
+                return PermissionUtils.GET_CONTENT_PERMISSION;
             }
 
             @Override
@@ -881,11 +872,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
             @Override
             public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
+                return PermissionUtils.GET_CONTENT_PERMISSION;
             }
 
             @Override
@@ -1389,8 +1376,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 @Override
                 @NonNull
                 public String[] getPermissions(int requestCode) {
-                    return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE};
+                    return PermissionUtils.GET_CONTENT_PERMISSION;
                 }
 
                 @Override

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sendbird.uikit.customsample">
     <uses-permission android:name="android.permission.VIBRATE" android:maxSdkVersion="18"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:name=".BaseApplication"
@@ -45,7 +46,7 @@
             android:name=".LoginActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".SplashActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
