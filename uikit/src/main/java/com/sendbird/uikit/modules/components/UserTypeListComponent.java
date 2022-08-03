@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.UserTypeListAdapter;
@@ -148,17 +146,6 @@ abstract public class UserTypeListComponent<T extends User> {
     }
 
     /**
-     * Notifies this component that the list of users is changed.
-     *
-     * @param userList The list of users to be displayed on this component
-     * @param myRole   Role of the current user
-     */
-    public void notifyDataSetChanged(@NonNull List<T> userList, @NonNull Role myRole) {
-        if (this.recyclerView == null) return;
-        getAdapter().setItems(userList, myRole);
-    }
-
-    /**
      * Called when the profile view of the item is clicked.
      *
      * @param view     The View clicked.
@@ -188,7 +175,7 @@ abstract public class UserTypeListComponent<T extends User> {
      *
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
-     * @param user     The channel that the long-clicked item displays
+     * @param user     The user that the long-clicked item displays
      * @since 3.0.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull T user) {
@@ -277,7 +264,6 @@ abstract public class UserTypeListComponent<T extends User> {
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseUserProfile() {
             return useUserProfile;
         }

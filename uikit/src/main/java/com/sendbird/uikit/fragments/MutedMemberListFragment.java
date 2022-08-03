@@ -16,7 +16,6 @@ import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.activities.RegisterOperatorActivity;
 import com.sendbird.uikit.activities.adapter.MutedMemberListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
@@ -35,7 +34,7 @@ import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
- * Fragment displaying the operators of the channel.
+ * Fragment displaying muted members of the channel.
  *
  * @since 1.2.0
  */
@@ -97,7 +96,12 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
     protected void onReady(@NonNull ReadyStatus status, @NonNull MutedMemberListModule module, @NonNull MutedMemberListViewModel viewModel) {
         Logger.d(">> MutedMemberListFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
-        if (channel != null && channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
+        if (status == ReadyStatus.ERROR || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
+        if (channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
         viewModel.getOperatorUnregistered().observe(getViewLifecycleOwner(), isDismissed -> {
             if (isDismissed) shouldActivityFinish();
         });
@@ -119,11 +123,7 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
         Logger.d(">> MutedMemberListFragment::onBindHeaderComponent()");
 
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
-        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
-            if (isFragmentAlive() && getContext() != null && channel != null) {
-                startActivity(RegisterOperatorActivity.newIntent(getContext(), channel.getUrl()));
-            }
-        });
+        headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener);
     }
 
     /**

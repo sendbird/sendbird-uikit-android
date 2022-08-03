@@ -3,12 +3,12 @@ apply plugin: 'com.google.gms.google-services'
 
 version = UIKIT_VERSION
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.sendbird.uikit.sample"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName UIKIT_VERSION
         multiDexEnabled true

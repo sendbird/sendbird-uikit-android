@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.recyclerview.widget.DiffUtil;
 
-import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
+import com.sendbird.android.user.RestrictedUser;
+import com.sendbird.android.user.RestrictionType;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Adapters provides a binding from a {@link User} set to views that are displayed within a RecyclerView.
  */
-public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseViewHolder<T>> {
+abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseViewHolder<T>> {
     @NonNull
     final private List<T> users = new ArrayList<>();
     @Nullable
@@ -38,8 +38,6 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
     private OnItemLongClickListener<T> longClickListener;
     @Nullable
     private OnItemClickListener<T> actionItemClickListener;
-    @NonNull
-    private Role myRole = Role.NONE;
     @Nullable
     private OnItemClickListener<T> profileClickListener;
 
@@ -198,16 +196,31 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
      * Sets the {@link List<T>} to be displayed.
      *
      * @param userList list to be displayed
+     * @since 3.1.0
      */
-    public void setItems(@NonNull List<T> userList, @NonNull Role myRole) {
-        final UserTypeDiffCallback<T> diffCallback = new UserTypeDiffCallback<>(this.users, userList, this.myRole, myRole);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
+    protected void setUsers(@NonNull List<T> userList) {
         this.users.clear();
         this.users.addAll(userList);
-        this.myRole = myRole;
-        diffResult.dispatchUpdatesTo(this);
     }
+
+    /**
+     * Returns whether the current user is operator or not.
+     *
+     * @return {@code true} if the current user is operator, {@code false} otherwise
+     * @since 3.1.0
+     */
+    abstract protected boolean isCurrentUserOperator();
+
+    /**
+     * Returns the description to be shown in item view.
+     *
+     * @param context Context for item view
+     * @param user The user to be checked if showing operator badge
+     * @return Text to be shown as description in item view
+     * @since 3.1.0
+     */
+    @NonNull
+    abstract protected String getItemViewDescription(@NonNull Context context, @NonNull T user);
 
     private class UserPreviewHolder extends BaseViewHolder<T> {
         @NonNull
@@ -250,81 +263,14 @@ public class UserTypeListAdapter<T extends User> extends BaseAdapter<T, BaseView
 
         @Override
         public void bind(@NonNull T user) {
-            binding.userViewHolder.useActionMenu(myRole == Role.OPERATOR && actionItemClickListener != null);
+            boolean isMuted = false;
             if (user instanceof Member) {
-                UserPreview.drawMember(binding.userViewHolder, (Member) user);
-            } else {
-                UserPreview.drawMemberFromUser(binding.userViewHolder, user);
+                isMuted = ((Member) user).isMuted();
+            } else if (user instanceof RestrictedUser) {
+                isMuted = ((RestrictedUser) user).getRestrictionInfo().getRestrictionType().equals(RestrictionType.MUTED);
             }
-        }
-    }
-
-    private static class UserTypeDiffCallback<T extends User> extends DiffUtil.Callback {
-        @NonNull
-        private final List<T> oldUserList;
-        @NonNull
-        private final List<T> newUserList;
-        @NonNull
-        private final Role oldMyRole;
-        @NonNull
-        private final Role newMyRole;
-
-        UserTypeDiffCallback(@NonNull List<T> oldUserList, @NonNull List<T> newUserList, @NonNull Role oldMyRole, @NonNull Role newMyRole) {
-            this.oldUserList = oldUserList;
-            this.newUserList = newUserList;
-            this.oldMyRole = oldMyRole;
-            this.newMyRole = newMyRole;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return oldUserList.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return newUserList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            final T oldUser = oldUserList.get(oldItemPosition);
-            final T newUser = newUserList.get(newItemPosition);
-
-            return oldUser.equals(newUser) && oldMyRole.equals(newMyRole);
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            final T oldUser = oldUserList.get(oldItemPosition);
-            final T newUser = newUserList.get(newItemPosition);
-
-            if (!areItemsTheSame(oldItemPosition, newItemPosition)) {
-                return false;
-            }
-
-            final String oldNickname = oldUser.getNickname();
-            final String newNickname = newUser.getNickname();
-            if (!newNickname.equals(oldNickname)) {
-                return false;
-            }
-
-            final String oldProfileUrl = oldUser.getProfileUrl();
-            final String newProfileUrl = newUser.getProfileUrl();
-
-            if (newUser instanceof Member && oldUser instanceof Member) {
-                final Member oldMember = (Member) oldUser;
-                final Member newMember = (Member) newUser;
-                if (oldMember.isMuted() != newMember.isMuted()) {
-                    return false;
-                }
-
-                if (oldMember.getRole() != newMember.getRole()) {
-                    return false;
-                }
-            }
-
-            return newProfileUrl.equals(oldProfileUrl);
+            binding.userViewHolder.useActionMenu(isCurrentUserOperator() && actionItemClickListener != null);
+            UserPreview.drawUser(binding.userViewHolder, user, getItemViewDescription(binding.getRoot().getContext(), user), isMuted);
         }
     }
 }

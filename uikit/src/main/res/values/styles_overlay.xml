@@ -101,7 +101,7 @@
         <item name="sb_dialog_view_background_bottom">@drawable/sb_top_rounded_rectangle_dark</item>
         <item name="sb_dialog_view_background_anchor">@drawable/layer_dialog_anchor_background_dark</item>
         <item name="sb_dialog_view_title_appearance">@style/SendbirdH1OnDark01</item>
-        <item name="sb_dialog_view_message_appearance">@style/SendbirdSubtitle2OnDark01</item>
+        <item name="sb_dialog_view_message_appearance">@style/SendbirdBody3OnDark02</item>
         <item name="sb_dialog_view_list_item_appearance">@style/SendbirdSubtitle2OnDark01</item>
         <item name="sb_dialog_view_list_item_text_color">@color/sb_selector_enabled_01_dark</item>
         <item name="sb_dialog_view_list_item_background">@drawable/selector_rectangle_dark500</item>

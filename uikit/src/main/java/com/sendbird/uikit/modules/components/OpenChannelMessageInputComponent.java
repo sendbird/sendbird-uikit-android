@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -52,6 +51,7 @@ public class OpenChannelMessageInputComponent {
     private OnInputModeChangedListener inputModeChangedListener;
     @Nullable
     private CharSequence hintText;
+    private boolean isMuted;
 
     /**
      * Constructor
@@ -309,7 +309,7 @@ public class OpenChannelMessageInputComponent {
     /**
      * Notifies this component that the channel data has changed.
      *
-     * @param channel The latest group channel
+     * @param channel The latest open channel
      * @since 3.0.0
      */
     public void notifyChannelChanged(@NonNull OpenChannel channel) {
@@ -322,7 +322,7 @@ public class OpenChannelMessageInputComponent {
      * Notifies this component that the data needed to draw the input has changed.
      *
      * @param message Message required for current input information
-     * @param channel The latest group channel
+     * @param channel The latest open channel
      * @since 3.0.0
      */
     public void notifyDataChanged(@Nullable BaseMessage message, @NonNull OpenChannel channel) {
@@ -333,7 +333,7 @@ public class OpenChannelMessageInputComponent {
      * Notifies this component that the data needed to draw the input has changed.
      *
      * @param message     Message required for current input information
-     * @param channel     The latest group channel
+     * @param channel     The latest open channel
      * @param defaultText Text set as initial value for input
      * @since 3.0.0
      */
@@ -368,15 +368,31 @@ public class OpenChannelMessageInputComponent {
         this.messageInputView.setInputMode(mode);
     }
 
+    /**
+     * Notifies this component that the muted state of the current user has changed.
+     *
+     * @param channel The latest open channel
+     * @param isMuted Whether the current user is muted or not
+     * @since 3.1.0
+     */
+    public void notifyMyMutedStateChanged(@NonNull OpenChannel channel, boolean isMuted) {
+        this.isMuted = isMuted;
+        if (messageInputView == null) return;
+        final MessageInputView inputView = this.messageInputView;
+        setHintMessageText(inputView, channel);
+    }
+
     private void setHintMessageText(@NonNull MessageInputView inputView, @NonNull OpenChannel channel) {
         boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
         boolean isFrozen = channel.isFrozen() && !isOperator;
-        inputView.setEnabled(!isFrozen);
+        inputView.setEnabled(!isMuted && !isFrozen);
 
         // set hint
         final Context context = inputView.getContext();
         String hintText = this.hintText != null ? this.hintText.toString() : null;
-        if (isFrozen) {
+        if (isMuted) {
+            hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
+        } else if (isFrozen) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_frozen);
         }
         Logger.dev("++ hint text : " + hintText);
@@ -527,7 +543,6 @@ public class OpenChannelMessageInputComponent {
          * @return <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseLeftButton() {
             return useLeftButton;
         }

@@ -11,16 +11,17 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
-import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.User;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.ParticipantListAdapter;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.ParticipantListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
@@ -90,13 +91,22 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     protected void onReady(@NonNull ReadyStatus status, @NonNull ParticipantListModule module, @NonNull ParticipantViewModel viewModel) {
         Logger.d(">> ParticipantListFragment::onReady(ReadyStatus=%s)", status);
         final OpenChannel channel = viewModel.getChannel();
+        if (status != ReadyStatus.READY || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
+
+        viewModel.loadInitial();
+
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
             if (isDeleted) shouldActivityFinish();
         });
-
-        if (channel != null) {
-            viewModel.loadInitial();
-        }
+        viewModel.getUserBanned().observe(getViewLifecycleOwner(), restrictedUser -> {
+            if (restrictedUser.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId())) {
+                shouldActivityFinish();
+            }
+        });
     }
 
     /**
@@ -127,11 +137,12 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         listComponent.setOnItemClickListener(itemClickListener);
         listComponent.setOnItemLongClickListener(itemLongClickListener);
         listComponent.setOnProfileClickListener(profileClickListener != null ? profileClickListener : this::onProfileClicked);
-        listComponent.setOnActionItemClickListener(actionItemClickListener);
+        listComponent.setOnActionItemClickListener(actionItemClickListener != null ? actionItemClickListener : (view, position, participant) -> onActionItemClicked(view, position, participant, channel));
         viewModel.getUserList().observe(getViewLifecycleOwner(), users -> {
-            Logger.dev("++ observing result members size : %s", users.size());
-            if (channel == null) return;
-            listComponent.notifyDataSetChanged(users, channel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE);
+            Logger.dev("++ observing result participants size : %s", users.size());
+            if (channel != null) {
+                listComponent.notifyDataSetChanged(users, channel);
+            }
         });
     }
 
@@ -163,6 +174,59 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
         if (getContext() == null) return;
         DialogUtils.showUserProfileDialog(getContext(), user, false, null, null);
+    }
+
+    /**
+     * Called when the action has been clicked.
+     *
+     * @param view     The view that was clicked.
+     * @param position The position that was clicked.
+     * @param participant   The participant data that was clicked.
+     * @param channel  The {@code OpenChannel} that contains the data needed for this fragment
+     * @since 3.1.0
+     */
+    protected void onActionItemClicked(@NonNull View view, int position, @NonNull User participant, @Nullable OpenChannel channel) {
+        if (getContext() == null || channel == null) return;
+        boolean isOperator = channel.isOperator(participant);
+        DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
+        // mute menu is always shown as 'Mute' because there is no way to know user's muted info
+        DialogListItem muteParticipant = new DialogListItem(R.string.sb_text_mute_participant);
+        DialogListItem banParticipant = new DialogListItem(R.string.sb_text_ban_participant, 0, true);
+        DialogListItem[] items = new DialogListItem[]{registerOperator, muteParticipant, banParticipant};
+
+        final ParticipantListModule module = getModule();
+        final ParticipantViewModel viewModel = getViewModel();
+        DialogUtils.showListDialog(getContext(), participant.getNickname(),
+                items, (v, p, item) -> {
+                    final int key = item.getKey();
+                    final OnCompleteHandler handler = e -> {
+                        module.shouldDismissLoadingDialog();
+                        if (e != null) {
+                            int errorTextResId = R.string.sb_text_error_register_operator;
+                            if (key == R.string.sb_text_unregister_operator) {
+                                errorTextResId = R.string.sb_text_error_unregister_operator;
+                            } else if (key == R.string.sb_text_mute_participant) {
+                                errorTextResId = R.string.sb_text_error_mute_participant;
+                            } else if (key == R.string.sb_text_ban_participant) {
+                                errorTextResId = R.string.sb_text_error_ban_participant;
+                            }
+                            toastError(errorTextResId);
+                        } else {
+                            viewModel.loadInitial();
+                        }
+                    };
+                    if (getContext() == null) return;
+                    module.shouldShowLoadingDialog(getContext());
+                    if (key == R.string.sb_text_register_operator) {
+                        viewModel.addOperator(participant.getUserId(), handler);
+                    } else if (key == R.string.sb_text_unregister_operator) {
+                        viewModel.removeOperator(participant.getUserId(), handler);
+                    } else if (key == R.string.sb_text_mute_participant) {
+                        viewModel.muteUser(participant.getUserId(), handler);
+                    } else if (key == R.string.sb_text_ban_participant) {
+                        viewModel.banUser(participant.getUserId(), handler);
+                    }
+                });
     }
 
     /**

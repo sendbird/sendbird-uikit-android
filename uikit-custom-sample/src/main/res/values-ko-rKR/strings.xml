@@ -124,11 +124,11 @@
     <string name="sb_text_operator">관리자</string>
     <string name="sb_text_menu_operators">관리자</string>
     <string name="sb_text_menu_muted_members">음소거된 멤버</string>
-    <string name="sb_text_menu_banned_members">접근 금지된 멤버</string>
+    <string name="sb_text_menu_banned_users">접근 금지된 유저</string>
     <string name="sb_text_menu_freeze_channel">채널 일시 정지하기</string>
     <string name="sb_text_empty_no_operator_member">관리자가 없습니다.</string>
     <string name="sb_text_empty_no_muted_member">음소거된 멤버가 없습니다.</string>
-    <string name="sb_text_empty_no_banned_member">접근 금지된 멤버가 없습니다.</string>
+    <string name="sb_text_empty_no_banned_users">접근 금지된 유저가 없습니다.</string>
 
     <string name="sb_text_button_selected">선택</string>
     <string name="sb_text_button_add">추가</string>
@@ -186,4 +186,5 @@
     <string name="text_open_channel">Open channel</string>
     <string name="text_group_channel_description">1 on 1, Group chat with members</string>
     <string name="text_open_channel_description">Live streams, Open community chat</string>
+    <string name="sb_text_need_to_allow_permission_notification">%s\n푸시 알림을 받기위해 알림설정이 필요합니다. 권한을 받기위해 설정으로 이동하세요.</string>
 </resources>

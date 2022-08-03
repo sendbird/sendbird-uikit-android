@@ -1,5 +1,19 @@
 # Changelog
 
+### v3.1.0 (Aug 3, 2022) with Core SDK `v4.0.5`
+* Support Android 13
+  * Set the `maxSdkVersion` of `android.permission.READ_EXTERNAL_STORAGE` to `32`
+* Removed `android.permission.REQUEST_INSTALL_PACKAGES` permission
+* Support moderation in OpenChannel
+  * Added `MODERATIONS` in `OpenChannelSettingsMenuComponent.Menu`
+  * Added `OpenChannelModerationActivity`, `OpenChannelModerationFragment`, `OpenChannelModerationModule`, `OpenChannelModerationViewModel`
+  * Added `OpenChannelOperatorListActivity`, `OpenChannelOperatorListFragment`, `OpenChannelOperatorListModule`, `OpenChannelOperatorListViewModel`, `OpenChannelOperatorListAdapter`
+  * Added `OpenChannelRegisterOperatorActivity`, `OpenChannelRegisterOperatorFragment`, `OpenChannelRegisterOperatorModule`, `OpenChannelRegisterOperatorViewModel`, `OpenChannelRegisterOperatorAdapter`
+  * Added `OpenChannelBannedUserListActivity`, `OpenChannelBannedUserListFragment`, `OpenChannelBannedUserListModule`, `OpenChannelBannedUserListViewModel`, `OpenChannelBannedUserListAdapter`
+  * Added `OpenChannelMutedParticipantListActivity`, `OpenChannelMutedParticipantListFragment`, `OpenChannelMutedParticipantListModule`, `OpenChannelMutedParticipantListViewModel`, `OpenChannelMutedParticipantListAdapter`
+  * Added `newOpenChannelModerationFragment()`, `newOpenChannelOperatorListFragment()`, `newOpenChannelRegisterOperatorFragment()`, `newOpenChannelMutedParticipantListFragment()`, `newOpenChannelBannedUserListFragment()` in `UIKitFragmentFactory`
+* Improved stability
+
 ### v3.0.0 (Jul 12, 2022) with Core SDK `v4.0.4`
 * Support `modules` and `components` in the UIKit
 * Added `setEditedTextMarkUIConfig(TextUIConfig, TextUIConfig)` in `OpenChannelFragment.Builder`

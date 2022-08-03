@@ -143,7 +143,7 @@ public class ModerationListComponent {
 
         this.operators.setMenuType(SingleMenuItemView.Type.NEXT);
         this.operators.setIcon(R.drawable.icon_operator);
-        this.operators.setName(listThemeContext.getString(R.string.sb_text_operator));
+        this.operators.setName(listThemeContext.getString(R.string.sb_text_menu_operators));
         this.operators.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.operators.setLayoutParams(layoutParams);
         this.operators.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.OPERATORS));
@@ -158,7 +158,7 @@ public class ModerationListComponent {
 
         this.bannedMembers.setMenuType(SingleMenuItemView.Type.NEXT);
         this.bannedMembers.setIcon(R.drawable.icon_ban);
-        this.bannedMembers.setName(listThemeContext.getString(R.string.sb_text_menu_banned_members));
+        this.bannedMembers.setName(listThemeContext.getString(R.string.sb_text_menu_banned_users));
         this.bannedMembers.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.bannedMembers.setLayoutParams(layoutParams);
         this.bannedMembers.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.BANNED_MEMBERS));

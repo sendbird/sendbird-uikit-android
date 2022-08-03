@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -646,7 +645,6 @@ public class MessageInputComponent {
          * @return <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseLeftButton() {
             return useLeftButton;
         }

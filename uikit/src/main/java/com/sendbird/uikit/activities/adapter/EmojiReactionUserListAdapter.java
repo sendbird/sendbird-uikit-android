@@ -1,6 +1,5 @@
 package com.sendbird.uikit.activities.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -103,7 +102,6 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @return The {@link List<User>} in this adapter.
      * @since 1.1.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @Override
     @NonNull
     public List<User> getItems() {

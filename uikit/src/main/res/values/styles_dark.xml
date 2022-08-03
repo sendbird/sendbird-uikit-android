@@ -24,6 +24,11 @@
         <item name="sb_module_participant_list">@style/Module.Dark.ParticipantsList</item>
         <item name="sb_module_register_operator_list">@style/Module.Dark.RegisterOperator</item>
         <item name="sb_module_channel_push_setting">@style/Module.Dark.ChannelPushSetting</item>
+        <item name="sb_module_open_channel_moderation">@style/Module.Dark.OpenChannelModeration</item>
+        <item name="sb_module_open_channel_register_operator">@style/Module.Dark.OpenChannelRegisterOperator</item>
+        <item name="sb_module_open_channel_operator_list">@style/Module.Dark.OpenChannelOperatorList</item>
+        <item name="sb_module_open_channel_muted_participant_list">@style/Module.Dark.OpenChannelMutedParticipantList</item>
+        <item name="sb_module_open_channel_banned_user_list">@style/Module.Dark.OpenChannelBannedUserList</item>
 
         <item name="sb_component_channel_message_input">@style/Component.Dark.ChannelMessageInput</item>
         <item name="sb_component_channel_settings_info">@style/Component.Dark.ChannelSettingsInfo</item>
@@ -122,6 +127,30 @@
         <item name="sb_component_header">@style/Component.Dark.Header.ChannelPushSetting</item>
         <item name="sb_component_channel_push_setting">@style/Component.Dark.ChannelPushSetting</item>
     </style>
+    <style name="Module.Dark.OpenChannelModeration">
+        <item name="sb_component_header">@style/Component.Dark.Header.OpenChannelModeration</item>
+        <item name="sb_component_moderation_list">@style/Component.Dark.OpenChannelModerationList</item>
+    </style>
+    <style name="Module.Dark.OpenChannelRegisterOperator">
+        <item name="sb_component_state_header">@style/Component.Dark.Header.State.OpenChannelRegisterOperator</item>
+        <item name="sb_component_list">@style/Component.Dark.List.OpenChannelRegisterOperator</item>
+        <item name="sb_component_status">@style/Component.Dark.Status.OpenChannelRegisterOperator</item>
+    </style>
+    <style name="Module.Dark.OpenChannelOperatorList">
+        <item name="sb_component_header">@style/Component.Dark.Header.OpenChannelOperatorList</item>
+        <item name="sb_component_list">@style/Component.Dark.List.OpenChannelOperatorList</item>
+        <item name="sb_component_status">@style/Component.Dark.Status.OpenChannelOperatorList</item>
+    </style>
+    <style name="Module.Dark.OpenChannelMutedParticipantList">
+        <item name="sb_component_header">@style/Component.Dark.Header.OpenChannelMutedParticipantList</item>
+        <item name="sb_component_list">@style/Component.Dark.List.OpenChannelMutedParticipantList</item>
+        <item name="sb_component_status">@style/Component.Dark.Status.OpenChannelMutedParticipantList</item>
+    </style>
+    <style name="Module.Dark.OpenChannelBannedUserList">
+        <item name="sb_component_header">@style/Component.Dark.Header.OpenChannelBannedUserList</item>
+        <item name="sb_component_list">@style/Component.Dark.List.OpenChannelBannedUserList</item>
+        <item name="sb_component_status">@style/Component.Dark.Status.OpenChannelBannedUserList</item>
+    </style>
 
     <!-- COMPONENTS -->
     <style name="Component.Dark"/>
@@ -160,7 +189,7 @@
     </style>
 
     <style name="Component.Dark.Header.BannedUserList">
-        <item name="sb_appbar_title">@string/sb_text_menu_banned_members</item>
+        <item name="sb_appbar_title">@string/sb_text_menu_banned_users</item>
     </style>
     <style name="Component.Dark.List.BannedUserList">
         <item name="sb_widget_user_preview">@style/Widget.Sendbird.Dark.UserPreview</item>
@@ -168,7 +197,7 @@
     <style name="Component.Dark.Status.BannedUserList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_ban</item>
         <item name="sb_status_frame_empty_icon_tint">@color/ondark_03</item>
-        <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_member</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_users</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
 
@@ -475,6 +504,7 @@
         <item name="sb_status_frame_empty_text">@string/sb_text_user_list_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
+
     <style name="Component.Dark.Header.ChannelPushSetting">
         <item name="sb_appbar_title">@string/sb_text_channel_settings_notification</item>
     </style>
@@ -490,6 +520,68 @@
         <item name="sb_channel_radio_button_background">@drawable/selector_radio_button_dark</item>
     </style>
 
+    <style name="Component.Dark.Header.OpenChannelModeration">
+        <item name="sb_appbar_title">@string/sb_text_channel_settings_moderations</item>
+    </style>
+    <style name="Component.Dark.OpenChannelModerationList">
+        <item name="sb_menu_item_background">@drawable/selector_rectangle_dark600</item>
+        <item name="sb_menu_item_name_appearance">@style/SendbirdSubtitle2OnDark01</item>
+        <item name="sb_menu_item_icon_tint">@color/primary_200</item>
+    </style>
+
+    <style name="Component.Dark.Header.State.OpenChannelRegisterOperator">
+        <item name="sb_appbar_title">@string/sb_text_header_set_operators</item>
+    </style>
+    <style name="Component.Dark.List.OpenChannelRegisterOperator">
+        <item name="sb_widget_select_user_preview">@style/Widget.Sendbird.Dark.SelectUserPreview</item>
+    </style>
+    <style name="Component.Dark.Status.OpenChannelRegisterOperator">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_user_list_empty</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
+    </style>
+
+    <style name="Component.Dark.Header.OpenChannelOperatorList">
+        <item name="sb_appbar_title">@string/sb_text_menu_operators</item>
+        <item name="sb_appbar_right_button_icon">@drawable/icon_plus</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_200</item>
+        <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_dark</item>
+    </style>
+    <style name="Component.Dark.List.OpenChannelOperatorList">
+        <item name="sb_widget_user_preview">@style/Widget.Sendbird.Dark.UserPreview</item>
+    </style>
+    <style name="Component.Dark.Status.OpenChannelOperatorList">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/ondark_03</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_operator_participant</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
+    </style>
+
+    <style name="Component.Dark.Header.OpenChannelMutedParticipantList">
+        <item name="sb_appbar_title">@string/sb_text_menu_muted_participants</item>
+    </style>
+    <style name="Component.Dark.List.OpenChannelMutedParticipantList">
+        <item name="sb_widget_user_preview">@style/Widget.Sendbird.Dark.UserPreview</item>
+    </style>
+    <style name="Component.Dark.Status.OpenChannelMutedParticipantList">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_mute</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/ondark_03</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_muted_participant</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
+    </style>
+
+    <style name="Component.Dark.Header.OpenChannelBannedUserList">
+        <item name="sb_appbar_title">@string/sb_text_menu_banned_users</item>
+    </style>
+    <style name="Component.Dark.List.OpenChannelBannedUserList">
+        <item name="sb_widget_user_preview">@style/Widget.Sendbird.Dark.UserPreview</item>
+    </style>
+    <style name="Component.Dark.Status.OpenChannelBannedUserList">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_ban</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/ondark_03</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_users</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
+    </style>
 
     <!-- WIDGETS -->
     <style name="Widget.Sendbird.Dark"/>
@@ -667,7 +759,7 @@
         <item name="sb_dialog_view_background_bottom">@drawable/sb_top_rounded_rectangle_dark</item>
         <item name="sb_dialog_view_background_anchor">@drawable/layer_dialog_anchor_background_dark</item>
         <item name="sb_dialog_view_title_appearance">@style/SendbirdH1OnDark01</item>
-        <item name="sb_dialog_view_message_appearance">@style/SendbirdSubtitle2OnDark01</item>
+        <item name="sb_dialog_view_message_appearance">@style/SendbirdBody3OnDark02</item>
         <item name="sb_dialog_view_list_item_appearance">@style/SendbirdSubtitle2OnDark01</item>
         <item name="sb_dialog_view_list_item_text_color">@color/sb_selector_enabled_01_dark</item>
         <item name="sb_dialog_view_list_item_background">@drawable/selector_rectangle_dark500</item>

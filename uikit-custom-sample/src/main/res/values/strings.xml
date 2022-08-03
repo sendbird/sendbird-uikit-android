@@ -39,4 +39,5 @@
     <string name="text_dialog_leave_channel_title">Leave this channel?</string>
     <string name="text_confirm">Okay</string>
     <string name="text_select_count">%d seleted</string>
+    <string name="sb_text_need_to_allow_permission_notification">%s\nneeds permission to receive push notification. Go to Settings to allow access</string>
 </resources>

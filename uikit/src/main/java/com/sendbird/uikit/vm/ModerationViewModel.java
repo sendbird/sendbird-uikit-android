@@ -187,7 +187,7 @@ public class ModerationViewModel extends BaseViewModel {
     /**
      * Returns LiveData that can be observed whether the current user is banned.
      *
-     * @return LiveData holding the URL of the deleted channel
+     * @return LiveData holding the current user banned or not
      * @since 3.0.0
      */
     @NonNull

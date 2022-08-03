@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -148,7 +147,6 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          * @return <code>true</code> if the profile image is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean useProfileImage() {
             return useProfileImage;
         }

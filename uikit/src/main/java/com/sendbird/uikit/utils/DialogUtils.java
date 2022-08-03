@@ -153,6 +153,29 @@ public final class DialogUtils {
     @NonNull
     public static AlertDialog showWarningDialog(@NonNull Context context,
                                                 @NonNull String title,
+                                                @NonNull String message,
+                                                @NonNull String warningButtonText,
+                                                @Nullable View.OnClickListener warningButtonListener,
+                                                @NonNull String negativeButtonText,
+                                                @Nullable View.OnClickListener negativeButtonListener) {
+        return showWarningDialog(context, title, message, warningButtonText, warningButtonListener, negativeButtonText, negativeButtonListener, false);
+    }
+
+    @NonNull
+    public static AlertDialog showWarningDialog(@NonNull Context context,
+                                                @NonNull String title,
+                                                @NonNull String warningButtonText,
+                                                @Nullable View.OnClickListener warningButtonListener,
+                                                @NonNull String negativeButtonText,
+                                                @Nullable View.OnClickListener negativeButtonListener,
+                                                boolean useOverlay) {
+        return showWarningDialog(context, title, "", warningButtonText, warningButtonListener, negativeButtonText, negativeButtonListener, useOverlay);
+    }
+
+    @NonNull
+    public static AlertDialog showWarningDialog(@NonNull Context context,
+                                                @NonNull String title,
+                                                @NonNull String message,
                                                 @NonNull String warningButtonText,
                                                 @Nullable View.OnClickListener warningButtonListener,
                                                 @NonNull String negativeButtonText,
@@ -174,6 +197,7 @@ public final class DialogUtils {
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         final DialogView dialogView = new DialogView(themeWrapperContext);
         dialogView.setTitle(title);
+        dialogView.setMessage(message);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Sendbird_Dialog);
         builder.setView(dialogView);

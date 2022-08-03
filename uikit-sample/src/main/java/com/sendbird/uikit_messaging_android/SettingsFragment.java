@@ -5,9 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -17,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -57,16 +57,54 @@ import java.util.TimeZone;
  * Displays a settings screen.
  */
 public class SettingsFragment extends Fragment {
-    private String[] REQUIRED_PERMISSIONS;
-
-    private static final int STORAGE_PERMISSIONS_REQUEST_CODE = 1001;
-    private static final int PERMISSION_SETTINGS_REQUEST_ID = 2000;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2001;
-    private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 2002;
+    private final String[] REQUIRED_PERMISSIONS = PermissionUtils.CAMERA_PERMISSION;
 
     private FragmentSettingsBinding binding;
     private final StateHeaderComponent headerComponent = new StateHeaderComponent();
     private Uri mediaUri;
+
+    private final ActivityResultLauncher<Intent> appSettingLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), intent -> {
+        if (getContext() == null) return;
+        final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
+        if (hasPermission) {
+            showMediaSelectDialog();
+        }
+    });
+    private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+        if (PermissionUtils.getNotGrantedPermissions(permissionResults).isEmpty()) {
+            showMediaSelectDialog();
+        }
+    });
+
+    private final ActivityResultLauncher<Intent> takeCameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || getContext() == null) return;
+        final Uri mediaUri = this.mediaUri;
+        if (mediaUri != null) {
+            final File file = FileUtils.uriToFile(getContext().getApplicationContext(), mediaUri);
+            updateUserProfileImage(file);
+        }
+    });
+    private final ActivityResultLauncher<Intent> getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        final Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || intent == null || getContext() == null) return;
+        final Uri mediaUri = intent.getData();
+        if (mediaUri != null) {
+            final File file = FileUtils.uriToFile(getContext().getApplicationContext(), mediaUri);
+            updateUserProfileImage(file);
+        }
+    });
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SendbirdUIKit.connect(null);
+    }
 
     @Nullable
     @Override
@@ -127,75 +165,41 @@ public class SettingsFragment extends Fragment {
         SendbirdChat.setAutoBackgroundDetection(true);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        SendbirdChat.setAutoBackgroundDetection(true);
-
-        if (resultCode != RESULT_OK) return;
-
-        if (requestCode == PERMISSION_SETTINGS_REQUEST_ID) {
-            if (getContext() == null) return;
-            final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), REQUIRED_PERMISSIONS);
-            if (hasPermission) {
-                showMediaSelectDialog();
-            }
+    private void requestPermission(@NonNull String[] permissions) {
+        if (getContext() == null || getActivity() == null) return;
+        // 1. check permission
+        final boolean hasPermission = PermissionUtils.hasPermissions(getContext(), permissions);
+        if (hasPermission) {
+            showMediaSelectDialog();
             return;
         }
 
-        switch (requestCode) {
-            case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                break;
-            case PICK_IMAGE_ACTIVITY_REQUEST_CODE:
-                if (data != null) {
-                    this.mediaUri = data.getData();
-                }
-                break;
+        // 2. determine whether rationale popup should show
+        final List<String> deniedList = PermissionUtils.getExplicitDeniedPermissionList(getActivity(), permissions);
+        if (!deniedList.isEmpty()) {
+            showPermissionRationalePopup(deniedList.get(0));
+            return;
         }
-
-        if (this.mediaUri != null && getContext() != null) {
-            final File file = FileUtils.uriToFile(getContext().getApplicationContext(), mediaUri);
-            updateUserProfileImage(file);
-        }
+        // 3. request permission
+        this.permissionLauncher.launch(permissions);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSIONS_REQUEST_CODE && grantResults.length == REQUIRED_PERMISSIONS.length) {
-            boolean isAllGranted = true;
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    isAllGranted = false;
-                    break;
-                }
-            }
-
-            if (isAllGranted) {
-                showMediaSelectDialog();
-            } else {
-                if (getContext() == null || getActivity() == null) return;
-                String[] notGranted = PermissionUtils.getNotGrantedPermissions(getContext(), permissions);
-                List<String> deniedList = PermissionUtils.getShowRequestPermissionRationale(getActivity(), permissions);
-                if (deniedList.size() == 0 && getActivity() != null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getActivity().getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
-                    builder.setMessage(getPermissionGuideMessage(getActivity(), notGranted[0]));
-                    builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        startActivityForResult(intent, PERMISSION_SETTINGS_REQUEST_ID);
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    if (getContext() == null) return;
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), com.sendbird.uikit.R.color.secondary_300));
-                }
-            }
-        }
+    private void showPermissionRationalePopup(@NonNull String permission) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
+        builder.setMessage(getPermissionGuideMessage(requireContext(), permission));
+        builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            appSettingLauncher.launch(intent);
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), com.sendbird.uikit.R.color.secondary_300));
     }
 
     private void initPage() {
@@ -219,15 +223,6 @@ public class SettingsFragment extends Fragment {
         binding.itemHome.setBackgroundResource(isDark ? R.drawable.selector_rectangle_dark600 : R.drawable.selector_rectangle_light);
         binding.tvHomeName.setTextColor(getResources().getColor(isDark ? R.color.ondark_01 : R.color.onlight_01));
         binding.signOutDivider.setBackgroundResource(isDark ? R.drawable.sb_line_divider_dark : R.drawable.sb_line_divider_light);
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-        } else {
-            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-        }
 
         boolean useHeader = true;
         boolean useDoNotDisturb = true;
@@ -350,7 +345,7 @@ public class SettingsFragment extends Fragment {
                     return;
                 }
 
-                requestPermissions(REQUIRED_PERMISSIONS, STORAGE_PERMISSIONS_REQUEST_CODE);
+                requestPermission(REQUIRED_PERMISSIONS);
             }
         });
     }
@@ -435,11 +430,10 @@ public class SettingsFragment extends Fragment {
                 items, (v, p, item) -> {
                     try {
                         final int key = item.getKey();
-                        SendbirdChat.setAutoBackgroundDetection(false);
                         if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery) {
-                            pickImage();
+                            takePhoto();
                         }
                     } catch (Exception e) {
                         Logger.e(e);
@@ -448,20 +442,19 @@ public class SettingsFragment extends Fragment {
     }
 
     private void takeCamera() {
-        if (getContext() == null) {
-            return;
-        }
-
-        this.mediaUri = FileUtils.createPictureImageUri(getContext());
-        Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
-        if (IntentUtils.hasIntent(getContext(), intent)) {
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        SendbirdChat.setAutoBackgroundDetection(false);
+        this.mediaUri = FileUtils.createPictureImageUri(requireContext());
+        if (mediaUri == null) return;
+        Intent intent = IntentUtils.getCameraIntent(requireContext(), mediaUri);
+        if (IntentUtils.hasIntent(requireContext(), intent)) {
+            takeCameraLauncher.launch(intent);
         }
     }
 
-    private void pickImage() {
+    private void takePhoto() {
+        SendbirdChat.setAutoBackgroundDetection(false);
         Intent intent = IntentUtils.getImageGalleryIntent();
-        startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
+        getContentLauncher.launch(intent);
     }
 
     private static String getPermissionGuideMessage(@NonNull Context context, @NonNull String permission) {

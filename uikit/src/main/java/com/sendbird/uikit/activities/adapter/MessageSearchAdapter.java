@@ -2,7 +2,6 @@ package com.sendbird.uikit.activities.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -87,7 +86,6 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      *
      * @return The {@link List<BaseMessage>} in this adapter.
      */
-    @SuppressLint("KotlinPropertyAccess")
     @Override
     @NonNull
     public List<BaseMessage> getItems() {

@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -269,7 +268,6 @@ public class StateHeaderComponent {
          * @return <code>true</code> if the right button of the header is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseRightButton() {
             return useRightButton;
         }
@@ -280,7 +278,6 @@ public class StateHeaderComponent {
          * @return <code>true</code> if the left button of the header is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseLeftButton() {
             return useLeftButton;
         }

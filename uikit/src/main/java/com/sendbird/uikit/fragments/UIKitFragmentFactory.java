@@ -33,7 +33,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the ChannelFragment.
      *
-     * @param channelUrl the channel url,
+     * @param channelUrl the channel url for the target channel.
      * @param args       the arguments supplied when the fragment was instantiated.
      * @return The {@link ChannelFragment}
      * @since 3.0.0
@@ -49,6 +49,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the ChannelSettingsFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ChannelSettingsFragment}
      * @since 3.0.0
@@ -64,6 +65,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the CreateChannelFragment.
      *
+     * @param channelType the channel type to be created.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link CreateChannelFragment}
      * @since 3.0.0
@@ -79,6 +81,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the InviteUserFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link InviteUserFragment}
      * @since 3.0.0
@@ -94,6 +97,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the RegisterOperatorFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link RegisterOperatorFragment}
      * @since 3.0.0
@@ -109,6 +113,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the MessageSearchFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MessageSearchFragment}
      * @since 3.0.0
@@ -124,6 +129,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the ModerationFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ModerationFragment}
      * @since 3.0.0
@@ -139,6 +145,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the MemberListFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MemberListFragment}
      * @since 3.0.0
@@ -155,6 +162,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the BannedUserListFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link BannedUserListFragment}
      * @since 3.0.0
@@ -171,6 +179,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the OperatorListFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OperatorListFragment}
      * @since 3.0.0
@@ -187,6 +196,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the MutedMemberListFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MutedMemberListFragment}
      * @since 3.0.0
@@ -203,6 +213,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the ParticipantListFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ParticipantListFragment}
      * @since 3.0.0
@@ -218,6 +229,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the OpenChannelSettingsFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelSettingsFragment}
      * @since 3.0.0
@@ -233,6 +245,7 @@ public class UIKitFragmentFactory {
     /**
      * Returns the OpenChannelSettingsFragment.
      *
+     * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelSettingsFragment}
      * @since 3.0.0
@@ -242,6 +255,81 @@ public class UIKitFragmentFactory {
         return new ChannelPushSettingFragment.Builder(channelUrl)
                 .withArguments(args)
                 .setUseHeader(true)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelModerationFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelModerationFragment}
+     * @since 3.1.0
+     */
+    @NonNull
+    public Fragment newOpenChannelModerationFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelModerationFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelRegisterOperatorFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelRegisterOperatorFragment}
+     * @since 3.1.0
+     */
+    @NonNull
+    public Fragment newOpenChannelRegisterOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelRegisterOperatorFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelOperatorListFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelOperatorListFragment}
+     * @since 3.1.0
+     */
+    @NonNull
+    public Fragment newOpenChannelOperatorListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelOperatorListFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelMutedParticipantListFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelMutedParticipantListFragment}
+     * @since 3.1.0
+     */
+    @NonNull
+    public Fragment newOpenChannelMutedParticipantListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelMutedParticipantListFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelBannedUserListFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelBannedUserListFragment}
+     * @since 3.1.0
+     */
+    @NonNull
+    public Fragment newOpenChannelBannedUserListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelBannedUserListFragment.Builder(channelUrl)
+                .withArguments(args)
                 .build();
     }
 }

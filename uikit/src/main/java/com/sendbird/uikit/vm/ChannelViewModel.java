@@ -86,8 +86,8 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<Boolean> hugeGapDetected = new MutableLiveData<>();
-    @NonNull
-    private final MessageListParams messageListParams;
+    @Nullable
+    private MessageListParams messageListParams;
     @Nullable
     private GroupChannel channel;
     @NonNull
@@ -150,8 +150,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         super();
         this.channel = null;
         this.channelUrl = channelUrl;
-        this.messageListParams = messageListParams == null ? createMessageListParams() : messageListParams;
-        this.messageListParams.setReverse(true);
+        this.messageListParams = messageListParams;
         this.memberFinder = new MemberFinder(channelUrl, SendbirdUIKit.getUserMentionConfig());
 
         SendbirdChat.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
@@ -218,7 +217,11 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
         if (this.collection != null) {
             disposeMessageCollection();
         }
-        this.collection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, messageListParams, startingPoint, new MessageCollectionHandler() {
+        if (this.messageListParams == null) {
+            this.messageListParams = createMessageListParams();
+        }
+        this.messageListParams.setReverse(true);
+        this.collection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, this.messageListParams, startingPoint, new MessageCollectionHandler() {
             @UiThread
             @Override
             public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
@@ -452,7 +455,7 @@ public class ChannelViewModel extends BaseViewModel implements OnPagedDataLoader
      * @return {@link MessageListParams} used in this view model
      * @since 3.0.0
      */
-    @NonNull
+    @Nullable
     public MessageListParams getMessageListParams() {
         return messageListParams;
     }

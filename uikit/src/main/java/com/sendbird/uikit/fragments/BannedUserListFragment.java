@@ -101,14 +101,13 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
     @Override
     protected void onReady(@NonNull ReadyStatus status, @NonNull BannedUserListModule module, @NonNull BannedUserListViewModel viewModel) {
         Logger.d(">> BannedUserListFragment::onReady status=%s", status);
-        if (status != ReadyStatus.READY) {
+        final GroupChannel channel = viewModel.getChannel();
+        if (status == ReadyStatus.ERROR || channel == null) {
             final StatusComponent statusComponent = module.getStatusComponent();
             statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
             return;
         }
 
-        final GroupChannel channel = viewModel.getChannel();
-        if (channel == null) return;
         if (channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
         viewModel.loadInitial();
     }
@@ -486,9 +485,9 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         }
 
         /**
-         * Sets the channel user list adapter.
+         * Sets the banned user list adapter.
          *
-         * @param adapter the adapter for the channel user list.
+         * @param adapter the adapter for the banned user list.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 3.0.0
          */
@@ -499,7 +498,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         }
 
         /**
-         * Sets the click listener on the item of channel user list.
+         * Sets the click listener on the item of banned user list.
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -512,7 +511,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         }
 
         /**
-         * Sets the long click listener on the item of channel user list.
+         * Sets the long click listener on the item of banned user list.
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -525,7 +524,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         }
 
         /**
-         * Sets the action item click listener on the item of channel user list.
+         * Sets the action item click listener on the item of banned user list.
          *
          * @param actionItemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.

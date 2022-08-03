@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
             android:gravity="center_vertical"
-            android:text="@string/sb_text_menu_banned_members"
+            android:text="@string/sb_text_menu_banned_users"
             android:textAppearance="@style/SendbirdBody1OnLight01"
             android:paddingLeft="@dimen/sb_size_16"
             android:paddingRight="@dimen/sb_size_16"/>

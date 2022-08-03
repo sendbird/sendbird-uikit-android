@@ -17,9 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.sendbird.android.SendbirdChat;
-import com.sendbird.android.channel.Role;
-import com.sendbird.android.user.Member;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
@@ -116,47 +113,23 @@ public class UserPreview extends FrameLayout {
         ViewUtils.drawProfile(binding.ivProfile, url);
     }
 
-    public void setVisibleOverlay(int visiblility) {
-        binding.ivProfileOverlay.setVisibility(visiblility);
+    public void setVisibleOverlay(int visibility) {
+        binding.ivProfileOverlay.setVisibility(visibility);
     }
 
     public void enableActionMenu(boolean enabled) {
         binding.ivAction.setEnabled(enabled);
     }
 
-    public static void drawMember(@NonNull UserPreview preview, @NonNull Member member) {
+    public static void drawUser(@NonNull UserPreview preview, @NonNull User user, @NonNull final String description, boolean isMuted) {
         Context context = preview.getContext();
-        boolean isOperatorMember = member.getRole() == Role.OPERATOR;
-        boolean isMe = member.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
-        final String nickname = UserUtils.getDisplayName(context, member);
-        preview.setName(nickname);
-
-        String description = isOperatorMember ? context.getString(R.string.sb_text_operator) : "";
-        preview.setDescription(description);
-        preview.setImageFromUrl(member.getProfileUrl());
-        preview.enableActionMenu(!isMe);
-        preview.setVisibleOverlay(member.isMuted() ? View.VISIBLE : View.GONE);
-
-        if (isMe) {
-            String meBadge = nickname + context.getResources().getString(R.string.sb_text_user_list_badge_me);
-            final Spannable spannable = new SpannableString(meBadge);
-            int badgeAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;
-            int originLen = nickname.length();
-            spannable.setSpan(new TextAppearanceSpan(context, badgeAppearance),
-                    originLen, meBadge.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            preview.setName(spannable);
-        }
-    }
-
-    public static void drawMemberFromUser(@NonNull UserPreview preview, @NonNull User user) {
-        Context context = preview.getContext();
-        boolean isMe = user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId());
+        boolean isMe = user.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         final String nickname = UserUtils.getDisplayName(context, user);
         preview.setName(nickname);
-
-        preview.setDescription("");
+        preview.setDescription(description);
         preview.setImageFromUrl(user.getProfileUrl());
         preview.enableActionMenu(!isMe);
+        preview.setVisibleOverlay(isMuted ? View.VISIBLE : View.GONE);
 
         if (isMe) {
             String meBadge = nickname + context.getResources().getString(R.string.sb_text_user_list_badge_me);

@@ -1,11 +1,12 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
+import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MemberListAdapter;
+
+import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the member list area in Sendbird UIKit.
@@ -22,7 +23,6 @@ public class MemberListComponent extends UserTypeListComponent<Member> {
      * @return The adapter applied to this list component
      * @since 3.0.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @NonNull
     @Override
     protected MemberListAdapter getAdapter() {
@@ -39,5 +39,16 @@ public class MemberListComponent extends UserTypeListComponent<Member> {
     public <T extends MemberListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
         super.setAdapter(this.adapter);
+    }
+
+    /**
+     * Notifies this component that the list of users is changed.
+     *
+     * @param userList The list of users to be displayed on this component
+     * @param myRole   Role of the current user
+     * @since 3.0.0
+     */
+    public void notifyDataSetChanged(@NonNull List<Member> userList, @NonNull Role myRole) {
+        this.adapter.setItems(userList, myRole);
     }
 }

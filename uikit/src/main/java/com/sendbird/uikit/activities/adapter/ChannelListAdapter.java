@@ -2,7 +2,6 @@ package com.sendbird.uikit.activities.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -158,7 +157,6 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      *
      * @return The {@link List<GroupChannel>} in this adapter.
      */
-    @SuppressLint("KotlinPropertyAccess")
     @Override
     @NonNull
     public List<GroupChannel> getItems() {

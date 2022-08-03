@@ -71,6 +71,16 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new RegisterOperatorViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<Member>) params[1] : null);
         } else if (modelClass.isAssignableFrom(ChannelPushSettingViewModel.class)) {
             return (T) new ChannelPushSettingViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(OpenChannelModerationViewModel.class)) {
+            return (T) new OpenChannelModerationViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(OpenChannelRegisterOperatorViewModel.class)) {
+            return (T) new OpenChannelRegisterOperatorViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<User>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(OpenChannelOperatorListViewModel.class)) {
+            return (T) new OpenChannelOperatorListViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<User>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(OpenChannelMutedParticipantListViewModel.class)) {
+            return (T) new OpenChannelMutedParticipantListViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<User>) params[1] : null);
+        } else if (modelClass.isAssignableFrom(OpenChannelBannedUserListViewModel.class)) {
+            return (T) new OpenChannelBannedUserListViewModel((String) Objects.requireNonNull(params)[0]);
         } else {
             return super.create(modelClass);
         }

@@ -40,8 +40,6 @@ import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.SelectChannelTypeView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
-import java.util.Objects;
-
 /**
  * Fragment displaying the list of channels.
  */

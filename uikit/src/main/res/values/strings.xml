@@ -64,6 +64,8 @@
     <string name="sb_text_yesterday">Yesterday</string>
     <string name="sb_text_dialog_delete_file_message">Delete this file?</string>
     <string name="sb_text_dialog_delete_message">Delete this message?</string>
+    <string name="sb_text_dialog_delete_channel">Delete channel?</string>
+    <string name="sb_text_dialog_delete_channel_message">Once deleted, this channel can\'t be restored.</string>
     <string name="sb_text_toast_success_copy">Copied</string>
     <string name="sb_text_toast_success_start_upload_file">Uploading&#8230;</string>
     <string name="sb_text_toast_success_start_download_file">Downloading&#8230;</string>
@@ -107,9 +109,13 @@
     <string name="sb_text_error_send_message">Couldn\&#39;t send message. Try again.</string>
     <string name="sb_text_error_message_filtered">Message filtered.</string>
     <string name="sb_text_error_mute_member">Couldn\&#39;t mute member. Try again.</string>
+    <string name="sb_text_error_mute_participant">Couldn\&#39;t mute participant. Try again.</string>
     <string name="sb_text_error_ban_member">Couldn\&#39;t ban member. Try again.</string>
+    <string name="sb_text_error_ban_participant">Couldn\&#39;t ban participant. Try again.</string>
     <string name="sb_text_error_unmute_member">Couldn\&#39;t unmute member. Try again.</string>
+    <string name="sb_text_error_unmute_participant">Couldn\&#39;t unmute participant. Try again.</string>
     <string name="sb_text_error_unban_member">Couldn\&#39;t unban member. Try again.</string>
+    <string name="sb_text_error_unban_participant">Couldn\&#39;t unban participant. Try again.</string>
 
     <!-- File Error -->
     <string name="sb_text_error_open_camera">Couldn\&#39;t open camera.</string>
@@ -132,18 +138,25 @@
     <string name="sb_text_operator">Operator</string>
     <string name="sb_text_menu_operators">Operators</string>
     <string name="sb_text_menu_muted_members">Muted members</string>
-    <string name="sb_text_menu_banned_members">Banned members</string>
+    <string name="sb_text_menu_banned_users">Banned users</string>
     <string name="sb_text_menu_freeze_channel">Freeze channel</string>
     <string name="sb_text_empty_no_operator_member">No operator members</string>
     <string name="sb_text_empty_no_muted_member">No muted members</string>
-    <string name="sb_text_empty_no_banned_member">No banned members</string>
+    <string name="sb_text_empty_no_banned_users">No banned users</string>
+    <string name="sb_text_menu_muted_participants">Muted participants</string>
+    <string name="sb_text_empty_no_operator_participant">No operator participants</string>
+    <string name="sb_text_empty_no_muted_participant">No muted participants</string>
 
     <string name="sb_text_register_operator">Register as operator</string>
     <string name="sb_text_mute_member">Mute</string>
+    <string name="sb_text_mute_participant">Mute</string>
     <string name="sb_text_ban_member">Ban</string>
+    <string name="sb_text_ban_participant">Ban</string>
     <string name="sb_text_unregister_operator">Unregister operator</string>
     <string name="sb_text_unmute_member">Unmute</string>
     <string name="sb_text_unban_member">Unban</string>
+    <string name="sb_text_unban_participant">Unban</string>
+    <string name="sb_text_unmute_participant">Unmute</string>
 
     <string name="sb_text_message">Message</string>
     <string name="sb_text_user_id">User ID</string>

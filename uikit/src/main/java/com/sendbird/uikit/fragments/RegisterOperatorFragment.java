@@ -91,6 +91,11 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
     protected void onReady(@NonNull ReadyStatus status, @NonNull RegisterOperatorModule module, @NonNull RegisterOperatorViewModel viewModel) {
         Logger.d(">> RegisterOperatorFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
+        if (status != ReadyStatus.READY || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
             if (isDeleted) shouldActivityFinish();
         });

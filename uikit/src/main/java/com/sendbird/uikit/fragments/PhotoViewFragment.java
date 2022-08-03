@@ -45,7 +45,7 @@ import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 
-public class PhotoViewFragment extends PermissionFragment implements PermissionFragment.IPermissionHandler, LoadingDialogHandler {
+public class PhotoViewFragment extends PermissionFragment implements PermissionFragment.PermissionHandler, LoadingDialogHandler {
     @NonNull
     private final String[] REQUIRED_PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -212,7 +212,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 download();
             } else {
-                checkPermission(0, (IPermissionHandler) this);
+                requestPermission(REQUIRED_PERMISSIONS, (PermissionHandler) this);
             }
         });
 
@@ -274,13 +274,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     }
 
     @Override
-    @NonNull
-    public String[] getPermissions(int requestCode) {
-        return REQUIRED_PERMISSIONS;
-    }
-
-    @Override
-    public void onPermissionGranted(int requestCode) {
+    public void onPermissionGranted() {
         download();
     }
 

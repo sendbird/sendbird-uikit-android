@@ -1,14 +1,24 @@
 package com.sendbird.uikit_messaging_android;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.exception.SendbirdException;
@@ -18,6 +28,7 @@ import com.sendbird.android.params.GroupChannelTotalUnreadMessageCountParams;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.databinding.ActivityHomeBinding;
 import com.sendbird.uikit_messaging_android.groupchannel.GroupChannelMainActivity;
@@ -26,6 +37,7 @@ import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -34,6 +46,11 @@ import java.util.Map;
 public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding binding;
     private static final String USER_EVENT_HANDLER_KEY = "USER_EVENT_HANDLER_KEY" + System.currentTimeMillis();
+
+    @NonNull
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {});
+    @NonNull
+    private final ActivityResultLauncher<Intent> appSettingLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), intent -> {});
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +67,18 @@ public class HomeActivity extends AppCompatActivity {
 
         binding.tvUnreadCount.setTextAppearance(this, R.style.SendbirdCaption3OnDark01);
         binding.tvUnreadCount.setBackgroundResource(R.drawable.shape_badge_background);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            final String permission = Manifest.permission.POST_NOTIFICATIONS;
+            if (ContextCompat.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED) {
+                return;
+            }
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                showPermissionRationalePopup(permission);
+                return;
+            }
+            requestPermissionLauncher.launch(permission);
+        }
     }
 
     @Override
@@ -125,5 +154,23 @@ public class HomeActivity extends AppCompatActivity {
                 WaitingDialog.dismiss();
             }
         });
+    }
+
+    private void showPermissionRationalePopup(@NonNull String permission) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
+        builder.setMessage(String.format(Locale.US, getString(R.string.sb_text_need_to_allow_permission_notification), ContextUtils.getApplicationName(this)));
+        builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            appSettingLauncher.launch(intent);
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, com.sendbird.uikit.R.color.secondary_300));
     }
 }

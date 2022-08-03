@@ -105,6 +105,7 @@ abstract public class OpenChannelListFragment extends Fragment implements Connec
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, this);
+        SendbirdUIKit.connect(null);
     }
 
     @Override

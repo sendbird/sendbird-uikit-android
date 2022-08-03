@@ -94,7 +94,12 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
     @Override
     protected void onReady(@NonNull ReadyStatus status, @NonNull MemberListModule module, @NonNull MemberListViewModel viewModel) {
         Logger.d(">> MemberListFragment::onReady(ReadyStatus=%s)", status);
-
+        final GroupChannel channel = viewModel.getChannel();
+        if (status == ReadyStatus.ERROR || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
         viewModel.getChannelDeleted().observe(getViewLifecycleOwner(), isDeleted -> {
             if (isDeleted) shouldActivityFinish();
         });

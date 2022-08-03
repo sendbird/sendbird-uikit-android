@@ -2,8 +2,11 @@ package com.sendbird.uikit.modules.components;
 
 import androidx.annotation.NonNull;
 
+import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.BannedUserListAdapter;
+
+import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the banned user list area in Sendbird UIKit.
@@ -45,5 +48,16 @@ public class BannedUserListComponent extends UserTypeListComponent<User> {
     @Override
     protected BannedUserListAdapter getAdapter() {
         return this.adapter;
+    }
+
+    /**
+     * Notifies this component that the list of users is changed.
+     *
+     * @param userList The list of users to be displayed on this component
+     * @param myRole   Role of the current user
+     * @since 3.0.0
+     */
+    public void notifyDataSetChanged(@NonNull List<User> userList, @NonNull Role myRole) {
+        this.adapter.setItems(userList, myRole);
     }
 }

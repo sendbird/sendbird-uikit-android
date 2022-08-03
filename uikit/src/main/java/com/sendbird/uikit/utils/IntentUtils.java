@@ -44,13 +44,23 @@ public class IntentUtils {
 
     @NonNull
     private static Intent getGalleryIntent(@NonNull String[] mimetypes) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return Intent.createChooser(intent, null);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return Intent.createChooser(intent, null);
+        }
+
+        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        if (mimetypes.length == 1) {
+            // ACTION_PICK_IMAGES supports only two mimetypes.
+            intent.setType(mimetypes[0]);
+        }
+        return intent;
     }
+
 
     @NonNull
     public static Intent getFileChooserIntent() {

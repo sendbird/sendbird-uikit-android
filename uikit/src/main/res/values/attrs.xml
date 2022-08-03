@@ -18,6 +18,11 @@
         <attr name="sb_module_participant_list" format="reference"/>
         <attr name="sb_module_register_operator_list" format="reference"/>
         <attr name="sb_module_channel_push_setting" format="reference"/>
+        <attr name="sb_module_open_channel_moderation" format="reference"/>
+        <attr name="sb_module_open_channel_register_operator" format="reference"/>
+        <attr name="sb_module_open_channel_operator_list" format="reference"/>
+        <attr name="sb_module_open_channel_muted_participant_list" format="reference"/>
+        <attr name="sb_module_open_channel_banned_user_list" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">

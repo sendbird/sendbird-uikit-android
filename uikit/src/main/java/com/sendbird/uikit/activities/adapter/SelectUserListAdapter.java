@@ -2,7 +2,6 @@ package com.sendbird.uikit.activities.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -45,7 +44,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Constructor
      */
     public SelectUserListAdapter() {
-        setHasStableIds(true);
+        this(null);
     }
 
     /**
@@ -69,7 +68,6 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
         return userList.get(position);
     }
 
-    @SuppressLint("KotlinPropertyAccess")
     @Override
     @NonNull
     public List<T> getItems() {

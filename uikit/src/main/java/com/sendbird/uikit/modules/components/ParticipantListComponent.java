@@ -1,11 +1,12 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
+import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.ParticipantListAdapter;
+
+import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the participant list area in Sendbird UIKit.
@@ -22,7 +23,6 @@ public class ParticipantListComponent extends UserTypeListComponent<User> {
      * @return The adapter applied to this list component
      * @since 3.0.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @NonNull
     @Override
     protected ParticipantListAdapter getAdapter() {
@@ -39,5 +39,16 @@ public class ParticipantListComponent extends UserTypeListComponent<User> {
     public <T extends ParticipantListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
         super.setAdapter(this.adapter);
+    }
+
+    /**
+     * Notifies this component that the list of users is changed.
+     *
+     * @param userList The list of users to be displayed on this component
+     * @param openChannel The latest open channel
+     * @since 3.1.0
+     */
+    public void notifyDataSetChanged(@NonNull List<User> userList, @NonNull OpenChannel openChannel) {
+        this.adapter.setItems(userList, openChannel);
     }
 }

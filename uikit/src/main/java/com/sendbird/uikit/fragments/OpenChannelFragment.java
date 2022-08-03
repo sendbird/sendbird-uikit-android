@@ -2,7 +2,6 @@ package com.sendbird.uikit.fragments;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,6 +14,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -71,6 +72,7 @@ import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.MessageUtils;
+import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
@@ -89,12 +91,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Fragment that provides chat in {@code OpenChannel}
  */
 public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, OpenChannelViewModel> {
-    private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
-    private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
-    private static final int PICK_FILE_PERMISSIONS_REQUEST_CODE = 2003;
-    private static final int PERMISSION_REQUEST_ALL = 2005;
-    private static final int PERMISSION_REQUEST_STORAGE = 2006;
-
     @Nullable
     private OpenChannelMessageListAdapter adapter;
     @Nullable
@@ -140,6 +136,28 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     private final AtomicBoolean anchorDialogShowing = new AtomicBoolean(false);
     @Nullable
     private Uri mediaUri;
+
+    private final ActivityResultLauncher<Intent> getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        final Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || intent == null) return;
+        final Uri mediaUri = intent.getData();
+        if (mediaUri != null && isFragmentAlive()) {
+            sendFileMessage(mediaUri);
+        }
+    });
+    private final ActivityResultLauncher<Intent> takeCameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK) return;
+        final Uri mediaUri = OpenChannelFragment.this.mediaUri;
+        if (mediaUri != null && isFragmentAlive()) {
+            sendFileMessage(mediaUri);
+        }
+    });
 
     @NonNull
     @Override
@@ -259,10 +277,10 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         Logger.d(">> OpenChannelFragment::onBindChannelHeaderComponent()");
         if (channel == null) return;
 
-        boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
         headerComponent.setOnLeftButtonClickListener(headerLeftButtonClickListener != null ? headerLeftButtonClickListener : v -> shouldActivityFinish());
         headerComponent.setOnRightButtonClickListener(headerRightButtonClickListener != null ? headerRightButtonClickListener : v -> {
             if (!isFragmentAlive()) return;
+            boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
             if (isOperator) {
                 Intent intent = OpenChannelSettingsActivity.newIntent(requireContext(), channel.getUrl());
                 startActivity(intent);
@@ -360,6 +378,13 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
             boolean isFrozen = channel.isFrozen() && !isOperator;
             if (isFrozen) {
+                inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT);
+            }
+        });
+        viewModel.getMyMutedInfo().observe(getViewLifecycleOwner(), isMuted -> {
+            if (viewModel.getChannel() == null) return;
+            inputComponent.notifyMyMutedStateChanged(viewModel.getChannel(), isMuted);
+            if (isMuted) {
                 inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT);
             }
         });
@@ -551,28 +576,14 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      */
     public void takeCamera() {
         SendbirdChat.setAutoBackgroundDetection(false);
-        checkPermission(PERMISSION_REQUEST_ALL, new IPermissionHandler() {
-            @Override
-            @NonNull
-            public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
-            }
-
-            @Override
-            public void onPermissionGranted(int requestCode) {
-                if (!isFragmentAlive()) return;
-                mediaUri = FileUtils.createPictureImageUri(requireContext());
-                if (mediaUri == null) return;
-                Intent intent = IntentUtils.getCameraIntent(requireContext(), mediaUri);
-                if (IntentUtils.hasIntent(requireContext(), intent)) {
-                    startActivityForResult(intent, CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE);
-                }
+        String[] permissions = PermissionUtils.CAMERA_PERMISSION;
+        requestPermission(permissions, () -> {
+            if (getContext() == null) return;
+            this.mediaUri = FileUtils.createPictureImageUri(getContext());
+            if (mediaUri == null) return;
+            Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
+            if (IntentUtils.hasIntent(getContext(), intent)) {
+                takeCameraLauncher.launch(intent);
             }
         });
     }
@@ -584,23 +595,17 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      */
     public void takePhoto() {
         SendbirdChat.setAutoBackgroundDetection(false);
-        checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
-            @Override
-            @NonNull
-            public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
-            }
-
-            @Override
-            public void onPermissionGranted(int requestCode) {
+        Logger.d("++ build sdk int=%s", Build.VERSION.SDK_INT);
+        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
+        if (permissions.length > 0) {
+            requestPermission(permissions, () -> {
                 Intent intent = IntentUtils.getGalleryIntent();
-                startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
-            }
-        });
+                getContentLauncher.launch(intent);
+            });
+        } else {
+            Intent intent = IntentUtils.getGalleryIntent();
+            getContentLauncher.launch(intent);
+        }
     }
 
     /**
@@ -610,45 +615,15 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      */
     public void takeFile() {
         SendbirdChat.setAutoBackgroundDetection(false);
-        checkPermission(PERMISSION_REQUEST_STORAGE, new IPermissionHandler() {
-            @Override
-            @NonNull
-            public String[] getPermissions(int requestCode) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-                return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE};
-            }
-
-            @Override
-            public void onPermissionGranted(int requestCode) {
+        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
+        if (permissions.length > 0) {
+            requestPermission(permissions, () -> {
                 Intent intent = IntentUtils.getFileChooserIntent();
-                startActivityForResult(intent, PICK_FILE_PERMISSIONS_REQUEST_CODE);
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        SendbirdChat.setAutoBackgroundDetection(true);
-
-        if (resultCode != RESULT_OK) return;
-
-        switch (requestCode) {
-            case CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE:
-                break;
-            case PICK_IMAGE_PERMISSIONS_REQUEST_CODE:
-            case PICK_FILE_PERMISSIONS_REQUEST_CODE:
-                if (data != null) {
-                    this.mediaUri = data.getData();
-                }
-                break;
-        }
-
-        if (this.mediaUri != null && isFragmentAlive()) {
-            sendFileMessage(mediaUri);
+                getContentLauncher.launch(intent);
+            });
+        } else {
+            Intent intent = IntentUtils.getFileChooserIntent();
+            getContentLauncher.launch(intent);
         }
     }
 
@@ -966,19 +941,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             download(message);
         } else {
-            checkPermission(PERMISSION_REQUEST_STORAGE, new PermissionFragment.IPermissionHandler() {
-                @Override
-                @NonNull
-                public String[] getPermissions(int requestCode) {
-                    return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE};
-                }
-
-                @Override
-                public void onPermissionGranted(int requestCode) {
-                    download(message);
-                }
-            });
+            requestPermission(PermissionUtils.GET_CONTENT_PERMISSION, () -> download(message));
         }
     }
 

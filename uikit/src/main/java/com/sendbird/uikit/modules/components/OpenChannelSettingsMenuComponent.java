@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.view.ContextThemeWrapper;
 
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
@@ -26,7 +27,20 @@ import com.sendbird.uikit.widgets.SingleMenuItemView;
  */
 public class OpenChannelSettingsMenuComponent {
     public enum Menu {
-        PARTICIPANTS, DELETE_CHANNEL
+        /**
+         * A menu of Moderations to users or members control.
+         *
+         * @since 3.1.0
+         */
+        MODERATIONS,
+        /**
+         * A menu for viewing the participants of the current channel.
+         */
+        PARTICIPANTS,
+        /**
+         * A menu to delete the current channel.
+         */
+        DELETE_CHANNEL
     }
 
     @NonNull
@@ -88,8 +102,14 @@ public class OpenChannelSettingsMenuComponent {
         final LayoutInflater menuInflater = inflater.cloneInContext(menuThemeContext);
 
         final View view = menuInflater.inflate(R.layout.sb_view_open_channel_settings_menu, parent, false);
-        SingleMenuItemView participantsItemView = view.findViewById(R.id.participants);
-        SingleMenuItemView deleteItemView = view.findViewById(R.id.delete);
+        final SingleMenuItemView moderationsItemView = view.findViewById(R.id.moderations);
+        final SingleMenuItemView participantsItemView = view.findViewById(R.id.participants);
+        final SingleMenuItemView deleteItemView = view.findViewById(R.id.delete);
+
+        moderationsItemView.setName(context.getString(R.string.sb_text_channel_settings_moderations));
+        moderationsItemView.setMenuType(SingleMenuItemView.Type.NEXT);
+        moderationsItemView.setIcon(R.drawable.icon_moderations);
+        moderationsItemView.setVisibility(View.GONE);
 
         participantsItemView.setName(context.getString(R.string.sb_text_header_participants));
         participantsItemView.setMenuType(SingleMenuItemView.Type.NEXT);
@@ -99,6 +119,7 @@ public class OpenChannelSettingsMenuComponent {
         deleteItemView.setIcon(R.drawable.icon_delete);
         deleteItemView.setIconTint(AppCompatResources.getColorStateList(context, SendbirdUIKit.isDarkMode() ? R.color.error_200 : R.color.error_300));
 
+        moderationsItemView.setOnClickListener(v -> onMenuClicked(v, Menu.MODERATIONS));
         participantsItemView.setOnClickListener(v -> onMenuClicked(v, Menu.PARTICIPANTS));
         deleteItemView.setOnClickListener(v -> onMenuClicked(v, Menu.DELETE_CHANNEL));
         this.menuView = view;
@@ -113,6 +134,10 @@ public class OpenChannelSettingsMenuComponent {
      */
     public void notifyChannelChanged(@NonNull OpenChannel channel) {
         if (this.menuView == null) return;
+
+        final SingleMenuItemView moderationsItemView = menuView.findViewById(R.id.moderations);
+        moderationsItemView.setVisibility(channel.isOperator(SendbirdChat.getCurrentUser()) ? View.VISIBLE : View.GONE);
+
         SingleMenuItemView participantsItemView = menuView.findViewById(R.id.participants);
         participantsItemView.setDescription(ChannelUtils.makeMemberCountText(channel.getParticipantCount()).toString());
     }

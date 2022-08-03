@@ -2,7 +2,6 @@ package com.sendbird.uikit.activities.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -258,7 +257,6 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @return true if the view is using more button, false otherwise
      * @since 1.1.2
      */
-    @SuppressLint("KotlinPropertyAccess")
     public boolean useMoreButton() {
         return useMoreButton;
     }

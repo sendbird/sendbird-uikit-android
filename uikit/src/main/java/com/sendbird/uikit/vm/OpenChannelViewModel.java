@@ -33,7 +33,6 @@ import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MessageList;
-import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.io.File;
@@ -73,6 +72,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
     private final MutableLiveData<MessageLoadState> messageLoadState = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<Boolean> myMutedInfo = new MutableLiveData<>();
     @Nullable
     private OpenChannel channel;
     @NonNull
@@ -276,6 +277,9 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserMuted()");
                     channelUpdated.postValue((OpenChannel) channel);
+                    if (SendbirdChat.getCurrentUser() != null && user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
+                        myMutedInfo.postValue(true);
+                    }
                 }
             }
 
@@ -284,6 +288,9 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 if (isCurrentChannel(channel.getUrl())) {
                     Logger.i(">> OpenChannelViewModel::onUserUnmuted()");
                     channelUpdated.postValue((OpenChannel) channel);
+                    if (SendbirdChat.getCurrentUser() != null && user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
+                        myMutedInfo.postValue(false);
+                    }
                 }
             }
 
@@ -345,6 +352,17 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
     @NonNull
     public LiveData<Long> onMessageDeleted() {
         return messageDeleted;
+    }
+
+    /**
+     * Returns LiveData that can be observed if the current user is muted or not.
+     *
+     * @return LiveData holding the current user muted information
+     * @since 3.1.0
+     */
+    @NonNull
+    public LiveData<Boolean> getMyMutedInfo() {
+        return myMutedInfo;
     }
 
     /**
@@ -815,6 +833,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                         handler.onAuthenticationFailed();
                     } else {
                         handler.onAuthenticated();
+                        // TODO to be deleted after Chat SDK support
+                        if (channel != null) getMyMutedInfo(channel);
                     }
                 });
             } else {
@@ -837,6 +857,15 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 registerChannelHandler();
             }
             handler.onComplete(e);
+        });
+    }
+
+    // TODO to be deleted after Chat SDK support
+    private void getMyMutedInfo(@NonNull OpenChannel channel) {
+        channel.getMyMutedInfo((isMuted, description, startAt, endAt, remainingDuration, e) -> {
+            if (e == null) {
+                myMutedInfo.postValue(isMuted);
+            }
         });
     }
 }

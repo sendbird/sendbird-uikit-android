@@ -14,6 +14,7 @@ import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.MemberState;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.BannedUserListActivity;
 import com.sendbird.uikit.activities.MutedMemberListActivity;
@@ -73,12 +74,17 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     protected void onReady(@NonNull ReadyStatus status, @NonNull ModerationModule module, @NonNull ModerationViewModel viewModel) {
         Logger.d(">> ModerationFragment::onReady status=%s", status);
 
-        final ModerationListComponent moderationListComponent = getModule().getModerationListComponent();
-
         final GroupChannel channel = viewModel.getChannel();
-        if (channel != null) {
-            moderationListComponent.notifyChannelChanged(channel);
+        if (status == ReadyStatus.ERROR || channel == null) {
+            if (isFragmentAlive()) {
+                toastError(R.string.sb_text_error_get_channel);
+                shouldActivityFinish();
+            }
+            return;
         }
+
+        final ModerationListComponent moderationListComponent = getModule().getModerationListComponent();
+        moderationListComponent.notifyChannelChanged(channel);
 
         viewModel.getMyMemberStateChanges().observe(getViewLifecycleOwner(), memberState -> {
             if (memberState == MemberState.NONE) shouldActivityFinish();

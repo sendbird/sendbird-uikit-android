@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -317,7 +316,6 @@ public class OpenChannelModule extends BaseModule {
          *
          * @return <code>true</code> if a overlay mode. is shown, <code>false</code> otherwise
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseOverlayMode() {
             return useOverlayMode;
         }

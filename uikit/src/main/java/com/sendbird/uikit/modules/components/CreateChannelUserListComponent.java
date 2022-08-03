@@ -1,7 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
 import com.sendbird.uikit.activities.adapter.CreateChannelUserListAdapter;
@@ -22,7 +20,6 @@ public class CreateChannelUserListComponent extends SelectUserListComponent<User
      * @return The adapter applied to this list component
      * @since 3.0.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @NonNull
     @Override
     protected CreateChannelUserListAdapter getAdapter() {

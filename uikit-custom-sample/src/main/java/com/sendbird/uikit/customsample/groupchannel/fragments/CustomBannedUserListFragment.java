@@ -29,7 +29,7 @@ public class CustomBannedUserListFragment extends BannedUserListFragment {
 
         HeaderComponent.Params headerParams = module.getHeaderComponent().getParams();
         if (isFragmentAlive()) {
-            headerParams.setTitle(requireContext().getString(R.string.sb_text_menu_banned_members));
+            headerParams.setTitle(requireContext().getString(R.string.sb_text_menu_banned_users));
             headerParams.setLeftButtonIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.icon_arrow_left, null));
             headerParams.setUseRightButton(false);
         }

@@ -64,7 +64,7 @@ public class DialogView extends LinearLayout {
             backgroundBottomId = a.getResourceId(R.styleable.DialogView_sb_dialog_view_background_bottom, R.drawable.sb_top_rounded_rectangle_light);
             backgroundAnchorId = a.getResourceId(R.styleable.DialogView_sb_dialog_view_background_anchor, R.drawable.layer_dialog_anchor_background_light);
             int titleAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_title_appearance, R.style.SendbirdH1OnLight01);
-            int messageAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_message_appearance, R.style.SendbirdSubtitle2OnLight01);
+            int messageAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_message_appearance, R.style.SendbirdBody3OnLight02);
             int editTextAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_edit_text_appearance, R.style.SendbirdSubtitle2OnLight01);
             ColorStateList editTextTint = a.getColorStateList(R.styleable.DialogView_sb_dialog_view_edit_text_tint);
             int editTextCursorDrawable = a.getResourceId(R.styleable.DialogView_sb_dialog_view_edit_text_cursor_drawable, R.drawable.sb_message_input_cursor_light);
@@ -137,8 +137,8 @@ public class DialogView extends LinearLayout {
         binding.tvDialogTitle.setVisibility(VISIBLE);
     }
 
-    public void setMessage(int message) {
-        if (message == 0) {
+    public void setMessage(@Nullable CharSequence message) {
+        if (TextUtils.isEmpty(message)) {
             return;
         }
         binding.tvDialogMessage.setText(message);

@@ -1,7 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
 import com.sendbird.uikit.activities.adapter.InviteUserListAdapter;
@@ -34,7 +32,6 @@ public class InviteUserListComponent extends SelectUserListComponent<UserInfo> {
      * @return The adapter applied to this list component
      * @since 3.0.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @NonNull
     @Override
     protected InviteUserListAdapter getAdapter() {

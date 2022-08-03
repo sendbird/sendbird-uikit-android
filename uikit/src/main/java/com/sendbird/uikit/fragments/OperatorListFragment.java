@@ -97,6 +97,11 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
     protected void onReady(@NonNull ReadyStatus status, @NonNull OperatorListModule module, @NonNull OperatorListViewModel viewModel) {
         Logger.d(">> OperatorListFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
+        if (status != ReadyStatus.READY || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
         viewModel.getOperatorUnregistered().observe(getViewLifecycleOwner(), isDismissed -> {
             if (isDismissed) shouldActivityFinish();
         });
@@ -104,7 +109,6 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
             if (isDeleted) shouldActivityFinish();
         });
 
-        if (channel == null) return;
         if (channel.getMyRole() != Role.OPERATOR) shouldActivityFinish();
         viewModel.loadInitial();
     }

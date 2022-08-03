@@ -2,14 +2,14 @@ package com.sendbird.uikit.fragments;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +22,7 @@ import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.params.OpenChannelUpdateParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.OpenChannelModerationActivity;
 import com.sendbird.uikit.activities.ParticipantListActivity;
 import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.consts.StringSet;
@@ -41,6 +42,7 @@ import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
+import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.vm.OpenChannelSettingsViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
 
@@ -50,9 +52,6 @@ import java.io.File;
  * Fragment displaying the information of {@code OpenChannel}.
  */
 public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelSettingsModule, OpenChannelSettingsViewModel> {
-    private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
-    private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
-
     @Nullable
     private Uri mediaUri;
 
@@ -63,6 +62,29 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @Nullable
     private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
     private LoadingDialogHandler loadingDialogHandler;
+
+    private final ActivityResultLauncher<Intent> getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        final Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || intent == null) return;
+        final Uri mediaUri = intent.getData();
+        if (mediaUri != null && isFragmentAlive()) {
+            processPickedImage(mediaUri);
+        }
+    });
+    private final ActivityResultLauncher<Intent> takeCameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        final Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || intent == null) return;
+        final Uri mediaUri = OpenChannelSettingsFragment.this.mediaUri;
+        if (mediaUri != null && isFragmentAlive()) {
+            processPickedImage(mediaUri);
+        }
+    });
 
     @NonNull
     @Override
@@ -81,32 +103,13 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelSettingsViewModel.class);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        SendbirdChat.setAutoBackgroundDetection(true);
-
-        if (resultCode != RESULT_OK) return;
-
-        switch (requestCode) {
-            case CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE:
-                break;
-            case PICK_IMAGE_PERMISSIONS_REQUEST_CODE:
-                if (data != null) {
-                    mediaUri = data.getData();
-                }
-                break;
-        }
-
-        if (mediaUri == null) return;
-
-        final Uri finalMediaUri = mediaUri;
+    private void processPickedImage(@NonNull Uri uri) {
         TaskQueue.addTask(new JobResultTask<File>() {
             @Override
             @Nullable
             public File call() {
                 if (!isFragmentAlive()) return null;
-                return FileUtils.uriToFile(requireContext(), finalMediaUri);
+                return FileUtils.uriToFile(requireContext(), uri);
             }
 
             @Override
@@ -195,13 +198,21 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         Logger.d(">> OpenChannelSettingsFragment::onBindSettingsMenuComponent()");
 
         menuComponent.setOnMenuClickListener(menuItemClickListener != null ? menuItemClickListener : (view, position, menu) -> {
-            if (menu == OpenChannelSettingsMenuComponent.Menu.PARTICIPANTS) {
+            if (menu == OpenChannelSettingsMenuComponent.Menu.MODERATIONS) {
+                startModerationsActivity();
+            } else if (menu == OpenChannelSettingsMenuComponent.Menu.PARTICIPANTS) {
                 startParticipantsListActivity();
             } else if (menu == OpenChannelSettingsMenuComponent.Menu.DELETE_CHANNEL) {
-                deleteChannel();
+                showDeleteChannelDialog();
             }
         });
         viewModel.getChannelUpdated().observe(getViewLifecycleOwner(), menuComponent::notifyChannelChanged);
+    }
+
+    private void startModerationsActivity() {
+        if (isFragmentAlive()) {
+            startActivity(OpenChannelModerationActivity.newIntent(requireContext(), getViewModel().getChannelUrl()));
+        }
     }
 
     private void startParticipantsListActivity() {
@@ -231,7 +242,6 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
 
                 DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
-                assert getFragmentManager() != null;
                 DialogUtils.showInputDialog(
                         requireContext(),
                         getString(R.string.sb_text_channel_settings_change_channel_name),
@@ -240,24 +250,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
                         getString(R.string.sb_text_button_cancel), null);
             } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
                 Logger.dev("change channel image");
-                checkPermission(PICK_IMAGE_PERMISSIONS_REQUEST_CODE, new IPermissionHandler() {
-                    @Override
-                    @NonNull
-                    public String[] getPermissions(int requestCode) {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                            return new String[]{Manifest.permission.CAMERA,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE};
-                        }
-                        return new String[]{Manifest.permission.CAMERA,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE};
-                    }
-
-                    @Override
-                    public void onPermissionGranted(int requestCode) {
-                        showMediaSelectDialog();
-                    }
-                });
+                String[] permissions = PermissionUtils.CAMERA_PERMISSION;
+                requestPermission(permissions, this::showMediaSelectDialog);
             }
         });
     }
@@ -278,7 +272,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
                         if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
                             takeCamera();
                         } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
-                            pickImage();
+                            takePhoto();
                         }
                     } catch (Exception e) {
                         Logger.e(e);
@@ -287,19 +281,34 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
                 });
     }
 
+    private void showDeleteChannelDialog() {
+        if (getContext() == null) return;
+        DialogUtils.showWarningDialog(
+                requireContext(),
+                getString(R.string.sb_text_dialog_delete_channel),
+                getString(R.string.sb_text_dialog_delete_channel_message),
+                getString(R.string.sb_text_button_delete),
+                delete -> {
+                    Logger.dev("delete");
+                    deleteChannel();
+                },
+                getString(R.string.sb_text_button_cancel),
+                cancel -> Logger.dev("cancel"));
+    }
+
     private void takeCamera() {
         if (!isFragmentAlive()) return;
         mediaUri = FileUtils.createPictureImageUri(requireContext());
         if (mediaUri == null) return;
         Intent intent = IntentUtils.getCameraIntent(requireActivity(), mediaUri);
         if (IntentUtils.hasIntent(requireContext(), intent)) {
-            startActivityForResult(intent, CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE);
+            takeCameraLauncher.launch(intent);
         }
     }
 
-    private void pickImage() {
+    private void takePhoto() {
         Intent intent = IntentUtils.getImageGalleryIntent();
-        startActivityForResult(intent, PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+        getContentLauncher.launch(intent);
     }
 
     /**

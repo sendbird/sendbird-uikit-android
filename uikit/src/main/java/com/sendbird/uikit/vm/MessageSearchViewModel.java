@@ -82,7 +82,6 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
      */
     @NonNull
     protected MessageSearchQuery createMessageSearchQuery(@NonNull String keyword) {
-        final long timestampFrom = channel == null ? 0 : Math.max(channel.getJoinedAt(), channel.getInvitedAt());
         final MessageSearchQueryParams params = new MessageSearchQueryParams(keyword);
         if (query != null) {
             params.setAdvancedQuery(query.isAdvancedQuery());
@@ -92,11 +91,13 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
             params.setMessageTimestampTo(query.getMessageTimestampTo());
             params.setTargetFields(query.getTargetFields());
             params.setOrder(query.getOrder());
+            params.setMessageTimestampFrom(query.getMessageTimestampFrom());
         } else {
+            final long timestampFrom = channel == null ? 0 : Math.max(channel.getJoinedAt(), channel.getInvitedAt());
+            params.setMessageTimestampFrom(timestampFrom);
             params.setOrder(MessageSearchQuery.Order.TIMESTAMP);
         }
         params.setChannelUrl(channelUrl);
-        params.setMessageTimestampFrom(timestampFrom);
         params.setReverse(false);
         return SendbirdChat.createMessageSearchQuery(params);
     }

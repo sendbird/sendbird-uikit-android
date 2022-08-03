@@ -92,6 +92,11 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
     @Override
     protected void onReady(@NonNull ReadyStatus status, @NonNull CreateChannelModule module, @NonNull CreateChannelViewModel viewModel) {
         Logger.d(">> CreateChannelFragment::onReady()");
+        if (status != ReadyStatus.READY) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
         viewModel.loadInitial();
     }
 

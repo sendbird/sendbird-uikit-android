@@ -1,11 +1,12 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
+import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MutedMemberListAdapter;
+
+import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the muted member list area in Sendbird UIKit.
@@ -34,10 +35,20 @@ public class MutedMemberListComponent extends UserTypeListComponent<Member> {
      * @return The adapter applied to this list component
      * @since 3.0.0
      */
-    @SuppressLint("KotlinPropertyAccess")
     @NonNull
     @Override
     protected MutedMemberListAdapter getAdapter() {
         return adapter;
+    }
+
+    /**
+     * Notifies this component that the list of users is changed.
+     *
+     * @param userList The list of users to be displayed on this component
+     * @param myRole   Role of the current user
+     * @since 3.0.0
+     */
+    public void notifyDataSetChanged(@NonNull List<Member> userList, @NonNull Role myRole) {
+        this.adapter.setItems(userList, myRole);
     }
 }

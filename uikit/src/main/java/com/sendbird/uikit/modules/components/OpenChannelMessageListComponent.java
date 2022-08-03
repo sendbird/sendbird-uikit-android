@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -498,7 +497,6 @@ public class OpenChannelMessageListComponent {
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseUserProfile() {
             return useUserProfile;
         }

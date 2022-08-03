@@ -3,22 +3,21 @@ package com.sendbird.uikit.customsample.openchannel.community;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
@@ -49,12 +48,7 @@ import java.util.Locale;
  * Displays a create open channel screen used for community.
  */
 public class CreateCommunityActivity extends AppCompatActivity {
-    private String[] REQUIRED_PERMISSIONS;
-
-    private static final int STORAGE_PERMISSIONS_REQUEST_CODE = 1001;
-    private static final int PERMISSION_SETTINGS_REQUEST_ID = 2000;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 2001;
-    private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 2002;
+    private final String[] REQUIRED_PERMISSIONS = PermissionUtils.CAMERA_PERMISSION;
 
     private ActivityCreateCommunityBinding binding;
     @NonNull
@@ -62,12 +56,47 @@ public class CreateCommunityActivity extends AppCompatActivity {
     private Uri mediaUri;
     private File mediaFile;
 
+    private final ActivityResultLauncher<Intent> appSettingLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), intent -> {
+        final boolean hasPermission = PermissionUtils.hasPermissions(this, REQUIRED_PERMISSIONS);
+        if (hasPermission) {
+            showMediaSelectDialog();
+        }
+    });
+    private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+        if (PermissionUtils.getNotGrantedPermissions(permissionResults).isEmpty()) {
+            showMediaSelectDialog();
+        }
+    });
+
+    private final ActivityResultLauncher<Intent> takeCameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK) return;
+        if (mediaUri != null) {
+            mediaFile = FileUtils.uriToFile(getApplicationContext(), mediaUri);
+            updateChannelCover();
+        }
+    });
+    private final ActivityResultLauncher<Intent> getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        final Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK || intent == null) return;
+        this.mediaUri = intent.getData();
+        if (mediaUri != null) {
+            this.mediaFile = FileUtils.uriToFile(getApplicationContext(), mediaUri);
+            updateChannelCover();
+        }
+    });
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int themeResId = SendbirdUIKit.getDefaultThemeMode().getResId();
         setTheme(themeResId);
-        ActivityCreateCommunityBinding binding = ActivityCreateCommunityBinding.inflate(getLayoutInflater());
+        this.binding = ActivityCreateCommunityBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
@@ -90,7 +119,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
                 return;
             }
 
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, STORAGE_PERMISSIONS_REQUEST_CODE);
+            requestPermission(REQUIRED_PERMISSIONS);
         });
         binding.etTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -105,15 +134,49 @@ public class CreateCommunityActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
         binding.clearButton.setOnClickListener(v -> binding.etTitle.setText(""));
+        SendbirdUIKit.connect(null);
+    }
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
-        } else {
-            REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SendbirdChat.setAutoBackgroundDetection(true);
+    }
+
+    private void requestPermission(@NonNull String[] permissions) {
+        // 1. check permission
+        final boolean hasPermission = PermissionUtils.hasPermissions(this, permissions);
+        if (hasPermission) {
+            showMediaSelectDialog();
+            return;
         }
+
+        // 2. determine whether rationale popup should show
+        final List<String> deniedList = PermissionUtils.getExplicitDeniedPermissionList(this, permissions);
+        if (!deniedList.isEmpty()) {
+            showPermissionRationalePopup(deniedList.get(0));
+            return;
+        }
+        // 3. request permission
+        this.permissionLauncher.launch(permissions);
+    }
+
+    private void showPermissionRationalePopup(@NonNull String permission) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
+        builder.setMessage(getPermissionGuideMessage(this, permission));
+        builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            appSettingLauncher.launch(intent);
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, com.sendbird.uikit.R.color.secondary_300));
     }
 
     private void createCommunityChannel() {
@@ -142,37 +205,6 @@ public class CreateCommunityActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        SendbirdChat.setAutoBackgroundDetection(true);
-
-        if (resultCode != RESULT_OK) return;
-
-        if (requestCode == PERMISSION_SETTINGS_REQUEST_ID) {
-            final boolean hasPermission = PermissionUtils.hasPermissions(this, REQUIRED_PERMISSIONS);
-            if (hasPermission) {
-                showMediaSelectDialog();
-            }
-            return;
-        }
-
-        switch (requestCode) {
-            case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                break;
-            case PICK_IMAGE_ACTIVITY_REQUEST_CODE:
-                if (data != null) {
-                    this.mediaUri = data.getData();
-                }
-                break;
-        }
-
-        if (this.mediaUri != null) {
-            mediaFile = FileUtils.uriToFile(getApplicationContext(), mediaUri);
-            updateChannelCover();
-        }
-    }
-
     private void updateChannelCover() {
         Glide.with(binding.getRoot().getContext())
                 .load(mediaUri)
@@ -181,43 +213,6 @@ public class CreateCommunityActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.shape_image_view_background_light)
                 .into(binding.ivChannelCover);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSIONS_REQUEST_CODE && grantResults.length == REQUIRED_PERMISSIONS.length) {
-            boolean isAllGranted = true;
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    isAllGranted = false;
-                    break;
-                }
-            }
-
-            if (isAllGranted) {
-                showMediaSelectDialog();
-            } else {
-                String[] notGranted = PermissionUtils.getNotGrantedPermissions(this, permissions);
-                List<String> deniedList = PermissionUtils.getShowRequestPermissionRationale(this, permissions);
-                if (deniedList.size() == 0) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(getString(com.sendbird.uikit.R.string.sb_text_dialog_permission_title));
-                    builder.setMessage(getPermissionGuideMessage(this, notGranted[0]));
-                    builder.setPositiveButton(com.sendbird.uikit.R.string.sb_text_go_to_settings, (dialogInterface, i) -> {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.setData(Uri.parse("package:" + getPackageName()));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        startActivityForResult(intent, PERMISSION_SETTINGS_REQUEST_ID);
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, com.sendbird.uikit.R.color.secondary_300));
-                }
-            }
-        }
     }
 
     private void showMediaSelectDialog() {
@@ -238,7 +233,7 @@ public class CreateCommunityActivity extends AppCompatActivity {
                 if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_camera) {
                     takeCamera();
                 } else if (key == com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_image_gallery) {
-                    pickImage();
+                    takePhoto();
                 } else {
                     removeFile();
                 }
@@ -253,13 +248,13 @@ public class CreateCommunityActivity extends AppCompatActivity {
         if (mediaUri == null) return;
         Intent intent = IntentUtils.getCameraIntent(this, mediaUri);
         if (IntentUtils.hasIntent(this, intent)) {
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            takeCameraLauncher.launch(intent);
         }
     }
 
-    private void pickImage() {
+    private void takePhoto() {
         Intent intent = IntentUtils.getImageGalleryIntent();
-        startActivityForResult(intent, PICK_IMAGE_ACTIVITY_REQUEST_CODE);
+        getContentLauncher.launch(intent);
     }
 
     private void removeFile() {

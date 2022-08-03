@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules.components;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -153,7 +152,6 @@ public class ChannelHeaderComponent extends HeaderComponent {
          *
          * @return <code>true</code> if the typing indicator is used, <code>false</code> otherwise
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseTypingIndicator() {
             return useTypingIndicator;
         }
@@ -163,7 +161,6 @@ public class ChannelHeaderComponent extends HeaderComponent {
          *
          * @return <code>true</code> if the profile image is used, <code>false</code> otherwise
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseProfileImage() {
             return useProfileImage;
         }

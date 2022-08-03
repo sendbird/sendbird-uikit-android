@@ -92,7 +92,11 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     protected void onReady(@NonNull ReadyStatus status, @NonNull InviteUserModule module, @NonNull InviteUserViewModel viewModel) {
         Logger.d(">> InviteUserFragment::onReady(ReadyStatus=%s)", status);
         final GroupChannel channel = viewModel.getChannel();
-        if (channel == null) return;
+        if (status != ReadyStatus.READY || channel == null) {
+            final StatusComponent statusComponent = module.getStatusComponent();
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.CONNECTION_ERROR);
+            return;
+        }
 
         module.getInviteUserListComponent().notifyDisabledUserIds(getDisabledUserIds(channel));
         viewModel.loadInitial();

@@ -1,6 +1,5 @@
 package com.sendbird.uikit.modules;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -280,7 +279,6 @@ public class MessageSearchModule extends BaseModule {
          * @return <code>true</code> if the message search header is used, <code>false</code> otherwise
          * @since 3.0.0
          */
-        @SuppressLint("KotlinPropertyAccess")
         public boolean shouldUseSearchBar() {
             return shouldUseHeader();
         }
