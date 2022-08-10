@@ -159,6 +159,14 @@ public class DateUtils {
     }
 
     /**
+     * Get time difference in minutes
+     * @since Added by Pivot
+     */
+    public static int getTimeDifferenceInMinutes(long millisFirst, long millisSecond) {
+        return (int) Math.abs((millisSecond - millisFirst) / 60000);
+    }
+
+    /**
      * Get time the difference.
      * Date shows 'date month' format (e.g. '19 Dec').
      * Minimum resolution is 1 minute.

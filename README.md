@@ -1,3 +1,6 @@
+# !! [PIVOT] Use `pivot-group-ui` branch
+
+
 # Sendbird UIKit for Android
 ![Platform](https://img.shields.io/badge/platform-ANDROID-orange.svg)
 ![Languages](https://img.shields.io/badge/language-JAVA-orange.svg)

@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageUtils {
+
+    private static int NEW_GROUP_UI_DIFFERENCE_IN_MINUTES = 15;
+
     public static boolean isMine(@NonNull BaseMessage message) {
         if (message.getSender() == null) {
             return false;
@@ -79,7 +82,7 @@ public class MessageUtils {
             !backMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
             !frontMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
             !frontMessage.getSender().equals(backMessage.getSender()) ||
-            !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt()) ||
+            DateUtils.getTimeDifferenceInMinutes(frontMessage.getCreatedAt(), backMessage.getCreatedAt()) > NEW_GROUP_UI_DIFFERENCE_IN_MINUTES ||
             (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD && (
                 (!(frontMessage instanceof CustomizableMessage) && frontMessage.getThreadInfo().getReplyCount() > 0) ||
                     (!(backMessage instanceof CustomizableMessage) && backMessage.getThreadInfo().getReplyCount() > 0)
