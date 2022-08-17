@@ -3,7 +3,9 @@ package com.sendbird.uikit.widgets;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +21,15 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBinding;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.IntentUtils;
+import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class OpenChannelUserMessageView extends OpenChannelMessageView {
     private final SbViewOpenChannelUserMessageComponentBinding binding;
+    private final int messageAppearance;
     private final int operatorAppearance;
+    private final int sentAtAppearance;
     private final int nicknameAppearance;
     private final int editedAppearance;
     private final int marginLeftEmpty;
@@ -50,8 +54,8 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyle, 0);
         try {
             this.binding = SbViewOpenChannelUserMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
-            int timeAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
-            int messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
+            sentAtAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
+            messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
             int contentBackground = a.getResourceId(R.styleable.MessageView_sb_message_background, R.drawable.selector_rectangle_light);
             int linkTextColor = a.getResourceId(R.styleable.MessageView_sb_message_link_text_color, R.color.ondark_01);
             int ogtagBackground = a.getResourceId(R.styleable.MessageView_sb_message_ogtag_background, R.drawable.selector_open_channel_message_bg_light);
@@ -60,11 +64,9 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             editedAppearance = a.getResourceId(R.styleable.MessageView_sb_message_edited_mark_text_appearance, R.style.SendbirdBody3OnLight02);
 
             binding.ogTag.setBackgroundResource(ogtagBackground);
-            binding.tvMessage.setTextAppearance(context, messageAppearance);
             binding.tvMessage.setLinkTextColor(context.getResources().getColor(linkTextColor));
             binding.tvMessage.setClickedLinkTextColor(context.getResources().getColor(linkTextColor));
             binding.contentPanel.setBackgroundResource(contentBackground);
-            binding.tvSentAt.setTextAppearance(context, timeAppearance);
 
             binding.tvMessage.setOnClickListener(v -> binding.contentPanel.performClick());
             binding.tvMessage.setOnLongClickListener(v -> binding.contentPanel.performLongClick());
@@ -90,6 +92,23 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
         if (messageUIConfig != null) {
             messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
             messageUIConfig.getOtherEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
+            messageUIConfig.getMyMessageTextUIConfig().mergeFromTextAppearance(getContext(), messageAppearance);
+            messageUIConfig.getOtherMessageTextUIConfig().mergeFromTextAppearance(getContext(), messageAppearance);
+            messageUIConfig.getMySentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            messageUIConfig.getOtherSentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            messageUIConfig.getMyNicknameTextUIConfig().mergeFromTextAppearance(getContext(), nicknameAppearance);
+            messageUIConfig.getOtherNicknameTextUIConfig().mergeFromTextAppearance(getContext(), nicknameAppearance);
+            messageUIConfig.getOperatorNicknameTextUIConfig().mergeFromTextAppearance(getContext(), operatorAppearance);
+            final boolean isMine = MessageUtils.isMine(message);
+            final Drawable background = isMine ? messageUIConfig.getMyMessageBackground() : messageUIConfig.getOtherMessageBackground();
+            final Drawable ogtagBackground = isMine ? messageUIConfig.getMyOgtagBackground() : messageUIConfig.getOtherOgtagBackground();
+            final ColorStateList linkedTextColor = messageUIConfig.getLinkedTextColor();
+            if (background != null) binding.contentPanel.setBackground(background);
+            if (ogtagBackground != null) binding.ogTag.setBackground(ogtagBackground);
+            if (linkedTextColor != null) {
+                binding.tvMessage.setLinkTextColor(linkedTextColor);
+                binding.tvMessage.setClickedLinkTextColor(linkedTextColor.getDefaultColor());
+            }
         }
         ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig);
 
@@ -100,15 +119,9 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
             binding.ivProfileView.setVisibility(View.VISIBLE);
             binding.tvNickname.setVisibility(View.VISIBLE);
             binding.tvSentAt.setVisibility(View.VISIBLE);
-            binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
 
-            if (channel.isOperator(message.getSender())) {
-                binding.tvNickname.setTextAppearance(getContext(), operatorAppearance);
-            } else {
-                binding.tvNickname.setTextAppearance(getContext(), nicknameAppearance);
-            }
-
-            ViewUtils.drawNickname(binding.tvNickname, message);
+            ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig);
+            ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, channel.isOperator(message.getSender()));
             ViewUtils.drawProfile(binding.ivProfileView, message);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.tvMessage.getLayoutParams();

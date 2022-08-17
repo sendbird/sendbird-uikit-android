@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -1623,6 +1624,103 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
                 bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
             if (configSentFromOthers != null)
                 bundle.putParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of message text.
+         *
+         * @param configSentFromMe       the UI configuration of the message text that was sent from me.
+         * @param configSentFromOthers   the UI configuration of the message text that was sent from others.\
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of message sentAt text.
+         *
+         * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
+         * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of sender nickname text.
+         *
+         * @param configSentFromMe       the UI configuration of the sender nickname text that was sent from me.
+         * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
+         * @param configSentFromOperator the UI configuration of the sender nickname text that was sent from operator.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setNicknameTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers, @Nullable TextUIConfig configSentFromOperator) {
+            if (configSentFromMe != null)
+                bundle.putParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_ME, configSentFromMe);
+            if (configSentFromOthers != null)
+                bundle.putParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            if (configSentFromOperator != null)
+                bundle.putParcelable(StringSet.KEY_OPERATOR_TEXT_UI_CONFIG, configSentFromOperator);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of message background drawable.
+         *
+         * @param drawableResSentFromMe     the UI configuration of the message background that was sent from me.
+         * @param drawableResSentFromOthers the UI configuration of the message background that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setMessageBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
+            bundle.putInt(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_ME, drawableResSentFromMe);
+            bundle.putInt(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS, drawableResSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of ogtag message background drawable.
+         *
+         * @param drawableResSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
+         * @param drawableResSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setOgtagBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
+            bundle.putInt(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_ME, drawableResSentFromMe);
+            bundle.putInt(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS, drawableResSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of the linked text color in the message text.
+         *
+         * @param colorRes  the UI configuration of the linked text color.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.1.1
+         */
+        @NonNull
+        public Builder setLinkedTextColor(@ColorRes int colorRes) {
+            bundle.putInt(StringSet.KEY_LINKED_TEXT_COLOR, colorRes);
             return this;
         }
 

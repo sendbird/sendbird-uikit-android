@@ -45,6 +45,7 @@ import java.lang.reflect.Field;
 public class MessageInputView extends FrameLayout {
     private SbViewMessageInputBinding binding;
 
+    private int textAppearance;
     private KeyboardDisplayType displayType = KeyboardDisplayType.Plane;
     private OnClickListener sendClickListener;
     private OnClickListener addClickListener;
@@ -91,7 +92,7 @@ public class MessageInputView extends FrameLayout {
             this.binding = SbViewMessageInputBinding.inflate(LayoutInflater.from(getContext()), this, true);
             int backgroundId = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_background, R.color.background_50);
             int textBackgroundId = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_background, R.drawable.sb_message_input_text_background_light);
-            int textAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_appearance, R.style.SendbirdBody3OnLight01);
+            textAppearance = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_appearance, R.style.SendbirdBody3OnLight01);
             String hint = a.getString(R.styleable.MessageInputComponent_sb_message_input_text_hint);
             ColorStateList hintColor = a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_text_hint_color);
             int textCursorDrawable = a.getResourceId(R.styleable.MessageInputComponent_sb_message_input_text_cursor_drawable, R.drawable.sb_message_input_cursor_light);
@@ -396,6 +397,10 @@ public class MessageInputView extends FrameLayout {
     @NonNull
     public Mode getInputMode() {
         return this.mode;
+    }
+
+    public int getTextAppearance() {
+        return textAppearance;
     }
 
     private void showInputDialog() {

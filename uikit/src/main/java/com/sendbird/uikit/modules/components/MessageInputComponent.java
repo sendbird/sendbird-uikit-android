@@ -170,6 +170,9 @@ public class MessageInputComponent {
      */
     public void bindUserMention(@NonNull UserMentionConfig mentionConfig, @NonNull OnMentionEventListener handler) {
         if (getEditTextView() instanceof MentionEditText) {
+            if (messageInputView != null) {
+                params.messageUIConfig.getMyMentionUIConfig().mergeFromTextAppearance(messageInputView.getContext(), messageInputView.getTextAppearance());
+            }
             ((MentionEditText) getEditTextView()).bindUserMention(mentionConfig, params.messageUIConfig.getMyMentionUIConfig(), handler);
         }
     }
@@ -525,7 +528,7 @@ public class MessageInputComponent {
          */
         protected Params() {
             this.messageUIConfig = new MessageUIConfig();
-            this.messageUIConfig.getMyMentionUIConfig().apply(new TextUIConfig(-1, Typeface.BOLD));
+            this.messageUIConfig.getMyMentionUIConfig().apply(new TextUIConfig.Builder().setTextStyle(Typeface.BOLD).build());
         }
 
         /**

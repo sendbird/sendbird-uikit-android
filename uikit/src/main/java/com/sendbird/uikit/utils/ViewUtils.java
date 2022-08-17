@@ -63,7 +63,7 @@ import java.util.regex.Pattern;
 public class ViewUtils {
     private final static int MINIMUM_THUMBNAIL_WIDTH = 100;
     private final static int MINIMUM_THUMBNAIL_HEIGHT = 100;
-    public static final Pattern MENTION = Pattern.compile("[@][{](.*?)([}])");
+    public static final Pattern MENTION = Pattern.compile("[" + SendbirdUIKit.getUserMentionConfig().getTrigger() + "][{](.*?)([}])");
 
     private static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
         int unknownHintAppearance;
@@ -114,10 +114,20 @@ public class ViewUtils {
     @NonNull
     public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, boolean mentionClickable) {
         final String mentionedText = message.getMentionedMessageTemplate();
-        CharSequence text = message.getMessage();
+        final SpannableString text = new SpannableString(message.getMessage());
+        if (uiConfig != null) {
+            final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
+            messageTextUIConfig.bind(text, 0, text.length());
+        }
 
+        CharSequence displayText = text;
         if (SendbirdUIKit.isUsingUserMention() && !message.getMentionedUsers().isEmpty() && !TextUtils.isEmpty(mentionedText)) {
-            final Matcher matcher = MENTION.matcher(mentionedText);
+            final SpannableString mentionedSpannableString = new SpannableString(mentionedText);
+            if (uiConfig != null) {
+                final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
+                messageTextUIConfig.bind(mentionedSpannableString, 0, mentionedSpannableString.length());
+            }
+            final Matcher matcher = MENTION.matcher(mentionedSpannableString);
             final List<String> sources = new ArrayList<>();
             final List<CharSequence> destinations = new ArrayList<>();
             while (matcher.find()) {
@@ -161,9 +171,9 @@ public class ViewUtils {
                 }
             }
             int arraySize = sources.size();
-            text = TextUtils.replace(mentionedText, sources.toArray(new String[arraySize]), destinations.toArray(new CharSequence[arraySize]));
+            displayText = TextUtils.replace(mentionedSpannableString, sources.toArray(new String[arraySize]), destinations.toArray(new CharSequence[arraySize]));
         }
-        return text;
+        return displayText;
     }
 
     @Nullable
@@ -208,13 +218,20 @@ public class ViewUtils {
         }
     }
 
-    public static void drawNickname(@NonNull TextView tvNickname, @Nullable BaseMessage message) {
+    public static void drawNickname(@NonNull TextView tvNickname, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, boolean isOperator) {
         if (message == null) {
             return;
         }
 
-        Sender sender = message.getSender();
-        String nickname = UserUtils.getDisplayName(tvNickname.getContext(), sender);
+        final Sender sender = message.getSender();
+        final Spannable nickname = new SpannableString(UserUtils.getDisplayName(tvNickname.getContext(), sender));
+        if (uiConfig != null) {
+            final boolean isMine = MessageUtils.isMine(message);
+            final TextUIConfig textUIConfig = isOperator ? uiConfig.getOperatorNicknameTextUIConfig() :
+                    (isMine ? uiConfig.getMyNicknameTextUIConfig() : uiConfig.getOtherNicknameTextUIConfig());
+            textUIConfig.bind(nickname, 0, nickname.length());
+        }
+
         tvNickname.setText(nickname);
     }
 
@@ -390,5 +407,34 @@ public class ViewUtils {
         final boolean hasParentMessage = message.getParentMessageId() != 0L;
         replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
         replyPanel.drawQuotedMessage(message);
+    }
+
+    public static void drawSentAt(@NonNull TextView tvSentAt, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+        if (message == null) {
+            return;
+        }
+
+        final Spannable sentAt = new SpannableString(DateUtils.formatTime(tvSentAt.getContext(), message.getCreatedAt()));
+        if (uiConfig != null) {
+            final boolean isMine = MessageUtils.isMine(message);
+            final TextUIConfig textUIConfig = isMine ? uiConfig.getMySentAtTextUIConfig() : uiConfig.getOtherSentAtTextUIConfig();
+            textUIConfig.bind(sentAt, 0, sentAt.length());
+        }
+        tvSentAt.setText(sentAt);
+    }
+
+    public static void drawFilename(@NonNull TextView tvFilename, @Nullable FileMessage message, @Nullable MessageUIConfig uiConfig) {
+        if (message == null) {
+            return;
+        }
+
+        final Spannable filename = new SpannableString(message.getName());
+        if (uiConfig != null) {
+            final boolean isMine = MessageUtils.isMine(message);
+            final TextUIConfig textUIConfig = isMine ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
+            textUIConfig.bind(filename, 0, filename.length());
+        }
+
+        tvFilename.setText(message.getName());
     }
 }

@@ -1,7 +1,5 @@
 package com.sendbird.uikit.model;
 
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
 
@@ -18,7 +16,6 @@ import com.sendbird.android.user.User;
  * @since 3.0.0
  */
 public class MentionSpan extends MetricAffectingSpan {
-    private static final int UNDEFINED = -1;
     @NonNull
     private final String trigger;
     @NonNull
@@ -93,76 +90,38 @@ public class MentionSpan extends MetricAffectingSpan {
         this.mentionedCurrentUserUIConfig = mentionedCurrentUserUIConfig;
     }
 
-    private static Typeface generateTypeface(@NonNull TextUIConfig uiConfig) {
-        Typeface typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
-        int typefaceStyle = uiConfig.getTypefaceStyle();
-        if (typefaceStyle >= 0) {
-            switch (typefaceStyle) {
-                case Typeface.NORMAL:
-                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
-                    break;
-                case Typeface.BOLD:
-                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD);
-                    break;
-                case Typeface.ITALIC:
-                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC);
-                    break;
-                case Typeface.BOLD_ITALIC:
-                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
-                    break;
-            }
-        }
-        return typeface;
-    }
-
     @Override
     public void updateDrawState(@NonNull TextPaint paint) {
-        applyUIConfig(paint, uiConfig);
-        if (mentionedCurrentUserUIConfig != null) {
-            // if mentioned current user exists, this color has priority.
-            applyUIConfig(paint, mentionedCurrentUserUIConfig);
-        }
+        applyMentionTextPaint(uiConfig, mentionedCurrentUserUIConfig, paint);
     }
 
     @Override
     public void updateMeasureState(@NonNull TextPaint paint) {
-        applyUIConfig(paint, uiConfig);
+        applyMentionTextPaint(uiConfig, mentionedCurrentUserUIConfig, paint);
+    }
+
+    private static void applyMentionTextPaint(@NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, @NonNull TextPaint to) {
+        apply(uiConfig, to);
         if (mentionedCurrentUserUIConfig != null) {
             // if mentioned current user exists, this color has priority.
-            applyUIConfig(paint, mentionedCurrentUserUIConfig);
+            apply(mentionedCurrentUserUIConfig, to);
         }
+        to.setUnderlineText(false);
     }
 
-    private static void applyUIConfig(@NonNull TextPaint paint, @NonNull TextUIConfig uiConfig) {
-        applyCustomTypeFace(paint, generateTypeface(uiConfig));
-        if (uiConfig.getTextColor() != UNDEFINED) {
-            paint.setColor(uiConfig.getTextColor());
+    private static void apply(@NonNull TextUIConfig from, @NonNull TextPaint to) {
+        if (from.getTextColor() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            to.setColor(from.getTextColor());
         }
-        if (uiConfig.getTextBackgroundColor() != UNDEFINED) {
-            paint.bgColor = uiConfig.getTextBackgroundColor();
+        if (from.getTextStyle() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            to.setTypeface(from.generateTypeface());
         }
-        paint.setUnderlineText(false);
-    }
-
-    private static void applyCustomTypeFace(@NonNull Paint paint, @NonNull Typeface tf) {
-        int oldStyle;
-        Typeface old = paint.getTypeface();
-        if (old == null) {
-            oldStyle = Typeface.BOLD;
-        } else {
-            oldStyle = old.getStyle();
+        if (from.getTextSize() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            to.setTextSize(from.getTextSize());
         }
-
-        int fake = oldStyle & ~tf.getStyle();
-        if ((fake & Typeface.BOLD) != 0) {
-            paint.setFakeBoldText(true);
+        if (from.getTextBackgroundColor() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            to.bgColor = from.getTextBackgroundColor();
         }
-
-        if ((fake & Typeface.ITALIC) != 0) {
-            paint.setTextSkewX(-0.25f);
-        }
-
-        paint.setTypeface(tf);
     }
 
     /**

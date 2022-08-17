@@ -20,12 +20,14 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageComponentBinding;
-import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
+import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class OpenChannelFileMessageView extends OpenChannelMessageView {
     private final SbViewOpenChannelFileMessageComponentBinding binding;
+    private final int messageAppearance;
+    private final int sentAtAppearance;
     private final int nicknameAppearance;
     private final int operatorAppearance;
     private final int marginLeftEmpty;
@@ -56,16 +58,13 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView, defStyle, 0);
         try {
             this.binding = SbViewOpenChannelFileMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
-            int timeAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
+            sentAtAppearance = a.getResourceId(R.styleable.MessageView_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
             int contentBackground = a.getResourceId(R.styleable.MessageView_sb_message_background, R.drawable.selector_open_channel_message_bg_light);
-            int messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
+            messageAppearance = a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01);
             nicknameAppearance = a.getResourceId(R.styleable.MessageView_sb_message_sender_name_text_appearance, R.style.SendbirdCaption1OnLight02);
             operatorAppearance = a.getResourceId(R.styleable.MessageView_sb_message_operator_name_text_appearance, R.style.SendbirdCaption1Secondary300);
 
-            binding.tvSentAt.setTextAppearance(context, timeAppearance);
-            binding.tvNickname.setTextAppearance(context, nicknameAppearance);
             binding.contentPanel.setBackgroundResource(contentBackground);
-            binding.tvFileName.setTextAppearance(context, messageAppearance);
             binding.tvFileName.setPaintFlags(binding.tvFileName.getPaintFlags()|Paint.UNDERLINE_TEXT_FLAG);
 
             marginLeftEmpty = getResources().getDimensionPixelSize(R.dimen.sb_size_40);
@@ -79,13 +78,21 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
     public void drawMessage(@NonNull OpenChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
         final FileMessage fileMessage = (FileMessage) message;
 
-        binding.tvFileName.setText(fileMessage.getName());
-        binding.ivStatus.drawStatus(message, channel);
-        if (channel.isOperator(message.getSender())) {
-            binding.tvNickname.setTextAppearance(getContext(), operatorAppearance);
-        } else {
-            binding.tvNickname.setTextAppearance(getContext(), nicknameAppearance);
+        if (messageUIConfig != null) {
+            messageUIConfig.getMyMessageTextUIConfig().mergeFromTextAppearance(getContext(), messageAppearance);
+            messageUIConfig.getOtherMessageTextUIConfig().mergeFromTextAppearance(getContext(), messageAppearance);
+            messageUIConfig.getMySentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            messageUIConfig.getOtherSentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            messageUIConfig.getMyNicknameTextUIConfig().mergeFromTextAppearance(getContext(), nicknameAppearance);
+            messageUIConfig.getOtherNicknameTextUIConfig().mergeFromTextAppearance(getContext(), nicknameAppearance);
+            messageUIConfig.getOperatorNicknameTextUIConfig().mergeFromTextAppearance(getContext(), operatorAppearance);
+            final boolean isMine = MessageUtils.isMine(message);
+            final Drawable background = isMine ? messageUIConfig.getMyMessageBackground() : messageUIConfig.getOtherMessageBackground();
+            if (background != null) binding.contentPanel.setBackground(background);
         }
+
+        ViewUtils.drawFilename(binding.tvFileName, fileMessage, messageUIConfig);
+        binding.ivStatus.drawStatus(message, channel);
 
         int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
         int iconTint = SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
@@ -104,9 +111,9 @@ public class OpenChannelFileMessageView extends OpenChannelMessageView {
             binding.ivProfileView.setVisibility(View.VISIBLE);
             binding.tvNickname.setVisibility(View.VISIBLE);
             binding.tvSentAt.setVisibility(View.VISIBLE);
-            binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
 
-            ViewUtils.drawNickname(binding.tvNickname, message);
+            ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig);
+            ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, channel.isOperator(message.getSender()));
             ViewUtils.drawProfile(binding.ivProfileView, message);
 
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) binding.contentPanel.getLayoutParams();

@@ -3,6 +3,7 @@ package com.sendbird.uikit.widgets;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,13 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyFileImageMessageComponentBinding;
-import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class MyImageFileMessageView extends GroupChannelMessageView {
     private final SbViewMyFileImageMessageComponentBinding binding;
+
+    private final int sentAtAppearance;
 
     @NonNull
     @Override
@@ -50,12 +52,11 @@ public class MyImageFileMessageView extends GroupChannelMessageView {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView_File, defStyle, 0);
         try {
             this.binding = SbViewMyFileImageMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
-            int timeAppearance = a.getResourceId(R.styleable.MessageView_File_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
+            sentAtAppearance = a.getResourceId(R.styleable.MessageView_File_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
             int messageBackground = a.getResourceId(R.styleable.MessageView_File_sb_message_me_background, R.drawable.sb_shape_chat_bubble);
             ColorStateList messageBackgroundTint = a.getColorStateList(R.styleable.MessageView_File_sb_message_me_background_tint);
             int emojiReactionListBackground = a.getResourceId(R.styleable.MessageView_File_sb_message_emoji_reaction_list_background, R.drawable.sb_shape_chat_bubble_reactions_light);
 
-            binding.tvSentAt.setTextAppearance(context, timeAppearance);
             binding.contentPanel.setBackground(DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint));
             binding.emojiReactionListBackground.setBackgroundResource(emojiReactionListBackground);
 
@@ -74,9 +75,17 @@ public class MyImageFileMessageView extends GroupChannelMessageView {
         binding.emojiReactionListBackground.setVisibility(hasReaction ? View.VISIBLE : View.GONE);
         binding.rvEmojiReactionList.setVisibility(hasReaction ? View.VISIBLE : View.GONE);
         binding.tvSentAt.setVisibility((sendingState && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) ? View.VISIBLE : View.GONE);
-        binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
         binding.ivStatus.drawStatus(message, channel);
 
+        if (messageUIConfig != null) {
+            messageUIConfig.getMySentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            final Drawable background = messageUIConfig.getMyMessageBackground();
+            final Drawable reactionBackground = messageUIConfig.getMyReactionListBackground();
+            if (background != null) binding.contentPanel.setBackground(background);
+            if (reactionBackground != null) binding.emojiReactionListBackground.setBackground(reactionBackground);
+        }
+
+        ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig);
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
         ViewUtils.drawThumbnail(binding.ivThumbnail, (FileMessage) message);
         ViewUtils.drawThumbnailIcon(binding.ivThumbnailIcon, (FileMessage) message);

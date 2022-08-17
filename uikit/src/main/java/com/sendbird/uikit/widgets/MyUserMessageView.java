@@ -3,6 +3,7 @@ package com.sendbird.uikit.widgets;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +18,15 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding;
 import com.sendbird.uikit.model.TextUIConfig;
-import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 public class MyUserMessageView extends GroupChannelMessageView {
     private final SbViewMyUserMessageComponentBinding binding;
+    private final int messageTextAppearance;
     private final int editedAppearance;
     private final int mentionAppearance;
+    private final int sentAtAppearance;
     @NonNull
     private final TextUIConfig mentionedCurrentUserUIConfig;
 
@@ -47,8 +49,8 @@ public class MyUserMessageView extends GroupChannelMessageView {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0);
         try {
             this.binding = SbViewMyUserMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true);
-            int timeAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
-            int messageAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_me_text_appearance, R.style.SendbirdBody3OnDark01);
+            sentAtAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_time_text_appearance, R.style.SendbirdCaption4OnLight03);
+            messageTextAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_me_text_appearance, R.style.SendbirdBody3OnDark01);
             int messageBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_me_background, R.drawable.sb_shape_chat_bubble);
             ColorStateList messageBackgroundTint = a.getColorStateList(R.styleable.MessageView_User_sb_message_me_background_tint);
             int emojiReactionListBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_emoji_reaction_list_background, R.drawable.sb_shape_chat_bubble_reactions_light);
@@ -60,12 +62,11 @@ public class MyUserMessageView extends GroupChannelMessageView {
             this.mentionAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_my_mentioned_text_appearance, R.style.SendbirdMentionLightMe);
             int mentionedCurrentUserTextBackground = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_background, R.color.highlight);
             int mentionedCurrentUserAppearance = a.getResourceId(R.styleable.MessageView_User_sb_message_mentioned_current_user_text_appearance, R.style.MentionedCurrentUserMessage);
-            this.mentionedCurrentUserUIConfig = new TextUIConfig();
-            this.mentionedCurrentUserUIConfig.mergeFromTextAppearance(context, mentionedCurrentUserAppearance, mentionedCurrentUserTextBackground);
+            this.mentionedCurrentUserUIConfig = new TextUIConfig.Builder(context, mentionedCurrentUserAppearance)
+                    .setTextBackgroundColor(getResources().getColor(mentionedCurrentUserTextBackground))
+                    .build();
 
-            binding.tvMessage.setTextAppearance(context, messageAppearance);
             binding.tvMessage.setLinkTextColor(linkTextColor);
-            binding.tvSentAt.setTextAppearance(context, timeAppearance);
             binding.contentPanel.setBackground(DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint));
             binding.emojiReactionListBackground.setBackgroundResource(emojiReactionListBackground);
             binding.ogtagBackground.setBackground(DrawableUtils.setTintList(context, ogtagBackground, ogtagBackgroundTint));
@@ -98,17 +99,30 @@ public class MyUserMessageView extends GroupChannelMessageView {
         binding.ogtagBackground.setVisibility(hasOgTag ? View.VISIBLE : View.GONE);
         binding.ovOgtag.setVisibility(hasOgTag ? View.VISIBLE : View.GONE);
         binding.tvSentAt.setVisibility((sendingState && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) ? View.VISIBLE : View.GONE);
-        binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
         binding.ivStatus.drawStatus(message, channel);
 
         if (messageUIConfig != null) {
+            messageUIConfig.getMyMessageTextUIConfig().mergeFromTextAppearance(getContext(), messageTextAppearance);
             messageUIConfig.getMyEditedTextMarkUIConfig().mergeFromTextAppearance(getContext(), editedAppearance);
             messageUIConfig.getMyMentionUIConfig().mergeFromTextAppearance(getContext(), mentionAppearance);
+            messageUIConfig.getMySentAtTextUIConfig().mergeFromTextAppearance(getContext(), sentAtAppearance);
+            final Drawable background = messageUIConfig.getMyMessageBackground();
+            final Drawable reactionBackground = messageUIConfig.getMyReactionListBackground();
+            final Drawable ogtagBackground = messageUIConfig.getMyOgtagBackground();
+            final ColorStateList linkedTextColor = messageUIConfig.getLinkedTextColor();
+            if (background != null) binding.contentPanel.setBackground(background);
+            if (reactionBackground != null) binding.emojiReactionListBackground.setBackground(reactionBackground);
+            if (ogtagBackground != null) {
+                binding.ogtagBackground.setBackground(ogtagBackground);
+                binding.ovOgtag.setBackground(ogtagBackground);
+            }
+            if (linkedTextColor != null) binding.tvMessage.setLinkTextColor(linkedTextColor);
         }
 
         ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig, mentionedCurrentUserUIConfig);
         ViewUtils.drawOgtag(binding.ovOgtag, message.getOgMetaData());
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
+        ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig);
 
         int paddingTop = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);
         int paddingBottom = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);

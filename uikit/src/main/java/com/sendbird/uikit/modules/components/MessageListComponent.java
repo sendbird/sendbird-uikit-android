@@ -1,6 +1,8 @@
 package com.sendbird.uikit.modules.components;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -837,7 +840,7 @@ public class MessageListComponent {
         }
 
         /**
-         * Sets the UI configuration of searched text.
+         * Sets the UI configuration of edited mark text.
          *
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
@@ -849,12 +852,100 @@ public class MessageListComponent {
         }
 
         /**
+         * Sets the UI configuration of message text.
+         *
+         * @param configSentFromMe       the UI configuration of the message text that was sent from me.
+         * @param configSentFromOthers   the UI configuration of the message text that was sent from others.
+         * @since 3.1.1
+         */
+        public void setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null) this.messageUIConfig.getMyMessageTextUIConfig().apply(configSentFromMe);
+            if (configSentFromOthers != null) this.messageUIConfig.getOtherMessageTextUIConfig().apply(configSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of message sentAt text.
+         *
+         * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
+         * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
+         * @since 3.1.1
+         */
+        public void setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
+            if (configSentFromMe != null) this.messageUIConfig.getMySentAtTextUIConfig().apply(configSentFromMe);
+            if (configSentFromOthers != null) this.messageUIConfig.getOtherSentAtTextUIConfig().apply(configSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of sender nickname text.
+         *
+         * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
+         * @since 3.1.1
+         */
+        public void setNicknameTextUIConfig(@NonNull TextUIConfig configSentFromOthers) {
+            this.messageUIConfig.getOtherNicknameTextUIConfig().apply(configSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of message background drawable.
+         *
+         * @param drawableSentFromMe     the UI configuration of the message background that was sent from me.
+         * @param drawableSentFromOthers the UI configuration of the message background that was sent from others.
+         * @since 3.1.1
+         */
+        public void setMessageBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
+            if (drawableSentFromMe != null) this.messageUIConfig.setMyMessageBackground(drawableSentFromMe);
+            if (drawableSentFromOthers != null) this.messageUIConfig.setOtherMessageBackground(drawableSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of message reaction list background drawable.
+         *
+         * @param drawableSentFromMe     the UI configuration of the message reaction list background drawable that was sent from me.
+         * @param drawableSentFromOthers the UI configuration of the message reaction list background drawable that was sent from others.
+         * @since 3.1.1
+         */
+        public void setReactionListBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
+            if (drawableSentFromMe != null) this.messageUIConfig.setMyReactionListBackground(drawableSentFromMe);
+            if (drawableSentFromOthers != null) this.messageUIConfig.setOtherReactionListBackground(drawableSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of ogtag message background drawable.
+         *
+         * @param drawableSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
+         * @param drawableSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
+         * @since 3.1.1
+         */
+        public void setOgtagBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
+            if (drawableSentFromMe != null) this.messageUIConfig.setMyOgtagBackground(drawableSentFromMe);
+            if (drawableSentFromOthers != null) this.messageUIConfig.setOtherOgtagBackground(drawableSentFromOthers);
+        }
+
+        /**
+         * Sets the UI configuration of the linked text color in the message text.
+         *
+         * @param color the UI configuration of the linked text color.
+         * @since 3.1.1
+         */
+        public void setLinkedTextColor(@NonNull ColorStateList color) {
+            this.messageUIConfig.setLinkedTextColor(color);
+        }
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_STARTING_POINT} is mapped to {@link #setInitialStartingPoint(long)}
          * {@code KEY_USE_USER_PROFILE} is mapped to {@link #setUseUserProfile(boolean)}
          * {@code KEY_USE_MESSAGE_GROUP_UI} is mapped to {@link #setUseMessageGroupUI(boolean)}
          * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
          * {@code KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME} and {@code KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setEditedTextMarkUIConfig(TextUIConfig, TextUIConfig)}
+         * {@code KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMessageTextUIConfig(TextUIConfig, TextUIConfig)}
+         * {@code KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_ME} and {@code KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setSentAtTextUIConfig(TextUIConfig, TextUIConfig)}
+         * {@code KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS} is mapped to {@link #setNicknameTextUIConfig(TextUIConfig)}
+         * {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_ME} and {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setMessageBackground(Drawable, Drawable)}
+         * {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME} and {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setReactionListBackground(Drawable, Drawable)}
+         * {@code KEY_OGTAG_BACKGROUND_SENT_FROM_ME} and {@code KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setOgtagBackground(Drawable, Drawable)}
+         * {@code KEY_LINKED_TEXT_COLOR} is mapped to {@link #setLinkedTextColor(ColorStateList)}
+         *
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -874,6 +965,45 @@ public class MessageListComponent {
             }
             setMentionUIConfig(args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS));
             setEditedTextMarkUIConfig(args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_EDITED_MARK_UI_CONFIG_SENT_FROM_OTHERS));
+            setMessageTextUIConfig(args.getParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_OTHERS));
+            setSentAtTextUIConfig(args.getParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_OTHERS));
+            final TextUIConfig nicknameTextUIConfig = args.getParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS);
+            if (nicknameTextUIConfig != null) {
+                setNicknameTextUIConfig(nicknameTextUIConfig);
+            }
+
+            Drawable messageBackgroundSentFromMe = null;
+            Drawable messageBackgroundSentFromOthers = null;
+            Drawable reactionListBackgroundSentFromMe = null;
+            Drawable reactionListBackgroundSentFromOthers = null;
+            Drawable ogtagBackgroundSentFromMe = null;
+            Drawable ogtagBackgroundSentFromOthers = null;
+            if (args.containsKey(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_ME)) {
+                messageBackgroundSentFromMe = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_ME));
+            }
+            if (args.containsKey(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS)) {
+                messageBackgroundSentFromOthers = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS));
+            }
+            if (args.containsKey(StringSet.KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME)) {
+                reactionListBackgroundSentFromMe = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME));
+            }
+            if (args.containsKey(StringSet.KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS)) {
+                reactionListBackgroundSentFromOthers = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS));
+            }
+            if (args.containsKey(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_ME)) {
+                ogtagBackgroundSentFromMe = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_ME, 0));
+            }
+            if (args.containsKey(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS)) {
+                ogtagBackgroundSentFromOthers = AppCompatResources.getDrawable(context, args.getInt(StringSet.KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS, 0));
+            }
+            setMessageBackground(messageBackgroundSentFromMe, messageBackgroundSentFromOthers);
+            setReactionListBackground(reactionListBackgroundSentFromMe, reactionListBackgroundSentFromOthers);
+            setOgtagBackground(ogtagBackgroundSentFromMe, ogtagBackgroundSentFromOthers);
+
+            if (args.containsKey(StringSet.KEY_LINKED_TEXT_COLOR)) {
+                final ColorStateList linkedTextColor = AppCompatResources.getColorStateList(context, args.getInt(StringSet.KEY_LINKED_TEXT_COLOR));
+                if (linkedTextColor != null) setLinkedTextColor(linkedTextColor);
+            }
             return this;
         }
     }
