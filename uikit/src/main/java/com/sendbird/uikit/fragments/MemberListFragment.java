@@ -289,6 +289,8 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
         private OnItemClickListener<Member> profileClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private MemberListFragment customFragment;
 
         /**
          * Constructor
@@ -319,6 +321,19 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link MemberListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends MemberListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -612,7 +627,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          */
         @NonNull
         public MemberListFragment build() {
-            MemberListFragment fragment = new MemberListFragment();
+            final MemberListFragment fragment = customFragment != null ? customFragment : new MemberListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

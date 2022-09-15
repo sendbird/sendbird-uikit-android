@@ -1,5 +1,13 @@
 # Changelog
 
+### v3.2.0 (Sep 15, 2022) with Core SDK `v4.0.8`
+* Support OpenChannel list
+  * Added `OpenChannelListActivity`, `OpenChannelListFragment`, `OpenChannelListModule`, `OpenChannelListViewModel`, `OpenChannelListComponent`, and `OpenChannelListAdapter`
+  * Added `CreateOpenChannelActivity`, `CreateOpenChannelFragment`, `CreateOpenChannelModule`, `CreateOpenChannelViewModel`, and `ChannelProfileInputComponent`
+* Moved widgets class into internal package.
+* `setCustomFragment()` functions have been added in the all Fragment.Builder class
+* Improved stability
+
 ### v3.1.1 (Aug 17, 2022) with Core SDK `v4.0.5`
 * Added `setMessageTextUIConfig(TextUIConfig, TextUIConfig)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`, `MessageListComponent.Params`, `OpenChannelMessageListComponent.Params`
 * Added `setSentAtTextUIConfig(TextUIConfig, TextUIConfig)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`, `MessageListComponent.Params`, `OpenChannelMessageListComponent.Params`

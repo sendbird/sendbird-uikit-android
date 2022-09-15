@@ -1003,6 +1003,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
         @Nullable
         private OnItemEventListener<BaseMessage> messageInsertedListener;
+        @Nullable
+        private OpenChannelFragment customFragment;
 
         /**
          * Constructor
@@ -1033,6 +1035,19 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OpenChannelFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OpenChannelFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -1732,7 +1747,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          */
         @NonNull
         public OpenChannelFragment build() {
-            OpenChannelFragment fragment = new OpenChannelFragment();
+            final OpenChannelFragment fragment = customFragment != null ? customFragment : new OpenChannelFragment();
             fragment.setArguments(bundle);
             fragment.adapter = adapter;
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;

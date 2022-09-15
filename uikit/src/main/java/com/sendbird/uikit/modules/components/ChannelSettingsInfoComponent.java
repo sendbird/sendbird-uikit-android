@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.widgets.ChannelSettingsInfoView;
+import com.sendbird.uikit.internal.ui.components.ChannelSettingsInfoView;
 
 /**
  * This class creates and performs a view corresponding the channel settings information area in Sendbird UIKit.

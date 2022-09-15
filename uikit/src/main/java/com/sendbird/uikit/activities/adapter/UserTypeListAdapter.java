@@ -20,7 +20,7 @@ import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewUserPreviewBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.widgets.UserPreview;
+import com.sendbird.uikit.internal.ui.widgets.UserPreview;
 
 import java.util.ArrayList;
 import java.util.Collections;

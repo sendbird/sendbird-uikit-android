@@ -24,6 +24,7 @@ import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.ui.widgets.SelectChannelTypeView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
@@ -37,7 +38,6 @@ import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ChannelListViewModel;
 import com.sendbird.uikit.vm.ViewModelFactory;
-import com.sendbird.uikit.widgets.SelectChannelTypeView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -124,8 +124,8 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      */
     protected void onBindChannelListComponent(@NonNull ChannelListComponent channelListComponent, @NonNull ChannelListViewModel viewModel) {
         Logger.d(">> ChannelListFragment::setupChannelListComponent()");
-        channelListComponent.setOnItemClickListener(itemClickListener != null ? itemClickListener : (view, position, channel) -> startChannelActivity(channel.getUrl()));
-        channelListComponent.setOnItemLongClickListener(itemLongClickListener != null ? itemLongClickListener : (view, position, channel) -> showListContextMenu(channel));
+        channelListComponent.setOnItemClickListener(this::onItemClicked);
+        channelListComponent.setOnItemLongClickListener(this::onItemLongClicked);
         viewModel.getChannelList().observe(getViewLifecycleOwner(), channelListComponent::notifyDataSetChanged);
     }
 
@@ -223,6 +223,38 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         });
     }
 
+    /**
+     * Called when the item of the channel list is clicked.
+     *
+     * @param view     The View clicked.
+     * @param position The position clicked.
+     * @param channel  The channel that the clicked item displays
+     * @since 3.2.0
+     */
+    protected void onItemClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
+        if (itemClickListener != null) {
+            itemClickListener.onItemClick(view, position, channel);
+            return;
+        }
+        startChannelActivity(channel.getUrl());
+    }
+
+    /**
+     * Called when the item of the channel list is long-clicked.
+     *
+     * @param view     The View long-clicked.
+     * @param position The position long-clicked.
+     * @param channel  The channel that the long-clicked item displays
+     * @since 3.2.0
+     */
+    protected void onItemLongClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
+        if (itemLongClickListener != null) {
+            itemLongClickListener.onItemLongClick(view, position, channel);
+            return;
+        }
+        showListContextMenu(channel);
+    }
+
     public static class Builder {
         @NonNull
         private final Bundle bundle;
@@ -238,6 +270,8 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         private OnItemLongClickListener<GroupChannel> itemLongClickListener;
         @Nullable
         private GroupChannelListQuery query;
+        @Nullable
+        private ChannelListFragment customFragment;
 
         /**
          * Constructor
@@ -263,6 +297,19 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         public Builder(@StyleRes int customThemeResId) {
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link ChannelListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends ChannelListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -518,7 +565,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          */
         @NonNull
         public ChannelListFragment build() {
-            final ChannelListFragment fragment = new ChannelListFragment();
+            final ChannelListFragment fragment = customFragment != null ? customFragment : new ChannelListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

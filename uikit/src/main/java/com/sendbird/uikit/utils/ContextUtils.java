@@ -18,7 +18,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.widgets.ToastView;
+import com.sendbird.uikit.internal.ui.widgets.ToastView;
 
 public class ContextUtils {
     @NonNull

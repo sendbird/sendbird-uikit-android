@@ -17,7 +17,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
-import com.sendbird.uikit.widgets.PagerRecyclerView;
+import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 
 import java.util.List;
 

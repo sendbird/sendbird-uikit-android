@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.internal.ui.components.HeaderView;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.HeaderView;
 
 
 /**

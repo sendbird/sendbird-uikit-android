@@ -260,6 +260,8 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         private OnItemClickListener<User> profileClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private BannedUserListFragment customFragment;
 
         /**
          * Constructor
@@ -290,6 +292,19 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link BannedUserListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends BannedUserListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -584,7 +599,7 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
          */
         @NonNull
         public BannedUserListFragment build() {
-            BannedUserListFragment fragment = new BannedUserListFragment();
+            final BannedUserListFragment fragment = customFragment != null ? customFragment : new BannedUserListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

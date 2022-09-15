@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.sendbird.uikit.interfaces.DialogProvider;
+import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
 import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 /**
  * Fragment that is the basis of fragments provided by UIKit.

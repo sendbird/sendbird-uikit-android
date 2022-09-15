@@ -133,18 +133,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                             channelDeleted.postValue(true);
                             return;
                         }
-                        channel.refresh(e -> {
-                            if (e != null) {
-                                Logger.dev(e);
-                                // already left this channel at the other device.
-                                if (e.getCode() == SendbirdError.ERR_NON_AUTHORIZED) {
-                                    channelDeleted.postValue(true);
-                                    return;
-                                }
-                            } else {
-                                channelUpdated.postValue(channel);
-                            }
-                            requestChangeLogs(channel);
+                        refreshChannel(e -> {
+                            if (e == null) requestChangeLogs(channel);
                         });
                     });
                 }
@@ -836,6 +826,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                         // TODO to be deleted after Chat SDK support
                         if (channel != null) getMyMutedInfo(channel);
                     }
+                    refreshChannel(null);
                 });
             } else {
                 handler.onAuthenticationFailed();
@@ -866,6 +857,22 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             if (e == null) {
                 myMutedInfo.postValue(isMuted);
             }
+        });
+    }
+
+    private void refreshChannel(@Nullable OnCompleteHandler handler) {
+        if (channel == null) return;
+        channel.refresh(e -> {
+            if (e != null) {
+                Logger.dev(e);
+                // already left this channel at the other device.
+                if (e.getCode() == SendbirdError.ERR_NON_AUTHORIZED) {
+                    channelDeleted.postValue(true);
+                }
+            } else {
+                channelUpdated.postValue(channel);
+            }
+            if (handler != null) handler.onComplete(e);
         });
     }
 }

@@ -84,7 +84,7 @@
         android:visibility="gone"
         >
 
-        <com.sendbird.uikit.widgets.RoundCornerView
+        <com.sendbird.uikit.internal.ui.widgets.RoundCornerView
             android:id="@+id/ivQuoteReplyThumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

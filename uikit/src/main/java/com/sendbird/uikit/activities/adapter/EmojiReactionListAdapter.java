@@ -18,9 +18,9 @@ import com.sendbird.uikit.activities.viewholder.EmojiReactionViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
-import com.sendbird.uikit.widgets.EmojiReactionView;
 
 import java.util.ArrayList;
 import java.util.List;

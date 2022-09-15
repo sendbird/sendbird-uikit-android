@@ -87,7 +87,7 @@
         app:constraint_referenced_ids="contentPanel"
         />
 
-    <com.sendbird.uikit.widgets.MyMessageStatusView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivStatus"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"

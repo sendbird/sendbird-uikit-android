@@ -14,6 +14,7 @@ import com.sendbird.android.params.ApplicationUserListQueryParams;
 import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.android.params.GroupChannelUpdateParams;
+import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.android.params.OpenChannelUpdateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
@@ -22,6 +23,7 @@ import com.sendbird.android.user.query.ApplicationUserListQuery;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.customsample.consts.InitState;
+import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit.customsample.models.CustomUser;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
@@ -146,6 +148,12 @@ public class BaseApplication extends MultiDexApplication {
             @Override
             public void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams openChannelParams) {
                 // You can set OpenChannelParams globally before updating a channel.
+            }
+
+            @Override
+            public void onBeforeCreateOpenChannel(@NonNull OpenChannelCreateParams params) {
+                // You can set OpenChannelCreateParams globally before creating a open channel.
+                params.setCustomType(StringSet.SB_COMMUNITY_TYPE);
             }
         });
 

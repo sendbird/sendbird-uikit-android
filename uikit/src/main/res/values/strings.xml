@@ -147,6 +147,7 @@
     <string name="sb_text_empty_no_operator_participant">No operator participants</string>
     <string name="sb_text_empty_no_muted_participant">No muted participants</string>
 
+    <!-- Moderation -->
     <string name="sb_text_register_operator">Register as operator</string>
     <string name="sb_text_mute_member">Mute</string>
     <string name="sb_text_mute_participant">Mute</string>
@@ -164,19 +165,26 @@
     <string name="sb_text_url">URL</string>
     <string name="sb_text_error_not_possible_resend_message">Message can’t be sent.</string>
 
+    <!-- Message Search -->
     <string name="sb_text_button_search">Search</string>
     <string name="sb_text_search_result_empty">No results found.</string>
     <string name="sb_text_error_search_failure">Something went wrong. Try again.</string>
 
+    <!-- Message Reply -->
     <string name="sb_text_you">You</string>
     <string name="sb_text_reply_to">Reply to %s</string>
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
     <string name="sb_text_exceed_mention_limit_count">"You can mention up to %d times per message."</string>
 
+    <!-- Channel Push Setting -->
     <string name="sb_text_push_setting_on">On</string>
     <string name="sb_text_push_setting_off">Off</string>
     <string name="sb_text_push_setting_mentions_only">Mentions only</string>
     <string name="sb_text_push_setting_option_all">All new messages</string>
     <string name="sb_text_push_setting_description">Turn on push notifications if you wish to be notified when messages are delivered to this channel.</string>
+
+    <!-- Create OpenChannel -->
+    <string name="text_input_channel_name_hint">Enter channel name</string>
+    <string name="text_remove_photo">Remove photo</string>
 </resources>

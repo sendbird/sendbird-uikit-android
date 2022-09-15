@@ -134,8 +134,7 @@ public class OpenChannelMessageInputComponent {
         messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
 
         if (params.alwaysShowRightButton) messageInputView.setSendButtonVisibility(View.VISIBLE);
-        messageInputView.showSendButtonAlways(params.alwaysShowRightButton);
-
+        messageInputView.setShowSendButtonAlways(params.alwaysShowRightButton);
         messageInputView.setOnSendClickListener(this::onInputRightButtonClicked);
         messageInputView.setOnAddClickListener(this::onInputLeftButtonClicked);
         messageInputView.setOnEditCancelClickListener(this::onEditModeCancelButtonClicked);
@@ -347,7 +346,7 @@ public class OpenChannelMessageInputComponent {
             inputView.showKeyboard();
         } else {
             inputView.setInputText(defaultText);
-            final String text = inputView.getInputText();
+            final CharSequence text = inputView.getInputText();
             if (text != null) {
                 inputView.getInputEditText().setSelection(text.length());
             }

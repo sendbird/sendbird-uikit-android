@@ -12,13 +12,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.activities.adapter.OpenChannelListAdapter;
+import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.databinding.ViewLiveStreamListItemBinding;
 import com.sendbird.uikit_messaging_android.model.LiveStreamingChannelData;
-import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListAdapter;
-import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListViewHolder;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
@@ -30,16 +30,16 @@ import java.util.Locale;
 /**
  * RecyclerView adapter for <code>OpenChannel</code> list used for live stream.
  */
-public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamListAdapter.LiveStreamingListViewHolder> {
+public class LiveStreamListAdapter extends OpenChannelListAdapter {
     @NonNull
     @Override
-    public LiveStreamingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BaseViewHolder<OpenChannel> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ViewLiveStreamListItemBinding binding = ViewLiveStreamListItemBinding.inflate(inflater, parent, false);
         return new LiveStreamingListViewHolder(binding);
     }
 
-    static class LiveStreamingListViewHolder extends OpenChannelListViewHolder {
+    private static class LiveStreamingListViewHolder extends BaseViewHolder<OpenChannel> {
         private final ViewLiveStreamListItemBinding binding;
 
         public LiveStreamingListViewHolder(@NonNull ViewLiveStreamListItemBinding binding) {
@@ -55,8 +55,7 @@ public class LiveStreamListAdapter extends OpenChannelListAdapter<LiveStreamList
         }
 
         @Override
-        protected void bind(OpenChannel openChannel) {
-            if (openChannel == null) return;
+        public void bind(@NonNull OpenChannel openChannel) {
             int count = openChannel.getParticipantCount();
             String text = String.valueOf(count);
             if (count > 1000) {

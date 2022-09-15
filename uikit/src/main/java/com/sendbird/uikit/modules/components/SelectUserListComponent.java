@@ -15,7 +15,7 @@ import com.sendbird.uikit.activities.adapter.SelectUserListAdapter;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.interfaces.OnUserSelectChangedListener;
 import com.sendbird.uikit.interfaces.OnUserSelectionCompleteListener;
-import com.sendbird.uikit.widgets.PagerRecyclerView;
+import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 
 import java.util.List;
 

@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
+import com.sendbird.uikit_messaging_android.widgets.WaitingDialog;
 
 /**
  * Displays a splash screen.

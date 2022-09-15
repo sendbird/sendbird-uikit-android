@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.widgets.StateHeaderView;
+import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 
 /**
  * This class creates and performs a view corresponding the stateful header area in Sendbird UIKit.
@@ -139,6 +139,18 @@ public class StateHeaderComponent {
      */
     protected void onRightButtonClicked(@NonNull View view) {
         if (this.rightButtonClickListener != null) this.rightButtonClickListener.onClick(view);
+    }
+
+    /**
+     * Notifies the events to the view when the right button enable state changed.
+     *
+     * @param enabled the enable state of the view
+     * @since 3.2.0
+     */
+    public void notifyRightButtonEnableStateChanged(boolean enabled) {
+        if (headerView != null) {
+            headerView.setEnabledRightButton(enabled);
+        }
     }
 
     /**

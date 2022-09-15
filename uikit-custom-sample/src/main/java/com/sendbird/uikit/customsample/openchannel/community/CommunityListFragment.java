@@ -7,23 +7,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.uikit.activities.CreateOpenChannelActivity;
+import com.sendbird.uikit.activities.OpenChannelActivity;
 import com.sendbird.uikit.customsample.R;
-import com.sendbird.uikit.customsample.consts.StringSet;
-import com.sendbird.uikit.customsample.openchannel.OpenChannelListFragment;
+import com.sendbird.uikit.fragments.OpenChannelListFragment;
 import com.sendbird.uikit.log.Logger;
 
 /**
  * Displays an open channel list screen used for community.
  */
 public class CommunityListFragment extends OpenChannelListFragment {
-    public CommunityListFragment() {
-        super(new CommunityListAdapter());
-        setCustomTypeFilter(StringSet.SB_COMMUNITY_TYPE);
-    }
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -34,7 +29,7 @@ public class CommunityListFragment extends OpenChannelListFragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         final MenuItem createMenuItem = menu.findItem(R.id.action_create_channel);
         View rootView = createMenuItem.getActionView();
-        rootView.setOnClickListener(v -> onOptionsItemSelected(createMenuItem));
+        if (rootView != null) rootView.setOnClickListener(v -> onOptionsItemSelected(createMenuItem));
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -42,21 +37,21 @@ public class CommunityListFragment extends OpenChannelListFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_create_channel && getActivity() != null) {
             Logger.d("++ create button clicked");
-            Intent intent = new Intent(getActivity(), CreateCommunityActivity.class);
+            Intent intent = new Intent(getActivity(), CreateOpenChannelActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        setHasOptionsMenu(true);
+    protected void onItemClicked(@NonNull View view, int position, @NonNull OpenChannel channel) {
+        startActivity(OpenChannelActivity.newIntent(requireContext(), CommunityActivity.class, channel.getUrl()));
+
     }
 
     @Override
-    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
-        if (getContext() == null || openChannel == null) return;
-        startActivity(CommunityActivity.newIntent(getContext(), openChannel.getUrl()));
+    public void onResume() {
+        super.onResume();
+        setHasOptionsMenu(true);
     }
 }

@@ -34,6 +34,7 @@ import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
+import com.sendbird.uikit.customsample.widgets.WaitingDialog;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
@@ -43,7 +44,6 @@ import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 import java.io.File;
 import java.util.List;

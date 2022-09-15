@@ -16,8 +16,8 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.widgets.PagerRecyclerView;
 
 import java.util.List;
 

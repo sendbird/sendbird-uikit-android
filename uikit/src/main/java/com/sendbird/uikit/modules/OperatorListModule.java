@@ -17,10 +17,10 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OperatorListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 /**
  * A module for operator list. This module is composed of a header, list, and status.

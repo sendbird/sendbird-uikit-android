@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toStartOf="@id/profileView"
             />
 
-        <com.sendbird.uikit.widgets.ChannelCoverView
+        <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
             android:id="@+id/profileView"
             android:layout_width="@dimen/sb_size_34"
             android:layout_height="@dimen/sb_size_34"

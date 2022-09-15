@@ -16,7 +16,7 @@ import androidx.core.widget.NestedScrollView;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
-import com.sendbird.uikit.widgets.SingleMenuItemView;
+import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 
 /**
  * This class creates and performs a view corresponding the moderation list area in Sendbird UIKit.

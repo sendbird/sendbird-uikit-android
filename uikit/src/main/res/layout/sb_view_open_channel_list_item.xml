@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCoverImage"
+        android:layout_width="@dimen/sb_size_42"
+        android:layout_height="@dimen/sb_size_42"
+        android:layout_marginTop="@dimen/sb_size_10"
+        android:layout_marginStart="@dimen/sb_size_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivCoverIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/sb_size_9"
+        app:layout_constraintTop_toTopOf="@id/ivCoverImage"
+        app:layout_constraintBottom_toBottomOf="@id/ivCoverImage"
+        app:layout_constraintStart_toStartOf="@id/ivCoverImage"
+        app:layout_constraintEnd_toEndOf="@id/ivCoverImage"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sb_size_16"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/ivCoverImage"
+        app:layout_constraintTop_toTopOf="@id/ivCoverImage"
+        app:layout_constraintEnd_toStartOf="@id/ivFrozenIcon"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFrozenIcon"
+        android:src="@drawable/icon_freeze"
+        android:layout_width="@dimen/sb_size_16"
+        android:layout_height="@dimen/sb_size_16"
+        android:layout_marginLeft="@dimen/sb_size_4"
+        app:layout_constraintStart_toEndOf="@id/tvTitle"
+        app:layout_constraintTop_toTopOf="@id/tvTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivParticipantsIcon"
+        android:layout_width="@dimen/sb_size_14"
+        android:layout_height="@dimen/sb_size_12"
+        android:src="@drawable/icon_members"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvParticipants"
+        app:layout_constraintBottom_toBottomOf="@+id/tvParticipants"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvParticipants"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sb_size_4"
+        android:layout_marginTop="@dimen/sb_size_5"
+        app:layout_constraintStart_toEndOf="@+id/ivParticipantsIcon"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivDivider"
+        android:layout_width="@dimen/sb_size_0"
+        android:layout_height="@dimen/sb_size_1"
+        android:layout_marginTop="@dimen/sb_size_13"
+        android:layout_marginBottom="@dimen/sb_size_10"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/ivParticipantsIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

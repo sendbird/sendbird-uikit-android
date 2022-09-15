@@ -10,11 +10,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.sendbird.uikit.widgets.ChannelCoverView
+    <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
         android:id="@+id/ivUserCover"
         android:layout_width="@dimen/sb_size_36"
         android:layout_height="@dimen/sb_size_36"
-        android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

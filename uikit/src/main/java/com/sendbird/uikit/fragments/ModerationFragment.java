@@ -215,6 +215,8 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
         private OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> menuItemClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private ModerationFragment customFragment;
 
         /**
          * Constructor
@@ -248,6 +250,19 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link ModerationFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends ModerationFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -432,7 +447,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          */
         @NonNull
         public ModerationFragment build() {
-            ModerationFragment fragment = new ModerationFragment();
+            final ModerationFragment fragment = customFragment != null ? customFragment : new ModerationFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

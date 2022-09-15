@@ -17,8 +17,8 @@ import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 import com.sendbird.uikit.utils.ChannelUtils;
-import com.sendbird.uikit.widgets.SingleMenuItemView;
 
 /**
  * This class creates and performs a view corresponding the open channel settings menu area in Sendbird UIKit.

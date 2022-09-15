@@ -10,7 +10,7 @@
         android:layout_height="@dimen/sb_size_16"
         android:visibility="gone"/>
 
-    <com.sendbird.uikit.widgets.MessageProgressView
+    <com.sendbird.uikit.internal.ui.widgets.MessageProgressView
         android:id="@+id/mpvProgressStatus"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"

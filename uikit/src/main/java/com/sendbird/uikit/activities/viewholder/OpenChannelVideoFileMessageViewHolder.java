@@ -10,7 +10,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileVideoMessageBinding;
-import com.sendbird.uikit.widgets.OpenChannelVideoFileMessageView;
+import com.sendbird.uikit.internal.ui.messages.OpenChannelVideoFileMessageView;
 
 import java.util.Map;
 
@@ -27,6 +27,7 @@ public final class OpenChannelVideoFileMessageViewHolder extends MessageViewHold
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        openChannelVideoFileMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof OpenChannel) {
             openChannelVideoFileMessageView.drawMessage((OpenChannel) channel, message, messageGroupType);
         }

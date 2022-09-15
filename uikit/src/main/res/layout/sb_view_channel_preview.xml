@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sendbird.uikit.widgets.ChannelPreview
+<com.sendbird.uikit.internal.ui.channels.ChannelPreview
     android:id="@+id/channelPreview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

@@ -13,8 +13,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.internal.ui.components.HeaderView;
 import com.sendbird.uikit.utils.ChannelUtils;
-import com.sendbird.uikit.widgets.HeaderView;
 
 
 /**

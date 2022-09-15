@@ -1,20 +1,21 @@
 package com.sendbird.uikit_messaging_android.openchannel.community;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.sendbird.android.channel.OpenChannel;
+import com.sendbird.uikit.activities.CreateOpenChannelActivity;
+import com.sendbird.uikit.fragments.OpenChannelListFragment;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit_messaging_android.R;
-import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.databinding.ViewCustomMenuIconButtonBinding;
-import com.sendbird.uikit_messaging_android.openchannel.OpenChannelListFragment;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 
@@ -22,10 +23,13 @@ import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
  * Displays an open channel list screen used for community.
  */
 public class CommunityListFragment extends OpenChannelListFragment {
-    public CommunityListFragment() {
-        super(new CommunityListAdapter());
-        setCustomTypeFilter(StringSet.SB_COMMUNITY_TYPE);
-    }
+    @NonNull
+    private final ActivityResultLauncher<Intent> createChannelLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Logger.d("++ create channel result=%s", result.getResultCode());
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            onRefresh();
+        }
+    });
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -52,8 +56,8 @@ public class CommunityListFragment extends OpenChannelListFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_create_channel && getActivity() != null) {
             Logger.d("++ create button clicked");
-            Intent intent = new Intent(getActivity(), CreateCommunityActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent(getActivity(), CreateOpenChannelActivity.class);
+            createChannelLauncher.launch(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -62,11 +66,5 @@ public class CommunityListFragment extends OpenChannelListFragment {
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    protected void clickOpenChannelItem(@Nullable OpenChannel openChannel) {
-        if (getContext() == null || openChannel == null) return;
-        startActivity(CommunityActivity.newIntent(getContext(), openChannel.getUrl()));
     }
 }

@@ -197,6 +197,8 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
         private OnUserSelectChangedListener userSelectChangedListener;
         @Nullable
         private OnUserSelectionCompleteListener userSelectionCompleteListener;
+        @Nullable
+        private RegisterOperatorFragment customFragment;
 
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -224,6 +226,19 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link RegisterOperatorFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends RegisterOperatorFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -455,7 +470,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          */
         @NonNull
         public Fragment build() {
-            RegisterOperatorFragment fragment = new RegisterOperatorFragment();
+            final RegisterOperatorFragment fragment = customFragment != null ? customFragment : new RegisterOperatorFragment();
             fragment.setArguments(bundle);
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;

@@ -96,7 +96,7 @@
             android:tint="@color/ondark_01" />
     </RelativeLayout>
 
-    <com.sendbird.uikit.widgets.ProgressView
+    <com.sendbird.uikit.internal.ui.widgets.ProgressView
         android:id="@+id/loading"
         android:layout_centerInParent="true"
         android:layout_width="@dimen/sb_size_60"

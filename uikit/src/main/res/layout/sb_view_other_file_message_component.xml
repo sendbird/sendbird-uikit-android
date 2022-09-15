@@ -36,7 +36,7 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tvNickname, quoteReplyPanel" />
 
-    <com.sendbird.uikit.widgets.OtherQuotedMessageView
+    <com.sendbird.uikit.internal.ui.messages.OtherQuotedMessageView
         android:id="@+id/quoteReplyPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
 
         </LinearLayout>
 
-        <com.sendbird.uikit.widgets.EmojiReactionListView
+        <com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView
             android:id="@+id/rvEmojiReactionList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

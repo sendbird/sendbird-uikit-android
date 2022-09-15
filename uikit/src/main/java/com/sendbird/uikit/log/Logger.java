@@ -15,10 +15,11 @@ public class Logger {
     private Logger() {
     }
 
+    private static final int LOG_SEGMENT_SIZE = 2000;
+    // logLevel should be initialized before loggerConfig initialization
+    private static int logLevel = LoggerConfig.DEV;
     @NonNull
     private static LoggerConfig loggerConfig = initLogConfig();
-    private static final int LOG_SEGMENT_SIZE = 2000;
-    private static int logLevel = LoggerConfig.DEV;
 
     public static void setLogLevel(int logLevel) {
         Logger.logLevel = logLevel;

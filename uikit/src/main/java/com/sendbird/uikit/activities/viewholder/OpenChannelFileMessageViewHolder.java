@@ -10,7 +10,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageBinding;
-import com.sendbird.uikit.widgets.OpenChannelFileMessageView;
+import com.sendbird.uikit.internal.ui.messages.OpenChannelFileMessageView;
 
 import java.util.Map;
 
@@ -27,6 +27,7 @@ public final class OpenChannelFileMessageViewHolder extends MessageViewHolder {
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        openChannelFileMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof OpenChannel) {
             openChannelFileMessageView.drawMessage((OpenChannel) channel, message, messageGroupType);
         }

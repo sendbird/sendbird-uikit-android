@@ -332,4 +332,50 @@ public class UIKitFragmentFactory {
                 .withArguments(args)
                 .build();
     }
+
+    /**
+     * Returns the CreateOpenChannelFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link CreateOpenChannelFragment}
+     * @since 3.2.0
+     */
+    @NonNull
+    public Fragment newCreateOpenChannelFragment(@NonNull Bundle args) {
+        return new CreateOpenChannelFragment.Builder()
+                .withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(true)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelListFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelListFragment}
+     * @since 3.2.0
+     */
+    @NonNull
+    public Fragment newOpenChannelListFragment(@NonNull Bundle args) {
+        return new OpenChannelListFragment.Builder()
+                .withArguments(args)
+                .setUseHeader(true)
+                .build();
+    }
+
+    /**
+     * Returns the OpenChannelFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link OpenChannelFragment}
+     * @since 3.2.0
+     */
+    @NonNull
+    public Fragment newOpenChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new OpenChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setUseHeader(true)
+                .build();
+    }
 }

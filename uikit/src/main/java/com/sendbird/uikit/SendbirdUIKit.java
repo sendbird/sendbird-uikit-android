@@ -53,7 +53,7 @@ public class SendbirdUIKit {
      * UIKit log level. It depends on android Log level.
      */
     public enum LogLevel {
-        ALL(Log.VERBOSE), INFO(Log.INFO), WARN(Log.WARN), ERROR(Log.ERROR);
+        ALL(Log.VERBOSE), INFO(Log.INFO), WARN(Log.WARN), ERROR(Log.ERROR), NONE(Integer.MAX_VALUE);
 
         int level;
 

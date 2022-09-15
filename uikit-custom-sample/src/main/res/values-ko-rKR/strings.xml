@@ -163,7 +163,6 @@
     <string name="text_live_streaming_description">UIKit sample을 위한 예시 채널입니다.</string>
     <string name="text_header_create_button">만들기</string>
     <string name="text_input_channel_name_hint">채널 이름을 입력하세요</string>
-    <string name="text_remove_photo">사진 삭제</string>
     <string name="text_live">라이브</string>
     <string name="text_participants">%s명</string>
 

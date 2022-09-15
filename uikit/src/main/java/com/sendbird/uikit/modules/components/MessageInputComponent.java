@@ -147,8 +147,7 @@ public class MessageInputComponent {
         this.messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
 
         if (params.alwaysShowRightButton) messageInputView.setSendButtonVisibility(View.VISIBLE);
-        this.messageInputView.showSendButtonAlways(params.alwaysShowRightButton);
-
+        this.messageInputView.setShowSendButtonAlways(params.alwaysShowRightButton);
         this.messageInputView.setOnSendClickListener(this::onInputRightButtonClicked);
         this.messageInputView.setOnAddClickListener(this::onInputLeftButtonClicked);
         this.messageInputView.setOnEditCancelClickListener(this::onEditModeCancelButtonClicked);
@@ -433,7 +432,7 @@ public class MessageInputComponent {
             inputView.showKeyboard();
         } else {
             inputView.setInputText(defaultText);
-            final String text = inputView.getInputText();
+            final CharSequence text = inputView.getInputText();
             if (text != null) {
                 inputView.getInputEditText().setSelection(text.length());
             }

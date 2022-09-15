@@ -14,9 +14,9 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.customsample.utils.PushUtils;
+import com.sendbird.uikit.customsample.widgets.WaitingDialog;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 /**
  * Displays a login screen.

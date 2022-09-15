@@ -13,8 +13,8 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnSearchEventListener;
+import com.sendbird.uikit.internal.ui.components.SearchBarView;
 import com.sendbird.uikit.utils.SoftInputUtils;
-import com.sendbird.uikit.widgets.SearchBarView;
 
 /**
  * This class creates and performs a view corresponding the message search header area in Sendbird UIKit.

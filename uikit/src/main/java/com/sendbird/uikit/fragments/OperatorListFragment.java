@@ -265,6 +265,8 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
         private OnItemClickListener<User> profileClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private OperatorListFragment customFragment;
 
         /**
          * Constructor
@@ -295,6 +297,19 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OperatorListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OperatorListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -589,7 +604,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
          */
         @NonNull
         public OperatorListFragment build() {
-            OperatorListFragment fragment = new OperatorListFragment();
+            final OperatorListFragment fragment = customFragment != null ? customFragment : new OperatorListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

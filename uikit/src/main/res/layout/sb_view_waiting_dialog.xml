@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.sendbird.uikit.widgets.ProgressView
+        <com.sendbird.uikit.internal.ui.widgets.ProgressView
             android:id="@+id/rotateloading"
             android:layout_width="@dimen/sb_size_60"
             android:layout_height="@dimen/sb_size_60"/>

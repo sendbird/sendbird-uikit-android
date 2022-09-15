@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.sendbird.uikit.widgets.ChannelCoverView
+        <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
             android:id="@+id/profileView"
             android:layout_marginTop="@dimen/sb_size_8"
             android:layout_width="@dimen/sb_size_80"

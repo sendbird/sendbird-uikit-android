@@ -33,8 +33,8 @@ import com.sendbird.uikit.customsample.groupchannel.GroupChannelMainActivity;
 import com.sendbird.uikit.customsample.openchannel.OpenChannelMainActivity;
 import com.sendbird.uikit.customsample.utils.PreferenceUtils;
 import com.sendbird.uikit.customsample.utils.PushUtils;
+import com.sendbird.uikit.customsample.widgets.WaitingDialog;
 import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 import java.util.List;
 import java.util.Locale;

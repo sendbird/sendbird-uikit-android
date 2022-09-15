@@ -275,6 +275,8 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
         private OnItemClickListener<User> profileClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private OpenChannelBannedUserListFragment customFragment;
 
         /**
          * Constructor
@@ -308,6 +310,19 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OpenChannelBannedUserListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OpenChannelBannedUserListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -575,7 +590,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          */
         @NonNull
         public OpenChannelBannedUserListFragment build() {
-            OpenChannelBannedUserListFragment fragment = new OpenChannelBannedUserListFragment();
+            final OpenChannelBannedUserListFragment fragment = customFragment != null ? customFragment : new OpenChannelBannedUserListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

@@ -19,6 +19,7 @@ import com.sendbird.uikit.customsample.groupchannel.fragments.CustomMutedMemberL
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomOperatorListFragment;
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomParticipantListFragment;
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomRegisterOperatorFragment;
+import com.sendbird.uikit.customsample.openchannel.CustomCreateOpenChannelFragment;
 import com.sendbird.uikit.customsample.openchannel.CustomOpenChannelSettingsFragment;
 import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 
@@ -134,6 +135,14 @@ public class CustomFragmentFactory extends UIKitFragmentFactory {
     @Override
     public Fragment newOpenChannelSettingsFragment(@NonNull String channelUrl, @NonNull Bundle args) {
         final CustomOpenChannelSettingsFragment fragment = new CustomOpenChannelSettingsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @NonNull
+    @Override
+    public Fragment newCreateOpenChannelFragment(@NonNull Bundle args) {
+        final CustomCreateOpenChannelFragment fragment = new CustomCreateOpenChannelFragment();
         fragment.setArguments(args);
         return fragment;
     }

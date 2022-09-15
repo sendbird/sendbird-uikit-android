@@ -41,12 +41,12 @@ import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.databinding.FragmentSettingsBinding;
 import com.sendbird.uikit_messaging_android.databinding.ViewCustomMenuTextButtonBinding;
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
+import com.sendbird.uikit_messaging_android.widgets.WaitingDialog;
 
 import java.io.File;
 import java.util.List;

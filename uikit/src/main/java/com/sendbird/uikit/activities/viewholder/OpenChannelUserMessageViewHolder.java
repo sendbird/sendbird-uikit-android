@@ -10,7 +10,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageBinding;
-import com.sendbird.uikit.widgets.OpenChannelUserMessageView;
+import com.sendbird.uikit.internal.ui.messages.OpenChannelUserMessageView;
 
 import java.util.Map;
 

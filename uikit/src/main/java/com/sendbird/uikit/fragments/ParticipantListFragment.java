@@ -264,6 +264,8 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         private OnItemClickListener<User> profileClickListener;
         @Nullable
         private OnItemClickListener<User> actionItemClickListener;
+        @Nullable
+        private ParticipantListFragment customFragment;
 
         /**
          * Constructor
@@ -294,6 +296,19 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link ParticipantListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends ParticipantListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -573,7 +588,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          */
         @NonNull
         public ParticipantListFragment build() {
-            ParticipantListFragment fragment = new ParticipantListFragment();
+            final ParticipantListFragment fragment = customFragment != null ? customFragment : new ParticipantListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

@@ -29,12 +29,12 @@ import com.sendbird.android.user.User;
 import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.databinding.ActivityHomeBinding;
 import com.sendbird.uikit_messaging_android.groupchannel.GroupChannelMainActivity;
 import com.sendbird.uikit_messaging_android.openchannel.OpenChannelMainActivity;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
+import com.sendbird.uikit_messaging_android.widgets.WaitingDialog;
 
 import java.util.List;
 import java.util.Locale;

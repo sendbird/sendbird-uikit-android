@@ -14,8 +14,8 @@ import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOtherFileImageMessageBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.widgets.EmojiReactionListView;
-import com.sendbird.uikit.widgets.OtherImageFileMessageView;
+import com.sendbird.uikit.internal.ui.messages.OtherImageFileMessageView;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,7 @@ public final class OtherImageFileMessageViewHolder extends GroupChannelMessageVi
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        otherImageFileMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof GroupChannel) {
             otherImageFileMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);
         }

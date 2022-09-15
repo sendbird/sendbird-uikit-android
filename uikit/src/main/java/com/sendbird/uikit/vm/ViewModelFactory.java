@@ -9,6 +9,7 @@ import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.query.GroupChannelListQuery;
 import com.sendbird.android.message.query.MessageSearchQuery;
 import com.sendbird.android.params.MessageListParams;
+import com.sendbird.android.params.OpenChannelListQueryParams;
 import com.sendbird.android.user.Member;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
@@ -81,6 +82,10 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new OpenChannelMutedParticipantListViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (PagedQueryHandler<User>) params[1] : null);
         } else if (modelClass.isAssignableFrom(OpenChannelBannedUserListViewModel.class)) {
             return (T) new OpenChannelBannedUserListViewModel((String) Objects.requireNonNull(params)[0]);
+        } else if (modelClass.isAssignableFrom(CreateOpenChannelViewModel.class)) {
+            return (T) new CreateOpenChannelViewModel();
+        } else if (modelClass.isAssignableFrom(OpenChannelListViewModel.class)) {
+            return (T) new OpenChannelListViewModel(params != null && params.length > 0 ? (OpenChannelListQueryParams) params[0] : null);
         } else {
             return super.create(modelClass);
         }

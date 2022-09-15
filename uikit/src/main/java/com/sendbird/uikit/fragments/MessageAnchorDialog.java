@@ -16,9 +16,9 @@ import androidx.core.content.ContextCompat;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.ui.reactions.DialogView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
-import com.sendbird.uikit.widgets.DialogView;
 
 class MessageAnchorDialog {
     @NonNull

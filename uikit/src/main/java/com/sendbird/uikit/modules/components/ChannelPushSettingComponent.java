@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.widgets.ChannelPushSettingView;
+import com.sendbird.uikit.internal.ui.components.ChannelPushSettingView;
 
 public class ChannelPushSettingComponent {
 

@@ -204,6 +204,8 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
         private OnUserSelectChangedListener userSelectChangedListener;
         @Nullable
         private OnUserSelectionCompleteListener userSelectionCompleteListener;
+        @Nullable
+        private OpenChannelRegisterOperatorFragment customFragment;
 
         /**
          * Constructor
@@ -237,6 +239,19 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OpenChannelRegisterOperatorFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OpenChannelRegisterOperatorFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -460,7 +475,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          */
         @NonNull
         public OpenChannelRegisterOperatorFragment build() {
-            OpenChannelRegisterOperatorFragment fragment = new OpenChannelRegisterOperatorFragment();
+            final OpenChannelRegisterOperatorFragment fragment = customFragment != null ? customFragment : new OpenChannelRegisterOperatorFragment();
             fragment.setArguments(bundle);
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;

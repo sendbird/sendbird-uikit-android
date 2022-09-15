@@ -67,6 +67,8 @@ import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnResultHandler;
+import com.sendbird.uikit.internal.ui.reactions.EmojiListView;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionUserListView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.EmojiManager;
@@ -93,8 +95,6 @@ import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.ViewModelFactory;
-import com.sendbird.uikit.widgets.EmojiListView;
-import com.sendbird.uikit.widgets.EmojiReactionUserListView;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 
@@ -865,12 +865,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         emojiList = emojiList.subList(0, shownEmojiSize);
 
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = new EmojiListView.Builder(contextThemeWrapper)
-                .setEmojiList(emojiList)
-                .setReactionList(message.getReactions())
-                .setShowMoreButton(showMoreButton)
-                .create();
-
+        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), showMoreButton);
         hideKeyboard();
         final AlertDialog dialog = DialogUtils.showContentViewAndListDialog(requireContext(), emojiListView, actions, createMessageActionListener(message));
 
@@ -982,11 +977,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
 
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = new EmojiListView.Builder(contextThemeWrapper)
-                .setEmojiList(EmojiManager.getInstance().getAllEmojis())
-                .setReactionList(message.getReactions())
-                .setShowMoreButton(false)
-                .create();
+        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, EmojiManager.getInstance().getAllEmojis(), message.getReactions(), false);
         hideKeyboard();
         final AlertDialog dialog = DialogUtils.showContentDialog(requireContext(), emojiListView);
 
@@ -1346,6 +1337,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         private View.OnClickListener tooltipClickListener;
         @Nullable
         private View.OnClickListener scrollBottomButtonClickListener;
+        private ChannelFragment customFragment;
 
 
         /**
@@ -1377,6 +1369,19 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             this.bundle = new Bundle();
             this.bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             this.bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link ChannelFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends ChannelFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -2213,7 +2218,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
          */
         @NonNull
         public ChannelFragment build() {
-            final ChannelFragment fragment = new ChannelFragment();
+            final ChannelFragment fragment = customFragment != null ? customFragment : new ChannelFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

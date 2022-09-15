@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.android.params.GroupChannelUpdateParams;
+import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.android.params.OpenChannelUpdateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
@@ -23,7 +24,7 @@ public interface CustomParamsHandler {
      * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params);
+    default void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params) {}
 
     /**
      * It will be called before updating group channel.
@@ -32,7 +33,7 @@ public interface CustomParamsHandler {
      * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
      * @since 1.2.2
      */
-    void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params);
+    default void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params) {}
 
     /**
      * It will be called before sending message.
@@ -41,7 +42,7 @@ public interface CustomParamsHandler {
      * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params);
+    default void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {}
 
     /**
      * It will be called before sending message.
@@ -50,7 +51,7 @@ public interface CustomParamsHandler {
      * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
      * @since 1.2.2
      */
-    void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params);
+    default void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {}
 
     /**
      * It will be called before updating message.
@@ -59,7 +60,7 @@ public interface CustomParamsHandler {
      * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
      * @since 1.2.2
      */
-    void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params);
+    default void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {}
 
     /**
      * It will be called before updating open channel.
@@ -68,5 +69,14 @@ public interface CustomParamsHandler {
      * @param params Params of channel. Refer to {@link OpenChannelUpdateParams}.
      * @since 2.0.0
      */
-    void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams params);
+    default void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams params) {}
+
+    /**
+     * It will be called before creating open channel.
+     * If you want add more data, you can override this and set the data.
+     *
+     * @param params Params of channel. Refer to {@link OpenChannelCreateParams}.
+     * @since 3.2.0
+     */
+    default void onBeforeCreateOpenChannel(@NonNull OpenChannelCreateParams params) {}
 }

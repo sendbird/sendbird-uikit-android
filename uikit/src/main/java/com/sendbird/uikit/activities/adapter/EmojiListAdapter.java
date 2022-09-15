@@ -15,7 +15,7 @@ import com.sendbird.uikit.activities.viewholder.EmojiMoreViewHolder;
 import com.sendbird.uikit.activities.viewholder.EmojiViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.widgets.EmojiView;
+import com.sendbird.uikit.internal.ui.reactions.EmojiView;
 
 import java.util.HashMap;
 import java.util.List;

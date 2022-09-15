@@ -7,21 +7,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.sendbird.android.params.OpenChannelListQueryParams;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.fragments.OpenChannelListFragment;
 import com.sendbird.uikit_messaging_android.R;
 import com.sendbird.uikit_messaging_android.SettingsFragment;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.databinding.ActivityOpenChannelMainBinding;
 import com.sendbird.uikit_messaging_android.openchannel.community.CommunityListFragment;
+import com.sendbird.uikit_messaging_android.openchannel.livestream.LiveStreamListAdapter;
 import com.sendbird.uikit_messaging_android.openchannel.livestream.LiveStreamListFragment;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.widgets.CustomTabView;
-
-import java.util.Objects;
 
 /**
  * Displays an open channel list screen.
@@ -49,12 +53,11 @@ public class OpenChannelMainActivity extends AppCompatActivity {
         binding.tvDescription.setTextColor(getResources().getColor(isDark ? R.color.ondark_02 : R.color.onlight_02));
 
         setSupportActionBar(binding.tbMain);
-        binding.vpMain.setAdapter(new MainAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+        binding.vpMain.setAdapter(new MainAdapter(this));
 
         boolean isDarkMode = PreferenceUtils.isUsingDarkTheme();
         int backgroundRedId = isDarkMode ? R.color.background_600 : R.color.background_50;
         binding.tlMain.setBackgroundResource(backgroundRedId);
-        binding.tlMain.setupWithViewPager(binding.vpMain);
 
         CustomTabView liveStreamTab = new CustomTabView(this);
         liveStreamTab.setBadgeVisibility(View.GONE);
@@ -71,18 +74,35 @@ public class OpenChannelMainActivity extends AppCompatActivity {
         settingsTab.setTitle(getString(R.string.text_tab_settings));
         settingsTab.setIcon(R.drawable.icon_settings_filled);
 
-        Objects.requireNonNull(binding.tlMain.getTabAt(0)).setCustomView(liveStreamTab);
-        Objects.requireNonNull(binding.tlMain.getTabAt(1)).setCustomView(communityTab);
-        Objects.requireNonNull(binding.tlMain.getTabAt(2)).setCustomView(settingsTab);
+        new TabLayoutMediator(binding.tlMain, binding.vpMain, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setCustomView(liveStreamTab);
+                    break;
+                case 1:
+                    tab.setCustomView(communityTab);
+                    break;
+                case 2:
+                    tab.setCustomView(settingsTab);
+                    break;
+                default:
+                    break;
+
+            }
+        }).attach();
 
         binding.tvDescription.setVisibility(View.VISIBLE);
         binding.tvDescription.setText(R.string.text_live_streaming_description);
         setActionBarTitle(getString(R.string.text_live_streams));
 
-        binding.vpMain.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
+        binding.vpMain.setOffscreenPageLimit(3);
+        binding.vpMain.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            /**
+             * This method will be invoked when a new page becomes selected. Animation is not
+             * necessarily complete.
+             *
+             * @param position Position index of the new selected page.
+             */
             @Override
             public void onPageSelected(int position) {
                 if (position == 0) {
@@ -97,9 +117,6 @@ public class OpenChannelMainActivity extends AppCompatActivity {
                     setActionBarTitle(getString(R.string.text_tab_settings));
                 }
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
         });
     }
 
@@ -108,20 +125,40 @@ public class OpenChannelMainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
     }
 
-    private static class MainAdapter extends FragmentPagerAdapter {
+    private static class MainAdapter extends FragmentStateAdapter {
         private static final int PAGE_SIZE = 3;
 
-        public MainAdapter(@NonNull FragmentManager fm, int behavior) {
-            super(fm, behavior);
+        /**
+         * @param fragmentActivity if the {@link ViewPager2} lives directly in a
+         *                         {@link FragmentActivity} subclass.
+         * @see FragmentStateAdapter#FragmentStateAdapter(Fragment)
+         * @see FragmentStateAdapter#FragmentStateAdapter(FragmentManager, Lifecycle)
+         */
+        public MainAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
         @NonNull
         @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
             if (position == 0) {
-                return new LiveStreamListFragment();
+                final OpenChannelListQueryParams params = new OpenChannelListQueryParams();
+                params.setCustomTypeFilter(StringSet.SB_LIVE_TYPE);
+                return new OpenChannelListFragment.Builder()
+                        .setCustomFragment(new LiveStreamListFragment())
+                        .setOpenChannelListAdapter(new LiveStreamListAdapter())
+                        .setUseHeader(false)
+                        .setUseRefreshLayout(false)
+                        .setCustomQueryParams(params)
+                        .build();
             } else if (position == 1) {
-                return new CommunityListFragment();
+                final OpenChannelListQueryParams params = new OpenChannelListQueryParams();
+                params.setCustomTypeFilter(StringSet.SB_COMMUNITY_TYPE);
+                return new OpenChannelListFragment.Builder()
+                        .setCustomFragment(new CommunityListFragment())
+                        .setUseHeader(false)
+                        .setCustomQueryParams(params)
+                        .build();
             } else {
                 SettingsFragment fragment = new SettingsFragment();
                 Bundle bundle = new Bundle();
@@ -132,8 +169,13 @@ public class OpenChannelMainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Returns the total number of items in the data set held by the adapter.
+         *
+         * @return The total number of items in this adapter.
+         */
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return PAGE_SIZE;
         }
     }

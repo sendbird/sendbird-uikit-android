@@ -253,6 +253,8 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
         private OnUserSelectChangedListener userSelectChangedListener;
         @Nullable
         private OnUserSelectionCompleteListener userSelectionCompleteListener;
+        @Nullable
+        private InviteUserFragment customFragment;
 
         /**
          * Constructor
@@ -285,6 +287,19 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link InviteUserFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends InviteUserFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -516,7 +531,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          */
         @NonNull
         public InviteUserFragment build() {
-            InviteUserFragment fragment = new InviteUserFragment();
+            final InviteUserFragment fragment = customFragment != null ? customFragment : new InviteUserFragment();
             fragment.setArguments(bundle);
             fragment.pagedQueryHandler = customUserListQueryHandler;
             fragment.adapter = adapter;

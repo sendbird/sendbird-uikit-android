@@ -151,8 +151,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.sendbird.uikit.widgets.ChannelCoverView
-            android:id="@+id/ivChannelCover"
+        <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
+            android:id="@+id/ivMediaSelector"
             android:layout_width="@dimen/sb_size_56"
             android:layout_height="@dimen/sb_size_56"
             android:scaleType="centerCrop"

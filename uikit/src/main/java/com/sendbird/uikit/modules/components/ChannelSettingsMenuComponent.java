@@ -16,9 +16,9 @@ import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.utils.ChannelUtils;
-import com.sendbird.uikit.widgets.SingleMenuItemView;
 
 /**
  * This class creates and performs a view corresponding the channel settings menu area in Sendbird UIKit.

@@ -14,8 +14,8 @@ import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.widgets.EmojiReactionListView;
-import com.sendbird.uikit.widgets.MyVideoFileMessageView;
+import com.sendbird.uikit.internal.ui.messages.MyVideoFileMessageView;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +35,7 @@ public final class MyVideoFileMessageViewHolder extends GroupChannelMessageViewH
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        myVideoFileMessageView.setMessageUIConfig(messageUIConfig);
         if (channel instanceof GroupChannel) {
             myVideoFileMessageView.drawMessage((GroupChannel) channel, message, messageGroupType);
         }

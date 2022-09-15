@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sendbird.uikit.widgets.OtherVideoFileMessageView
+<com.sendbird.uikit.internal.ui.messages.OtherVideoFileMessageView
     android:id="@+id/otherVideoFileMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

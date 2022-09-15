@@ -27,7 +27,7 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="contentPanel, tvSentAt, ivStatus" />
 
-    <com.sendbird.uikit.widgets.MyMessageStatusView
+    <com.sendbird.uikit.internal.ui.messages.MyMessageStatusView
         android:id="@+id/ivStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/contentPanel"/>
 
-    <com.sendbird.uikit.widgets.MyQuotedMessageView
+    <com.sendbird.uikit.internal.ui.messages.MyQuotedMessageView
         android:id="@+id/quoteReplyPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.sendbird.uikit.widgets.RoundCornerView
+        <com.sendbird.uikit.internal.ui.widgets.RoundCornerView
             android:id="@+id/ivThumbnail"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sb_size_0"
@@ -116,7 +116,7 @@
             android:layout_width="@dimen/sb_size_48"
             android:layout_height="@dimen/sb_size_48"/>
 
-        <com.sendbird.uikit.widgets.EmojiReactionListView
+        <com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView
             android:id="@+id/rvEmojiReactionList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

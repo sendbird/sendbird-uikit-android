@@ -30,12 +30,12 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
+import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.TimelineMessage;
-import com.sendbird.uikit.widgets.MessageRecyclerView;
-import com.sendbird.uikit.widgets.PagerRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;

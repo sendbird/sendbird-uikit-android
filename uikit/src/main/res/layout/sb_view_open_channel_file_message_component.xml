@@ -97,7 +97,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.sendbird.uikit.widgets.MyMessageStatusView
+    <com.sendbird.uikit.internal.ui.messages.MyMessageStatusView
         android:id="@+id/ivStatus"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"

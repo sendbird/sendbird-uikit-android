@@ -8,7 +8,7 @@ import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
-import com.sendbird.uikit.widgets.TimelineMessageView;
+import com.sendbird.uikit.internal.ui.messages.TimelineMessageView;
 
 import java.util.Map;
 
@@ -23,6 +23,7 @@ public final class TimelineViewHolder extends MessageViewHolder {
 
     @Override
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+        timelineMessageView.setMessageUIConfig(messageUIConfig);
         timelineMessageView.drawTimeline(message);
     }
 

@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/sb_size_16"
         android:paddingRight="@dimen/sb_size_16">
 
-        <com.sendbird.uikit.widgets.ChannelCoverView
+        <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
             android:id="@+id/ccvChannelImage"
             android:layout_width="@dimen/sb_size_64"
             android:layout_height="@dimen/sb_size_64"

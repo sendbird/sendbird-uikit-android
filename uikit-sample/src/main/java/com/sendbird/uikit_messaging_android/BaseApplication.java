@@ -7,10 +7,13 @@ import androidx.multidex.MultiDexApplication;
 
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.handler.InitResultHandler;
+import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
+import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit_messaging_android.consts.InitState;
+import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
@@ -104,6 +107,15 @@ public class BaseApplication extends MultiDexApplication {
         SendbirdUIKit.setUseChannelListMessageReceiptStatus(true);
         // set whether to use user mention
         SendbirdUIKit.setUseUserMention(true);
+
+        // set custom params
+        SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {
+            @Override
+            public void onBeforeCreateOpenChannel(@NonNull OpenChannelCreateParams params) {
+                // You can set OpenChannelCreateParams globally before creating a open channel.
+                params.setCustomType(StringSet.SB_COMMUNITY_TYPE);
+            }
+        });
     }
 
     /**

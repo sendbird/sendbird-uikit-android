@@ -25,11 +25,11 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.ui.reactions.DialogView;
+import com.sendbird.uikit.internal.ui.widgets.UserProfile;
+import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
-import com.sendbird.uikit.widgets.DialogView;
-import com.sendbird.uikit.widgets.UserProfile;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 import java.util.Collections;
 

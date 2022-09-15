@@ -14,8 +14,8 @@ import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.widgets.EmojiReactionListView;
-import com.sendbird.uikit.widgets.OtherUserMessageView;
+import com.sendbird.uikit.internal.ui.messages.OtherUserMessageView;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView;
 
 import java.util.List;
 import java.util.Map;

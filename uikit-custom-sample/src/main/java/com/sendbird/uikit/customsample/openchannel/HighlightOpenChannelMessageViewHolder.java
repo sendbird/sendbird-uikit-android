@@ -58,7 +58,7 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         }
 
         Context context = binding.getRoot().getContext();
-        binding.ivStatus.drawStatus(message, channel);
+        DrawableUtils.drawStatus(binding.ivStatus, message);
 
         binding.ivProfileView.setVisibility(View.VISIBLE);
         binding.tvNickname.setVisibility(View.VISIBLE);

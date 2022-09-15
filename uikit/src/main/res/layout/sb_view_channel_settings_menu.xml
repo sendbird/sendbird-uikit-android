@@ -5,31 +5,31 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.sendbird.uikit.widgets.SingleMenuItemView
+    <com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView
         android:id="@+id/moderations"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
         />
 
-    <com.sendbird.uikit.widgets.SingleMenuItemView
+    <com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView
         android:id="@+id/notification"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
         />
 
-    <com.sendbird.uikit.widgets.SingleMenuItemView
+    <com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView
         android:id="@+id/members"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
         />
 
-    <com.sendbird.uikit.widgets.SingleMenuItemView
+    <com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView
         android:id="@+id/messageSearch"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
         />
 
-    <com.sendbird.uikit.widgets.SingleMenuItemView
+    <com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView
         android:id="@+id/leave"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"

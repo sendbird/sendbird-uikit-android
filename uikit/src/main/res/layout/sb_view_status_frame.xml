@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.sendbird.uikit.widgets.ProgressView
+        <com.sendbird.uikit.internal.ui.widgets.ProgressView
             android:id="@+id/progress"
             android:layout_gravity="center"
             android:layout_width="@dimen/sb_size_60"

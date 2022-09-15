@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
-import com.sendbird.uikit.widgets.StateHeaderView;
+import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 
 /**
  * This class creates and performs a view corresponding the channel settings header area in Sendbird UIKit.

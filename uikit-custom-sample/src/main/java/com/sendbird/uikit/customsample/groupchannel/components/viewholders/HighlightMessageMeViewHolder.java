@@ -15,6 +15,7 @@ import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.databinding.ViewHighlightMessageMeHolderBinding;
+import com.sendbird.uikit.customsample.utils.DrawableUtils;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 
@@ -41,7 +42,7 @@ public class HighlightMessageMeViewHolder extends GroupChannelMessageViewHolder 
         binding.tvSentAt.setVisibility(sendingState ? View.VISIBLE : View.GONE);
         String sentAt = DateUtils.formatDateTime(context, message.getCreatedAt(), DateUtils.FORMAT_SHOW_TIME);
         binding.tvSentAt.setText(sentAt);
-        binding.ivStatus.drawStatus(message, channel);
+        DrawableUtils.drawStatus(binding.ivStatus, message);
         binding.tvMessage.setText(message.getMessage());
 
         int paddingTop = context.getResources().getDimensionPixelSize(com.sendbird.uikit.R.dimen.sb_size_8);

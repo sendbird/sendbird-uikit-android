@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.uikit.widgets.StateHeaderView;
+import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 
 /**
  * This class creates and performs a view corresponding the header area when selecting users in Sendbird UIKit.

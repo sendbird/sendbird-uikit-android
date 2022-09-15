@@ -28,6 +28,8 @@
         <item name="sb_module_open_channel_operator_list">@style/Module.OpenChannelOperatorList</item>
         <item name="sb_module_open_channel_muted_participant_list">@style/Module.OpenChannelMutedParticipantList</item>
         <item name="sb_module_open_channel_banned_user_list">@style/Module.OpenChannelBannedUserList</item>
+        <item name="sb_module_create_open_channel">@style/Module.CreateOpenChannel</item>
+        <item name="sb_module_open_channel_list">@style/Module.OpenChannelList</item>
 
         <item name="sb_component_channel_message_input">@style/Component.ChannelMessageInput</item>
         <item name="sb_component_channel_settings_info">@style/Component.ChannelSettingsInfo</item>
@@ -42,6 +44,7 @@
         <item name="sb_component_list">@style/Component.List</item>
         <item name="sb_component_status">@style/Component.Status</item>
         <item name="sb_component_channel_push_setting">@style/Component.ChannelPushSetting</item>
+        <item name="sb_component_channel_profile_input">@style/Component.ChannelProfileInput</item>
     </style>
 
     <!-- MODULES -->
@@ -149,6 +152,15 @@
         <item name="sb_component_header">@style/Component.Header.OpenChannelBannedUserList</item>
         <item name="sb_component_list">@style/Component.List.OpenChannelBannedUserList</item>
         <item name="sb_component_status">@style/Component.Status.OpenChannelBannedUserList</item>
+    </style>
+    <style name="Module.CreateOpenChannel">
+        <item name="sb_component_state_header">@style/Component.Header.State.CreateOpenChannel</item>
+        <item name="sb_component_channel_profile_input">@style/Component.ChannelProfileInput</item>
+    </style>
+    <style name="Module.OpenChannelList">
+        <item name="sb_component_header">@style/Component.Header.OpenChannelList</item>
+        <item name="sb_component_list">@style/Component.List.OpenChannelList</item>
+        <item name="sb_component_status">@style/Component.Status.OpenChannelList</item>
     </style>
 
     <!-- COMPONENTS -->
@@ -340,6 +352,9 @@
         <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_user_list_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
+    </style>
+    <style name="Component.Header.State.CreateOpenChannel">
+        <item name="sb_appbar_title">@string/sb_text_header_create_channel</item>
     </style>
 
     <style name="Component.MessageSearchHeader">
@@ -582,6 +597,35 @@
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_users</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
+    <style name="Component.Header.OpenChannelList">
+        <item name="sb_appbar_title">@string/sb_text_header_channel_list</item>
+        <item name="sb_appbar_right_button_icon">@drawable/icon_create</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
+        <item name="sb_widget_select_channel_type">@style/Widget.Sendbird.SelectChannelTypeView</item>
+    </style>
+    <style name="Component.List.OpenChannelList">
+        <item name="sb_widget_open_channel_preview">@style/Widget.Sendbird.OpenChannelPreview</item>
+    </style>
+    <style name="Component.Status.OpenChannelList">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_chat</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_channel_list_empty</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_error_get_channel_list</item>
+    </style>
+
+    <style name="Component.ChannelProfileInput">
+        <item name="sb_channel_profile_input_background">@color/background_50</item>
+        <item name="sb_channel_profile_input_text_input_background">@drawable/sb_shape_edit_text_background_light</item>
+        <item name="sb_channel_profile_input_text_appearance">@style/SendbirdBody3OnLight01</item>
+        <item name="sb_channel_profile_input_hint_text">@string/text_input_channel_name_hint</item>
+        <item name="sb_channel_profile_input_hint_text_color">@color/onlight_03</item>
+        <item name="sb_channel_profile_input_clear_icon">@drawable/icon_remove</item>
+        <item name="sb_channel_profile_input_clear_icon_tint_color">@color/onlight_03</item>
+        <item name="sb_channel_profile_input_cursor_drawable">@drawable/sb_message_input_cursor_light</item>
+        <item name="sb_channel_profile_input_media_select_icon_background">@drawable/sb_shape_circle_background_300</item>
+        <item name="sb_channel_profile_input_camera_icon">@drawable/icon_camera</item>
+        <item name="sb_channel_profile_input_camera_icon_tint">@color/ondark_01</item>
+    </style>
 
     <!-- WIDGETS -->
     <style name="Widget.Sendbird" parent="android:Widget"/>
@@ -759,6 +803,18 @@
     <style name="Widget.Sendbird.ToastView">
         <item name="sb_toast_background">@drawable/sb_toast_background_light</item>
         <item name="sb_toast_text_appearance">@style/SendbirdBody3OnDark01</item>
+    </style>
+    <style name="Widget.Sendbird.OpenChannelPreview">
+        <item name="sb_open_channel_preview_background">@drawable/selector_rectangle_light</item>
+        <item name="sb_open_channel_preview_cover_image_background">@drawable/sb_shape_circle_background_300</item>
+        <item name="sb_open_channel_preview_default_icon">@drawable/icon_channels</item>
+        <item name="sb_open_channel_preview_default_icon_tint">@color/ondark_01</item>
+        <item name="sb_open_channel_preview_title_appearance">@style/SendbirdSubtitle1OnLight01</item>
+        <item name="sb_open_channel_preview_participants_count_appearance">@style/SendbirdCaption1OnLight02</item>
+        <item name="sb_open_channel_preview_participants_icon">@drawable/icon_members</item>
+        <item name="sb_open_channel_preview_participants_icon_tint">@color/onlight_02</item>
+        <item name="sb_open_channel_preview_frozen_icon">@drawable/icon_freeze</item>
+        <item name="sb_open_channel_preview_frozen_icon_tint">@color/primary_300</item>
     </style>
 
     <!-- DialogView -->

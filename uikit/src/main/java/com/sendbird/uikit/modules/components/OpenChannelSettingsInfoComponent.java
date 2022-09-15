@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.widgets.OpenChannelSettingsInfoView;
+import com.sendbird.uikit.internal.ui.messages.OpenChannelSettingsInfoView;
 
 /**
  * This class creates and performs a view corresponding the open channel settings information area in Sendbird UIKit.

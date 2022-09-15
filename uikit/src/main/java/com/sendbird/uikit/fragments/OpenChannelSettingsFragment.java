@@ -393,6 +393,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         private OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> menuItemClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private OpenChannelSettingsFragment customFragment;
 
         /**
          * Constructor
@@ -423,6 +425,19 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OpenChannelSettingsFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OpenChannelSettingsFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -588,7 +603,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          */
         @NonNull
         public OpenChannelSettingsFragment build() {
-            OpenChannelSettingsFragment fragment = new OpenChannelSettingsFragment();
+            final OpenChannelSettingsFragment fragment = customFragment != null ? customFragment : new OpenChannelSettingsFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

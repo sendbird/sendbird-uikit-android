@@ -8,8 +8,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.message.Emoji;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.internal.ui.reactions.EmojiView;
 import com.sendbird.uikit.utils.DrawableUtils;
-import com.sendbird.uikit.widgets.EmojiView;
 
 public class EmojiMoreViewHolder extends BaseViewHolder<Emoji> {
     public EmojiMoreViewHolder(@NonNull EmojiView emojiView) {

@@ -258,6 +258,8 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
         private OnUserSelectChangedListener userSelectChangedListener;
         @Nullable
         private OnUserSelectionCompleteListener userSelectionCompleteListener;
+        @Nullable
+        private CreateChannelFragment customFragment;
 
         /**
          * Constructor
@@ -305,6 +307,19 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putSerializable(StringSet.KEY_SELECTED_CHANNEL_TYPE, type);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link CreateChannelFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends CreateChannelFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -549,7 +564,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          */
         @NonNull
         public CreateChannelFragment build() {
-            final CreateChannelFragment fragment = new CreateChannelFragment();
+            final CreateChannelFragment fragment = customFragment != null ? customFragment : new CreateChannelFragment();
             fragment.setArguments(bundle);
             fragment.pagedQueryHandler = pagedQueryHandler;
             fragment.adapter = adapter;

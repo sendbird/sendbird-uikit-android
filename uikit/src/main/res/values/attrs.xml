@@ -23,6 +23,8 @@
         <attr name="sb_module_open_channel_operator_list" format="reference"/>
         <attr name="sb_module_open_channel_muted_participant_list" format="reference"/>
         <attr name="sb_module_open_channel_banned_user_list" format="reference"/>
+        <attr name="sb_module_open_channel_list" format="reference"/>
+        <attr name="sb_module_create_open_channel" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">
@@ -39,6 +41,8 @@
         <attr name="sb_component_list" format="reference"/>
         <attr name="sb_component_status" format="reference"/>
         <attr name="sb_component_channel_push_setting" format="reference"/>
+        <attr name="sb_component_channel_profile_input" format="reference"/>
+        <attr name="sb_component_open_channel_list" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="HeaderComponent">
@@ -110,6 +114,7 @@
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
         <attr name="sb_widget_dialog" format="reference"/>
         <attr name="sb_widget_themeable_snackbar" format="reference"/>
+        <attr name="sb_widget_open_channel_preview" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="ChannelPreview">
@@ -483,5 +488,30 @@
         <attr name="sb_channel_switch_track_tint" format="reference|color"/>
         <attr name="sb_channel_switch_thumb_tint" format="reference|color"/>
         <attr name="sb_channel_radio_button_background" format="reference|color"/>
+    </declare-styleable>
+    <declare-styleable name="ChannelProfileInput">
+        <attr name="sb_channel_profile_input_background" format="reference|color"/>
+        <attr name="sb_channel_profile_input_text_input_background" format="reference|color"/>
+        <attr name="sb_channel_profile_input_text_appearance" format="reference"/>
+        <attr name="sb_channel_profile_input_hint_text" format="string"/>
+        <attr name="sb_channel_profile_input_hint_text_color" format="reference|color"/>
+        <attr name="sb_channel_profile_input_clear_icon" format="reference"/>
+        <attr name="sb_channel_profile_input_clear_icon_tint_color" format="reference|color"/>
+        <attr name="sb_channel_profile_input_cursor_drawable" format="reference"/>
+        <attr name="sb_channel_profile_input_media_select_icon_background" format="reference"/>
+        <attr name="sb_channel_profile_input_camera_icon" format="reference"/>
+        <attr name="sb_channel_profile_input_camera_icon_tint" format="reference|color"/>
+    </declare-styleable>
+    <declare-styleable name="OpenChannelPreview">
+        <attr name="sb_open_channel_preview_background" format="reference"/>
+        <attr name="sb_open_channel_preview_cover_image_background" format="reference"/>
+        <attr name="sb_open_channel_preview_default_icon" format="reference"/>
+        <attr name="sb_open_channel_preview_default_icon_tint" format="reference|color"/>
+        <attr name="sb_open_channel_preview_title_appearance" format="reference"/>
+        <attr name="sb_open_channel_preview_participants_count_appearance" format="reference"/>
+        <attr name="sb_open_channel_preview_participants_icon" format="reference"/>
+        <attr name="sb_open_channel_preview_participants_icon_tint" format="reference|color"/>
+        <attr name="sb_open_channel_preview_frozen_icon" format="reference"/>
+        <attr name="sb_open_channel_preview_frozen_icon_tint" format="reference|color"/>
     </declare-styleable>
 </resources>

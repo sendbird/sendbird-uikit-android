@@ -62,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <com.sendbird.uikit.widgets.AutoLinkTextView
+        <com.sendbird.uikit.internal.ui.widgets.AutoLinkTextView
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.sendbird.uikit.widgets.OpenChannelOgtagView
+    <com.sendbird.uikit.internal.ui.messages.OpenChannelOgtagView
         android:id="@+id/ogTag"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
         app:constraint_referenced_ids="contentPanel, ogTag"
         />
 
-    <com.sendbird.uikit.widgets.MyMessageStatusView
+    <com.sendbird.uikit.internal.ui.messages.MyMessageStatusView
         android:id="@+id/ivStatus"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"

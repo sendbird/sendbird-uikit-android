@@ -47,10 +47,10 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tvMessage" />
 
-    <com.sendbird.uikit.widgets.MyMessageStatusView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/sb_size_16"
+        android:layout_height="@dimen/sb_size_16"
         android:layout_marginLeft="@dimen/sb_size_0"
         android:layout_marginRight="@dimen/sb_size_4"
         app:layout_constraintBottom_toTopOf="@+id/tvSentAt"

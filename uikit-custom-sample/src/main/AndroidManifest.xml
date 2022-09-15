@@ -49,10 +49,6 @@
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity
-            android:name=".openchannel.community.CreateCommunityActivity"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

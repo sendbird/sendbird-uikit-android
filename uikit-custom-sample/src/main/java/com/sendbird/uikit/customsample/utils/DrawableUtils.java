@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.widget.ImageView;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -14,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
 
 /**
@@ -61,5 +64,16 @@ public class DrawableUtils {
         LayerDrawable layerDrawable = new LayerDrawable(layer);
         layerDrawable.setLayerInset(1, inset, inset, inset, inset);
         return layerDrawable;
+    }
+
+    public static void drawStatus(@NonNull ImageView view, @NonNull BaseMessage message) {
+        Context context = view.getContext();
+        if (message.getSendingStatus() == SendingStatus.CANCELED || message.getSendingStatus() == SendingStatus.FAILED) {
+            view.setImageDrawable(DrawableUtils.setTintList(context, com.sendbird.uikit.customsample.R.drawable.icon_error, com.sendbird.uikit.customsample.R.color.error_300));
+        } else if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
+            view.setImageDrawable(DrawableUtils.setTintList(context, com.sendbird.uikit.customsample.R.drawable.icon_done, com.sendbird.uikit.customsample.R.color.secondary_300));
+        } else if (message.getSendingStatus() == SendingStatus.PENDING) {
+            view.setImageDrawable(DrawableUtils.setTintList(context, com.sendbird.uikit.customsample.R.drawable.sb_message_progress, com.sendbird.uikit.customsample.R.color.primary_300));
+        }
     }
 }

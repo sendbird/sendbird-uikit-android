@@ -18,10 +18,10 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsInfoComponent;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsMenuComponent;
-import com.sendbird.uikit.widgets.WaitingDialog;
 
 /**
  * A module for open channel settings. This module is composed of a header, channel information and settings.

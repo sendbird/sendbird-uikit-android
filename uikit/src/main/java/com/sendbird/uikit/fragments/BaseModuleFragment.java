@@ -53,12 +53,13 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
         this.viewModel = onCreateViewModel();
         this.module = onCreateModule(getArguments() == null ? new Bundle() : getArguments());
         onConfigureParams(this.module, getArguments() == null ? new Bundle() : getArguments());
-        shouldAuthenticate();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // It can be a problem if `authenticate` ends first before `onCreateView` is called.
+        shouldAuthenticate();
         return module.onCreateView(requireActivity(), inflater, getArguments());
     }
 

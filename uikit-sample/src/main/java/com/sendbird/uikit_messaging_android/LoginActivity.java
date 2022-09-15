@@ -13,11 +13,11 @@ import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.widgets.WaitingDialog;
 import com.sendbird.uikit_messaging_android.databinding.ActivityLoginBinding;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
+import com.sendbird.uikit_messaging_android.widgets.WaitingDialog;
 
 /**
  * Displays a login screen.

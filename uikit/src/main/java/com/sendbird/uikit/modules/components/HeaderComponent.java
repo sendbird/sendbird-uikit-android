@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.widgets.HeaderView;
+import com.sendbird.uikit.internal.ui.components.HeaderView;
 
 /**
  * This class creates and performs a view corresponding the header area in Sendbird UIKit.

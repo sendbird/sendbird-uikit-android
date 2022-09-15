@@ -210,7 +210,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
             super(binding.getRoot());
             this.binding = binding;
 
-            binding.selectUserViewHolder.setOnClickListener(v -> {
+            binding.selectUserViewHolder.setOnItemClickListener(v -> {
                 int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION) {
                     final T item = getItem(userPosition);
@@ -229,7 +229,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
                 }
             });
 
-            binding.selectUserViewHolder.setOnLongClickListener(v -> {
+            binding.selectUserViewHolder.setOnItemLongClickListener(v -> {
                 int userPosition = getBindingAdapterPosition();
                 if (userPosition != NO_POSITION && longClickListener != null) {
                     longClickListener.onItemLongClick(v, userPosition, getItem(userPosition));

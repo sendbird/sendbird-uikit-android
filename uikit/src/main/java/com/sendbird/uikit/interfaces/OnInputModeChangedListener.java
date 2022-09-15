@@ -13,7 +13,7 @@ public interface OnInputModeChangedListener {
      *
      * @param before Input mode before change
      * @param current Input mode after change
-     * @see com.sendbird.uikit.widgets.MessageInputView.Mode
+     * @see MessageInputView.Mode
      */
     void onInputModeChanged(@NonNull MessageInputView.Mode before, @NonNull MessageInputView.Mode current);
 }

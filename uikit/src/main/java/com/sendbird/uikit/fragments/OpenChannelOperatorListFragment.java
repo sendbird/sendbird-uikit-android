@@ -274,6 +274,8 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
         private OnItemClickListener<User> profileClickListener;
         @Nullable
         private LoadingDialogHandler loadingDialogHandler;
+        @Nullable
+        private OpenChannelOperatorListFragment customFragment;
 
         /**
          * Constructor
@@ -307,6 +309,19 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
             bundle = new Bundle();
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
+        }
+
+        /**
+         * Sets the custom fragment. It must inherit {@link OpenChannelOperatorListFragment}.
+         *
+         * @param fragment custom fragment.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.0
+         */
+        @NonNull
+        public <T extends OpenChannelOperatorListFragment> Builder setCustomFragment(T fragment) {
+            this.customFragment = fragment;
+            return this;
         }
 
         /**
@@ -574,7 +589,7 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
          */
         @NonNull
         public OpenChannelOperatorListFragment build() {
-            OpenChannelOperatorListFragment fragment = new OpenChannelOperatorListFragment();
+            final OpenChannelOperatorListFragment fragment = customFragment != null ? customFragment : new OpenChannelOperatorListFragment();
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;

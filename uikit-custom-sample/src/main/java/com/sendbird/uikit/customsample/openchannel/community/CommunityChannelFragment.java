@@ -67,11 +67,4 @@ public class CommunityChannelFragment extends OpenChannelFragment {
                 .create()
                 .show();
     }
-
-    @NonNull
-    @Override
-    protected String getChannelUrl() {
-        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
-        return args.getString("CHANNEL_URL", "");
-    }
 }

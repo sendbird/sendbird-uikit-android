@@ -15,7 +15,7 @@ import com.sendbird.android.user.Sender;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.widgets.ChannelCoverView;
+import com.sendbird.uikit.internal.ui.channels.ChannelCoverView;
 
 import java.util.ArrayList;
 import java.util.List;

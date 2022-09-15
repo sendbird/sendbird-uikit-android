@@ -71,6 +71,7 @@ public class StringSet {
     public final static String KEY_SEARCH_BAR_BUTTON_TEXT = "KEY_SEARCH_BAR_BUTTON_TEXT";
     public final static String KEY_ERROR_TEXT_RES_ID = "KEY_ERROR_TEXT_RES_ID";
     public final static String KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER = "KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER";
+    public final static String KEY_USE_REFRESH_LAYOUT = "KEY_USE_REFRESH_LAYOUT";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String audio = "audio";
@@ -86,6 +87,7 @@ public class StringSet {
     public final static String name = "name";
     public final static String uri = "uri";
     public final static String GROUP_CHANNEL = "Group Channel";
+    public final static String OPEN_CHANNEL = "Open Channel";
     public final static String mCursorDrawableRes = "mCursorDrawableRes";
     public final static String LABEL_COPY_TEXT = "COPY_TEXT";
     public final static String DEFAULT_CHANNEL_COVER_URL = "https://static.sendbird.com/sample/cover/cover_";

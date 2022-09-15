@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvOgTitle" />
 
-    <com.sendbird.uikit.widgets.RoundCornerView
+    <com.sendbird.uikit.internal.ui.widgets.RoundCornerView
         android:id="@+id/ivOgImage"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_open_channel_ogtag_thumbnail_height"
