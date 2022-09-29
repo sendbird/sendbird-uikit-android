@@ -32,6 +32,8 @@ public class MessageUIConfig {
     private final TextUIConfig otherNicknameTextUIConfig;
     @NonNull
     private final TextUIConfig operatorNicknameTextUIConfig;
+    @NonNull
+    private final TextUIConfig repliedMessageTextUIConfig;
     @Nullable
     private ColorStateList linkedTextColor;
     @Nullable
@@ -62,6 +64,7 @@ public class MessageUIConfig {
         this.myNicknameTextUIConfig = new TextUIConfig.Builder().build();
         this.otherNicknameTextUIConfig = new TextUIConfig.Builder().build();
         this.operatorNicknameTextUIConfig = new TextUIConfig.Builder().build();
+        this.repliedMessageTextUIConfig = new TextUIConfig.Builder().build();
     }
 
     /**
@@ -187,6 +190,17 @@ public class MessageUIConfig {
     @NonNull
     public TextUIConfig getOperatorNicknameTextUIConfig() {
         return operatorNicknameTextUIConfig;
+    }
+
+    /**
+     * Returns UI configuration of replied parent message.
+     *
+     * @return the UI configuration of replied parent message.
+     * @since 3.2.1
+     */
+    @NonNull
+    public TextUIConfig getRepliedMessageTextUIConfig() {
+        return repliedMessageTextUIConfig;
     }
 
     /**

@@ -443,7 +443,7 @@ public class SettingsFragment extends Fragment {
 
     private void takeCamera() {
         SendbirdChat.setAutoBackgroundDetection(false);
-        this.mediaUri = FileUtils.createPictureImageUri(requireContext());
+        this.mediaUri = FileUtils.createImageFileUri(requireContext());
         if (mediaUri == null) return;
         Intent intent = IntentUtils.getCameraIntent(requireContext(), mediaUri);
         if (IntentUtils.hasIntent(requireContext(), intent)) {

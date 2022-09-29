@@ -22,6 +22,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.widgets.MessageInputView;
 
 /**
@@ -129,6 +130,9 @@ public class OpenChannelMessageInputComponent {
         hintText = messageInputView.getInputEditText().getHint();
         if (params.inputText != null) {
             messageInputView.setInputText(params.inputText);
+        }
+        if (params.textUIConfig != null) {
+            messageInputView.applyTextUIConfig(params.textUIConfig);
         }
         messageInputView.setKeyboardDisplayType(params.keyboardDisplayType);
         messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
@@ -427,6 +431,9 @@ public class OpenChannelMessageInputComponent {
         @NonNull
         private KeyboardDisplayType keyboardDisplayType = KeyboardDisplayType.Plane;
 
+        @Nullable
+        private TextUIConfig textUIConfig;
+
         /**
          * Constructor
          *
@@ -623,6 +630,27 @@ public class OpenChannelMessageInputComponent {
         }
 
         /**
+         * Sets the UI configuration of message input text.
+         *
+         * @param textUIConfig the UI configuration of the message input text.
+         * @since 3.2.1
+         */
+        public void setMessageInputTextUIConfig(@Nullable TextUIConfig textUIConfig) {
+            this.textUIConfig = textUIConfig;
+        }
+
+        /**
+         * Returns the UI configuration of message input text.
+         *
+         * @return the UI configuration of message input text.
+         * @since 3.2.1
+         */
+        @Nullable
+        public TextUIConfig getMessageInputTextUIConfig() {
+            return textUIConfig;
+        }
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_RES_ID} is mapped to {@link #setLeftButtonIcon(Drawable)}
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_TINT} is mapped to {@link #setLeftButtonIconTint(ColorStateList)}
@@ -672,6 +700,9 @@ public class OpenChannelMessageInputComponent {
                 if (displayType != null) {
                     setKeyboardDisplayType(displayType);
                 }
+            }
+            if (args.containsKey(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG)) {
+                setMessageInputTextUIConfig(args.getParcelable(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG));
             }
             return this;
         }

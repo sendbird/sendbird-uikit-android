@@ -886,6 +886,16 @@ public class MessageListComponent {
         }
 
         /**
+         * Sets the UI configuration of the replied parent message text.
+         *
+         * @param configRepliedMessage the UI configuration of the replied parent message text.
+         * @since 3.2.1
+         */
+        public void setRepliedMessageTextUIConfig(@NonNull TextUIConfig configRepliedMessage) {
+            this.messageUIConfig.getRepliedMessageTextUIConfig().apply(configRepliedMessage);
+        }
+
+        /**
          * Sets the UI configuration of message background drawable.
          *
          * @param drawableSentFromMe     the UI configuration of the message background that was sent from me.
@@ -941,6 +951,7 @@ public class MessageListComponent {
          * {@code KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMessageTextUIConfig(TextUIConfig, TextUIConfig)}
          * {@code KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_ME} and {@code KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setSentAtTextUIConfig(TextUIConfig, TextUIConfig)}
          * {@code KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS} is mapped to {@link #setNicknameTextUIConfig(TextUIConfig)}
+         * {@code KEY_REPLIED_MESSAGE_TEXT_UI_CONFIG} is mapped to {@link #setRepliedMessageTextUIConfig(TextUIConfig)}
          * {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_ME} and {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setMessageBackground(Drawable, Drawable)}
          * {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME} and {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setReactionListBackground(Drawable, Drawable)}
          * {@code KEY_OGTAG_BACKGROUND_SENT_FROM_ME} and {@code KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setOgtagBackground(Drawable, Drawable)}
@@ -970,6 +981,10 @@ public class MessageListComponent {
             final TextUIConfig nicknameTextUIConfig = args.getParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS);
             if (nicknameTextUIConfig != null) {
                 setNicknameTextUIConfig(nicknameTextUIConfig);
+            }
+            final TextUIConfig repliedMessageTextUIConfig = args.getParcelable(StringSet.KEY_REPLIED_MESSAGE_TEXT_UI_CONFIG);
+            if (repliedMessageTextUIConfig != null) {
+                setRepliedMessageTextUIConfig(repliedMessageTextUIConfig);
             }
 
             Drawable messageBackgroundSentFromMe = null;

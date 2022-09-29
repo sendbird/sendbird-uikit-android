@@ -32,9 +32,10 @@
     <string name="sb_text_channel_anchor_retry">Retry</string>
     <string name="sb_text_channel_input_text_hint">Enter message</string>
     <string name="sb_text_channel_input_reply_text_hint">Reply to message</string>
-    <string name="sb_text_channel_input_camera">Camera</string>
-    <string name="sb_text_channel_input_gallery">Photo library</string>
-    <string name="sb_text_channel_input_document">Files</string>
+    <string name="sb_text_channel_input_camera">Take photo</string>
+    <string name="sb_text_channel_input_take_video">Take video</string>
+    <string name="sb_text_channel_input_gallery">Gallery</string>
+    <string name="sb_text_channel_input_document">Document</string>
     <string name="sb_text_channel_typing_indicator_single">%s is typing&#8230;</string>
     <string name="sb_text_channel_typing_indicator_double">%s and %s are typing&#8230;</string>
     <string name="sb_text_channel_typing_indicator_multiple">Several people are typing&#8230;</string>
@@ -175,14 +176,14 @@
     <string name="sb_text_reply_to">Reply to %s</string>
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
-    <string name="sb_text_exceed_mention_limit_count">"You can mention up to %d times per message."</string>
+    <string name="sb_text_exceed_mention_limit_count">"You can have up to %d mentions per message."</string>
 
     <!-- Channel Push Setting -->
     <string name="sb_text_push_setting_on">On</string>
     <string name="sb_text_push_setting_off">Off</string>
     <string name="sb_text_push_setting_mentions_only">Mentions only</string>
     <string name="sb_text_push_setting_option_all">All new messages</string>
-    <string name="sb_text_push_setting_description">Turn on push notifications if you wish to be notified when messages are delivered to this channel.</string>
+    <string name="sb_text_push_setting_description">Turn on to receive notifications when messages are delivered to this channel.</string>
 
     <!-- Create OpenChannel -->
     <string name="text_input_channel_name_hint">Enter channel name</string>

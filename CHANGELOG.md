@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.2.1 (Sep 29, 2022) with Core SDK `v4.0.9`
+* Added `takeVideo()` in `ChannelFragment` and `OpenChannelFragment`
+* Support custom font in message bubble and input filed.
+  * Added `setRepliedMessageTextUIConfig(TextUIConfig)`, and `setMessageInputTextUIConfig(TextUIConfig)` in `ChannelFragment.Builder`
+  * Added `setMessageInputTextUIConfig(TextUIConfig)` in `OpenChannelFragment.Builder`
+  * Added `setMessageInputTextUIConfig(TextUIConfig)` and `getMessageInputTextUIConfig()` in `MessageInputComponent.Params`
+  * Added `setMessageInputTextUIConfig(TextUIConfig)` and `getMessageInputTextUIConfig()` in `OpenChannelMessageInputComponent.Params`
+  * Added `setRepliedMessageTextUIConfig(TextUIConfig)` in `MessageListComponent.Params`
+  * Added `setCustomFontRes(int)` in `TextUIConfig.Builder`
+
 ### v3.2.0 (Sep 15, 2022) with Core SDK `v4.0.8`
 * Support OpenChannel list
   * Added `OpenChannelListActivity`, `OpenChannelListFragment`, `OpenChannelListModule`, `OpenChannelListViewModel`, `OpenChannelListComponent`, and `OpenChannelListAdapter`

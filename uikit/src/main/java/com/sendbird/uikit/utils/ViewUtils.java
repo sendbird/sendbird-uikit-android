@@ -103,7 +103,7 @@ public class ViewUtils {
             final Spannable editedString = new SpannableString(edited);
             if (uiConfig != null) {
                 final TextUIConfig editedTextMarkUIConfig = isMine ? uiConfig.getMyEditedTextMarkUIConfig() : uiConfig.getOtherEditedTextMarkUIConfig();
-                editedTextMarkUIConfig.bind(editedString, 0, editedString.length());
+                editedTextMarkUIConfig.bind(context, editedString, 0, editedString.length());
             }
             builder.append(editedString);
         }
@@ -117,7 +117,7 @@ public class ViewUtils {
         final SpannableString text = new SpannableString(message.getMessage());
         if (uiConfig != null) {
             final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
-            messageTextUIConfig.bind(text, 0, text.length());
+            messageTextUIConfig.bind(context, text, 0, text.length());
         }
 
         CharSequence displayText = text;
@@ -125,7 +125,7 @@ public class ViewUtils {
             final SpannableString mentionedSpannableString = new SpannableString(mentionedText);
             if (uiConfig != null) {
                 final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
-                messageTextUIConfig.bind(mentionedSpannableString, 0, mentionedSpannableString.length());
+                messageTextUIConfig.bind(context, mentionedSpannableString, 0, mentionedSpannableString.length());
             }
             final Matcher matcher = MENTION.matcher(mentionedSpannableString);
             final List<String> sources = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ViewUtils {
                         if (uiConfig != null) {
                             final TextUIConfig config = isMine ? uiConfig.getMyMentionUIConfig() : uiConfig.getOtherMentionUIConfig();
                             final String nickname = UserUtils.getDisplayName(context, mentionedUser);
-                            final MentionSpan mentionSpan = new MentionSpan(trigger, nickname, mentionedUser, config, isMentionedCurrentUser ? mentionedCurrentUserUIConfig : null);
+                            final MentionSpan mentionSpan = new MentionSpan(context, trigger, nickname, mentionedUser, config, isMentionedCurrentUser ? mentionedCurrentUserUIConfig : null);
                             spannable = new SpannableString(mentionSpan.getDisplayText());
                             spannable.setSpan(mentionSpan, 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
@@ -229,7 +229,7 @@ public class ViewUtils {
             final boolean isMine = MessageUtils.isMine(message);
             final TextUIConfig textUIConfig = isOperator ? uiConfig.getOperatorNicknameTextUIConfig() :
                     (isMine ? uiConfig.getMyNicknameTextUIConfig() : uiConfig.getOtherNicknameTextUIConfig());
-            textUIConfig.bind(nickname, 0, nickname.length());
+            textUIConfig.bind(tvNickname.getContext(), nickname, 0, nickname.length());
         }
 
         tvNickname.setText(nickname);
@@ -403,10 +403,10 @@ public class ViewUtils {
         }
     }
 
-    public static void drawQuotedMessage(@NonNull BaseQuotedMessageView replyPanel, @NonNull BaseMessage message) {
+    public static void drawQuotedMessage(@NonNull BaseQuotedMessageView replyPanel, @NonNull BaseMessage message, @Nullable TextUIConfig uiConfig) {
         final boolean hasParentMessage = message.getParentMessageId() != 0L;
         replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
-        replyPanel.drawQuotedMessage(message);
+        replyPanel.drawQuotedMessage(message, uiConfig);
     }
 
     public static void drawSentAt(@NonNull TextView tvSentAt, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
@@ -418,7 +418,7 @@ public class ViewUtils {
         if (uiConfig != null) {
             final boolean isMine = MessageUtils.isMine(message);
             final TextUIConfig textUIConfig = isMine ? uiConfig.getMySentAtTextUIConfig() : uiConfig.getOtherSentAtTextUIConfig();
-            textUIConfig.bind(sentAt, 0, sentAt.length());
+            textUIConfig.bind(tvSentAt.getContext(), sentAt, 0, sentAt.length());
         }
         tvSentAt.setText(sentAt);
     }
@@ -432,9 +432,9 @@ public class ViewUtils {
         if (uiConfig != null) {
             final boolean isMine = MessageUtils.isMine(message);
             final TextUIConfig textUIConfig = isMine ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
-            textUIConfig.bind(filename, 0, filename.length());
+            textUIConfig.bind(tvFilename.getContext(), filename, 0, filename.length());
         }
 
-        tvFilename.setText(message.getName());
+        tvFilename.setText(filename);
     }
 }

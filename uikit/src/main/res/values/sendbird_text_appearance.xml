@@ -1414,10 +1414,6 @@
   </style>
 
   <style name="MentionedCurrentUserMessage">
-    <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:textSize">14sp</item>
-    <item name="android:lineSpacingExtra">6sp</item>
     <item name="android:textColor">@color/background_600</item>
   </style>
 </resources>

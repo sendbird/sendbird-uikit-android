@@ -159,6 +159,16 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             sendFileMessage(mediaUri);
         }
     });
+    private final ActivityResultLauncher<Intent> takeVideoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        int resultCode = result.getResultCode();
+
+        if (resultCode != RESULT_OK) return;
+        final Uri mediaUri = OpenChannelFragment.this.mediaUri;
+        if (mediaUri != null && isFragmentAlive()) {
+            sendFileMessage(mediaUri);
+        }
+    });
 
     @NonNull
     @Override
@@ -543,6 +553,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         if (getContext() == null) return;
         DialogListItem[] items = {
                 new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
+                new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera),
                 new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
                 new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
         };
@@ -552,6 +563,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
                     takeCamera();
+                } else if (key == R.string.sb_text_channel_input_take_video) {
+                    takeVideo();
                 } else if (key == R.string.sb_text_channel_input_gallery) {
                     takePhoto();
                 } else {
@@ -560,6 +573,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             } catch (Exception e) {
                 Logger.e(e);
                 if (key == R.string.sb_text_channel_input_camera) {
+                    toastError(R.string.sb_text_error_open_camera, getModule().getParams().shouldUseOverlayMode());
+                } else if (key == R.string.sb_text_channel_input_take_video) {
                     toastError(R.string.sb_text_error_open_camera, getModule().getParams().shouldUseOverlayMode());
                 } else if (key == R.string.sb_text_channel_input_gallery) {
                     toastError(R.string.sb_text_error_open_gallery, getModule().getParams().shouldUseOverlayMode());
@@ -580,11 +595,30 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         String[] permissions = PermissionUtils.CAMERA_PERMISSION;
         requestPermission(permissions, () -> {
             if (getContext() == null) return;
-            this.mediaUri = FileUtils.createPictureImageUri(getContext());
+            this.mediaUri = FileUtils.createImageFileUri(getContext());
             if (mediaUri == null) return;
             Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
             if (IntentUtils.hasIntent(getContext(), intent)) {
                 takeCameraLauncher.launch(intent);
+            }
+        });
+    }
+
+    /**
+     * Call taking camera application for video capture.
+     *
+     * @since 3.2.1
+     */
+    public void takeVideo() {
+        SendbirdChat.setAutoBackgroundDetection(false);
+        requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
+            if (getContext() == null) return;
+            this.mediaUri = FileUtils.createVideoFileUri(getContext());
+            if (mediaUri == null) return;
+
+            Intent intent = IntentUtils.getVideoCaptureIntent(getContext(), mediaUri);
+            if (IntentUtils.hasIntent(getContext(), intent)) {
+                takeVideoLauncher.launch(intent);
             }
         });
     }
@@ -1693,6 +1727,19 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
                 bundle.putParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
             if (configSentFromOperator != null)
                 bundle.putParcelable(StringSet.KEY_OPERATOR_TEXT_UI_CONFIG, configSentFromOperator);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of message input text.
+         *
+         * @param textUIConfig the UI configuration of the message input text.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.1
+         */
+        @NonNull
+        public Builder setMessageInputTextUIConfig(@NonNull TextUIConfig textUIConfig) {
+            bundle.putParcelable(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG, textUIConfig);
             return this;
         }
 

@@ -31,6 +31,7 @@ import com.sendbird.uikit.interfaces.OnInputTextChangedListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setCursorDrawable
 import com.sendbird.uikit.internal.ui.reactions.DialogView
+import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.utils.TextUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -135,7 +136,9 @@ class MessageInputView @JvmOverloads constructor(
     }
 
     fun showKeyboard() =
-        if (keyboardDisplayType == KeyboardDisplayType.Dialog) showInputDialog() else SoftInputUtils.showSoftKeyboard(binding.etInputText)
+        if (keyboardDisplayType == KeyboardDisplayType.Dialog) showInputDialog() else SoftInputUtils.showSoftKeyboard(
+            binding.etInputText
+        )
 
     fun drawMessageToReply(message: BaseMessage) {
         var displayMessage = message.message
@@ -213,6 +216,10 @@ class MessageInputView @JvmOverloads constructor(
 
     fun setInputTextHint(hint: CharSequence?) {
         binding.etInputText.hint = hint
+    }
+
+    fun applyTextUIConfig(textUIConfig: TextUIConfig) {
+        binding.etInputText.applyTextUIConfig(textUIConfig)
     }
 
     private fun showInputDialog() {

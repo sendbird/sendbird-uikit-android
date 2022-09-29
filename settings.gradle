@@ -1,3 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://repo.sendbird.com/public/maven" }
+    }
+}
+
 include ':uikit-custom-sample'
 include ':uikit-sample', ':uikit'
 rootProject.name='sendbird-uikit-android-sources'

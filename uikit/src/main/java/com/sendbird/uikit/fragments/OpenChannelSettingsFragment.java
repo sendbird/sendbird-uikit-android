@@ -298,7 +298,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
 
     private void takeCamera() {
         if (!isFragmentAlive()) return;
-        mediaUri = FileUtils.createPictureImageUri(requireContext());
+        mediaUri = FileUtils.createImageFileUri(requireContext());
         if (mediaUri == null) return;
         Intent intent = IntentUtils.getCameraIntent(requireActivity(), mediaUri);
         if (IntentUtils.hasIntent(requireContext(), intent)) {

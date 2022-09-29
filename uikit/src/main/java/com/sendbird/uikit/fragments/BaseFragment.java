@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment implements DialogProvider {
      */
     @Override
     public void toastError(@NonNull String message, boolean useOverlay) {
-        if (isFragmentAlive()) ContextUtils.toastError(requireContext(), message);
+        if (isFragmentAlive()) ContextUtils.toastError(requireContext(), message, useOverlay);
     }
 
     /**

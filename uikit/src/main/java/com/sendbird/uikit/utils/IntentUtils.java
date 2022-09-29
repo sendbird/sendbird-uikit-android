@@ -33,6 +33,20 @@ public class IntentUtils {
     }
 
     @NonNull
+    public static Intent getVideoCaptureIntent(@NonNull Context context, @NonNull Uri uri) {
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        grantWritePermission(context, intent, uri);
+        if ( Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
+            intent.setClipData(ClipData.newRawUri("", uri));
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
+
+    @NonNull
     public static Intent getImageGalleryIntent() {
         return getGalleryIntent(new String[]{"image/*"});
     }

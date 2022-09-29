@@ -61,7 +61,7 @@ internal class OtherVideoFileMessageView @JvmOverloads constructor(
         val paddingBottom =
             resources.getDimensionPixelSize(if (messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) R.dimen.sb_size_1 else R.dimen.sb_size_8)
         binding.root.setPadding(binding.root.paddingLeft, paddingTop, binding.root.paddingRight, paddingBottom)
-        ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message)
+        ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message, messageUIConfig?.repliedMessageTextUIConfig)
     }
 
     init {

@@ -21,6 +21,7 @@ import com.sendbird.uikit.customsample.groupchannel.fragments.CustomParticipantL
 import com.sendbird.uikit.customsample.groupchannel.fragments.CustomRegisterOperatorFragment;
 import com.sendbird.uikit.customsample.openchannel.CustomCreateOpenChannelFragment;
 import com.sendbird.uikit.customsample.openchannel.CustomOpenChannelSettingsFragment;
+import com.sendbird.uikit.fragments.ChannelFragment;
 import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 
 /**
@@ -38,9 +39,10 @@ public class CustomFragmentFactory extends UIKitFragmentFactory {
     @NonNull
     @Override
     public Fragment newChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
-        final Fragment fragment = new CustomChannelFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new ChannelFragment.Builder(channelUrl)
+                .setCustomFragment(new CustomChannelFragment())
+                .withArguments(args)
+                .build();
     }
 
     @NonNull

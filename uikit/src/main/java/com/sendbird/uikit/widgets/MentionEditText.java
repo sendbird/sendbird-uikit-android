@@ -1,6 +1,7 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputType;
@@ -16,6 +17,7 @@ import android.view.inputmethod.InputConnectionWrapper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.MutableBaseAdapter;
@@ -325,7 +327,7 @@ public class MentionEditText extends AppCompatEditText {
 
             int index = MentionWatcher.findTriggerIndex(this, config.getTrigger(), config.getDelimiter(), startCursorPosition);
             if (index >= 0) {
-                MentionSpan mentionSpan = new MentionSpan(token, nickname, user, mentionUIConfig);
+                MentionSpan mentionSpan = new MentionSpan(getContext(), token, nickname, user, mentionUIConfig);
                 final SpannableString mentionText = new SpannableString(mentionSpan.getDisplayText());
                 mentionText.setSpan(mentionSpan, 0, mentionText.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
                 text.replace(index, endCursorPosition, TextUtils.concat(mentionText, config.getDelimiter()));
@@ -371,5 +373,31 @@ public class MentionEditText extends AppCompatEditText {
             mentionedUsers.add(span.getMentionedUser());
         }
         return mentionedUsers;
+    }
+
+    public void applyTextUIConfig(@NonNull TextUIConfig textUIConfig) {
+        if (textUIConfig.getTextColor() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            getPaint().setColor(textUIConfig.getTextColor());
+        }
+        if (textUIConfig.getTextStyle() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            getPaint().setTypeface(textUIConfig.generateTypeface());
+        }
+        if (textUIConfig.getTextSize() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            getPaint().setTextSize(textUIConfig.getTextSize());
+        }
+        if (textUIConfig.getTextBackgroundColor() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            getPaint().bgColor = textUIConfig.getTextBackgroundColor();
+        }
+
+        if (textUIConfig.getCustomFontRes() != TextUIConfig.UNDEFINED_RESOURCE_ID) {
+            try {
+                final Typeface font = ResourcesCompat.getFont(getContext(), textUIConfig.getCustomFontRes());
+                if (font != null) {
+                    getPaint().setUnderlineText(false);
+                    getPaint().setTypeface(font);
+                }
+            } catch (Resources.NotFoundException ignore) {
+            }
+        }
     }
 }

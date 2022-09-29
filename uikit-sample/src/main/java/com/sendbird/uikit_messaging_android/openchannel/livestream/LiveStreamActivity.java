@@ -273,8 +273,10 @@ public class LiveStreamActivity extends AppCompatActivity {
         args.putString("DESCRIPTION", creatorName);
         args.putString("INPUT_TEXT", inputText);
 
-        LiveStreamChannelFragment fragment = new LiveStreamChannelFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new OpenChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setCustomFragment(new LiveStreamChannelFragment())
+                .setUseHeader(true)
+                .build();
     }
 }

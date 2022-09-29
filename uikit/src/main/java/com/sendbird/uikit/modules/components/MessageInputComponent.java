@@ -143,6 +143,9 @@ public class MessageInputComponent {
         if (params.inputText != null) {
             this.messageInputView.setInputText(params.inputText);
         }
+        if (params.textUIConfig != null) {
+            this.messageInputView.applyTextUIConfig(params.textUIConfig);
+        }
         this.messageInputView.setKeyboardDisplayType(params.keyboardDisplayType);
         this.messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
 
@@ -520,6 +523,9 @@ public class MessageInputComponent {
         @NonNull
         private final MessageUIConfig messageUIConfig;
 
+        @Nullable
+        private TextUIConfig textUIConfig;
+
         /**
          * Constructor
          *
@@ -749,6 +755,26 @@ public class MessageInputComponent {
             if (configSentFromOthers != null) this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
         }
 
+        /**
+         * Sets the UI configuration of message input text.
+         *
+         * @param textUIConfig the UI configuration of the message input text.
+         * @since 3.2.1
+         */
+        public void setMessageInputTextUIConfig(@Nullable TextUIConfig textUIConfig) {
+            this.textUIConfig = textUIConfig;
+        }
+
+        /**
+         * Returns the UI configuration of message input text.
+         *
+         * @return the UI configuration of message input text.
+         * @since 3.2.1
+         */
+        @Nullable
+        public TextUIConfig getMessageInputTextUIConfig() {
+            return textUIConfig;
+        }
 
         /**
          * Apply data that matches keys mapped to Params' properties.
@@ -762,6 +788,7 @@ public class MessageInputComponent {
          * {@code KEY_INPUT_RIGHT_BUTTON_SHOW_ALWAYS} is mapped to {@link #showInputRightButtonAlways()}
          * {@code KEY_KEYBOARD_DISPLAY_TYPE} is mapped to {@link #setKeyboardDisplayType(KeyboardDisplayType)}
          * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
+         * {@code KEY_MESSAGE_INPUT_TEXT_UI_CONFIG} and {@code KEY_MESSAGE_INPUT_TEXT_UI_CONFIG} are mapped to {@link #setMessageInputTextUIConfig(TextUIConfig)}
          * {@code KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER} is mapped to {@link #setUseSuggestedMentionListDivider(boolean)}
          *
          * @param context The {@code Context} this component is currently associated with
@@ -806,6 +833,9 @@ public class MessageInputComponent {
             setMentionUIConfig(args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS));
             if (args.containsKey(StringSet.KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER)) {
                 setUseSuggestedMentionListDivider(args.getBoolean(StringSet.KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER));
+            }
+            if (args.containsKey(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG)) {
+                setMessageInputTextUIConfig(args.getParcelable(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG));
             }
             return this;
         }

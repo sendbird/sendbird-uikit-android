@@ -187,6 +187,16 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         SendbirdChat.setAutoBackgroundDetection(true);
         int resultCode = result.getResultCode();
 
+        if (resultCode != RESULT_OK || getContext() == null) return;
+        final Uri mediaUri = ChannelFragment.this.mediaUri;
+        if (mediaUri != null && isFragmentAlive()) {
+            sendFileMessage(mediaUri);
+        }
+    });
+    private final ActivityResultLauncher<Intent> takeVideoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        int resultCode = result.getResultCode();
+
         if (resultCode != RESULT_OK) return;
         final Uri mediaUri = ChannelFragment.this.mediaUri;
         if (mediaUri != null && isFragmentAlive()) {
@@ -1025,6 +1035,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         if (getContext() == null) return;
         DialogListItem[] items = {
                 new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
+                new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera),
                 new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
                 new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
         };
@@ -1034,6 +1045,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
                     takeCamera();
+                } else if (key == R.string.sb_text_channel_input_take_video) {
+                    takeVideo();
                 } else if (key == R.string.sb_text_channel_input_gallery) {
                     takePhoto();
                 } else {
@@ -1042,6 +1055,8 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             } catch (Exception e) {
                 Logger.e(e);
                 if (key == R.string.sb_text_channel_input_camera) {
+                    toastError(R.string.sb_text_error_open_camera);
+                } else if (key == R.string.sb_text_channel_input_take_video) {
                     toastError(R.string.sb_text_error_open_camera);
                 } else if (key == R.string.sb_text_channel_input_gallery) {
                     toastError(R.string.sb_text_error_open_gallery);
@@ -1061,11 +1076,30 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         SendbirdChat.setAutoBackgroundDetection(false);
         requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
             if (getContext() == null) return;
-            this.mediaUri = FileUtils.createPictureImageUri(getContext());
+            this.mediaUri = FileUtils.createImageFileUri(getContext());
             if (mediaUri == null) return;
-            Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
-            if (IntentUtils.hasIntent(getContext(), intent)) {
+            Intent intent = IntentUtils.getCameraIntent(requireContext(), mediaUri);
+            if (IntentUtils.hasIntent(requireContext(), intent)) {
                 takeCameraLauncher.launch(intent);
+            }
+        });
+    }
+
+    /**
+     * Call taking camera application for video capture.
+     *
+     * @since 3.2.1
+     */
+    public void takeVideo() {
+        SendbirdChat.setAutoBackgroundDetection(false);
+        requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
+            if (getContext() == null) return;
+            this.mediaUri = FileUtils.createVideoFileUri(getContext());
+            if (mediaUri == null) return;
+
+            Intent intent = IntentUtils.getVideoCaptureIntent(getContext(), mediaUri);
+            if (IntentUtils.hasIntent(getContext(), intent)) {
+                takeVideoLauncher.launch(intent);
             }
         });
     }
@@ -2045,6 +2079,32 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         @NonNull
         public Builder setNicknameTextUIConfig(@NonNull TextUIConfig configSentFromOthers) {
             bundle.putParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS, configSentFromOthers);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of the replied parent message text.
+         *
+         * @param configRepliedMessage the UI configuration of the replied parent message text.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.1
+         */
+        @NonNull
+        public Builder setRepliedMessageTextUIConfig(@NonNull TextUIConfig configRepliedMessage) {
+            bundle.putParcelable(StringSet.KEY_REPLIED_MESSAGE_TEXT_UI_CONFIG, configRepliedMessage);
+            return this;
+        }
+
+        /**
+         * Sets the UI configuration of message input text.
+         *
+         * @param textUIConfig the UI configuration of the message input text.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.1
+         */
+        @NonNull
+        public Builder setMessageInputTextUIConfig(@NonNull TextUIConfig textUIConfig) {
+            bundle.putParcelable(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG, textUIConfig);
             return this;
         }
 

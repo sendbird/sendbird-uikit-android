@@ -17,7 +17,9 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewOtherQuotedMessageBinding
+import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.UserUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -74,10 +76,9 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         }
     }
 
-    override fun drawQuotedMessage(message: BaseMessage?) {
+    override fun drawQuotedMessage(message: BaseMessage, textUIConfig: TextUIConfig?) {
         binding.quoteReplyPanel.visibility = GONE
-        if (message == null) return
-        if (message.parentMessage == null) return
+        if (!message.hasParentMessage()) return
 
         val parentMessage = message.parentMessage
         binding.quoteReplyPanel.visibility = VISIBLE
@@ -90,37 +91,37 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
             UserUtils.getDisplayName(context, parentMessage?.sender, true)
         )
         binding.ivQuoteReplyThumbnailOveray.visibility = GONE
-        val requestListener: RequestListener<Drawable?> = object : RequestListener<Drawable?> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any,
-                target: Target<Drawable?>,
-                isFirstResource: Boolean
-            ): Boolean {
-                binding.ivQuoteReplyThumbnailOveray.visibility = GONE
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any,
-                target: Target<Drawable?>,
-                dataSource: DataSource,
-                isFirstResource: Boolean
-            ): Boolean {
-                binding.ivQuoteReplyThumbnailOveray.visibility = VISIBLE
-                return false
-            }
-        }
         when (parentMessage) {
             is UserMessage -> {
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
-                binding.tvQuoteReplyMessage.text = parentMessage.message
+                binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.message) ?: parentMessage.message
                 binding.tvQuoteReplyMessage.isSingleLine = false
                 binding.tvQuoteReplyMessage.maxLines = 2
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
             }
             is FileMessage -> {
+                val requestListener: RequestListener<Drawable?> = object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivQuoteReplyThumbnailOveray.visibility = VISIBLE
+                        return false
+                    }
+                }
                 val type = parentMessage.type
                 binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_8).toFloat()
                 binding.tvQuoteReplyMessage.isSingleLine = true
@@ -153,7 +154,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_audio)
-                    binding.tvQuoteReplyMessage.text = parentMessage.name
+                    binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
                 } else if (type.startsWith(StringSet.image) && !type.contains(StringSet.svg)) {
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageResource(android.R.color.transparent)
@@ -166,7 +167,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_document)
-                    binding.tvQuoteReplyMessage.text = parentMessage.name
+                    binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
                 }
             }
         }

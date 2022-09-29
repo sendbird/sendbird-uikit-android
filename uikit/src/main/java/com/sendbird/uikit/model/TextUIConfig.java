@@ -1,6 +1,7 @@
 package com.sendbird.uikit.model;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,10 +16,14 @@ import android.text.style.TypefaceSpan;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
+import androidx.annotation.FontRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.sendbird.uikit.internal.model.TypefaceSpanEx;
 
 /**
  * A configurations of text.
@@ -36,13 +41,16 @@ public class TextUIConfig implements Parcelable {
     private int textSize;
     @Nullable
     private String familyName;
+    @FontRes
+    private int customFontRes;
 
-    private TextUIConfig(@ColorInt int textColor, @ColorInt int textBackgroundColor, int textStyle, int textSize, @Nullable String familyName) {
+    private TextUIConfig(@ColorInt int textColor, @ColorInt int textBackgroundColor, int textStyle, int textSize, @Nullable String familyName, @FontRes int customFontRes) {
         this.textColor = textColor;
         this.textBackgroundColor = textBackgroundColor;
         this.textStyle = textStyle;
         this.textSize = textSize;
         this.familyName = familyName;
+        this.customFontRes = customFontRes;
     }
 
     /**
@@ -54,6 +62,7 @@ public class TextUIConfig implements Parcelable {
         textStyle = in.readInt();
         textSize = in.readInt();
         familyName = in.readString();
+        customFontRes = in.readInt();
     }
 
     /**
@@ -114,6 +123,16 @@ public class TextUIConfig implements Parcelable {
     }
 
     /**
+     * Returns a custom font res ID.
+     *
+     * @return A custom font resource ID.
+     * @since 3.2.1
+     */
+    public int getCustomFontRes() {
+        return customFontRes;
+    }
+
+    /**
      * Apply values in the given {@link TextUIConfig} into this.
      *
      * @param config A {@link TextUIConfig} to apply.
@@ -138,7 +157,23 @@ public class TextUIConfig implements Parcelable {
         if (config.getFamilyName() != null) {
             this.familyName = config.getFamilyName();
         }
+        if (config.getCustomFontRes() != UNDEFINED_RESOURCE_ID) {
+            this.customFontRes = config.getCustomFontRes();
+        }
         return this;
+    }
+
+    /**
+     * Apply values into given whole text.
+     *
+     * @param text A text to apply.
+     * @since 3.2.1
+     */
+    @NonNull
+    public SpannableString apply(@NonNull Context context, @NonNull String text) {
+        final SpannableString spannableString = new SpannableString(text);
+        bind(context, spannableString, 0, text.length());
+        return spannableString;
     }
 
     /**
@@ -149,7 +184,7 @@ public class TextUIConfig implements Parcelable {
      * @param end An end position to apply value.
      * @since 3.0.0
      */
-    public void bind(@NonNull Spannable spannable, int start, int end) {
+    public void bind(@NonNull Context context, @NonNull Spannable spannable, int start, int end) {
         if (this.textBackgroundColor != UNDEFINED_RESOURCE_ID) {
             spannable.setSpan(new BackgroundColorSpan(textBackgroundColor), start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
@@ -169,6 +204,16 @@ public class TextUIConfig implements Parcelable {
 
         if (this.familyName != null) {
             spannable.setSpan(new TypefaceSpan(familyName), start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        if (this.customFontRes != UNDEFINED_RESOURCE_ID) {
+            try {
+                Typeface font = ResourcesCompat.getFont(context, customFontRes);
+                if (font != null) {
+                    spannable.setSpan(new TypefaceSpanEx(this.familyName != null ? this.familyName : "", font), start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            } catch (Resources.NotFoundException ignore) {
+            }
         }
     }
 
@@ -220,20 +265,21 @@ public class TextUIConfig implements Parcelable {
      */
     @NonNull
     public Typeface generateTypeface() {
-        Typeface typeface = Typeface.create(this.familyName, Typeface.NORMAL);
+        String familyName = this.familyName != null ? this.familyName : "";
+        Typeface typeface = Typeface.create(familyName, Typeface.NORMAL);
         if (this.textStyle >= 0) {
             switch (this.textStyle) {
                 case Typeface.NORMAL:
-                    typeface = Typeface.create(this.familyName, Typeface.NORMAL);
+                    typeface = Typeface.create(familyName, Typeface.NORMAL);
                     break;
                 case Typeface.BOLD:
-                    typeface = Typeface.create(this.familyName, Typeface.BOLD);
+                    typeface = Typeface.create(familyName, Typeface.BOLD);
                     break;
                 case Typeface.ITALIC:
-                    typeface = Typeface.create(this.familyName, Typeface.ITALIC);
+                    typeface = Typeface.create(familyName, Typeface.ITALIC);
                     break;
                 case Typeface.BOLD_ITALIC:
-                    typeface = Typeface.create(this.familyName, Typeface.BOLD_ITALIC);
+                    typeface = Typeface.create(familyName, Typeface.BOLD_ITALIC);
                     break;
             }
         }
@@ -264,6 +310,7 @@ public class TextUIConfig implements Parcelable {
         dest.writeInt(textStyle);
         dest.writeInt(textSize);
         dest.writeString(familyName);
+        dest.writeInt(customFontRes);
     }
 
     public static class Builder {
@@ -276,6 +323,8 @@ public class TextUIConfig implements Parcelable {
         private int textSize = -1;
         @Nullable
         private String familyName;
+        @FontRes
+        private int customFontRes;
 
         /**
          * Constructor
@@ -294,8 +343,8 @@ public class TextUIConfig implements Parcelable {
         public Builder(@NonNull Context context, @StyleRes int textAppearanceRes) {
             if (textAppearanceRes != 0) {
                 final TextAppearanceSpan span = new TextAppearanceSpan(context, textAppearanceRes);
-                this.textColor = span.getTextColor() != null ? span.getTextColor().getDefaultColor() : -1;
-                this.textStyle = span.getTextStyle();
+                this.textColor = span.getTextColor() != null ? span.getTextColor().getDefaultColor() : UNDEFINED_RESOURCE_ID;
+                this.textStyle = span.getTextStyle() != 0 ? span.getTextStyle() : UNDEFINED_RESOURCE_ID;
                 this.textSize = span.getTextSize();
                 this.familyName = span.getFamily();
             }
@@ -371,6 +420,19 @@ public class TextUIConfig implements Parcelable {
         }
 
         /**
+         * Sets the custom font resource id of text
+         *
+         * @param customFontRes The value of custom font
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.1
+         */
+        @NonNull
+        public Builder setCustomFontRes(int customFontRes) {
+            this.customFontRes = customFontRes;
+            return this;
+        }
+
+        /**
          * Builds an {@link TextUIConfig} with the properties supplied to this builder.
          *
          * @return The {@link TextUIConfig} from this builder instance.
@@ -378,7 +440,7 @@ public class TextUIConfig implements Parcelable {
          */
         @NonNull
         public TextUIConfig build() {
-            return new TextUIConfig(this.textColor, this.textBackgroundColor, this.textStyle, this.textSize, this.familyName);
+            return new TextUIConfig(this.textColor, this.textBackgroundColor, this.textStyle, this.textSize, this.familyName, this.customFontRes);
         }
     }
 }

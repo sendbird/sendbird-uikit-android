@@ -267,7 +267,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
         SendbirdChat.setAutoBackgroundDetection(false);
         requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
             if (getContext() == null) return;
-            this.mediaUri = FileUtils.createPictureImageUri(getContext());
+            this.mediaUri = FileUtils.createImageFileUri(getContext());
             if (mediaUri == null) return;
             Intent intent = IntentUtils.getCameraIntent(getContext(), mediaUri);
             if (IntentUtils.hasIntent(getContext(), intent)) {
