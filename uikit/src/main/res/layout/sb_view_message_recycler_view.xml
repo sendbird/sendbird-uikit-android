@@ -29,7 +29,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivScrollBottomIcon"
+        app:layout_constraintEnd_toStartOf="@+id/ivScrollFirstIcon"
         android:paddingStart="@dimen/sb_size_48"
         android:paddingEnd="@dimen/sb_size_0">
 
@@ -47,7 +47,7 @@
     </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivScrollBottomIcon"
+        android:id="@+id/ivScrollFirstIcon"
         android:layout_width="@dimen/sb_size_58"
         android:layout_height="@dimen/sb_size_58"
         android:padding="@dimen/sb_size_17"

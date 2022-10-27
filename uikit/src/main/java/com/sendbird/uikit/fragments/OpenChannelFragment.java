@@ -51,6 +51,7 @@ import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -123,7 +124,10 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     @Nullable
     private OnInputModeChangedListener inputModeChangedListener;
     @Nullable
+    @Deprecated
     private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnConsumableClickListener scrollFirstButtonClickListener;
     @Nullable
     private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
     @Nullable
@@ -318,15 +322,11 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         messageListComponent.setOnMessageProfileClickListener(this::onMessageProfileClicked);
         messageListComponent.setOnMessageLongClickListener(this::onMessageLongClicked);
         messageListComponent.setOnMessageProfileLongClickListener(messageProfileLongClickListener);
-        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener != null ? scrollBottomButtonClickListener : v -> {
-            if (messageListComponent.getRecyclerView() != null) {
-                messageListComponent.getRecyclerView().stopScroll();
-                messageListComponent.scrollToBottom();
-            }
-        });
+        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener);
+        messageListComponent.setOnScrollFirstButtonClickListener(scrollFirstButtonClickListener);
         messageListComponent.setOnMessageInsertedListener(messageInsertedListener != null ? messageInsertedListener : data -> {
             if (!anchorDialogShowing.get()) {
-                messageListComponent.scrollToBottom();
+                messageListComponent.scrollToFirst();
             }
         });
 
@@ -1032,7 +1032,10 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         @Nullable
         private OnInputModeChangedListener inputModeChangedListener;
         @Nullable
+        @Deprecated
         private View.OnClickListener scrollBottomButtonClickListener;
+        @Nullable
+        private OnConsumableClickListener scrollFirstButtonClickListener;
         @Nullable
         private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
         @Nullable
@@ -1626,10 +1629,27 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param scrollBottomButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 3.0.0
+         * @deprecated 3.2.2
+         * This method is no longer acceptable to invoke event.
+         * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
          */
         @NonNull
+        @Deprecated
         public Builder setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
             this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the button to scroll to the first position is clicked.
+         *
+         * @param scrollFirstButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.2
+         */
+        @NonNull
+        public Builder setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
+            this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
             return this;
         }
 
@@ -1812,6 +1832,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
             fragment.inputModeChangedListener = inputModeChangedListener;
             fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            fragment.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
             fragment.messageProfileLongClickListener = messageProfileLongClickListener;
             fragment.messageInsertedListener = messageInsertedListener;
             return fragment;

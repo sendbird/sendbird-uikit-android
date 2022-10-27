@@ -137,7 +137,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         final View loading = binding.loading;
         final RequestManager glide = Glide.with(this);
 
-        return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).sizeMultiplier(0.5f).listener(new RequestListener<T>() {
+        return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).listener(new RequestListener<T>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<T> target, boolean isFirstResource) {
                 if (!isFragmentAlive()) return false;

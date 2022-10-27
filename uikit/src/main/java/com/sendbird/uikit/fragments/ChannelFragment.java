@@ -60,6 +60,7 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
@@ -153,7 +154,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @Nullable
     private View.OnClickListener tooltipClickListener;
     @Nullable
+    @Deprecated
     private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnConsumableClickListener scrollFirstButtonClickListener;
     @Nullable
     private MessageListAdapter adapter;
     @Nullable
@@ -322,8 +326,15 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         messageListComponent.setOnEmojiReactionClickListener(emojiReactionClickListener != null ? emojiReactionClickListener : (view, position, message, reactionKey) -> toggleReaction(view, message, reactionKey));
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
-        messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : v -> scrollToBottom());
-        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener != null ? scrollBottomButtonClickListener : v -> scrollToBottom());
+        messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : v -> scrollToFirst());
+        messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener);
+        messageListComponent.setOnScrollFirstButtonClickListener(scrollFirstButtonClickListener != null ? scrollFirstButtonClickListener : view -> {
+            if (viewModel.hasNext()) {
+                loadInitial(Long.MAX_VALUE);
+                return true;
+            }
+            return false;
+        });
 
         final ChannelModule module = getModule();
         viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), receivedMessageData -> {
@@ -351,7 +362,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                         case StringSet.ACTION_FAILED_MESSAGE_ADDED:
                         case StringSet.ACTION_PENDING_MESSAGE_ADDED:
                             module.getMessageInputComponent().requestInputMode(MessageInputView.Mode.DEFAULT);
-                            scrollToBottom();
+                            scrollToFirst();
                             break;
                         case StringSet.EVENT_MESSAGE_RECEIVED:
                         case StringSet.EVENT_MESSAGE_SENT:
@@ -525,12 +536,12 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         viewModel.getStatusFrame().observe(getViewLifecycleOwner(), statusComponent::notifyStatusChanged);
     }
 
-    private void scrollToBottom() {
+    private void scrollToFirst() {
         final MessageListComponent messageListComponent = getModule().getMessageListComponent();
         if (getViewModel().hasNext()) {
             loadInitial(Long.MAX_VALUE);
         } else {
-            messageListComponent.scrollToBottom();
+            messageListComponent.scrollToFirst();
         }
     }
 
@@ -1370,7 +1381,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         @Nullable
         private View.OnClickListener tooltipClickListener;
         @Nullable
+        @Deprecated
         private View.OnClickListener scrollBottomButtonClickListener;
+        @Nullable
+        private OnConsumableClickListener scrollFirstButtonClickListener;
         private ChannelFragment customFragment;
 
 
@@ -2263,10 +2277,27 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
          * @param scrollBottomButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 3.0.0
+         * @deprecated 3.2.2
+         * This method is no longer acceptable to invoke event.
+         * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
          */
         @NonNull
+        @Deprecated
         public Builder setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
             this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            return this;
+        }
+
+        /**
+         * Register a callback to be invoked when the button to scroll to the first position is clicked.
+         *
+         * @param scrollFirstButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.2.2
+         */
+        @NonNull
+        public Builder setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
+            this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
             return this;
         }
 
@@ -2303,6 +2334,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             fragment.inputModeChangedListener = inputModeChangedListener;
             fragment.tooltipClickListener = tooltipClickListener;
             fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+            fragment.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
             fragment.adapter = adapter;
             fragment.params = params;
 

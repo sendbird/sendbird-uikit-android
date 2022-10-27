@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
 import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.exception.SendbirdError;
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.handler.InitResultHandler;
 import com.sendbird.android.params.ApplicationUserListQueryParams;
@@ -32,6 +33,7 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.UserMentionConfig;
 
 import java.util.ArrayList;
@@ -195,6 +197,10 @@ public class BaseApplication extends MultiDexApplication {
                 userListQuery = SendbirdChat.createApplicationUserListQuery(params);
                 userListQuery.next((list, e) -> {
                     if (e != null || list == null) {
+                        if (e != null && e.getCode() == SendbirdError.ERR_NON_AUTHORIZED) {
+                            Logger.w("An error occurred because you don't have access to the user list in your application. " +
+                                    "In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.");
+                        }
                         return;
                     }
 

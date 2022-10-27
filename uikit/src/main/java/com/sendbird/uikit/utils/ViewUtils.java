@@ -333,7 +333,7 @@ public class ViewUtils {
         }
 
         Logger.d("-- will load thumbnail url : %s", url);
-        builder.load(url).centerCrop().sizeMultiplier(0.3f).listener(new RequestListener<Drawable>() {
+        builder.load(url).centerCrop().listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 if (requestListener != null) {

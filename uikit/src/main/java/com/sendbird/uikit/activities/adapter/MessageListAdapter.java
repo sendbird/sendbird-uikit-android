@@ -63,6 +63,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
+    private final boolean useReverseLayout;
     @Nullable
     private MessageUIConfig messageUIConfig;
 
@@ -99,8 +100,21 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
      * @since 2.2.0
      */
     public MessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI) {
+        this(channel, useMessageGroupUI, true);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param channel The {@link GroupChannel} that contains the data needed for this adapter
+     * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
+     * @param useReverseLayout  <code>true</code> if the message list is reversed, <code>false</code> otherwise.
+     * @since 3.2.2
+     */
+    public MessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         if (channel != null) this.channel = GroupChannel.clone(channel);
         this.useMessageGroupUI = useMessageGroupUI;
+        this.useReverseLayout = useReverseLayout;
         setHasStableIds(true);
     }
 
@@ -229,7 +243,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         }
 
         if (channel != null) {
-            holder.onBindViewHolder(channel, prev, current, next);
+            holder.onBindViewHolder(channel, prev, current, next, useReverseLayout);
         }
     }
 
@@ -313,7 +327,7 @@ public class MessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageV
         final List<BaseMessage> copiedMessage = Collections.unmodifiableList(messageList);
         differWorker.submit(() -> {
             final CountDownLatch lock = new CountDownLatch(1);
-            final MessageDiffCallback diffCallback = new MessageDiffCallback(MessageListAdapter.this.channel, channel, MessageListAdapter.this.messageList, messageList, useMessageGroupUI);
+            final MessageDiffCallback diffCallback = new MessageDiffCallback(MessageListAdapter.this.channel, channel, MessageListAdapter.this.messageList, messageList, useMessageGroupUI, useReverseLayout);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
             mainHandler.post(() -> {

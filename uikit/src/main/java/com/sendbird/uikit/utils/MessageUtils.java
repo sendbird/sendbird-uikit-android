@@ -66,7 +66,10 @@ public class MessageUtils {
     }
 
     @NonNull
-    public static MessageGroupType getMessageGroupType(@Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
+    public static MessageGroupType getMessageGroupType(@Nullable BaseMessage prevMessage,
+                                                       @NonNull BaseMessage message,
+                                                       @Nullable BaseMessage nextMessage,
+                                                       boolean useReverseLayout) {
         if (!message.getSendingStatus().equals(SendingStatus.SUCCEEDED)) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
@@ -76,8 +79,8 @@ public class MessageUtils {
         }
 
         MessageGroupType messageGroupType = MessageGroupType.GROUPING_TYPE_BODY;
-        boolean isHead = MessageUtils.isGroupChanged(prevMessage, message);
-        boolean isTail = MessageUtils.isGroupChanged(message, nextMessage);
+        boolean isHead = useReverseLayout ? MessageUtils.isGroupChanged(prevMessage, message) : MessageUtils.isGroupChanged(message, nextMessage);
+        boolean isTail = useReverseLayout ? MessageUtils.isGroupChanged(message, nextMessage) : MessageUtils.isGroupChanged(prevMessage, message);
 
         if (!isHead && isTail) {
             messageGroupType = MessageGroupType.GROUPING_TYPE_TAIL;

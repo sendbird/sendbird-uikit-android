@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewMessageRecyclerViewBinding
+import com.sendbird.uikit.interfaces.OnConsumableClickListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.utils.TextUtils
@@ -33,16 +34,20 @@ internal class MessageRecyclerView @JvmOverloads constructor(
         binding.tvTooltipText.text = text
     }
 
-    fun showScrollBottomButton() {
-        binding.ivScrollBottomIcon.visibility = VISIBLE
+    fun showScrollFirstButton() {
+        binding.ivScrollFirstIcon.visibility = VISIBLE
     }
 
-    fun hideScrollBottomButton() {
-        binding.ivScrollBottomIcon.visibility = GONE
+    fun hideScrollFirstButton() {
+        binding.ivScrollFirstIcon.visibility = GONE
     }
 
     fun hideNewMessageTooltip() {
         binding.vgTooltipBox.visibility = GONE
+    }
+
+    fun rotateScrollFirstButton(rotation: Float) {
+        scrollFirstView.rotation = rotation
     }
 
     val layout: View
@@ -51,12 +56,13 @@ internal class MessageRecyclerView @JvmOverloads constructor(
         get() = binding.rvMessageList
     val tooltipView: View
         get() = binding.tvTooltipText
-    val scrollBottomView: View
-        get() = binding.ivScrollBottomIcon
+    val scrollFirstView: View
+        get() = binding.ivScrollFirstIcon
     val typingIndicator: View
         get() = binding.tvTypingIndicator
     val bannerView: View
         get() = binding.tvBanner
+    var onScrollFirstButtonClickListener: OnConsumableClickListener? = null
 
     fun setBannerText(text: String?) {
         binding.tvBanner.visibility = if (TextUtils.isEmpty(text)) GONE else VISIBLE
@@ -115,9 +121,14 @@ internal class MessageRecyclerView @JvmOverloads constructor(
             binding.tvTooltipText.setBackgroundResource(tooltipBackground)
             binding.tvTooltipText.setAppearance(context, tooltipTextAppearance)
             binding.tvTypingIndicator.setAppearance(context, typingIndicatorTextAppearance)
-            binding.ivScrollBottomIcon.setBackgroundResource(scrollBottomBackground)
-            binding.ivScrollBottomIcon.setImageResource(scrollBottomIcon)
-            binding.ivScrollBottomIcon.imageTintList = scrollBottomTintColor
+            binding.ivScrollFirstIcon.setBackgroundResource(scrollBottomBackground)
+            binding.ivScrollFirstIcon.setImageResource(scrollBottomIcon)
+            binding.ivScrollFirstIcon.imageTintList = scrollBottomTintColor
+            binding.ivScrollFirstIcon.setOnClickListener {
+                if (onScrollFirstButtonClickListener?.onClick(it) == true) return@setOnClickListener
+                recyclerView.stopScroll()
+                recyclerView.scrollToPosition(0)
+            }
             binding.tvBanner.setBackgroundResource(bannerBackground)
             binding.tvBanner.setAppearance(context, bannerTextAppearance)
         } finally {

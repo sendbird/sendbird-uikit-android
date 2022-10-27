@@ -24,13 +24,17 @@ class MessageDiffCallback extends DiffUtil.Callback {
     @NonNull
     private final GroupChannel newChannel;
     private final boolean useMessageGroupUI;
+    private final boolean useReverseLayout;
 
-    public MessageDiffCallback(@Nullable GroupChannel oldChannel, @NonNull GroupChannel newChannel, @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList, boolean useMessageGroupUI) {
+    public MessageDiffCallback(@Nullable GroupChannel oldChannel, @NonNull GroupChannel newChannel,
+                               @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList,
+                               boolean useMessageGroupUI, boolean useReverseLayout) {
         this.oldChannel = oldChannel;
         this.newChannel = newChannel;
         this.oldMessageList = oldMessageList;
         this.newMessageList = newMessageList;
         this.useMessageGroupUI = useMessageGroupUI;
+        this.useReverseLayout = useReverseLayout;
     }
 
     @Override
@@ -121,8 +125,8 @@ class MessageDiffCallback extends DiffUtil.Callback {
             BaseMessage newPrevMessage = newItemPosition - 1 < 0 ? null : newMessageList.get(newItemPosition - 1);
             BaseMessage oldNextMessage = oldItemPosition + 1 >= oldMessageList.size() ? null : oldMessageList.get(oldItemPosition + 1);
             BaseMessage newNextMessage = newItemPosition + 1 >= newMessageList.size() ? null : newMessageList.get(newItemPosition + 1);
-            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage);
-            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage);
+            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage, useReverseLayout);
+            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage, useReverseLayout);
 
             return oldMessageGroupType == newMessageGroupType;
         }

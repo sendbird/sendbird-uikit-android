@@ -43,7 +43,11 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
         this.useMessageGroupUI = useMessageGroupUI;
     }
 
-    public void onBindViewHolder(@NonNull BaseChannel channel, @Nullable BaseMessage prevMessage, @NonNull BaseMessage message, @Nullable BaseMessage nextMessage) {
+    public void onBindViewHolder(@NonNull BaseChannel channel,
+                                 @Nullable BaseMessage prevMessage,
+                                 @NonNull BaseMessage message,
+                                 @Nullable BaseMessage nextMessage,
+                                 boolean useReverseLayout) {
         if (prevMessage != null) {
             this.isNewDate = !DateUtils.hasSameDate(message.getCreatedAt(), prevMessage.getCreatedAt());
         } else {
@@ -54,7 +58,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
         this.isShowProfile = !isMine;
 
         bind(channel, message, useMessageGroupUI ?
-                MessageUtils.getMessageGroupType(prevMessage, message, nextMessage) :
+                MessageUtils.getMessageGroupType(prevMessage, message, nextMessage, useReverseLayout) :
                 MessageGroupType.GROUPING_TYPE_SINGLE);
         itemView.requestLayout();
     }

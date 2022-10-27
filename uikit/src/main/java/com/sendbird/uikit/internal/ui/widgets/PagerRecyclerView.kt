@@ -46,15 +46,20 @@ internal class PagerRecyclerView @JvmOverloads constructor(
         onScrollListener.scrollEndDetectListener = scrollEndDetectListener
     }
 
+    fun useReverseData() {
+        onScrollListener.useReverseData = true
+    }
+
     private class OnScrollListener constructor(var layoutManager: LinearLayoutManager?) :
         RecyclerView.OnScrollListener() {
         private var threshold = 1
         var pager: OnPagedDataLoader<*>? = null
         var scrollEndDetectListener: OnScrollEndDetectListener? = null
-        private val topLoadingWorker = Executors.newSingleThreadExecutor()
-        private val bottomLoadingWorker = Executors.newSingleThreadExecutor()
-        private val topLoading = AtomicBoolean(false)
-        private val bottomLoading = AtomicBoolean(false)
+        private val prevLoadingWorker = Executors.newSingleThreadExecutor()
+        private val nextLoadingWorker = Executors.newSingleThreadExecutor()
+        private val prevLoading = AtomicBoolean(false)
+        private val nextLoading = AtomicBoolean(false)
+        var useReverseData: Boolean = false
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             layoutManager?.run {
@@ -67,31 +72,30 @@ internal class PagerRecyclerView @JvmOverloads constructor(
                     scrollEndDetectListener?.onScrollEnd(ScrollDirection.Top)
                 }
                 pager?.run {
-                    val topLoadMore =
-                        hasPrevious() && if (reverseLayout) itemCount - lastVisibleItemPosition <= threshold else firstVisibleItemPosition <= threshold
-                    if (!topLoading.get() && topLoadMore) {
-                        topLoading.set(true)
-                        topLoadingWorker.submit {
+                    val prevLoadMore =
+                        hasPrevious() && if (useReverseData) itemCount - lastVisibleItemPosition <= threshold else firstVisibleItemPosition <= threshold
+                    if (!prevLoading.get() && prevLoadMore) {
+                        prevLoading.set(true)
+                        prevLoadingWorker.submit {
                             try {
                                 loadPrevious()
                             } catch (ignore: Exception) {
                             } finally {
-                                topLoading.set(false)
+                                prevLoading.set(false)
                             }
                         }
                     }
 
-                    // final boolean bottomLoadMore = !(reverseLayout? !pager.hasNext() : !pager.hasPrevious());
-                    val bottomLoadMore =
-                        hasNext() && if (reverseLayout) firstVisibleItemPosition <= threshold else itemCount - lastVisibleItemPosition <= threshold
-                    if (!bottomLoading.get() && bottomLoadMore) {
-                        bottomLoading.set(true)
-                        bottomLoadingWorker.submit {
+                    val nextLoadMore =
+                        hasNext() && if (useReverseData) firstVisibleItemPosition <= threshold else itemCount - lastVisibleItemPosition <= threshold
+                    if (!nextLoading.get() && nextLoadMore) {
+                        nextLoading.set(true)
+                        nextLoadingWorker.submit {
                             try {
                                 loadNext()
                             } catch (ignore: Exception) {
                             } finally {
-                                bottomLoading.set(false)
+                                nextLoading.set(false)
                             }
                         }
                     }
@@ -105,8 +109,8 @@ internal class PagerRecyclerView @JvmOverloads constructor(
         }
 
         fun dispose() {
-            topLoadingWorker.shutdown()
-            bottomLoadingWorker.shutdown()
+            prevLoadingWorker.shutdown()
+            nextLoadingWorker.shutdown()
         }
     }
 

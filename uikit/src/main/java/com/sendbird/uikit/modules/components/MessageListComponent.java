@@ -24,6 +24,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;
+import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
@@ -82,7 +83,10 @@ public class MessageListComponent {
     @Nullable
     private View.OnClickListener tooltipClickListener;
     @Nullable
+    @Deprecated
     private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnConsumableClickListener scrollFirstButtonClickListener;
 
     /**
      * Constructor
@@ -189,24 +193,25 @@ public class MessageListComponent {
         recyclerView.setHasFixedSize(true);
         recyclerView.setClipToPadding(false);
         recyclerView.setThreshold(5);
+        recyclerView.useReverseData();
         recyclerView.setItemAnimator(new ItemAnimator());
         recyclerView.setOnScrollEndDetectListener(direction -> onScrollEndReaches(direction, this.messageRecyclerView));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (!isScrollOnTheBottom(recyclerView)) {
-                    messageRecyclerView.showScrollBottomButton();
+                if (!isScrollOnTheFirst(recyclerView)) {
+                    messageRecyclerView.showScrollFirstButton();
                 }
             }
         });
 
         this.messageRecyclerView.getTooltipView().setOnClickListener(this::onMessageTooltipClicked);
-        this.messageRecyclerView.getScrollBottomView().setOnClickListener(this::onScrollBottomButtonClicked);
+        this.messageRecyclerView.setOnScrollFirstButtonClickListener(this::onScrollFirstButtonClicked);
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
-        if (adapter == null) adapter = new MessageListAdapter(params.useGroupUI);
+        if (adapter == null) adapter = new MessageListAdapter(null, params.useGroupUI);
         setAdapter(adapter);
         return this.messageRecyclerView;
     }
@@ -218,7 +223,7 @@ public class MessageListComponent {
         return pagedDataLoader != null && pagedDataLoader.hasNext();
     }
 
-    private boolean isScrollOnTheBottom(@NonNull RecyclerView recyclerView) {
+    private boolean isScrollOnTheFirst(@NonNull RecyclerView recyclerView) {
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
@@ -228,10 +233,11 @@ public class MessageListComponent {
     }
 
     private void onScrollEndReaches(@NonNull PagerRecyclerView.ScrollDirection direction, @NonNull MessageRecyclerView messageListView) {
-        if (!hasNextMessages() && direction == PagerRecyclerView.ScrollDirection.Bottom) {
+        final PagerRecyclerView.ScrollDirection endDirection = PagerRecyclerView.ScrollDirection.Bottom;
+        if (!hasNextMessages() && direction == endDirection) {
             tooltipMessageCount.set(0);
             messageListView.hideNewMessageTooltip();
-            messageListView.hideScrollBottomButton();
+            messageListView.hideScrollFirstButton();
         }
     }
 
@@ -264,12 +270,20 @@ public class MessageListComponent {
             return 0;
         }
 
-        final long firstMessageTs = list.get(size - 1).getCreatedAt();
-        final long lastMessageTs = list.get(0).getCreatedAt();
-        final long maxMessageTs = Math.max(lastMessageTs, firstMessageTs);
-        final long minMessageTs = Math.min(lastMessageTs, firstMessageTs);
+        // filter failed, pending messages
+        int newIndex = 0;
+        for (int i = 0; i < size ; i++) {
+            BaseMessage message = list.get(i);
+            if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
+                newIndex = i;
+                break;
+            }
+        }
+
+        final long latestMessageTs = list.get(newIndex).getCreatedAt();
+        final long oldestMessageTs = list.get(size - 1).getCreatedAt();
         int position = 0;
-        if (createdAt >= minMessageTs && createdAt <= maxMessageTs) {
+        if (createdAt >= oldestMessageTs && createdAt <= latestMessageTs) {
             for (int i = size - 1; i >= 0; i--) {
                 BaseMessage message = list.get(i);
                 if (message instanceof TimelineMessage) continue;
@@ -282,10 +296,10 @@ public class MessageListComponent {
                     break;
                 }
             }
-        } else if (createdAt >= maxMessageTs) {
-            position = lastMessageTs == maxMessageTs ? 0 : (size - 1);
+        } else if (createdAt >= latestMessageTs) {
+            position = 0;
         } else {
-            position = firstMessageTs == minMessageTs ? (size - 1) : 0;
+            position = size - 1;
         }
 
         layoutManager.scrollToPositionWithOffset(position, offset);
@@ -322,9 +336,23 @@ public class MessageListComponent {
      *
      * @param scrollBottomButtonClickListener The callback that will run
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * This method is no longer acceptable to invoke event.
+     * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
      */
+    @Deprecated
     public void setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
         this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the button to scroll to the first position is clicked.
+     *
+     * @param scrollFirstButtonClickListener The callback that will run
+     * @since 3.2.2
+     */
+    public void setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
+        this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
     }
 
     /**
@@ -466,12 +494,12 @@ public class MessageListComponent {
         }
     }
 
-    private void needToCheckScrollBottomButton(@NonNull MessageRecyclerView messageListView) {
+    private void needToCheckScrollFirstButton(@NonNull MessageRecyclerView messageListView) {
         messageListView.postDelayed(() -> {
-            if (!isScrollOnTheBottom(messageListView.getRecyclerView())) {
-                messageListView.showScrollBottomButton();
+            if (!isScrollOnTheFirst(messageListView.getRecyclerView())) {
+                messageListView.showScrollFirstButton();
             } else {
-                messageListView.hideScrollBottomButton();
+                messageListView.hideScrollFirstButton();
             }
         }, 200);
     }
@@ -480,8 +508,20 @@ public class MessageListComponent {
      * Scrolls to the bottom of the message list.
      *
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * <p> Use {@link #scrollToFirst()} instead.
      */
+    @Deprecated
     public void scrollToBottom() {
+        scrollToFirst();
+    }
+
+    /**
+     * Scrolls to the first position of the recycler view.
+     *
+     * @since 3.2.2
+     */
+    public void scrollToFirst() {
         if (messageRecyclerView == null) return;
         messageRecyclerView.getRecyclerView().stopScroll();
         messageRecyclerView.getRecyclerView().scrollToPosition(0);
@@ -511,7 +551,7 @@ public class MessageListComponent {
         if (messageRecyclerView == null) return;
         int scrollPosition = scrollToViewPointIfPossible(viewPoint, messageRecyclerView);
         if (scrollPosition > 0) {
-            needToCheckScrollBottomButton(messageRecyclerView);
+            needToCheckScrollFirstButton(messageRecyclerView);
         }
 
         if (shouldAnimateMessage != null) {
@@ -522,15 +562,15 @@ public class MessageListComponent {
     /**
      * After the messages are updated, calculate the current position and re-calculate the position of the scroll.
      *
-     * @param scrollToBottomIfPossible Whether to scroll to the bottom when there are more messages at the bottom
+     * @param scrollToFirstIfPossible Whether to scroll to the bottom when there are more messages at the bottom
      * @since 3.0.0
      */
-    public void notifyMessagesFilled(boolean scrollToBottomIfPossible) {
+    public void notifyMessagesFilled(boolean scrollToFirstIfPossible) {
         if (messageRecyclerView == null) return;
         int firstVisibleItemPosition = messageRecyclerView.getRecyclerView().findFirstVisibleItemPosition();
 
-        if (firstVisibleItemPosition == 0 && !hasNextMessages() && scrollToBottomIfPossible) {
-            scrollToBottom();
+        if (firstVisibleItemPosition == 0 && !hasNextMessages() && scrollToFirstIfPossible) {
+            scrollToFirst();
         }
     }
 
@@ -550,7 +590,7 @@ public class MessageListComponent {
         }
         if (!hasNextMessages()) {
             if (firstVisibleItemPosition == 0) {
-                scrollToBottom();
+                scrollToFirst();
             }
         }
     }
@@ -726,9 +766,29 @@ public class MessageListComponent {
      *
      * @param view The view that was clicked
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * This method is no longer acceptable to invoke event.
+     * <p> Use {@link #onScrollFirstButtonClicked(View)} instead.
      */
+    @Deprecated
     protected void onScrollBottomButtonClicked(@NonNull View view) {
         if (scrollBottomButtonClickListener != null) scrollBottomButtonClickListener.onClick(view);
+    }
+
+    /**
+     * Called when the button to scroll to the first position is clicked.
+     *
+     * @param view The view that was clicked
+     * @since 3.2.2
+     */
+    protected boolean onScrollFirstButtonClicked(@NonNull View view) {
+        boolean handled = scrollBottomButtonClickListener != null;
+
+        onScrollBottomButtonClicked(view);
+        if (scrollFirstButtonClickListener != null) {
+            handled = scrollFirstButtonClickListener.onClick(view);
+        }
+        return handled;
     }
 
     /**
@@ -752,7 +812,6 @@ public class MessageListComponent {
     public static class Params {
         private boolean useGroupUI = true;
         private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
-
         private long initialStartingPoint = Long.MAX_VALUE;
 
         @NonNull
@@ -956,7 +1015,6 @@ public class MessageListComponent {
          * {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME} and {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setReactionListBackground(Drawable, Drawable)}
          * {@code KEY_OGTAG_BACKGROUND_SENT_FROM_ME} and {@code KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setOgtagBackground(Drawable, Drawable)}
          * {@code KEY_LINKED_TEXT_COLOR} is mapped to {@link #setLinkedTextColor(ColorStateList)}
-         *
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.

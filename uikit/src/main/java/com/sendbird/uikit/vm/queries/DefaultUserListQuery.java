@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.exception.SendbirdError;
 import com.sendbird.android.params.ApplicationUserListQueryParams;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.UserUtils;
 
 import java.util.ArrayList;
@@ -43,6 +45,10 @@ public class DefaultUserListQuery implements PagedQueryHandler<UserInfo> {
                 List<UserInfo> userInfoList = null;
                 if (queryResult != null) {
                     userInfoList = toUserInfoList(queryResult);
+                }
+
+                if (e != null) {
+                    Logger.e(e);
                 }
                 handler.onResult(userInfoList, e);
             });

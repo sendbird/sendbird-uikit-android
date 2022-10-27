@@ -1,5 +1,12 @@
 # Changelog
 
+### v3.2.2 (Oct 27, 2022) with Core SDK `v4.1.1` 
+* Added `setOnScrollFirstButtonClickListener(OnConsumableClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
+* Added `scrollToFirst()`, `setOnScrollFirstButtonClickListener(OnConsumableClickListener)`, and `onScrollFirstButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
+* Deprecated `setOnScrollBottomButtonClickListener(View.OnClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
+* Deprecated `scrollToBottom()`, `setOnScrollBottomButtonClickListener(View.OnClickListener)`, and `onScrollBottomButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
+* Improved stability
+
 ### v3.2.1 (Sep 29, 2022) with Core SDK `v4.0.9`
 * Added `takeVideo()` in `ChannelFragment` and `OpenChannelFragment`
 * Support custom font in message bubble and input filed.

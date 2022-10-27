@@ -22,6 +22,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.OpenChannelMessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;
+import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemEventListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
@@ -59,7 +60,10 @@ public class OpenChannelMessageListComponent {
     @Nullable
     private OnPagedDataLoader<List<BaseMessage>> pagedDataLoader;
     @Nullable
+    @Deprecated
     private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnConsumableClickListener scrollFirstButtonClickListener;
     @Nullable
     private OnItemEventListener<BaseMessage> messageInsertedListener;
 
@@ -172,23 +176,24 @@ public class OpenChannelMessageListComponent {
         recyclerView.setHasFixedSize(true);
         recyclerView.setClipToPadding(false);
         recyclerView.setThreshold(5);
+        recyclerView.useReverseData();
         recyclerView.setItemAnimator(new ItemAnimator());
 
         recyclerView.setOnScrollEndDetectListener(direction -> onScrollEndReaches(direction, this.messageRecyclerView));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (!isScrollOnTheBottom(recyclerView)) {
-                    messageRecyclerView.showScrollBottomButton();
+                if (!isScrollOnTheFirst(recyclerView)) {
+                    messageRecyclerView.showScrollFirstButton();
                 }
             }
         });
-        this.messageRecyclerView.getScrollBottomView().setOnClickListener(this::onScrollBottomButtonClicked);
+        this.messageRecyclerView.setOnScrollFirstButtonClickListener(this::onScrollFirstButtonClicked);
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
-        if (adapter == null) adapter = new OpenChannelMessageListAdapter(params.useGroupUI);
+        if (adapter == null) adapter = new OpenChannelMessageListAdapter(null, params.useGroupUI);
         setAdapter(adapter);
         return this.messageRecyclerView;
     }
@@ -200,7 +205,7 @@ public class OpenChannelMessageListComponent {
         return pagedDataLoader != null && pagedDataLoader.hasNext();
     }
 
-    private boolean isScrollOnTheBottom(@NonNull RecyclerView recyclerView) {
+    private boolean isScrollOnTheFirst(@NonNull RecyclerView recyclerView) {
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
@@ -210,8 +215,9 @@ public class OpenChannelMessageListComponent {
     }
 
     private void onScrollEndReaches(@NonNull PagerRecyclerView.ScrollDirection direction, @NonNull MessageRecyclerView messageListView) {
-        if (!hasNextMessages() && direction == PagerRecyclerView.ScrollDirection.Bottom) {
-            messageListView.hideScrollBottomButton();
+        final PagerRecyclerView.ScrollDirection endDirection = PagerRecyclerView.ScrollDirection.Bottom;
+        if (!hasNextMessages() && direction == endDirection) {
+            messageListView.hideScrollFirstButton();
         }
     }
 
@@ -220,9 +226,23 @@ public class OpenChannelMessageListComponent {
      *
      * @param scrollBottomButtonClickListener The callback that will run
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * This method is no longer acceptable to invoke event.
+     * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
      */
+    @Deprecated
     public void setOnScrollBottomButtonClickListener(@Nullable View.OnClickListener scrollBottomButtonClickListener) {
         this.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the button to scroll to the first position is clicked.
+     *
+     * @param scrollFirstButtonClickListener The callback that will run
+     * @since 3.2.2
+     */
+    public void setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
+        this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
     }
 
     /**
@@ -326,8 +346,20 @@ public class OpenChannelMessageListComponent {
      * Scrolls to the bottom of the message list.
      *
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * <p> Use {@link #scrollToFirst()} instead.
      */
+    @Deprecated
     public void scrollToBottom() {
+        scrollToFirst();
+    }
+
+    /**
+     * Scrolls to the first position of the recycler view.
+     *
+     * @since 3.2.2
+     */
+    public void scrollToFirst() {
         if (messageRecyclerView == null) return;
         messageRecyclerView.getRecyclerView().stopScroll();
         messageRecyclerView.getRecyclerView().scrollToPosition(0);
@@ -422,9 +454,29 @@ public class OpenChannelMessageListComponent {
      *
      * @param view The view that was clicked
      * @since 3.0.0
+     * @deprecated 3.2.2
+     * This method is no longer acceptable to invoke event.
+     * <p> Use {@link #onScrollFirstButtonClicked(View)} instead.
      */
+    @Deprecated
     protected void onScrollBottomButtonClicked(@NonNull View view) {
         if (scrollBottomButtonClickListener != null) scrollBottomButtonClickListener.onClick(view);
+    }
+
+    /**
+     * Called when the button to scroll to the first position is clicked.
+     *
+     * @param view The view that was clicked
+     * @since 3.2.2
+     */
+    protected boolean onScrollFirstButtonClicked(@NonNull View view) {
+        boolean handled = scrollBottomButtonClickListener != null;
+
+        onScrollBottomButtonClicked(view);
+        if (scrollFirstButtonClickListener != null) {
+            handled = scrollFirstButtonClickListener.onClick(view);
+        }
+        return handled;
     }
 
     /**
@@ -449,7 +501,6 @@ public class OpenChannelMessageListComponent {
     public static class Params {
         private boolean useGroupUI = true;
         private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
-
         @NonNull
         private final MessageUIConfig messageUIConfig;
 

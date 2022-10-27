@@ -54,6 +54,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     private final boolean useMessageGroupUI;
+    private final boolean useReverseLayout;
     @Nullable
     private MessageUIConfig messageUIConfig;
 
@@ -89,8 +90,21 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * @since 2.2.0
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI) {
+        this(channel, useMessageGroupUI, true);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
+     * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
+     * @param useReverseLayout <code>true</code> if the message list is reversed, <code>false</code> otherwise.
+     * @since 3.2.2
+     */
+    public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         if (channel != null) this.channel = OpenChannel.clone(channel);
         this.useMessageGroupUI = useMessageGroupUI;
+        this.useReverseLayout = useReverseLayout;
         setHasStableIds(true);
     }
 
@@ -187,7 +201,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         }
 
         if (channel != null) {
-            holder.onBindViewHolder(channel, prev, current, next);
+            holder.onBindViewHolder(channel, prev, current, next, useReverseLayout);
         }
     }
 
@@ -245,7 +259,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         final List<BaseMessage> copiedMessage = Collections.unmodifiableList(messageList);
         service.submit(() -> {
             final CountDownLatch lock = new CountDownLatch(1);
-            final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(OpenChannelMessageListAdapter.this.channel, channel, OpenChannelMessageListAdapter.this.messageList, messageList, useMessageGroupUI);
+            final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(OpenChannelMessageListAdapter.this.channel, channel, OpenChannelMessageListAdapter.this.messageList, messageList, useMessageGroupUI, useReverseLayout);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
             mainHandler.post(() -> {

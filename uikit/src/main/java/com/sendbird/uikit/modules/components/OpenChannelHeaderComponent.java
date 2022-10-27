@@ -13,6 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.internal.ui.components.HeaderView;
 import com.sendbird.uikit.utils.ChannelUtils;
 
@@ -62,7 +63,12 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
         if (getRootView() instanceof HeaderView) {
             final HeaderView headerView = (HeaderView) layout;
             headerView.getProfileView().setVisibility(getParams().useProfileImage ? View.VISIBLE : View.GONE);
-            headerView.getDescriptionTextView().setText(getParams().description);
+            if (getParams().description != null) {
+                headerView.getDescriptionTextView().setVisibility(View.VISIBLE);
+                headerView.getDescriptionTextView().setText(getParams().description);
+            } else {
+                headerView.getDescriptionTextView().setVisibility(View.GONE);
+            }
         }
         return layout;
     }
@@ -149,6 +155,28 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          */
         public boolean useProfileImage() {
             return useProfileImage;
+        }
+
+        /**
+         * Apply data that matches keys mapped to Params' properties.
+         * {@code KEY_HEADER_DESCRIPTION} is mapped to {@link #setDescription(String)}
+         * {@code KEY_USE_HEADER_PROFILE_IMAGE} is mapped to {@link #setUseProfileImage(boolean)}
+         *
+         * @param context The {@code Context} this component is currently associated with
+         * @param args    The sets of arguments to apply at Params.
+         * @return This Params object that applied with given data.
+         * @since 3.2.2
+         */
+        @NonNull
+        protected Params apply(@NonNull Context context, @NonNull Bundle args) {
+            super.apply(context, args);
+            if (args.containsKey(StringSet.KEY_HEADER_DESCRIPTION)) {
+                setDescription(args.getString(StringSet.KEY_HEADER_DESCRIPTION));
+            }
+            if (args.containsKey(StringSet.KEY_USE_HEADER_PROFILE_IMAGE)) {
+                setUseProfileImage(args.getBoolean(StringSet.KEY_USE_HEADER_PROFILE_IMAGE));
+            }
+            return this;
         }
     }
 }
