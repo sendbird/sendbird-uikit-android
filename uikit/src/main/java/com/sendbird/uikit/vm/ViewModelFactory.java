@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.query.GroupChannelListQuery;
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.query.MessageSearchQuery;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.OpenChannelListQueryParams;
+import com.sendbird.android.params.ThreadMessageListParams;
 import com.sendbird.android.user.Member;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
@@ -86,6 +88,8 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new CreateOpenChannelViewModel();
         } else if (modelClass.isAssignableFrom(OpenChannelListViewModel.class)) {
             return (T) new OpenChannelListViewModel(params != null && params.length > 0 ? (OpenChannelListQueryParams) params[0] : null);
+        } else if (modelClass.isAssignableFrom(MessageThreadViewModel.class)) {
+            return (T) new MessageThreadViewModel((String) Objects.requireNonNull(params)[0], (BaseMessage) Objects.requireNonNull(params)[1], params.length > 2 ? (ThreadMessageListParams) params[2] : null);
         } else {
             return super.create(modelClass);
         }

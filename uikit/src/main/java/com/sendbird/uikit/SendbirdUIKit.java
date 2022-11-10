@@ -3,6 +3,8 @@ package com.sendbird.uikit;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 
@@ -26,15 +28,16 @@ import com.sendbird.android.user.User;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.internal.tasks.JobResultTask;
+import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.UserMentionConfig;
-import com.sendbird.uikit.tasks.JobResultTask;
-import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.UIKitPrefs;
@@ -206,10 +209,13 @@ public class SendbirdUIKit {
     @NonNull
     private static ReplyType replyType = ReplyType.QUOTE_REPLY;
     @NonNull
+    private static ThreadReplySelectType threadReplySelectType = ThreadReplySelectType.THREAD;
+    @NonNull
     private static UIKitFragmentFactory fragmentFactory = new UIKitFragmentFactory();
     private static volatile boolean useChannelListTypingIndicators = false;
     private static volatile boolean useChannelListMessageReceiptStatus = false;
     private static volatile boolean useMention = false;
+    private static volatile boolean useUserIdForNickname = true;
     private static UserMentionConfig userMentionConfig = new UserMentionConfig.Builder().build();
 
     static void clearAll() {
@@ -432,6 +438,16 @@ public class SendbirdUIKit {
     }
 
     /**
+     * Sets whether a nickname uses a user ID when there is no user nickname based on the user ID.
+     *
+     * @param useUserIdForNickname If <code>true</code> the user's nickname uses user ID when the nickname is empty, <code>false</code> other wise.
+     * @since 3.3.0
+     */
+    public static void setUseUserIdForNickname(boolean useUserIdForNickname) {
+        SendbirdUIKit.useUserIdForNickname = useUserIdForNickname;
+    }
+
+    /**
      * Returns the user mention configuration.
      *
      * @return The configuration applied for the user mention
@@ -453,6 +469,16 @@ public class SendbirdUIKit {
     }
 
     /**
+     * Returns set value whether a nickname uses a user ID when there is no user nickname based on the user ID.
+     *
+     * @return The value whether a nickname uses a user ID when there is no user nickname based on the user ID.
+     * @since 3.3.0
+     */
+    public static boolean isUsingUserIdForNickname() {
+        return useUserIdForNickname;
+    }
+
+    /**
      * Connects to Sendbird with given <code>UserInfo</code>.
      *
      * @param handler Callback handler.
@@ -468,7 +494,7 @@ public class SendbirdUIKit {
                     UserInfo userInfo = adapter.getUserInfo();
                     String userId = userInfo.getUserId();
                     String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
-                    if (TextUtils.isEmpty(nickname)) nickname = userId;
+                    if (useUserIdForNickname && TextUtils.isEmpty(nickname)) nickname = userId;
                     String profileUrl = TextUtils.isEmpty(userInfo.getProfileUrl()) ? user.getProfileUrl() : userInfo.getProfileUrl();
                     if (!nickname.equals(user.getNickname()) || (!TextUtils.isEmpty(profileUrl) && !profileUrl.equals(user.getProfileUrl()))) {
                         final UserUpdateParams params = new UserUpdateParams();
@@ -682,10 +708,22 @@ public class SendbirdUIKit {
     /**
      * Sets <code>ReplyType</code>, which is how replies are displayed in the message list.
      *
+     * @param replyType A type that represents how to display replies in message list
      * @since 2.2.0
      */
     public static void setReplyType(@NonNull ReplyType replyType) {
         SendbirdUIKit.replyType = replyType;
+    }
+
+    /**
+     * Sets <code>ThreadReplySelectType</code>, which is how replies are displayed in the message list.
+     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
+     *
+     * @param threadReplySelectType A type that represents where to go when selecting a reply
+     * @since 3.3.0
+     */
+    public static void setThreadReplySelectType(@NonNull ThreadReplySelectType threadReplySelectType) {
+        SendbirdUIKit.threadReplySelectType = threadReplySelectType;
     }
 
     /**
@@ -697,5 +735,21 @@ public class SendbirdUIKit {
     @NonNull
     public static ReplyType getReplyType() {
         return SendbirdUIKit.replyType;
+    }
+
+    /**
+     * Returns <code>ThreadReplySelectType</code>, which determines where to go when reply is selected.
+     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
+     *
+     * @return The value of <code>ThreadReplySelectType</code>.
+     * @since 3.3.0
+     */
+    @NonNull
+    public static ThreadReplySelectType getThreadReplySelectType() {
+        return SendbirdUIKit.threadReplySelectType;
+    }
+
+    public static void runOnUIThread(@NonNull Runnable runnable) {
+        new Handler(Looper.getMainLooper()).post(runnable);
     }
 }

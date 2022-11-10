@@ -8,8 +8,14 @@ import androidx.recyclerview.widget.DiffUtil;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.CustomizableMessage;
 import com.sendbird.android.message.Reaction;
+import com.sendbird.android.message.ThreadInfo;
+import com.sendbird.android.user.User;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
@@ -23,18 +29,17 @@ class MessageDiffCallback extends DiffUtil.Callback {
     private final GroupChannel oldChannel;
     @NonNull
     private final GroupChannel newChannel;
-    private final boolean useMessageGroupUI;
-    private final boolean useReverseLayout;
+    @NonNull
+    private final MessageListUIParams messageListUIParams;
 
     public MessageDiffCallback(@Nullable GroupChannel oldChannel, @NonNull GroupChannel newChannel,
                                @NonNull List<BaseMessage> oldMessageList, @NonNull List<BaseMessage> newMessageList,
-                               boolean useMessageGroupUI, boolean useReverseLayout) {
+                               @NonNull MessageListUIParams messageListUIParams) {
         this.oldChannel = oldChannel;
         this.newChannel = newChannel;
         this.oldMessageList = oldMessageList;
         this.newMessageList = newMessageList;
-        this.useMessageGroupUI = useMessageGroupUI;
-        this.useReverseLayout = useReverseLayout;
+        this.messageListUIParams = messageListUIParams;
     }
 
     @Override
@@ -70,12 +75,14 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
-        if (oldChannel.getUnreadMemberCount(newMessage) != newChannel.getUnreadMemberCount(newMessage)) {
-            return false;
-        }
+        if (messageListUIParams.shouldUseMessageReceipt()) {
+            if (oldChannel.getUnreadMemberCount(newMessage) != newChannel.getUnreadMemberCount(newMessage)) {
+                return false;
+            }
 
-        if (oldChannel.getUndeliveredMemberCount(newMessage) != newChannel.getUndeliveredMemberCount(newMessage)) {
-            return false;
+            if (oldChannel.getUndeliveredMemberCount(newMessage) != newChannel.getUndeliveredMemberCount(newMessage)) {
+                return false;
+            }
         }
 
         if (oldChannel.isFrozen() != newChannel.isFrozen()) {
@@ -112,21 +119,50 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
-        BaseMessage oldParentMessage = oldMessage.getParentMessage();
-        BaseMessage newParentMessage = newMessage.getParentMessage();
-        if (oldParentMessage != null && newParentMessage != null) {
-            if (oldParentMessage.getUpdatedAt() != newParentMessage.getUpdatedAt()) {
-                return false;
+        if (messageListUIParams.shouldUseQuotedView()) {
+            BaseMessage oldParentMessage = oldMessage.getParentMessage();
+            BaseMessage newParentMessage = newMessage.getParentMessage();
+            if (oldParentMessage != null && newParentMessage != null) {
+                if (oldParentMessage.getUpdatedAt() != newParentMessage.getUpdatedAt()) {
+                    return false;
+                }
             }
         }
 
-        if (useMessageGroupUI) {
+        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD) {
+            if (!(oldMessage instanceof CustomizableMessage) && !(newMessage instanceof CustomizableMessage)) {
+                final ThreadInfo oldThreadInfo = oldMessage.getThreadInfo();
+                final ThreadInfo newThreadInfo = newMessage.getThreadInfo();
+                if (oldThreadInfo.getReplyCount() != newThreadInfo.getReplyCount()) {
+                    return false;
+                }
+
+                if (oldThreadInfo.getMostRepliedUsers().size() != newThreadInfo.getMostRepliedUsers().size()) {
+                    return false;
+                }
+
+                for (int i = 0; i < oldThreadInfo.getMostRepliedUsers().size(); i++) {
+                    final User oldRepliedUser = oldThreadInfo.getMostRepliedUsers().get(i);
+                    final User newRepliedUser = newThreadInfo.getMostRepliedUsers().get(i);
+
+                    if (!oldRepliedUser.getUserId().equals(newRepliedUser.getUserId())) {
+                        return false;
+                    }
+
+                    if (!oldRepliedUser.getProfileUrl().equals(newRepliedUser.getProfileUrl())) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (messageListUIParams.shouldUseMessageGroupUI()) {
             BaseMessage oldPrevMessage = oldItemPosition - 1 < 0 ? null : oldMessageList.get(oldItemPosition - 1);
             BaseMessage newPrevMessage = newItemPosition - 1 < 0 ? null : newMessageList.get(newItemPosition - 1);
             BaseMessage oldNextMessage = oldItemPosition + 1 >= oldMessageList.size() ? null : oldMessageList.get(oldItemPosition + 1);
             BaseMessage newNextMessage = newItemPosition + 1 >= newMessageList.size() ? null : newMessageList.get(newItemPosition + 1);
-            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage, useReverseLayout);
-            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage, useReverseLayout);
+            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage, messageListUIParams);
+            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage, messageListUIParams);
 
             return oldMessageGroupType == newMessageGroupType;
         }

@@ -48,7 +48,7 @@
         <activity
             android:name=".activities.ChannelActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".activities.CreateChannelActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -90,6 +90,11 @@
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateUnchanged"
             />
+        <activity
+            android:name=".activities.MessageThreadActivity"
+            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.ChannelPushSettingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"

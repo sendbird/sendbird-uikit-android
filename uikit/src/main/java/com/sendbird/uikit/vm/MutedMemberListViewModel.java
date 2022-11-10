@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
-import com.sendbird.uikit.vm.queries.MutedMemberListQuery;
+import com.sendbird.uikit.internal.queries.MutedMemberListQuery;
 
 /**
  * ViewModel preparing and managing data related with the list of muted members

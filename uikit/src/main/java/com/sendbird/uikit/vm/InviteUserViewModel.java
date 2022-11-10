@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
-import com.sendbird.uikit.vm.queries.DefaultUserListQuery;
+import com.sendbird.uikit.internal.queries.DefaultUserListQuery;
 
 /**
  * ViewModel preparing and managing data related with the list of users when inviting users

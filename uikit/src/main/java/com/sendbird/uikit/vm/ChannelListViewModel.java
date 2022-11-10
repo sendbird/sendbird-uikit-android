@@ -17,9 +17,9 @@ import com.sendbird.android.params.GroupChannelListQueryParams;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.tasks.JobTask;
+import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.tasks.JobTask;
-import com.sendbird.uikit.tasks.TaskQueue;
 
 import java.util.Collections;
 import java.util.List;

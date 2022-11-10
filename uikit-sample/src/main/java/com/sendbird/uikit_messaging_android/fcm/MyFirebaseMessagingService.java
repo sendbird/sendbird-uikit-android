@@ -91,6 +91,7 @@ public class MyFirebaseMessagingService extends SendbirdPushHandler {
         String message = sendBird.getString(StringSet.message);
         JSONObject channel = sendBird.getJSONObject(StringSet.channel);
         String channelUrl = channel.getString(StringSet.channel_url);
+        long messageId = sendBird.getLong(StringSet.message_id);
 
         String senderName = context.getString(R.string.app_name);
         if (sendBird.has(StringSet.sender)) {
@@ -106,12 +107,12 @@ public class MyFirebaseMessagingService extends SendbirdPushHandler {
             notificationManager.createNotificationChannel(mChannel);
         }
 
-        Intent intent = GroupChannelMainActivity.newRedirectToChannelIntent(context, channelUrl);
+        Intent intent = GroupChannelMainActivity.newRedirectToChannelIntent(context, channelUrl, messageId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M ?
-                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE) :
-                PendingIntent.getActivity(context, channelUrl.hashCode() /* Request code */, intent, 0);
+                PendingIntent.getActivity(context, (int) messageId /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE) :
+                PendingIntent.getActivity(context, (int) messageId /* Request code */, intent, 0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)

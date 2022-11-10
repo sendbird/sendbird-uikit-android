@@ -40,25 +40,25 @@ internal class EmojiListView private constructor(context: Context) : FrameLayout
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var heightMeasureSpec = heightMeasureSpec
+        var heightMeasured = heightMeasureSpec
         if (maxHeight > 0) {
-            val hSize = MeasureSpec.getSize(heightMeasureSpec)
-            when (MeasureSpec.getMode(heightMeasureSpec)) {
+            val hSize = MeasureSpec.getSize(heightMeasured)
+            when (MeasureSpec.getMode(heightMeasured)) {
                 MeasureSpec.AT_MOST ->
-                    heightMeasureSpec =
+                    heightMeasured =
                         MeasureSpec.makeMeasureSpec(min(hSize, maxHeight), MeasureSpec.AT_MOST)
                 MeasureSpec.UNSPECIFIED ->
-                    heightMeasureSpec =
+                    heightMeasured =
                         MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST)
                 MeasureSpec.EXACTLY ->
-                    heightMeasureSpec =
+                    heightMeasured =
                         MeasureSpec.makeMeasureSpec(min(hSize, maxHeight), MeasureSpec.EXACTLY)
             }
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(widthMeasureSpec, heightMeasured)
     }
 
-    fun setEmojiClickListener(emojiClickListener: OnItemClickListener<String?>?) {
+    fun setEmojiClickListener(emojiClickListener: OnItemClickListener<String>?) {
         adapter.setEmojiClickListener(emojiClickListener)
     }
 

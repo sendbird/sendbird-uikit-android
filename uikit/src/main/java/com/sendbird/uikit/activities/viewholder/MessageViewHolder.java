@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
@@ -23,11 +23,10 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     @Nullable
     protected MessageUIConfig messageUIConfig;
     @NonNull
-    protected Map<String, View> clickableViewMap = new ConcurrentHashMap<>();
+    private final MessageListUIParams messageListUIParams;
     private boolean isNewDate = false;
     private boolean isMine = false;
     private boolean isShowProfile = false;
-    private boolean useMessageGroupUI = true;
 
     /**
      * Constructor
@@ -35,19 +34,18 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * @param view View to be displayed.
      */
     public MessageViewHolder(@NonNull View view) {
-        super(view);
+        this(view, new MessageListUIParams.Builder().build());
     }
 
-    MessageViewHolder(@NonNull View view, boolean useMessageGroupUI) {
+    public MessageViewHolder(@NonNull View view, @NonNull MessageListUIParams messageListUIParams) {
         super(view);
-        this.useMessageGroupUI = useMessageGroupUI;
+        this.messageListUIParams = messageListUIParams;
     }
 
     public void onBindViewHolder(@NonNull BaseChannel channel,
                                  @Nullable BaseMessage prevMessage,
                                  @NonNull BaseMessage message,
-                                 @Nullable BaseMessage nextMessage,
-                                 boolean useReverseLayout) {
+                                 @Nullable BaseMessage nextMessage) {
         if (prevMessage != null) {
             this.isNewDate = !DateUtils.hasSameDate(message.getCreatedAt(), prevMessage.getCreatedAt());
         } else {
@@ -57,9 +55,15 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
         this.isMine = MessageUtils.isMine(message);
         this.isShowProfile = !isMine;
 
-        bind(channel, message, useMessageGroupUI ?
-                MessageUtils.getMessageGroupType(prevMessage, message, nextMessage, useReverseLayout) :
-                MessageGroupType.GROUPING_TYPE_SINGLE);
+        final MessageGroupType messageGroupType = MessageUtils.getMessageGroupType(prevMessage, message, nextMessage, messageListUIParams);
+        final MessageListUIParams params = new MessageListUIParams.Builder(messageListUIParams)
+                .setMessageGroupType(messageGroupType)
+                .build();
+        bind(channel, message, params);
+
+        // for backward compatibility.
+        // This function was deprecated, but it was called again for the backword compatibility.
+        bind(channel, message, messageGroupType);
         itemView.requestLayout();
     }
 
@@ -105,12 +109,27 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
     /**
      * Binds as item view and data.
      *
-     * @param channel Channel used for as item view.
-     * @param message Message used for as item view.
+     * @param channel          Channel used for as item view.
+     * @param message          Message used for as item view.
      * @param messageGroupType The type of message group UI.
      * @since 1.2.1
+     * @deprecated 3.3.0
+     * <p> Use {@link #bind(BaseChannel, BaseMessage, MessageListUIParams)} instead.
+     * When binding view holders, this method is still invoked.
+     * We recommend you implement only one bind() method.
      */
-    abstract public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType);
+    @Deprecated
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {}
+
+    /**
+     * Binds as item view and data.
+     *
+     * @param channel Channel used for as item view.
+     * @param message Message used for as item view.
+     * @param params  Params used for as item view.
+     * @since 3.3.0
+     */
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageListUIParams params) {}
 
     /**
      * Returns a Map containing views to register a click event with an identifier.

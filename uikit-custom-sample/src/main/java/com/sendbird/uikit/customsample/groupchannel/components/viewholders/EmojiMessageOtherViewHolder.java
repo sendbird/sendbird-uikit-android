@@ -20,15 +20,16 @@ import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.user.Sender;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
-import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewEmojiMessageOtherHolderBinding;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.model.MessageListUIParams;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ViewHolder to draw the emoji message sent from other users in the <code>GroupChannel</code>.
@@ -39,12 +40,10 @@ public class EmojiMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     public EmojiMessageOtherViewHolder(@NonNull ViewEmojiMessageOtherHolderBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(),binding.ivEmoji);
-        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
     }
 
     @Override
-    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageListUIParams params) {
         Context context = binding.getRoot().getContext();
         boolean sendingState = message.getSendingStatus() == SendingStatus.SUCCEEDED;
         binding.tvSentAt.setVisibility(sendingState ? View.VISIBLE : View.GONE);
@@ -82,9 +81,11 @@ public class EmojiMessageOtherViewHolder extends GroupChannelMessageViewHolder {
     @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
-        return clickableViewMap;
+        return new ConcurrentHashMap<String, View>() {{
+            put(ClickableViewIdentifier.Chat.name(),binding.ivEmoji);
+            put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
+        }};
     }
-
 
     @Override
     public void setEmojiReaction(@NonNull List<Reaction> reactionList, @Nullable OnItemClickListener<String> emojiReactionClickListener, @Nullable OnItemLongClickListener<String> emojiReactionLongClickListener, @Nullable View.OnClickListener moreButtonClickListener) {}

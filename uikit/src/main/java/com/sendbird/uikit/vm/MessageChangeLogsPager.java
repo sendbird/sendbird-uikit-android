@@ -36,7 +36,7 @@ class MessageChangeLogsPager {
         this.lastSyncAt = lastSyncAt;
         this.params = MessageChangeLogsParams.from(params);
         this.messageListParams = params.clone();
-        this.messageListParams.setPreviousResultSize(0);
+        this.messageListParams.setPreviousResultSize(1);
         this.messageListParams.setNextResultSize(100);
     }
 

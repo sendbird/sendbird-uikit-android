@@ -9,8 +9,8 @@ import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.internal.queries.DefaultUserListQuery;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.vm.queries.DefaultUserListQuery;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

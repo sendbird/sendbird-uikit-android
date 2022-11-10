@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
-import com.sendbird.uikit.vm.queries.OperatorListQuery;
+import com.sendbird.uikit.internal.queries.OperatorListQuery;
 
 /**
  * ViewModel preparing and managing data related with the list of operators

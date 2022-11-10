@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
-import com.sendbird.uikit.vm.queries.ParticipantsListQuery;
+import com.sendbird.uikit.internal.queries.ParticipantsListQuery;
 
 /**
  * ViewModel preparing and managing data related with the push setting of a channel

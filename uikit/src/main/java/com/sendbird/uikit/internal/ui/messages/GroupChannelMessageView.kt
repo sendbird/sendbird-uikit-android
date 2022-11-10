@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
-import com.sendbird.uikit.consts.MessageGroupType
+import com.sendbird.uikit.model.MessageListUIParams
 
 internal abstract class GroupChannelMessageView @JvmOverloads constructor(
     context: Context,
@@ -14,6 +14,6 @@ internal abstract class GroupChannelMessageView @JvmOverloads constructor(
     abstract fun drawMessage(
         channel: GroupChannel,
         message: BaseMessage,
-        messageGroupType: MessageGroupType
+        params: MessageListUIParams
     )
 }

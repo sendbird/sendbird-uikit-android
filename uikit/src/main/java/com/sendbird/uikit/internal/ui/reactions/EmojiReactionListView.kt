@@ -22,19 +22,16 @@ internal class EmojiReactionListView @JvmOverloads constructor(
 
     private val adapter: EmojiReactionListAdapter
     private val layoutManager: GridLayoutManager
+    var maxSpanSize: Int = 4
 
     init {
         binding = SbViewEmojiReactionListBinding.inflate(LayoutInflater.from(context), this, true)
         binding.rvEmojiReactionList.setUseDivider(false)
-        layoutManager = GridLayoutManager(context, MAX_SPAN_SIZE)
+        layoutManager = GridLayoutManager(context, maxSpanSize)
         binding.rvEmojiReactionList.layoutManager = layoutManager
         binding.rvEmojiReactionList.setHasFixedSize(true)
         adapter = EmojiReactionListAdapter()
         binding.rvEmojiReactionList.adapter = adapter
-    }
-
-    companion object {
-        private const val MAX_SPAN_SIZE = 4
     }
 
     fun setReactionList(reactionList: List<Reaction?>) {
@@ -45,15 +42,15 @@ internal class EmojiReactionListView @JvmOverloads constructor(
     private fun resetSpanSize() {
         val itemSize = adapter.itemCount
         if (itemSize > 0) {
-            layoutManager.spanCount = min(itemSize, MAX_SPAN_SIZE)
+            layoutManager.spanCount = min(itemSize, maxSpanSize)
         }
     }
 
-    fun setEmojiReactionClickListener(emojiReactionClickListener: OnItemClickListener<String?>?) {
+    fun setEmojiReactionClickListener(emojiReactionClickListener: OnItemClickListener<String>?) {
         adapter.setEmojiReactionClickListener(emojiReactionClickListener)
     }
 
-    fun setEmojiReactionLongClickListener(emojiReactionLongClickListener: OnItemLongClickListener<String?>?) {
+    fun setEmojiReactionLongClickListener(emojiReactionLongClickListener: OnItemLongClickListener<String>?) {
         adapter.setEmojiReactionLongClickListener(emojiReactionLongClickListener)
     }
 

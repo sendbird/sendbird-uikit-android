@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.model.MessageListUIParams;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
         super(view);
     }
 
-    GroupChannelMessageViewHolder(@NonNull View view, boolean useMessageGroupUI) {
-        super(view, useMessageGroupUI);
+    public GroupChannelMessageViewHolder(@NonNull View view, @NonNull MessageListUIParams messageListUIParams) {
+        super(view, messageListUIParams);
     }
 
     /**
@@ -37,4 +38,3 @@ public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
                                           @Nullable OnItemLongClickListener<String> emojiReactionLongClickListener,
                                           @Nullable View.OnClickListener moreButtonClickListener);
 }
-

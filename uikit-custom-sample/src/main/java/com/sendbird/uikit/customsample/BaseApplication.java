@@ -23,6 +23,8 @@ import com.sendbird.android.user.User;
 import com.sendbird.android.user.query.ApplicationUserListQuery;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
+import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.customsample.consts.InitState;
 import com.sendbird.uikit.customsample.consts.StringSet;
 import com.sendbird.uikit.customsample.fcm.MyFirebaseMessagingService;
@@ -112,6 +114,9 @@ public class BaseApplication extends MultiDexApplication {
                         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
                         // set whether to use user profile
                         SendbirdUIKit.setUseDefaultUserProfile(false);
+                        // set reply type
+                        SendbirdUIKit.setReplyType(ReplyType.THREAD);
+                        SendbirdUIKit.setThreadReplySelectType(ThreadReplySelectType.THREAD);
                         // set custom user list query
                         SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
                         initState.setValue(InitState.SUCCEED);

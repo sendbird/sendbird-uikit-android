@@ -5,6 +5,7 @@ public class StringSet {
     public static final String CHANNEL_ID = "CHANNEL_ID";
     public static final String KEY_CHANNEL_URL = "KEY_CHANNEL_URL";
     public static final String PUSH_REDIRECT_CHANNEL = "PUSH_REDIRECT_CHANNEL";
+    public static final String PUSH_REDIRECT_MESSAGE_ID = "PUSH_REDIRECT_MESSAGE_ID";
     public static final String SETTINGS_USE_HEADER = "SETTINGS_USE_HEADER";
     public static final String SETTINGS_USE_DO_NOT_DISTURB = "SETTINGS_USE_DO_NOT_DISTURB";
     public static final String SB_LIVE_TYPE = "SB_LIVE_TYPE";
@@ -14,6 +15,7 @@ public class StringSet {
     public static final String sendbird = "sendbird";
     public static final String channel = "channel";
     public static final String channel_url = "channel_url";
+    public static final String message_id = "message_id";
     public static final String message = "message";
     public static final String sender = "sender";
     public static final String name = "name";

@@ -42,6 +42,11 @@ public class UserUtils {
 
     @NonNull
     public static String getDisplayName(@NonNull Context context, @Nullable User user, boolean usePronouns) {
+        return getDisplayName(context, user, usePronouns, Integer.MAX_VALUE);
+    }
+
+    @NonNull
+    public static String getDisplayName(@NonNull Context context, @Nullable User user, boolean usePronouns, int maxLength) {
         String nickname = context.getString(R.string.sb_text_channel_list_title_unknown);
         if (user == null) return nickname;
 
@@ -51,6 +56,10 @@ public class UserUtils {
             nickname = context.getString(R.string.sb_text_you);
         } else if (!TextUtils.isEmpty(user.getNickname())) {
             nickname = user.getNickname();
+        }
+
+        if (nickname.length() > maxLength) {
+            nickname = nickname.substring(0, maxLength) + context.getString(R.string.sb_text_ellipsis);
         }
         return nickname;
     }

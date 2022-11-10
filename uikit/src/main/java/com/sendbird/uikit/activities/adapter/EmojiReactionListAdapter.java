@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
-import com.sendbird.uikit.activities.viewholder.EmojiReactionMoreViewHolder;
-import com.sendbird.uikit.activities.viewholder.EmojiReactionViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.internal.ui.reactions.EmojiReactionView;
+import com.sendbird.uikit.internal.ui.viewholders.EmojiReactionMoreViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.EmojiReactionViewHolder;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 

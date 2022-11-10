@@ -10,6 +10,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.UserMessage
@@ -74,7 +75,7 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
         }
     }
 
-    override fun drawQuotedMessage(message: BaseMessage, textUIConfig: TextUIConfig?) {
+    override fun drawQuotedMessage(channel: GroupChannel, message: BaseMessage, textUIConfig: TextUIConfig?) {
         binding.quoteReplyPanel.visibility = GONE
         if (!message.hasParentMessage()) return
 
@@ -123,7 +124,7 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
                 }
 
                 val type = parentMessage.type
-                binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_8).toFloat()
+                binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_16).toFloat()
                 binding.tvQuoteReplyMessage.isSingleLine = true
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.MIDDLE
                 if (type.lowercase(Locale.getDefault()).contains(StringSet.gif)) {

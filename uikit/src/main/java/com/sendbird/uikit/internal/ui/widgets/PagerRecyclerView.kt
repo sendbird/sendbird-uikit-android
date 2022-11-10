@@ -50,6 +50,20 @@ internal class PagerRecyclerView @JvmOverloads constructor(
         onScrollListener.useReverseData = true
     }
 
+    fun setStackFromEnd(stackFromEnd: Boolean) {
+        val prevStackFromEnd = layoutManager?.stackFromEnd ?: false
+        if (prevStackFromEnd != stackFromEnd) {
+            layoutManager?.stackFromEnd = stackFromEnd
+            post { requestLayout() }
+        }
+    }
+
+    fun isScrollable(): Boolean {
+        return canScrollVertically(1) || canScrollVertically(-1)
+    }
+
+    fun getStackFromEnd(): Boolean = layoutManager?.stackFromEnd ?: false
+
     private class OnScrollListener constructor(var layoutManager: LinearLayoutManager?) :
         RecyclerView.OnScrollListener() {
         private var threshold = 1

@@ -32,6 +32,23 @@ public class ChannelActivity extends AppCompatActivity {
     }
 
     /**
+     * Create an intent for a {@link ChannelActivity}.
+     * This intent will redirect to {@link MessageThreadActivity} if message has parent.
+     *
+     * @param context A Context of the application package implementing this class.
+     * @param channelUrl the url of the channel will be implemented.
+     * @param messageId  The message id of the anchor that redirects message thread.
+     * @return ChannelActivity Intent
+     * @since 3.3.0
+     */
+    @NonNull
+    public static Intent newRedirectToMessageThreadIntent(@NonNull Context context, @NonNull String channelUrl, long messageId) {
+        final Intent intent = newIntentFromCustomActivity(context, ChannelActivity.class, channelUrl);
+        intent.putExtra(StringSet.KEY_ANCHOR_MESSAGE_ID, messageId);
+        return intent;
+    }
+
+    /**
      * Create an intent for a custom activity. The custom activity must inherit {@link ChannelActivity}.
      *
      * @param context A Context of the application package implementing this class.
@@ -76,6 +93,13 @@ public class ChannelActivity extends AppCompatActivity {
                 boolean useRightButton = !intent.getBooleanExtra(StringSet.KEY_FROM_SEARCH_RESULT, true);
                 intent.putExtra(StringSet.KEY_USE_HEADER_RIGHT_BUTTON, useRightButton);
                 intent.putExtra(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED, true);
+            }
+            if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) {
+                getIntent().removeExtra(StringSet.KEY_ANCHOR_MESSAGE_ID);
+            }
+            if (intent.hasExtra(StringSet.KEY_ANCHOR_MESSAGE_ID)) {
+                final long messageId = intent.getLongExtra(StringSet.KEY_ANCHOR_MESSAGE_ID, 0L);
+                if (messageId <= 0) intent.removeExtra(StringSet.KEY_ANCHOR_MESSAGE_ID);
             }
         }
         final Bundle args = intent != null && intent.getExtras() != null ? intent.getExtras() : new Bundle();

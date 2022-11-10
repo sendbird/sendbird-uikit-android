@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.viewbinding.ViewBinding
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.model.TextUIConfig
 
@@ -15,5 +16,5 @@ abstract class BaseQuotedMessageView @JvmOverloads internal constructor(
 ) : FrameLayout(context, attrs, defStyle) {
     abstract val layout: View
     abstract val binding: ViewBinding
-    abstract fun drawQuotedMessage(message: BaseMessage, textUIConfig: TextUIConfig?)
+    abstract fun drawQuotedMessage(channel: GroupChannel, message: BaseMessage, textUIConfig: TextUIConfig?)
 }

@@ -31,7 +31,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.channel.BaseChannel;
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.CustomizableMessage;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.OGMetaData;
 import com.sendbird.android.message.Thumbnail;
@@ -39,9 +41,11 @@ import com.sendbird.android.user.Sender;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
 import com.sendbird.uikit.internal.ui.messages.OgtagView;
+import com.sendbird.uikit.internal.ui.messages.ThreadInfoView;
 import com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView;
 import com.sendbird.uikit.internal.ui.widgets.RoundCornerView;
 import com.sendbird.uikit.log.Logger;
@@ -403,10 +407,10 @@ public class ViewUtils {
         }
     }
 
-    public static void drawQuotedMessage(@NonNull BaseQuotedMessageView replyPanel, @NonNull BaseMessage message, @Nullable TextUIConfig uiConfig) {
-        final boolean hasParentMessage = message.getParentMessageId() != 0L;
+    public static void drawQuotedMessage(@NonNull BaseQuotedMessageView replyPanel, @NonNull GroupChannel channel, @NonNull BaseMessage message, @Nullable TextUIConfig uiConfig) {
+        final boolean hasParentMessage = MessageUtils.hasParentMessage(message);
         replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
-        replyPanel.drawQuotedMessage(message, uiConfig);
+        replyPanel.drawQuotedMessage(channel, message, uiConfig);
     }
 
     public static void drawSentAt(@NonNull TextView tvSentAt, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
@@ -436,5 +440,14 @@ public class ViewUtils {
         }
 
         tvFilename.setText(filename);
+    }
+
+    public static void drawThreadInfo(@NonNull ThreadInfoView threadInfoView, @NonNull BaseMessage message) {
+        if (message instanceof CustomizableMessage) return;
+        if (SendbirdUIKit.getReplyType() != ReplyType.THREAD) {
+            threadInfoView.setVisibility(View.GONE);
+            return;
+        }
+        threadInfoView.drawThreadInfo(message.getThreadInfo());
     }
 }

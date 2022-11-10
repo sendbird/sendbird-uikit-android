@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
         android:layout_marginLeft="@dimen/sb_size_12"
-        android:translationY="@dimen/sb_size_6"
+        android:translationY="@dimen/sb_size_10"
         app:layout_constraintStart_toEndOf="@+id/ivProfileView"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -152,5 +152,14 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="ivProfileView,contentPanelWithReactions,tvSentAt" />
+
+    <com.sendbird.uikit.internal.ui.messages.ThreadInfoView
+        android:id="@+id/threadInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/contentPanelWithReactions"
+        app:layout_constraintTop_toBottomOf="@id/contentPanelWithReactions"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

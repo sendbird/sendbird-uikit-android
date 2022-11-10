@@ -12,8 +12,8 @@ import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.params.OpenChannelListQueryParams;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
-import com.sendbird.uikit.tasks.JobTask;
-import com.sendbird.uikit.tasks.TaskQueue;
+import com.sendbird.uikit.internal.tasks.JobTask;
+import com.sendbird.uikit.internal.tasks.TaskQueue;
 
 import java.util.ArrayList;
 import java.util.Collections;

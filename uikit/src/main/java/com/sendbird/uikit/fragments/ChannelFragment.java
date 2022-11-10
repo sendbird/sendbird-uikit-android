@@ -1,56 +1,38 @@
 package com.sendbird.uikit.fragments;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.ClipData;
-import android.content.ClipboardManager;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.android.SendbirdChat;
-import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
-import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.BaseMessage;
-import com.sendbird.android.message.Emoji;
 import com.sendbird.android.message.FileMessage;
-import com.sendbird.android.message.Reaction;
 import com.sendbird.android.message.SendingStatus;
-import com.sendbird.android.message.UserMessage;
-import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
-import com.sendbird.android.user.Member;
 import com.sendbird.android.user.MutedState;
-import com.sendbird.android.user.Sender;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
-import com.sendbird.uikit.activities.PhotoViewActivity;
+import com.sendbird.uikit.activities.MessageThreadActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
@@ -58,7 +40,7 @@ import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.interfaces.CustomParamsHandler;
+import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
@@ -67,13 +49,8 @@ import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.interfaces.OnResultHandler;
-import com.sendbird.uikit.internal.ui.reactions.EmojiListView;
-import com.sendbird.uikit.internal.ui.reactions.EmojiReactionUserListView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
-import com.sendbird.uikit.model.EmojiManager;
-import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.modules.ChannelModule;
@@ -81,17 +58,10 @@ import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.modules.components.MessageListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
-import com.sendbird.uikit.tasks.JobResultTask;
-import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.ChannelUtils;
-import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
-import com.sendbird.uikit.utils.FileUtils;
-import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.MessageUtils;
-import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.ReactionUtils;
-import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
@@ -99,34 +69,32 @@ import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Fragment that provides chat in {@code GroupChannel}
  */
-public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelViewModel> {
+public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter, MessageListComponent, ChannelModule, ChannelViewModel> {
     @Nullable
     private View.OnClickListener headerLeftButtonClickListener;
     @Nullable
     private View.OnClickListener headerRightButtonClickListener;
     @Nullable
-    private OnItemClickListener<BaseMessage> messageClickListener;
-    @Nullable
-    private OnItemClickListener<BaseMessage> messageProfileClickListener;
-    @Nullable
     private OnItemClickListener<BaseMessage> quoteReplyMessageClickListener;
     @Nullable
-    private OnItemLongClickListener<BaseMessage> messageLongClickListener;
-    @Nullable
-    private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
-    @Nullable
     private OnItemLongClickListener<BaseMessage> quoteReplyMessageLongClickListener;
+    @Nullable
+    private OnItemClickListener<BaseMessage> threadInfoClickListener;
+    @Nullable
+    private View.OnClickListener replyModeCloseButtonClickListener;
+    @Nullable
+    @Deprecated
+    private View.OnClickListener scrollBottomButtonClickListener;
+    @Nullable
+    private OnConsumableClickListener scrollFirstButtonClickListener;
     @Nullable
     private View.OnClickListener inputLeftButtonClickListener;
     @Nullable
@@ -135,8 +103,6 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     private OnEmojiReactionLongClickListener emojiReactionLongClickListener;
     @Nullable
     private OnItemClickListener<BaseMessage> emojiReactionMoreButtonClickListener;
-    @Nullable
-    private LoadingDialogHandler loadingDialogHandler;
     @Nullable
     private OnInputTextChangedListener inputTextChangedListener;
     @Nullable
@@ -148,65 +114,28 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @Nullable
     private View.OnClickListener editModeSaveButtonClickListener;
     @Nullable
-    private View.OnClickListener replyModeCloseButtonClickListener;
-    @Nullable
     private OnInputModeChangedListener inputModeChangedListener;
     @Nullable
     private View.OnClickListener tooltipClickListener;
     @Nullable
-    @Deprecated
-    private View.OnClickListener scrollBottomButtonClickListener;
-    @Nullable
-    private OnConsumableClickListener scrollFirstButtonClickListener;
-    @Nullable
-    private MessageListAdapter adapter;
-    @Nullable
     private MessageListParams params;
-    @Nullable
-    private SuggestedMentionListAdapter suggestedMentionListAdapter;
-
-    @Nullable
-    private BaseMessage targetMessage;
-    @NonNull
-    private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     @NonNull
     private final AtomicBoolean tryAnimateWhenMessageLoaded = new AtomicBoolean(false);
     @NonNull
     private final AtomicBoolean anchorDialogShowing = new AtomicBoolean(false);
-    @Nullable
-    private Uri mediaUri;
+    @NonNull
+    private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
+    @NonNull
+    private final AtomicBoolean isThreadRedirected = new AtomicBoolean(false);
 
-    private final ActivityResultLauncher<Intent> getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        SendbirdChat.setAutoBackgroundDetection(true);
-        final Intent intent = result.getData();
-        int resultCode = result.getResultCode();
-
-        if (resultCode != RESULT_OK || intent == null) return;
-        final Uri mediaUri = intent.getData();
-        if (mediaUri != null && isFragmentAlive()) {
-            sendFileMessage(mediaUri);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args != null && args.containsKey(StringSet.KEY_ANCHOR_MESSAGE_ID)) {
+            isThreadRedirected.set(true);
         }
-    });
-    private final ActivityResultLauncher<Intent> takeCameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        SendbirdChat.setAutoBackgroundDetection(true);
-        int resultCode = result.getResultCode();
-
-        if (resultCode != RESULT_OK || getContext() == null) return;
-        final Uri mediaUri = ChannelFragment.this.mediaUri;
-        if (mediaUri != null && isFragmentAlive()) {
-            sendFileMessage(mediaUri);
-        }
-    });
-    private final ActivityResultLauncher<Intent> takeVideoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        SendbirdChat.setAutoBackgroundDetection(true);
-        int resultCode = result.getResultCode();
-
-        if (resultCode != RESULT_OK) return;
-        final Uri mediaUri = ChannelFragment.this.mediaUri;
-        if (mediaUri != null && isFragmentAlive()) {
-            sendFileMessage(mediaUri);
-        }
-    });
+    }
 
     @NonNull
     @Override
@@ -214,25 +143,10 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         return new ChannelModule(requireContext());
     }
 
-    @Override
-    protected void onConfigureParams(@NonNull ChannelModule module, @NonNull Bundle args) {
-        if (loadingDialogHandler != null) module.setOnLoadingDialogHandler(loadingDialogHandler);
-    }
-
     @NonNull
     @Override
     protected ChannelViewModel onCreateViewModel() {
         return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), params)).get(getChannelUrl(), ChannelViewModel.class);
-    }
-
-    @Override
-    public void onDestroy() {
-        Logger.i(">> ChannelFragment::onDestroy()");
-        super.onDestroy();
-        SendbirdChat.setAutoBackgroundDetection(true);
-        if (!isInitCallFinished.get()) {
-            shouldDismissLoadingDialog();
-        }
     }
 
     @Override
@@ -243,11 +157,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     @Override
     protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull ChannelModule module, @NonNull ChannelViewModel viewModel) {
         Logger.d(">> ChannelFragment::onBeforeReady()");
-        module.getMessageListComponent().setPagedDataLoader(viewModel);
-        if (this.adapter != null) {
-            module.getMessageListComponent().setAdapter(adapter);
-        }
-        module.getMessageInputComponent().setSuggestedMentionListAdapter(suggestedMentionListAdapter == null ? new SuggestedMentionListAdapter() : suggestedMentionListAdapter);
+        super.onBeforeReady(status, module, viewModel);
         final GroupChannel channel = viewModel.getChannel();
         onBindChannelHeaderComponent(module.getHeaderComponent(), viewModel, channel);
         onBindMessageListComponent(module.getMessageListComponent(), viewModel, channel);
@@ -267,15 +177,22 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             return;
         }
 
-        viewModel.onChannelDeleted().observe(getViewLifecycleOwner(), channelUrl -> shouldActivityFinish());
-
-        module.getMessageListComponent().notifyChannelChanged(channel);
         module.getHeaderComponent().notifyChannelChanged(channel);
+        module.getMessageListComponent().notifyChannelChanged(channel);
         module.getMessageInputComponent().notifyChannelChanged(channel);
 
+        viewModel.onChannelDeleted().observe(getViewLifecycleOwner(), channelUrl -> shouldActivityFinish());
         final MessageListComponent messageListComponent = module.getMessageListComponent();
         final long startingPoint = messageListComponent.getParams().getInitialStartingPoint();
         loadInitial(startingPoint);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!isInitCallFinished.get()) {
+            shouldDismissLoadingDialog();
+        }
     }
 
     /**
@@ -319,14 +236,16 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         if (channel == null) return;
         messageListComponent.setOnMessageClickListener(this::onMessageClicked);
         messageListComponent.setOnMessageProfileLongClickListener(this::onMessageProfileLongClicked);
-        messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
         messageListComponent.setOnMessageProfileClickListener(this::onMessageProfileClicked);
-        messageListComponent.setOnQuoteReplyMessageClickListener(this::onQuoteReplyMessageClicked);
         messageListComponent.setOnMessageLongClickListener(this::onMessageLongClicked);
         messageListComponent.setOnEmojiReactionClickListener(emojiReactionClickListener != null ? emojiReactionClickListener : (view, position, message, reactionKey) -> toggleReaction(view, message, reactionKey));
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
-        messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : v -> scrollToFirst());
+        messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : this::onMessageTooltipClicked);
+
+        messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
+        messageListComponent.setOnQuoteReplyMessageClickListener(this::onQuoteReplyMessageClicked);
+        messageListComponent.setOnThreadInfoClickListener(this::onThreadInfoClicked);
         messageListComponent.setOnScrollBottomButtonClickListener(scrollBottomButtonClickListener);
         messageListComponent.setOnScrollFirstButtonClickListener(scrollFirstButtonClickListener != null ? scrollFirstButtonClickListener : view -> {
             if (viewModel.hasNext()) {
@@ -339,7 +258,12 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         final ChannelModule module = getModule();
         viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), receivedMessageData -> {
             boolean isInitialCallFinished = isInitCallFinished.getAndSet(true);
-            if (!isInitialCallFinished && isFragmentAlive()) shouldDismissLoadingDialog();
+            if (!isInitialCallFinished && isFragmentAlive()) {
+                shouldDismissLoadingDialog();
+            }
+            if (isThreadRedirected.get() && isFragmentAlive()) {
+                redirectMessageThreadIfNeeded(getArguments());
+            }
 
             final List<BaseMessage> messageList = receivedMessageData.getMessages();
             Logger.d("++ result messageList size : %s, source = %s", messageList.size(), receivedMessageData.getTraceName());
@@ -351,7 +275,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
                 if (!isFragmentAlive()) return;
 
                 if (eventSource != null) {
-                    Logger.d("++ Message action : %s", eventSource);
+                    Logger.d("++ ChannelFragment Message action : %s", eventSource);
                     final RecyclerView recyclerView = messageListComponent.getRecyclerView();
 
                     final MessageListAdapter adapter = messageListComponent.getAdapter();
@@ -423,7 +347,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     }
 
     /**
-     * Called to bind events to the MessageInputComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelModule, ChannelViewModel)} regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the MessageInputComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelModule, ChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
      *
      * @param inputComponent The component to which the event will be bound
      * @param viewModel      A view model that provides the data needed for the fragment
@@ -434,27 +358,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         Logger.d(">> ChannelFragment::onBindMessageInputComponent()");
         if (channel == null) return;
         inputComponent.setOnInputLeftButtonClickListener(inputLeftButtonClickListener != null ? inputLeftButtonClickListener : v -> showMediaSelectDialog());
-        inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : v -> {
-            final EditText inputText = inputComponent.getEditTextView();
-            if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
-                final Editable editableText = inputText.getText();
-                UserMessageCreateParams params = new UserMessageCreateParams(editableText.toString());
-                if (targetMessage != null && SendbirdUIKit.getReplyType() == ReplyType.QUOTE_REPLY) {
-                    params.setParentMessageId(targetMessage.getMessageId());
-                    params.setReplyToChannel(true);
-                }
-                if (SendbirdUIKit.isUsingUserMention()) {
-                    if (inputText instanceof MentionEditText) {
-                        final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
-                        final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
-                        Logger.d("++ mentioned template text=%s", mentionedTemplate);
-                        params.setMentionedMessageTemplate(mentionedTemplate.toString());
-                        params.setMentionedUsers(mentionedUsers);
-                    }
-                }
-                sendUserMessage(params);
-            }
-        });
+        inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : this::onInputRightButtonClicked);
         inputComponent.setOnEditModeSaveButtonClickListener(editModeSaveButtonClickListener != null ? editModeSaveButtonClickListener : v -> {
             final EditText inputText = inputComponent.getEditTextView();
             if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
@@ -477,26 +381,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
 
         inputComponent.setOnEditModeTextChangedListener(editModeTextChangedListener != null ? editModeTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
         inputComponent.setOnEditModeCancelButtonClickListener(editModeCancelButtonClickListener != null ? editModeCancelButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
-        inputComponent.setOnQuoteReplyModeCloseButtonClickListener(replyModeCloseButtonClickListener != null ? replyModeCloseButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
         inputComponent.setOnInputTextChangedListener(inputTextChangedListener != null ? inputTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
-        inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : (before, current) -> {
-            switch (current) {
-                case QUOTE_REPLY:
-                case EDIT:
-                    inputComponent.notifyDataChanged(targetMessage, channel);
-                    break;
-                default:
-                    if (before == MessageInputView.Mode.QUOTE_REPLY && targetMessage == null) {
-                        final EditText input = inputComponent.getEditTextView();
-                        final String defaultText = input != null && !TextUtils.isEmpty(input.getText())
-                                ? inputComponent.getEditTextView().getText().toString() : "";
-                        inputComponent.notifyDataChanged(null, channel, defaultText);
-                    } else {
-                        inputComponent.notifyDataChanged(null, channel);
-                    }
-                    targetMessage = null;
-            }
-        });
+        inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : this::onInputModeChanged);
+        inputComponent.setOnQuoteReplyModeCloseButtonClickListener(replyModeCloseButtonClickListener != null ? replyModeCloseButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
 
         if (SendbirdUIKit.isUsingUserMention()) {
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
@@ -524,7 +411,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
     }
 
     /**
-     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelModule, ChannelViewModel)} regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChannelModule, ChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
@@ -536,23 +423,108 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         viewModel.getStatusFrame().observe(getViewLifecycleOwner(), statusComponent::notifyStatusChanged);
     }
 
-    private void scrollToFirst() {
-        final MessageListComponent messageListComponent = getModule().getMessageListComponent();
-        if (getViewModel().hasNext()) {
-            loadInitial(Long.MAX_VALUE);
+    /**
+     * Called when the quoted message of the message is clicked.
+     *
+     * @param view     The View clicked
+     * @param position The position clicked
+     * @param message  The message that the clicked item displays
+     * @since 3.0.0
+     */
+    protected void onQuoteReplyMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
+        if (quoteReplyMessageClickListener != null) {
+            quoteReplyMessageClickListener.onItemClick(view, position, message);
+            return;
+        }
+        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD &&
+                SendbirdUIKit.getThreadReplySelectType() == ThreadReplySelectType.THREAD) {
+            startMessageThreadActivity(message);
         } else {
-            messageListComponent.scrollToFirst();
+            jumpToParentMessage(message);
         }
     }
 
     /**
-     * Make context menu items that are shown when the message is long clicked.
+     * Called when the quoted message of the message is long-clicked.
      *
-     * @param message A clicked message.
-     * @return Collection of {@link DialogListItem}
-     * @since 2.2.3
+     * @param view     The View long-clicked
+     * @param position The position long-clicked
+     * @param message  The message that the long-clicked item displays
+     * @since 3.0.0
      */
+    protected void onQuoteReplyMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
+        if (quoteReplyMessageLongClickListener != null)
+            quoteReplyMessageLongClickListener.onItemLongClick(view, position, message);
+    }
+
+    /**
+     * Called when the thread info of the message is clicked.
+     *
+     * @param view     The View clicked
+     * @param position The position clicked
+     * @param message  The message that the clicked item displays
+     * @since 3.3.0
+     */
+    protected void onThreadInfoClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
+        if (threadInfoClickListener != null) {
+            threadInfoClickListener.onItemClick(view, position, message);
+            return;
+        }
+        startMessageThreadActivity(message);
+    }
+
+    private void onMessageTooltipClicked(@NonNull View view) {
+        scrollToFirst();
+    }
+
+    private void onInputRightButtonClicked(@NonNull View view) {
+        final MessageInputComponent inputComponent = getModule().getMessageInputComponent();
+        final EditText inputText = inputComponent.getEditTextView();
+        if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
+            final Editable editableText = inputText.getText();
+            UserMessageCreateParams params = new UserMessageCreateParams(editableText.toString());
+            if (targetMessage != null && SendbirdUIKit.getReplyType() != ReplyType.NONE) {
+                params.setParentMessageId(targetMessage.getMessageId());
+                params.setReplyToChannel(true);
+            }
+            if (SendbirdUIKit.isUsingUserMention()) {
+                if (inputText instanceof MentionEditText) {
+                    final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
+                    final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
+                    Logger.d("++ mentioned template text=%s", mentionedTemplate);
+                    params.setMentionedMessageTemplate(mentionedTemplate.toString());
+                    params.setMentionedUsers(mentionedUsers);
+                }
+            }
+            sendUserMessage(params);
+        }
+    }
+
+    private void onInputModeChanged(@NonNull MessageInputView.Mode before, @NonNull MessageInputView.Mode current) {
+        final GroupChannel channel = getViewModel().getChannel();
+        final MessageInputComponent inputComponent = getModule().getMessageInputComponent();
+        if (channel == null) return;
+
+        switch (current) {
+            case QUOTE_REPLY:
+            case EDIT:
+                inputComponent.notifyDataChanged(targetMessage, channel);
+                break;
+            default:
+                if (before == MessageInputView.Mode.QUOTE_REPLY && targetMessage == null) {
+                    final EditText input = inputComponent.getEditTextView();
+                    final String defaultText = input != null && !TextUtils.isEmpty(input.getText())
+                            ? inputComponent.getEditTextView().getText().toString() : "";
+                    inputComponent.notifyDataChanged(null, channel, defaultText);
+                } else {
+                    inputComponent.notifyDataChanged(null, channel);
+                }
+                targetMessage = null;
+        }
+    }
+
     @NonNull
+    @Override
     protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
         final List<DialogListItem> items = new ArrayList<>();
         final SendingStatus status = message.getSendingStatus();
@@ -563,7 +535,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
         DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
         DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, MessageUtils.hasThread(message));
-        DialogListItem reply = new DialogListItem(R.string.sb_text_channel_anchor_reply, R.drawable.icon_reply, false, MessageUtils.hasParentMessage(message));
+        int replyStringRes = SendbirdUIKit.getReplyType() == ReplyType.THREAD ? R.string.sb_text_channel_anchor_reply_in_thread : R.string.sb_text_channel_anchor_reply;
+        int replyDrawableRes = SendbirdUIKit.getReplyType() == ReplyType.THREAD ? R.drawable.icon_thread : R.drawable.icon_reply;
+        DialogListItem reply = new DialogListItem(replyStringRes, replyDrawableRes, false, MessageUtils.hasParentMessage(message));
         DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
         DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
 
@@ -622,37 +596,7 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         return items;
     }
 
-    private void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
-        int size = items.size();
-        final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
-        if (!ReactionUtils.canSendReaction(getViewModel().getChannel())) {
-            final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
-            if (getContext() != null && messageListView != null) {
-                MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
-                        .setOnItemClickListener(createMessageActionListener(message))
-                        .setOnDismissListener(() -> anchorDialogShowing.set(false))
-                        .build();
-                messageAnchorDialog.show();
-                anchorDialogShowing.set(true);
-            }
-        } else if (MessageUtils.isUnknownType(message)) {
-            if (getContext() == null) return;
-            DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
-        } else {
-            showEmojiActionsDialog(message, actions);
-        }
-    }
-
-    /**
-     * It will be called when the message context menu was clicked.
-     *
-     * @param message  A clicked message.
-     * @param view     The view that was clicked.
-     * @param position The position that was clicked.
-     * @param item     {@link DialogListItem} that was clicked.
-     * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
-     * @since 2.2.3
-     */
+    @Override
     protected boolean onMessageContextMenuItemClicked(@NonNull BaseMessage message, @NonNull View view, int position, @NonNull DialogListItem item) {
         final MessageInputComponent inputComponent = getModule().getMessageInputComponent();
         int key = item.getKey();
@@ -680,6 +624,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             this.targetMessage = message;
             inputComponent.requestInputMode(MessageInputView.Mode.QUOTE_REPLY);
             return true;
+        } else if (key == R.string.sb_text_channel_anchor_reply_in_thread) {
+            startMessageThreadActivity(message);
+            return true;
         } else if (key == R.string.sb_text_channel_anchor_retry) {
             resendMessage(message);
             return true;
@@ -687,221 +634,40 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         return false;
     }
 
-    /**
-     * Called when the item of the message list is clicked.
-     *
-     * @param view     The View clicked
-     * @param position The position clicked
-     * @param message  The message that the clicked item displays
-     * @since 3.0.0
-     */
-    protected void onMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (messageClickListener != null) {
-            messageClickListener.onItemClick(view, position, message);
-            return;
-        }
-        if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
-            MessageType type = MessageViewHolderFactory.getMessageType(message);
-            switch (type) {
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                    startActivity(PhotoViewActivity.newIntent(requireContext(), ChannelType.GROUP, (FileMessage) message));
-                    break;
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-                case VIEW_TYPE_FILE_MESSAGE_ME:
-                case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                    final FileMessage fileMessage = (FileMessage) message;
-                    FileDownloader.downloadFile(requireContext(), fileMessage, new OnResultHandler<File>() {
-                        @Override
-                        public void onResult(@NonNull File file) {
-                            showFile(file, fileMessage.getType());
-                        }
-
-                        @Override
-                        public void onError(@Nullable SendbirdException e) {
-                            toastError(R.string.sb_text_error_download_file);
-                        }
-                    });
-                    break;
-                default:
+    @Override
+    void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
+        int size = items.size();
+        final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
+        if (!ReactionUtils.canSendReaction(getViewModel().getChannel())) {
+            final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
+            if (getContext() != null && messageListView != null) {
+                MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
+                        .setOnItemClickListener(createMessageActionListener(message))
+                        .setOnDismissListener(() -> anchorDialogShowing.set(false))
+                        .build();
+                messageAnchorDialog.show();
+                anchorDialogShowing.set(true);
             }
+        } else if (MessageUtils.isUnknownType(message)) {
+            if (getContext() == null) return;
+            DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
-            if (MessageUtils.isMine(message) && (message instanceof UserMessage || message instanceof FileMessage)) {
-                resendMessage(message);
-            }
+            showEmojiActionsDialog(message, actions);
         }
     }
 
-    /**
-     * Called when the profile view of the message is clicked.
-     *
-     * @param view     The View clicked
-     * @param position The position clicked
-     * @param message  The message that the clicked item displays
-     * @since 3.0.0
-     */
-    protected void onMessageProfileClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (messageProfileClickListener != null) {
-            messageProfileClickListener.onItemClick(view, position, message);
-            return;
-        }
-
-        final Sender sender = message.getSender();
-        if (sender != null) {
-            showUserProfile(sender);
-        }
+    private synchronized void loadInitial(long startingPoint) {
+        isInitCallFinished.set(false);
+        getViewModel().loadInitial(startingPoint);
     }
 
-    /**
-     * Called when the quoted message of the message is clicked.
-     *
-     * @param view     The View clicked
-     * @param position The position clicked
-     * @param message  The message that the clicked item displays
-     * @since 3.0.0
-     */
-    protected void onQuoteReplyMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (quoteReplyMessageClickListener != null) {
-            quoteReplyMessageClickListener.onItemClick(view, position, message);
-            return;
-        }
-        jumpToParentMessage(message);
-    }
-
-    /**
-     * Called when the item of the message list is long-clicked.
-     *
-     * @param view     The View long-clicked
-     * @param position The position long-clicked
-     * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
-     */
-    protected void onMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (messageLongClickListener != null) {
-            messageLongClickListener.onItemLongClick(view, position, message);
-            return;
-        }
-        final SendingStatus status = message.getSendingStatus();
-        if (status == SendingStatus.PENDING) return;
-        showMessageContextMenu(view, message, makeMessageContextMenu(message));
-    }
-
-    /**
-     * Called when the profile view of the message is long-clicked.
-     *
-     * @param view     The View long-clicked
-     * @param position The position long-clicked
-     * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
-     */
-    protected void onMessageProfileLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (messageProfileLongClickListener != null) {
-            messageProfileLongClickListener.onItemLongClick(view, position, message);
-        }
-    }
-
-    /**
-     * Called when the quoted message of the message is long-clicked.
-     *
-     * @param view     The View long-clicked
-     * @param position The position long-clicked
-     * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
-     */
-    protected void onQuoteReplyMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
-        if (quoteReplyMessageLongClickListener != null)
-            quoteReplyMessageLongClickListener.onItemLongClick(view, position, message);
-    }
-
-    @NonNull
-    private OnItemClickListener<DialogListItem> createMessageActionListener(@NonNull BaseMessage message) {
-        return (view, position, item) -> onMessageContextMenuItemClicked(message, view, position, item);
-    }
-
-    private void download(@NonNull FileMessage fileMessage) {
-        toastSuccess(R.string.sb_text_toast_success_start_download_file);
-        TaskQueue.addTask(new JobResultTask<Boolean>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            @NonNull
-            public Boolean call() throws Exception {
-                if (getContext() == null) return false;
-                FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
-                        fileMessage.getType(), fileMessage.getName());
-                return true;
-            }
-
-            @Override
-            public void onResultForUiThread(@Nullable Boolean result, @Nullable SendbirdException e) {
-                if (e != null) {
-                    Logger.e(e);
-                    toastError(R.string.sb_text_error_download_file);
-                    return;
-                }
-                toastSuccess(R.string.sb_text_toast_success_download_file);
-            }
-        });
-    }
-
-    private void copyTextToClipboard(@NonNull String text) {
-        if (!isFragmentAlive()) return;
-        ClipboardManager clipboardManager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText(StringSet.LABEL_COPY_TEXT, text);
-        if (clipboardManager != null) {
-            clipboardManager.setPrimaryClip(clipData);
-            toastSuccess(R.string.sb_text_toast_success_copy);
+    private void scrollToFirst() {
+        final MessageListComponent messageListComponent = getModule().getMessageListComponent();
+        if (getViewModel().hasNext()) {
+            loadInitial(Long.MAX_VALUE);
         } else {
-            toastError(R.string.sb_text_error_copy_message);
+            messageListComponent.scrollToFirst();
         }
-    }
-
-    private void showWarningDialog(@NonNull BaseMessage message) {
-        if (getContext() == null) return;
-        DialogUtils.showWarningDialog(
-                requireContext(),
-                getString(R.string.sb_text_dialog_delete_message),
-                getString(R.string.sb_text_button_delete),
-                delete -> {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                },
-                getString(R.string.sb_text_button_cancel),
-                cancel -> Logger.dev("cancel"));
-    }
-
-    private void showEmojiActionsDialog(@NonNull BaseMessage message, @NonNull DialogListItem[] actions) {
-        if (getContext() == null) {
-            return;
-        }
-
-        List<Emoji> emojiList = EmojiManager.getInstance().getAllEmojis();
-
-        int shownEmojiSize = emojiList.size();
-        boolean showMoreButton = false;
-        if (emojiList.size() > 6) {
-            showMoreButton = true;
-            shownEmojiSize = 5;
-        }
-        emojiList = emojiList.subList(0, shownEmojiSize);
-
-        final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), showMoreButton);
-        hideKeyboard();
-        final AlertDialog dialog = DialogUtils.showContentViewAndListDialog(requireContext(), emojiListView, actions, createMessageActionListener(message));
-
-        emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
-            dialog.dismiss();
-            getViewModel().toggleReaction(view, message, emojiKey, e -> {
-                if (e != null)
-                    toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
-            });
-        });
-
-        emojiListView.setMoreButtonClickListener(v -> {
-            dialog.dismiss();
-            showEmojiListDialog(message);
-        });
     }
 
     private void jumpToParentMessage(@NonNull BaseMessage message) {
@@ -922,410 +688,43 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
     }
 
-    private void showUserProfile(@NonNull User sender) {
-        final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
-        if (getContext() == null || !useUserProfile) return;
-        hideKeyboard();
-        DialogUtils.showUserProfileDialog(getContext(), sender, true, null, null);
-    }
-
-    @NonNull
-    private static Map<Reaction, List<User>> getReactionUserInfo(@NonNull GroupChannel channel, @NonNull List<Reaction> reactionList) {
-        final Map<Reaction, List<User>> result = new HashMap<>();
-        final Map<String, User> userMap = new HashMap<>();
-
-        for (Member member : channel.getMembers()) {
-            userMap.put(member.getUserId(), member);
-        }
-
-        for (Reaction reaction : reactionList) {
-            final List<User> userList = new ArrayList<>();
-            final List<String> userIds = reaction.getUserIds();
-            for (String userId : userIds) {
-                final User user = userMap.get(userId);
-                userList.add(user);
+    private void startMessageThreadActivity(@NonNull BaseMessage message) {
+        BaseMessage parentMessage;
+        long startingPoint = 0;
+        if (MessageUtils.hasParentMessage(message) && message.getParentMessage() != null) {
+            parentMessage = getViewModel().getMessageById(message.getParentMessageId());
+            startingPoint = message.getCreatedAt();
+            if (parentMessage == null) {
+                parentMessage = message.getParentMessage();
             }
-            result.put(reaction, userList);
+        } else {
+            parentMessage = message;
         }
 
-        return result;
-    }
-
-    private void hideKeyboard() {
-        if (getView() != null) {
-            SoftInputUtils.hideSoftKeyboard(getView());
-        }
-    }
-
-    private synchronized void loadInitial(long startingPoint) {
-        isInitCallFinished.set(false);
         final GroupChannel channel = getViewModel().getChannel();
-        if (channel != null) {
-            getViewModel().loadInitial(startingPoint);
-        }
-    }
-
-    private void toggleReaction(@NonNull View view, @NonNull BaseMessage message, @NonNull String reactionKey) {
-        getViewModel().toggleReaction(view, message, reactionKey, e -> {
-            if (e != null && isFragmentAlive()) {
-                toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
-            }
-        });
-    }
-
-    private void showEmojiReactionDialog(@NonNull BaseMessage message, int position) {
-        if (getContext() == null) {
-            return;
-        }
-
-        final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiReactionUserListView emojiReactionUserListView = new EmojiReactionUserListView(contextThemeWrapper);
-        final GroupChannel channel = getViewModel().getChannel();
-        if (channel != null) {
-            emojiReactionUserListView.setEmojiReactionUserData(this,
-                    position,
-                    message.getReactions(),
-                    getReactionUserInfo(channel, message.getReactions()));
-        }
-        hideKeyboard();
-        DialogUtils.showContentDialog(requireContext(), emojiReactionUserListView);
-    }
-
-    private void showEmojiListDialog(@NonNull BaseMessage message) {
-        if (getContext() == null) {
-            return;
-        }
-
-        final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, EmojiManager.getInstance().getAllEmojis(), message.getReactions(), false);
-        hideKeyboard();
-        final AlertDialog dialog = DialogUtils.showContentDialog(requireContext(), emojiListView);
-
-        emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
-            dialog.dismiss();
-            getViewModel().toggleReaction(view, message, emojiKey, e -> {
-                if (e != null)
-                    toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
-            });
-        });
-    }
-
-    private void showFile(@NonNull File file, @NonNull String mimeType) {
-        TaskQueue.addTask(new JobResultTask<Intent>() {
-            @Override
-            @Nullable
-            public Intent call() {
-                if (!isFragmentAlive()) return null;
-                Uri uri = FileUtils.fileToUri(requireContext(), file);
-                return IntentUtils.getFileViewerIntent(uri, mimeType);
-            }
-
-            @Override
-            public void onResultForUiThread(@Nullable Intent intent, @Nullable SendbirdException e) {
-                if (!isFragmentAlive()) return;
-                if (e != null) {
-                    Logger.e(e);
-                    toastError(R.string.sb_text_error_open_file);
-                    return;
-                }
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    /**
-     * It will be called when the input message's left button is clicked.
-     * The default behavior is showing the menu, like, taking camera, gallery, and file.
-     *
-     * @since 2.0.1
-     */
-    protected void showMediaSelectDialog() {
-        if (getContext() == null) return;
-        DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
-                new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
-        };
-        hideKeyboard();
-        DialogUtils.showListBottomDialog(requireContext(), items, (view, position, item) -> {
-            final int key = item.getKey();
-            try {
-                if (key == R.string.sb_text_channel_input_camera) {
-                    takeCamera();
-                } else if (key == R.string.sb_text_channel_input_take_video) {
-                    takeVideo();
-                } else if (key == R.string.sb_text_channel_input_gallery) {
-                    takePhoto();
-                } else {
-                    takeFile();
-                }
-            } catch (Exception e) {
-                Logger.e(e);
-                if (key == R.string.sb_text_channel_input_camera) {
-                    toastError(R.string.sb_text_error_open_camera);
-                } else if (key == R.string.sb_text_channel_input_take_video) {
-                    toastError(R.string.sb_text_error_open_camera);
-                } else if (key == R.string.sb_text_channel_input_gallery) {
-                    toastError(R.string.sb_text_error_open_gallery);
-                } else {
-                    toastError(R.string.sb_text_error_open_file);
-                }
-            }
-        });
-    }
-
-    /**
-     * Call taking camera application.
-     *
-     * @since 2.0.1
-     */
-    public void takeCamera() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
-            if (getContext() == null) return;
-            this.mediaUri = FileUtils.createImageFileUri(getContext());
-            if (mediaUri == null) return;
-            Intent intent = IntentUtils.getCameraIntent(requireContext(), mediaUri);
-            if (IntentUtils.hasIntent(requireContext(), intent)) {
-                takeCameraLauncher.launch(intent);
-            }
-        });
-    }
-
-    /**
-     * Call taking camera application for video capture.
-     *
-     * @since 3.2.1
-     */
-    public void takeVideo() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        requestPermission(PermissionUtils.CAMERA_PERMISSION, () -> {
-            if (getContext() == null) return;
-            this.mediaUri = FileUtils.createVideoFileUri(getContext());
-            if (mediaUri == null) return;
-
-            Intent intent = IntentUtils.getVideoCaptureIntent(getContext(), mediaUri);
-            if (IntentUtils.hasIntent(getContext(), intent)) {
-                takeVideoLauncher.launch(intent);
-            }
-        });
-    }
-
-    /**
-     * Call taking gallery application.
-     *
-     * @since 2.0.1
-     */
-    public void takePhoto() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        Logger.d("++ build sdk int=%s", Build.VERSION.SDK_INT);
-        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
-        if (permissions.length > 0) {
-            requestPermission(permissions, () -> {
-                Intent intent = IntentUtils.getGalleryIntent();
-                getContentLauncher.launch(intent);
-            });
+        if (channel != null && parentMessage.getCreatedAt() < (channel.getJoinedAt() * 1000)) {
+            toastError(R.string.sb_text_error_original_message_not_found);
         } else {
-            Intent intent = IntentUtils.getGalleryIntent();
-            getContentLauncher.launch(intent);
+            startActivity(new MessageThreadActivity
+                    .IntentBuilder(requireContext(), getChannelUrl(), parentMessage)
+                    .setStartingPoint(startingPoint)
+                    .build(), ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         }
     }
 
-    /**
-     * Call taking file chooser application.
-     *
-     * @since 2.0.1
-     */
-    public void takeFile() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
-        if (permissions.length > 0) {
-            requestPermission(permissions, () -> {
-                Intent intent = IntentUtils.getFileChooserIntent();
-                getContentLauncher.launch(intent);
-            });
-        } else {
-            Intent intent = IntentUtils.getFileChooserIntent();
-            getContentLauncher.launch(intent);
+    private void redirectMessageThreadIfNeeded(@Nullable Bundle args) {
+        if (args == null || SendbirdUIKit.getReplyType() != ReplyType.THREAD) return;
+
+        if (args.containsKey(StringSet.KEY_ANCHOR_MESSAGE_ID)) {
+            long messageId = args.getLong(StringSet.KEY_ANCHOR_MESSAGE_ID);
+            final BaseMessage anchorMessage = getViewModel().getMessageById(messageId);
+            if (anchorMessage != null && MessageUtils.hasParentMessage(anchorMessage)) {
+                Logger.i(">> ChannelFragment::redirectMessageThreadIfNeeded(), startMessageThreadActivity()");
+                isThreadRedirected.set(false);
+                args.remove(StringSet.KEY_ANCHOR_MESSAGE_ID);
+                startMessageThreadActivity(anchorMessage);
+            }
         }
-    }
-
-    /**
-     * It will be called when the loading dialog needs displaying.
-     *
-     * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
-     */
-    protected boolean shouldShowLoadingDialog() {
-        return getModule().shouldShowLoadingDialog();
-    }
-
-    /**
-     * It will be called when the loading dialog needs dismissing.
-     *
-     * @since 1.2.5
-     */
-    protected void shouldDismissLoadingDialog() {
-        getModule().shouldDismissLoadingDialog();
-    }
-
-    /**
-     * It will be called before sending message.
-     * If you want add more data, you can override this and set the data.
-     *
-     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
-     * @since 1.0.4
-     */
-    protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
-    }
-
-    /**
-     * It will be called before sending message.
-     * If you want add more data, you can override this and set the data.
-     *
-     * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
-     * @since 1.0.4
-     */
-    protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
-    }
-
-    /**
-     * It will be called before updating message.
-     * If you want add more data, you can override this and set the data.
-     *
-     * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
-     * @since 1.0.4
-     */
-    protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
-    }
-
-    /**
-     * Sends a user message.
-     *
-     * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
-     * @since 1.0.4
-     */
-    protected void sendUserMessage(@NonNull UserMessageCreateParams params) {
-        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
-        if (customHandler != null) {
-            customHandler.onBeforeSendUserMessage(params);
-        }
-        onBeforeSendUserMessage(params);
-        getViewModel().sendUserMessage(params);
-    }
-
-    /**
-     * Sends a file with given file information.
-     *
-     * @param uri A file Uri
-     * @since 1.0.4
-     */
-    protected void sendFileMessage(@NonNull Uri uri) {
-        if (getContext() != null) {
-            FileInfo.fromUri(getContext(), uri, SendbirdUIKit.shouldUseImageCompression(), new OnResultHandler<FileInfo>() {
-                @Override
-                public void onResult(@NonNull FileInfo info) {
-                    ChannelFragment.this.mediaUri = null;
-                    final FileMessageCreateParams params = info.toFileParams();
-                    final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
-                    if (customHandler != null) {
-                        customHandler.onBeforeSendFileMessage(params);
-                    }
-                    onBeforeSendFileMessage(params);
-                    if (targetMessage != null && SendbirdUIKit.getReplyType() == ReplyType.QUOTE_REPLY) {
-                        params.setParentMessageId(targetMessage.getMessageId());
-                        params.setReplyToChannel(true);
-                    }
-                    getViewModel().sendFileMessage(params, info);
-                }
-
-                @Override
-                public void onError(@Nullable SendbirdException e) {
-                    Logger.w(e);
-                    toastError(R.string.sb_text_error_send_message);
-                    ChannelFragment.this.mediaUri = null;
-                }
-            });
-        }
-    }
-
-    /**
-     * Updates a <code>UserMessage</code> that was previously sent in the channel.
-     *
-     * @param messageId The ID of the message. This must be a message that exists in the channel's history,
-     *                  or an error will be returned.
-     * @param params    Params of a message. Refer to {@link UserMessageUpdateParams}.
-     * @since 1.0.4
-     */
-    protected void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params) {
-        CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
-        if (customHandler != null) {
-            customHandler.onBeforeUpdateUserMessage(params);
-        }
-        onBeforeUpdateUserMessage(params);
-        getViewModel().updateUserMessage(messageId, params, e -> {
-            if (e != null) toastError(R.string.sb_text_error_update_user_message);
-        });
-    }
-
-    /**
-     * Delete a message
-     *
-     * @param message Message to delete.
-     * @since 1.0.4
-     */
-    protected void deleteMessage(@NonNull BaseMessage message) {
-        getViewModel().deleteMessage(message, e -> {
-            if (e != null) toastError(R.string.sb_text_error_delete_message);
-        });
-    }
-
-    /**
-     * Resends a failed message.
-     *
-     * @param message Failed message to resend.
-     */
-    protected void resendMessage(@NonNull BaseMessage message) {
-        if (message.isResendable()) {
-            getViewModel().resendMessage(message, e -> {
-                if (e != null) toastError(R.string.sb_text_error_resend_message);
-            });
-        } else {
-            toastError(R.string.sb_text_error_not_possible_resend_message);
-        }
-    }
-
-    /**
-     * Download {@link FileMessage} into external storage.
-     * It needs to have a permission.
-     * If current application needs permission, the request of permission will call automatically.
-     * After permission is granted, the download will be also called automatically.
-     *
-     * @param message A file message to download contents.
-     * @since 2.2.3
-     */
-    protected void saveFileMessage(@NonNull FileMessage message) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            download(message);
-        } else {
-            requestPermission(PermissionUtils.GET_CONTENT_PERMISSION, () -> download(message));
-        }
-    }
-
-    /**
-     * Returns the URL of the channel with the required data to use this fragment.
-     *
-     * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
-     */
-    @NonNull
-    protected String getChannelUrl() {
-        final Bundle args = getArguments() == null ? new Bundle() : getArguments();
-        return args.getString(StringSet.KEY_CHANNEL_URL, "");
     }
 
     @SuppressWarnings("unused")
@@ -1385,6 +784,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         private View.OnClickListener scrollBottomButtonClickListener;
         @Nullable
         private OnConsumableClickListener scrollFirstButtonClickListener;
+        @Nullable
+        private OnItemClickListener<BaseMessage> threadInfoClickListener;
+        @Nullable
         private ChannelFragment customFragment;
 
 
@@ -1738,6 +1140,19 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         @NonNull
         public Builder setOnQuoteReplyMessageLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> quoteReplyMessageLongClickListener) {
             this.quoteReplyMessageLongClickListener = quoteReplyMessageLongClickListener;
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the item of message list.
+         *
+         * @param threadInfoClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.3.0
+         */
+        @NonNull
+        public Builder setOnThreadInfoClickListener(@NonNull OnItemClickListener<BaseMessage> threadInfoClickListener) {
+            this.threadInfoClickListener = threadInfoClickListener;
             return this;
         }
 
@@ -2302,6 +1717,19 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
         }
 
         /**
+         * Sets whether the message list banner is used.
+         *
+         * @param useBanner <code>true</code> if the message list banner is used, <code>false</code> otherwise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.3.0
+         */
+        @NonNull
+        public Builder setUseMessageListBanner(boolean useBanner) {
+            bundle.putBoolean(StringSet.KEY_USE_MESSAGE_LIST_BANNER, useBanner);
+            return this;
+        }
+
+        /**
          * Creates an {@link ChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -2313,20 +1741,20 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             fragment.setArguments(bundle);
             fragment.headerLeftButtonClickListener = headerLeftButtonClickListener;
             fragment.headerRightButtonClickListener = headerRightButtonClickListener;
-            fragment.messageClickListener = messageClickListener;
-            fragment.messageLongClickListener = messageLongClickListener;
+            fragment.setOnMessageClickListener(messageClickListener);
+            fragment.setOnMessageLongClickListener(messageLongClickListener);
             fragment.inputLeftButtonClickListener = inputLeftButtonListener;
             fragment.emojiReactionClickListener = emojiReactionClickListener;
             fragment.emojiReactionLongClickListener = emojiReactionLongClickListener;
             fragment.emojiReactionMoreButtonClickListener = emojiReactionMoreButtonClickListener;
-            fragment.messageProfileClickListener = messageProfileClickListener;
-            fragment.messageProfileLongClickListener = messageProfileLongClickListener;
-            fragment.loadingDialogHandler = loadingDialogHandler;
+            fragment.setOnMessageProfileClickListener(messageProfileClickListener);
+            fragment.setOnMessageProfileLongClickListener(messageProfileLongClickListener);
+            fragment.setOnLoadingDialogHandler(loadingDialogHandler);
             fragment.inputTextChangedListener = inputTextChangedListener;
             fragment.editModeTextChangedListener = editModeTextChangedListener;
             fragment.quoteReplyMessageClickListener = quoteReplyMessageClickListener;
             fragment.quoteReplyMessageLongClickListener = quoteReplyMessageLongClickListener;
-            fragment.suggestedMentionListAdapter = suggestedMentionListAdapter;
+            fragment.setSuggestedMentionListAdapter(suggestedMentionListAdapter);
             fragment.inputRightButtonClickListener = inputRightButtonClickListener;
             fragment.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
             fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
@@ -2335,8 +1763,9 @@ public class ChannelFragment extends BaseModuleFragment<ChannelModule, ChannelVi
             fragment.tooltipClickListener = tooltipClickListener;
             fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
             fragment.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
-            fragment.adapter = adapter;
+            fragment.setAdapter(adapter);
             fragment.params = params;
+            fragment.threadInfoClickListener = threadInfoClickListener;
 
             // set animation flag to TRUE to animate searched text.
             if (bundle.containsKey(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED)) {

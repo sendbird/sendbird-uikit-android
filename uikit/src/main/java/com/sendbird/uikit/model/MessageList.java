@@ -186,8 +186,9 @@ public class MessageList {
 
     public synchronized void update(@NonNull BaseMessage message) {
         Logger.d(">> MessageList::updateMessage()");
-        messages.remove(message);
-        messages.add(BaseMessage.clone(message));
+        if (messages.remove(message)) {
+            messages.add(BaseMessage.clone(message));
+        }
     }
 
     public void updateAll(@NonNull List<? extends BaseMessage> messages) {

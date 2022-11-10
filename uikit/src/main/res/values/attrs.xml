@@ -25,6 +25,7 @@
         <attr name="sb_module_open_channel_banned_user_list" format="reference"/>
         <attr name="sb_module_open_channel_list" format="reference"/>
         <attr name="sb_module_create_open_channel" format="reference"/>
+        <attr name="sb_module_message_thread" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">
@@ -98,6 +99,7 @@
         <attr name="sb_widget_message_preview" format="reference"/>
 
         <attr name="sb_widget_ogtag" format="reference"/>
+        <attr name="sb_widget_thread_info" format="reference"/>
         <attr name="sb_widget_user_message" format="reference"/>
         <attr name="sb_widget_file_message" format="reference"/>
         <attr name="sb_widget_my_message" format="reference"/>
@@ -109,6 +111,7 @@
         <attr name="sb_widget_admin_message" format="reference"/>
         <attr name="sb_widget_timeline_message" format="reference"/>
         <attr name="sb_widget_emoji_message" format="reference"/>
+        <attr name="sb_widget_parent_message_info" format="reference"/>
 
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
@@ -513,5 +516,25 @@
         <attr name="sb_open_channel_preview_participants_icon_tint" format="reference|color"/>
         <attr name="sb_open_channel_preview_frozen_icon" format="reference"/>
         <attr name="sb_open_channel_preview_frozen_icon_tint" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ThreadInfoView">
+        <attr name="sb_thread_info_reply_count_text_appearance" format="reference"/>
+        <attr name="sb_thread_info_more_icon" format="reference"/>
+        <attr name="sb_thread_info_more_icon_background" format="reference"/>
+        <attr name="sb_thread_info_more_icon_tint" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ParentMessageInfoView">
+        <attr name="sb_parent_message_info_nickname_appearance" format="reference"/>
+        <attr name="sb_parent_message_info_sent_at_appearance" format="reference"/>
+        <attr name="sb_parent_message_info_text_message_appearance" format="reference"/>
+        <attr name="sb_parent_message_info_more_icon" format="reference"/>
+        <attr name="sb_parent_message_info_more_icon_tint" format="reference"/>
+        <attr name="sb_parent_message_info_file_message_background" format="reference"/>
+        <attr name="sb_parent_message_info_file_message_background_tint" format="reference"/>
+        <attr name="sb_parent_message_info_file_name_appearance" format="reference"/>
+        <attr name="sb_parent_message_info_reply_count_appearance" format="reference"/>
+        <attr name="sb_parent_message_info_divider_line_color" format="reference"/>
     </declare-styleable>
 </resources>

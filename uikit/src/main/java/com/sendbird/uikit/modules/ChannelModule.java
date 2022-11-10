@@ -16,7 +16,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
-import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.modules.components.MessageListComponent;
@@ -35,19 +34,11 @@ import com.sendbird.uikit.modules.components.StatusComponent;
  *
  * @since 3.0.0
  */
-public class ChannelModule extends BaseModule {
+public class ChannelModule extends BaseMessageListModule<MessageListComponent> {
     @NonNull
     private final Params params;
     @NonNull
     private ChannelHeaderComponent headerComponent;
-    @NonNull
-    private MessageListComponent messageListComponent;
-    @NonNull
-    private MessageInputComponent inputComponent;
-    @NonNull
-    private StatusComponent statusComponent;
-    @Nullable
-    private LoadingDialogHandler loadingDialogHandler;
 
     /**
      * Constructor
@@ -67,11 +58,9 @@ public class ChannelModule extends BaseModule {
      * @since 3.0.0
      */
     public ChannelModule(@NonNull Context context, @NonNull Params params) {
+        super(context, new MessageListComponent());
         this.params = params;
         this.headerComponent = new ChannelHeaderComponent();
-        this.messageListComponent = new MessageListComponent();
-        this.inputComponent = new MessageInputComponent();
-        this.statusComponent = new StatusComponent();
     }
 
     @Override
@@ -89,7 +78,7 @@ public class ChannelModule extends BaseModule {
             moduleContext.getTheme().resolveAttribute(R.attr.sb_component_header, values, true);
             final Context headerThemeContext = new ContextThemeWrapper(moduleContext, values.resourceId);
             final LayoutInflater headerInflater = inflater.cloneInContext(headerThemeContext);
-            final View header = this.headerComponent.onCreateView(headerThemeContext, headerInflater, parent, args);
+            final View header = getHeaderComponent().onCreateView(headerThemeContext, headerInflater, parent, args);
             parent.addView(header);
         }
 
@@ -100,42 +89,21 @@ public class ChannelModule extends BaseModule {
         moduleContext.getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
         final Context listThemeContext = new ContextThemeWrapper(moduleContext, values.resourceId);
         final LayoutInflater listInflater = inflater.cloneInContext(listThemeContext);
-        final View messageListLayout = messageListComponent.onCreateView(listThemeContext, listInflater, bodyContainer, args);
+        final View messageListLayout = getMessageListComponent().onCreateView(listThemeContext, listInflater, bodyContainer, args);
         bodyContainer.addView(messageListLayout);
 
         moduleContext.getTheme().resolveAttribute(R.attr.sb_component_status, values, true);
         final Context statusThemeContext = new ContextThemeWrapper(moduleContext, values.resourceId);
         final LayoutInflater statusInflater = inflater.cloneInContext(statusThemeContext);
-        final View statusLayout = statusComponent.onCreateView(statusThemeContext, statusInflater, bodyContainer, args);
+        final View statusLayout = getStatusComponent().onCreateView(statusThemeContext, statusInflater, bodyContainer, args);
         bodyContainer.addView(statusLayout);
 
         moduleContext.getTheme().resolveAttribute(R.attr.sb_component_channel_message_input, values, true);
         final Context inputThemeContext = new ContextThemeWrapper(moduleContext, values.resourceId);
         final LayoutInflater inputInflater = inflater.cloneInContext(inputThemeContext);
-        final View inputLayout = inputComponent.onCreateView(inputThemeContext, inputInflater, parent, args);
+        final View inputLayout = getMessageInputComponent().onCreateView(inputThemeContext, inputInflater, parent, args);
         parent.addView(inputLayout);
         return parent;
-    }
-
-    /**
-     * Sets the handler for the loading dialog.
-     *
-     * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * @since 3.0.0
-     */
-    public void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
-        this.loadingDialogHandler = loadingDialogHandler;
-    }
-
-    /**
-     * Returns the handler for loading dialog.
-     *
-     * @return Loading dialog handler to be used in this module
-     * @since 3.0.0
-     */
-    @Nullable
-    public LoadingDialogHandler getLoadingDialogHandler() {
-        return loadingDialogHandler;
     }
 
     /**
@@ -149,36 +117,6 @@ public class ChannelModule extends BaseModule {
     }
 
     /**
-     * Sets a custom message list component.
-     *
-     * @param component The message list component to be used in this module
-     * @since 3.0.0
-     */
-    public <T extends MessageListComponent> void setMessageListComponent(@NonNull T component) {
-        this.messageListComponent = component;
-    }
-
-    /**
-     * Sets a custom message input component.
-     *
-     * @param component The message input component to be used in this module
-     * @since 3.0.0
-     */
-    public <T extends MessageInputComponent> void setInputComponent(@NonNull T component) {
-        this.inputComponent = component;
-    }
-
-    /**
-     * Sets a custom status component.
-     *
-     * @param component The status component to be used in this module
-     * @since 3.0.0
-     */
-    public <T extends StatusComponent> void setStatusComponent(@NonNull T component) {
-        this.statusComponent = component;
-    }
-
-    /**
      * Returns the channel header component.
      *
      * @return The channel header component of this module
@@ -189,73 +127,10 @@ public class ChannelModule extends BaseModule {
         return headerComponent;
     }
 
-    /**
-     * Returns the message list component.
-     *
-     * @return The message list component of this module
-     * @since 3.0.0
-     */
     @NonNull
-    public MessageListComponent getMessageListComponent() {
-        return messageListComponent;
-    }
-
-    /**
-     * Returns the message input component.
-     *
-     * @return The message input component of this module
-     * @since 3.0.0
-     */
-    @NonNull
-    public MessageInputComponent getMessageInputComponent() {
-        return inputComponent;
-    }
-
-    /**
-     * Returns the status component.
-     *
-     * @return The status component of this module
-     * @since 3.0.0
-     */
-    @NonNull
-    public StatusComponent getStatusComponent() {
-        return statusComponent;
-    }
-
-    /**
-     * Returns a collection of parameters applied to this module.
-     *
-     * @return {@link Params} applied to this module.
-     * @since 3.0.0
-     */
-    @NonNull
+    @Override
     public Params getParams() {
         return params;
-    }
-
-    /**
-     * It will be called when the loading dialog needs displaying.
-     *
-     * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
-     */
-    public boolean shouldShowLoadingDialog() {
-        if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
-            return true;
-        }
-        // Do nothing on the channel.
-        return false;
-    }
-
-    /**
-     * It will be called when the loading dialog needs dismissing.
-     *
-     * @since 3.0.0
-     */
-    public void shouldDismissLoadingDialog() {
-        if (loadingDialogHandler != null) {
-            loadingDialogHandler.shouldDismissLoadingDialog();
-        }
     }
 
     public static class Params extends BaseModule.Params {

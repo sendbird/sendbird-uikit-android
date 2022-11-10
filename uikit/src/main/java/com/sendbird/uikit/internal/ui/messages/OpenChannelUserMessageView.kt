@@ -15,6 +15,7 @@ import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBinding
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.log.Logger
+import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.utils.IntentUtils
 import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -86,11 +87,8 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
         }
     }
 
-    override fun drawMessage(
-        channel: OpenChannel,
-        message: BaseMessage,
-        messageGroupType: MessageGroupType
-    ) {
+    override fun drawMessage(channel: OpenChannel, message: BaseMessage, params: MessageListUIParams) {
+        val messageGroupType = params.messageGroupType
         messageUIConfig?.let {
             it.myEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
             it.otherEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
@@ -115,7 +113,7 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
         ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig)
 
         binding.ogTag.drawOgtag(message.ogMetaData)
-        binding.ivStatus.drawStatus(message, channel)
+        binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
 
         if (messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD) {
             binding.ivProfileView.visibility = VISIBLE
@@ -124,16 +122,16 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
             ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
             ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, channel.isOperator(message.sender))
             ViewUtils.drawProfile(binding.ivProfileView, message)
-            val params = binding.tvMessage.layoutParams as ConstraintLayout.LayoutParams
-            params.leftMargin = marginLeftNor
-            binding.tvMessage.layoutParams = params
+            val layoutParams = binding.tvMessage.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.leftMargin = marginLeftNor
+            binding.tvMessage.layoutParams = layoutParams
         } else {
             binding.ivProfileView.visibility = GONE
             binding.tvNickname.visibility = GONE
             binding.tvSentAt.visibility = INVISIBLE
-            val params = binding.tvMessage.layoutParams as ConstraintLayout.LayoutParams
-            params.leftMargin = marginLeftEmpty
-            binding.tvMessage.layoutParams = params
+            val layoutParams = binding.tvMessage.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.leftMargin = marginLeftEmpty
+            binding.tvMessage.layoutParams = layoutParams
         }
 
         binding.ogTag.setOnClickListener {

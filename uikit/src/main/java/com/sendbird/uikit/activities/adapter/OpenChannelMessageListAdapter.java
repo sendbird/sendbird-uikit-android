@@ -3,8 +3,6 @@ package com.sendbird.uikit.activities.adapter;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
@@ -27,6 +26,7 @@ import com.sendbird.uikit.consts.ClickableViewIdentifier;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.TextUtils;
 
@@ -53,15 +53,13 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
-    private final boolean useMessageGroupUI;
-    private final boolean useReverseLayout;
+    @NonNull
+    private final MessageListUIParams messageListUIParams;
     @Nullable
     private MessageUIConfig messageUIConfig;
 
     @NonNull
     private final ExecutorService service = Executors.newSingleThreadExecutor();
-    @NonNull
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Constructor
@@ -85,7 +83,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     /**
      * Constructor
      *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
+     * @param channel           The {@link OpenChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
      * @since 2.2.0
      */
@@ -96,15 +94,17 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     /**
      * Constructor
      *
-     * @param channel The {@link OpenChannel} that contains the data needed for this adapter
+     * @param channel           The {@link OpenChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @param useReverseLayout <code>true</code> if the message list is reversed, <code>false</code> otherwise.
+     * @param useReverseLayout  <code>true</code> if the message list is reversed, <code>false</code> otherwise.
      * @since 3.2.2
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         if (channel != null) this.channel = OpenChannel.clone(channel);
-        this.useMessageGroupUI = useMessageGroupUI;
-        this.useReverseLayout = useReverseLayout;
+        this.messageListUIParams = new MessageListUIParams.Builder()
+                .setUseMessageGroupUI(useMessageGroupUI)
+                .setUseReverseLayout(useReverseLayout)
+                .build();
         setHasStableIds(true);
     }
 
@@ -112,10 +112,9 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Called when RecyclerView needs a new {@link MessageViewHolder} of the given type to represent
      * an item.
      *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
      * @param viewType The view type of the new View.
-     *
      * @return A new {@link MessageViewHolder} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(MessageViewHolder, int)
@@ -130,7 +129,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         final MessageViewHolder viewHolder = MessageViewHolderFactory.createOpenChannelViewHolder(inflater,
                 parent,
                 MessageType.from(viewType),
-                useMessageGroupUI);
+                messageListUIParams);
         viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
@@ -182,8 +181,8 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * update the contents of the {@link MessageViewHolder#itemView} to reflect the item at the given
      * position.
      *
-     * @param holder The {@link MessageViewHolder} which should be updated to represent
-     *               the contents of the item at the given position in the data set.
+     * @param holder   The {@link MessageViewHolder} which should be updated to represent
+     *                 the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
@@ -201,7 +200,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         }
 
         if (channel != null) {
-            holder.onBindViewHolder(channel, prev, current, next, useReverseLayout);
+            holder.onBindViewHolder(channel, prev, current, next);
         }
     }
 
@@ -259,10 +258,17 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         final List<BaseMessage> copiedMessage = Collections.unmodifiableList(messageList);
         service.submit(() -> {
             final CountDownLatch lock = new CountDownLatch(1);
-            final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(OpenChannelMessageListAdapter.this.channel, channel, OpenChannelMessageListAdapter.this.messageList, messageList, useMessageGroupUI, useReverseLayout);
+            final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(
+                    OpenChannelMessageListAdapter.this.channel,
+                    channel,
+                    OpenChannelMessageListAdapter.this.messageList,
+                    messageList,
+                    messageListUIParams.shouldUseMessageGroupUI(),
+                    messageListUIParams.shouldUseReverseLayout()
+            );
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-            mainHandler.post(() -> {
+            SendbirdUIKit.runOnUIThread(() -> {
                 try {
                     OpenChannelMessageListAdapter.this.messageList = copiedMessage;
                     OpenChannelMessageListAdapter.this.channel = copiedChannel;
@@ -283,7 +289,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Animates the view holder with the corresponding position.
      *
      * @param animation Animation you want to apply to the view holder
-     * @param position Position of the view holder to be applied
+     * @param position  Position of the view holder to be applied
      */
     public void startAnimation(@NonNull Animation animation, int position) {
         notifyItemChanged(position, animation);

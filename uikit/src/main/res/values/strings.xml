@@ -8,6 +8,7 @@
     <string name="sb_text_header_set_operators">Set as operators</string>
     <string name="sb_text_header_participants">Participants</string>
     <string name="sb_text_header_participants_count">%s participants</string>
+    <string name="sb_text_header_message_thread">Thread</string>
 
     <!-- Channel List -->
     <string name="sb_text_channel_list_title_no_members">(No members)</string>
@@ -29,9 +30,12 @@
     <string name="sb_text_channel_anchor_edit">Edit</string>
     <string name="sb_text_channel_anchor_delete">Delete</string>
     <string name="sb_text_channel_anchor_reply">Reply</string>
+    <string name="sb_text_channel_anchor_reply_in_thread">Reply in thread</string>
     <string name="sb_text_channel_anchor_retry">Retry</string>
     <string name="sb_text_channel_input_text_hint">Enter message</string>
     <string name="sb_text_channel_input_reply_text_hint">Reply to message</string>
+    <string name="sb_text_channel_input_reply_in_thread_hint">Reply in thread</string>
+    <string name="sb_text_channel_input_reply_to_thread_hint">Reply to thread</string>
     <string name="sb_text_channel_input_camera">Take photo</string>
     <string name="sb_text_channel_input_take_video">Take video</string>
     <string name="sb_text_channel_input_gallery">Gallery</string>
@@ -42,6 +46,7 @@
     <string name="sb_text_channel_unknown_type_text">(Unknown message type)\nCannot read this message.</string>
     <string name="sb_text_channel_reaction_count_max">99</string>
     <string name="sb_text_channel_message_empty">No messages</string>
+    <string name="sb_text_channel_message_unavailable">Message unavailable</string>
 
     <!-- Channel Settings -->
     <string name="sb_text_channel_settings_moderations">Moderations</string>
@@ -80,6 +85,10 @@
     <string name="sb_text_button_retry">Retry</string>
     <string name="sb_text_button_selected">Selected</string>
     <string name="sb_text_button_add">Add</string>
+    <string name="sb_text_ellipsis">&#8230;</string>
+
+    <!--  Message Thread  -->
+    <string name="sb_text_original_message_deleted">The thread doesn\&#39;t exist because the parent message was deleted.</string>
 
     <!-- Error Messages -->
     <!-- Connection Error -->
@@ -101,6 +110,7 @@
     <string name="sb_text_error_register_operator">Couldn\&#39;t register as operator.</string>
     <string name="sb_text_error_unregister_operator">Couldn\&#39;t unregister operator.</string>
     <string name="sb_text_error_delete_reaction">Couldn\&#39;t delete reaction.</string>
+    <string name="sb_text_error_get_thread_list">Couldn\&#39;t retrieve thread list.</string>
 
     <!-- Message Error -->
     <string name="sb_text_error_resend_message">Couldn\&#39;t send message. Try again.</string>
@@ -177,6 +187,9 @@
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
     <string name="sb_text_exceed_mention_limit_count">"You can have up to %d mentions per message."</string>
+    <string name="sb_text_number_of_reply">%d reply</string>
+    <string name="sb_text_number_of_replies">%d replies</string>
+    <string name="sb_text_max_number_of_replies">99+ replies</string>
 
     <!-- Channel Push Setting -->
     <string name="sb_text_push_setting_on">On</string>

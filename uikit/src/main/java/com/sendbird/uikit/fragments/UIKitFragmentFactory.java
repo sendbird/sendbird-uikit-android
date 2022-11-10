@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.CreatableChannelType;
 
 /**
@@ -376,6 +377,24 @@ public class UIKitFragmentFactory {
         return new OpenChannelFragment.Builder(channelUrl)
                 .withArguments(args)
                 .setUseHeader(true)
+                .build();
+    }
+
+    /**
+     * Returns the MessageThreadFragment.
+     *
+     * @param channelUrl the channel url for the target channel.
+     * @param parentMessage the parent message of the message thread fragment.
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link MessageThreadFragment}
+     * @since 3.3.0
+     */
+    @NonNull
+    public Fragment newMessageThreadFragment(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @NonNull Bundle args) {
+        return new MessageThreadFragment.Builder(channelUrl, parentMessage)
+                .setStartingPoint(0L)
+                .setUseHeader(true)
+                .withArguments(args)
                 .build();
     }
 }

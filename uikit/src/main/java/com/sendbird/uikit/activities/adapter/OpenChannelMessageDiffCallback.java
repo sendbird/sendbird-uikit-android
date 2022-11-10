@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
@@ -88,8 +89,8 @@ class OpenChannelMessageDiffCallback extends DiffUtil.Callback {
             BaseMessage newPrevMessage = newItemPosition - 1 < 0 ? null : newMessageList.get(newItemPosition - 1);
             BaseMessage oldNextMessage = oldItemPosition + 1 >= oldMessageList.size() ? null : oldMessageList.get(oldItemPosition + 1);
             BaseMessage newNextMessage = newItemPosition + 1 >= newMessageList.size() ? null : newMessageList.get(newItemPosition + 1);
-            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage, useReverseLayout);
-            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage, useReverseLayout);
+            MessageGroupType oldMessageGroupType = MessageUtils.getMessageGroupType(oldPrevMessage, oldMessage, oldNextMessage, new MessageListUIParams.Builder().setUseReverseLayout(useReverseLayout).build());
+            MessageGroupType newMessageGroupType = MessageUtils.getMessageGroupType(newPrevMessage, newMessage, newNextMessage, new MessageListUIParams.Builder().setUseReverseLayout(useReverseLayout).build());
 
             return oldMessageGroupType == newMessageGroupType;
         }

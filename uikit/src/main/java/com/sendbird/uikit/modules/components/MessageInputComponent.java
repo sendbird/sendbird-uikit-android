@@ -391,7 +391,7 @@ public class MessageInputComponent {
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (messageInputView == null) return;
         final MessageInputView inputView = this.messageInputView;
-        setHintMessageText(inputView, channel);
+        setHintMessageTextInternal(inputView, channel);
 
         boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isBroadcastChannel = channel.isBroadcast();
@@ -441,7 +441,7 @@ public class MessageInputComponent {
             }
         }
 
-        setHintMessageText(inputView, channel);
+        setHintMessageTextInternal(inputView, channel);
     }
 
     /**
@@ -469,7 +469,7 @@ public class MessageInputComponent {
         this.messageInputView.setInputMode(mode);
     }
 
-    private void setHintMessageText(@NonNull MessageInputView inputView, @NonNull GroupChannel channel) {
+    void setHintMessageTextInternal(@NonNull MessageInputView inputView, @NonNull GroupChannel channel) {
         boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;

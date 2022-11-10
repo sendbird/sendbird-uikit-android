@@ -1,6 +1,7 @@
 package com.sendbird.uikit_messaging_android.groupchannel;
 
 import static com.sendbird.uikit_messaging_android.consts.StringSet.PUSH_REDIRECT_CHANNEL;
+import static com.sendbird.uikit_messaging_android.consts.StringSet.PUSH_REDIRECT_MESSAGE_ID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -122,9 +123,13 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     }
 
     @NonNull
-    public static Intent newRedirectToChannelIntent(@NonNull Context context, @NonNull String channelUrl) {
+    public static Intent newRedirectToChannelIntent(
+            @NonNull Context context,
+            @NonNull String channelUrl,
+            long messageId) {
         Intent intent = new Intent(context, GroupChannelMainActivity.class);
         intent.putExtra(PUSH_REDIRECT_CHANNEL, channelUrl);
+        intent.putExtra(PUSH_REDIRECT_MESSAGE_ID, messageId);
         return intent;
     }
 
@@ -132,12 +137,23 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         if (intent == null) return;
 
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) {
-            getIntent().removeExtra(PUSH_REDIRECT_CHANNEL);
+            intent.removeExtra(PUSH_REDIRECT_CHANNEL);
+            intent.removeExtra(PUSH_REDIRECT_MESSAGE_ID);
         }
+
         if (intent.hasExtra(PUSH_REDIRECT_CHANNEL)) {
             String channelUrl = intent.getStringExtra(PUSH_REDIRECT_CHANNEL);
             if (channelUrl == null) return;
-            startActivity(ChannelActivity.newIntent(this, channelUrl));
+
+            if (intent.hasExtra(PUSH_REDIRECT_MESSAGE_ID)) {
+                long messageId = intent.getLongExtra(PUSH_REDIRECT_MESSAGE_ID, 0L);
+                if (messageId > 0L) {
+                    startActivity(ChannelActivity.newRedirectToMessageThreadIntent(this, channelUrl, messageId));
+                    intent.removeExtra(PUSH_REDIRECT_MESSAGE_ID);
+                }
+            } else {
+                startActivity(ChannelActivity.newIntent(this, channelUrl));
+            }
             intent.removeExtra(PUSH_REDIRECT_CHANNEL);
         }
     }

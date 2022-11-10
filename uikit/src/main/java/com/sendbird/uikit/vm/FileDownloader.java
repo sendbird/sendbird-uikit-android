@@ -11,9 +11,9 @@ import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.Thumbnail;
 import com.sendbird.uikit.interfaces.OnResultHandler;
+import com.sendbird.uikit.internal.tasks.JobResultTask;
+import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.tasks.JobResultTask;
-import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.FileUtils;
 
 import java.io.File;

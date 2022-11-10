@@ -53,9 +53,16 @@ public enum MessageType {
     /**
      * Type of unknown message sent by users other than the current user.
      */
-    VIEW_TYPE_UNKNOWN_MESSAGE_OTHER(11);
+    VIEW_TYPE_UNKNOWN_MESSAGE_OTHER(11),
+    /**
+     * Type of a parent message info in thread list.
+     * This type is only used in <code>ThreadListAdapter</code>
+     *
+     * @since 3.3.0
+     */
+    VIEW_TYPE_PARENT_MESSAGE_INFO(12);
 
-    int value;
+    final int value;
     MessageType(int value) {
         this.value = value;
     }

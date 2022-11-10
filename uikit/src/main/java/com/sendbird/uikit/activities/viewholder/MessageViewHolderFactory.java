@@ -24,7 +24,25 @@ import com.sendbird.uikit.databinding.SbViewOtherFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileVideoMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
+import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
+import com.sendbird.uikit.internal.ui.viewholders.AdminMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyImageFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyVideoFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OpenChannelAdminMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OpenChannelFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OpenChannelImageFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OpenChannelUserMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OpenChannelVideoFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherImageFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.ParentMessageInfoViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.TimelineViewHolder;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.utils.MessageUtils;
 
@@ -40,37 +58,62 @@ public class MessageViewHolderFactory {
      * @param viewType The type of message you want to create
      * @param useMessageGroupUI Whether to show the view holder as a grouped message UI
      * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
+     * @deprecated 3.3.0
+     */
+    @NonNull
+    @Deprecated
+    public static MessageViewHolder createOpenChannelViewHolder(@NonNull LayoutInflater inflater,
+                                                                @NonNull ViewGroup parent,
+                                                                @NonNull MessageType viewType,
+                                                                boolean useMessageGroupUI) {
+        return createOpenChannelViewHolder(
+                inflater,
+                parent,
+                viewType,
+                new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
+        );
+    }
+
+    /**
+     * Create a view holder that matches {@link MessageType} for {@code OpenChannel}.
+     *
+     * @param inflater Inflater that creates a view
+     * @param parent The parent view to which the view holder is attached
+     * @param viewType The type of message you want to create
+     * @param messageListUIParams The {@link MessageListUIParams} that contains drawing parameters
+     * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
+     * @since 3.3.0
      */
     @NonNull
     public static MessageViewHolder createOpenChannelViewHolder(@NonNull LayoutInflater inflater,
                                                                 @NonNull ViewGroup parent,
                                                                 @NonNull MessageType viewType,
-                                                                boolean useMessageGroupUI) {
+                                                                @NonNull MessageListUIParams messageListUIParams) {
         MessageViewHolder holder;
         switch (viewType) {
             case VIEW_TYPE_FILE_MESSAGE_ME:
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                holder = new OpenChannelFileMessageViewHolder(SbViewOpenChannelFileMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OpenChannelFileMessageViewHolder(SbViewOpenChannelFileMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                holder = new OpenChannelImageFileMessageViewHolder(SbViewOpenChannelFileImageMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OpenChannelImageFileMessageViewHolder(SbViewOpenChannelFileImageMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-                holder = new OpenChannelVideoFileMessageViewHolder(SbViewOpenChannelFileVideoMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OpenChannelVideoFileMessageViewHolder(SbViewOpenChannelFileVideoMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_TIME_LINE:
-                holder = new TimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new TimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_ADMIN_MESSAGE:
-                holder = new OpenChannelAdminMessageViewHolder(SbViewOpenChannelAdminMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OpenChannelAdminMessageViewHolder(SbViewOpenChannelAdminMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_USER_MESSAGE_ME:
             case VIEW_TYPE_USER_MESSAGE_OTHER:
             default:
                 // user message type & unknown message type
-                holder = new OpenChannelUserMessageViewHolder(SbViewOpenChannelUserMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OpenChannelUserMessageViewHolder(SbViewOpenChannelUserMessageBinding.inflate(inflater, parent, false), messageListUIParams);
         }
         return holder;
     }
@@ -83,51 +126,78 @@ public class MessageViewHolderFactory {
      * @param viewType The type of message you want to create
      * @param useMessageGroupUI Whether to show the view holder as a grouped message UI
      * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
+     * @deprecated 3.3.0
+     */
+    @NonNull
+    @Deprecated
+    public static MessageViewHolder createViewHolder(@NonNull LayoutInflater inflater,
+                                                     @NonNull ViewGroup parent,
+                                                     @NonNull MessageType viewType,
+                                                     boolean useMessageGroupUI) {
+        return createOpenChannelViewHolder(
+                inflater,
+                parent,
+                viewType,
+                new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
+        );
+    }
+
+    /**
+     * Create a view holder that matches {@link MessageType} for {@code GroupChannel}.
+     *
+     * @param inflater Inflater that creates a view
+     * @param parent The parent view to which the view holder is attached
+     * @param viewType The type of message you want to create
+     * @param messageListUIParams The {@link MessageListUIParams} that contains drawing parameters
+     * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
+     * @since 3.3.0
      */
     @NonNull
     public static MessageViewHolder createViewHolder(@NonNull LayoutInflater inflater,
                                                      @NonNull ViewGroup parent,
                                                      @NonNull MessageType viewType,
-                                                     boolean useMessageGroupUI) {
+                                                     @NonNull MessageListUIParams messageListUIParams) {
         MessageViewHolder holder;
         switch (viewType) {
             case VIEW_TYPE_USER_MESSAGE_ME:
-
-                holder = new MyUserMessageViewHolder(SbViewMyUserMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new MyUserMessageViewHolder(SbViewMyUserMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_USER_MESSAGE_OTHER:
-                holder = new OtherUserMessageViewHolder(SbViewOtherUserMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OtherUserMessageViewHolder(SbViewOtherUserMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_ME:
-                holder = new MyFileMessageViewHolder(SbViewMyFileMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new MyFileMessageViewHolder(SbViewMyFileMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
-                holder = new OtherFileMessageViewHolder(SbViewOtherFileMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OtherFileMessageViewHolder(SbViewOtherFileMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                holder = new MyImageFileMessageViewHolder(SbViewMyFileImageMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new MyImageFileMessageViewHolder(SbViewMyFileImageMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
-                holder = new OtherImageFileMessageViewHolder(SbViewOtherFileImageMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OtherImageFileMessageViewHolder(SbViewOtherFileImageMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                holder = new MyVideoFileMessageViewHolder(SbViewMyFileVideoMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new MyVideoFileMessageViewHolder(SbViewMyFileVideoMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
-                holder = new OtherVideoFileMessageViewHolder(SbViewOtherFileVideoMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                holder = new OtherVideoFileMessageViewHolder(SbViewOtherFileVideoMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_TIME_LINE:
-                holder = new TimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false), false);
+                holder = new TimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_ADMIN_MESSAGE:
-                holder = new AdminMessageViewHolder(SbViewAdminMessageBinding.inflate(inflater, parent, false), false);
+                holder = new AdminMessageViewHolder(SbViewAdminMessageBinding.inflate(inflater, parent, false), new MessageListUIParams.Builder().setUseMessageGroupUI(false).build());
+                break;
+            case VIEW_TYPE_PARENT_MESSAGE_INFO:
+                holder = new ParentMessageInfoViewHolder(SbViewParentMessageInfoHolderBinding.inflate(inflater, parent, false));
                 break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
-                    holder = new MyUserMessageViewHolder(SbViewMyUserMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                    holder = new MyUserMessageViewHolder(SbViewMyUserMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 } else {
-                    holder = new OtherUserMessageViewHolder(SbViewOtherUserMessageBinding.inflate(inflater, parent, false), useMessageGroupUI);
+                    holder = new OtherUserMessageViewHolder(SbViewOtherUserMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 }
         }
         return holder;

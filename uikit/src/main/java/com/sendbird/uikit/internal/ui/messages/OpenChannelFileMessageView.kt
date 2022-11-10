@@ -14,6 +14,7 @@ import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageComponentBinding
+import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -67,12 +68,9 @@ internal class OpenChannelFileMessageView @JvmOverloads internal constructor(
         }
     }
 
-    override fun drawMessage(
-        channel: OpenChannel,
-        message: BaseMessage,
-        messageGroupType: MessageGroupType
-    ) {
+    override fun drawMessage(channel: OpenChannel, message: BaseMessage, params: MessageListUIParams) {
         val fileMessage = message as FileMessage
+        val messageGroupType = params.messageGroupType
 
         messageUIConfig?.let {
             it.myMessageTextUIConfig.mergeFromTextAppearance(context, messageAppearance)
@@ -88,7 +86,7 @@ internal class OpenChannelFileMessageView @JvmOverloads internal constructor(
         }
 
         ViewUtils.drawFilename(binding.tvFileName, fileMessage, messageUIConfig)
-        binding.ivStatus.drawStatus(message, channel)
+        binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
 
         val backgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.background_600 else R.color.background_50
         val iconTint = SendbirdUIKit.getDefaultThemeMode().primaryTintResId
@@ -108,16 +106,16 @@ internal class OpenChannelFileMessageView @JvmOverloads internal constructor(
             ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
             ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, channel.isOperator(message.sender))
             ViewUtils.drawProfile(binding.ivProfileView, message)
-            val params = binding.contentPanel.layoutParams as ConstraintLayout.LayoutParams
-            params.leftMargin = marginLeftNor
-            binding.contentPanel.layoutParams = params
+            val layoutParams = binding.contentPanel.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.leftMargin = marginLeftNor
+            binding.contentPanel.layoutParams = layoutParams
         } else {
             binding.ivProfileView.visibility = GONE
             binding.tvNickname.visibility = GONE
             binding.tvSentAt.visibility = INVISIBLE
-            val params = binding.contentPanel.layoutParams as ConstraintLayout.LayoutParams
-            params.leftMargin = marginLeftEmpty
-            binding.contentPanel.layoutParams = params
+            val layoutParams = binding.contentPanel.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.leftMargin = marginLeftEmpty
+            binding.contentPanel.layoutParams = layoutParams
         }
     }
 }

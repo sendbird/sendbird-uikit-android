@@ -19,12 +19,13 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.user.Sender;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
-import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.databinding.ViewOpenChannelHighlightMessageHolderBinding;
 import com.sendbird.uikit.customsample.utils.DrawableUtils;
+import com.sendbird.uikit.model.MessageListUIParams;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ViewHolder to draw the highlight message for <code>OpenChannel</code>.
@@ -44,12 +45,10 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         } finally {
             a.recycle();
         }
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), binding.contentPanel);
-        clickableViewMap.put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
     }
 
     @Override
-    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageGroupType messageGroupType) {
+    public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageListUIParams params) {
         OpenChannel openChannel;
         if (channel instanceof OpenChannel) {
             openChannel = (OpenChannel) channel;
@@ -99,6 +98,9 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
     @NonNull
     @Override
     public Map<String, View> getClickableViewMap() {
-        return clickableViewMap;
+        return new ConcurrentHashMap<String, View>() {{
+            put(ClickableViewIdentifier.Chat.name(), binding.contentPanel);
+            put(ClickableViewIdentifier.Profile.name(), binding.ivProfileView);
+        }};
     }
 }

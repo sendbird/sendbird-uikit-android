@@ -13,6 +13,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
+import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -103,7 +104,8 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
         }
     }
 
-    override fun drawMessage(channel: GroupChannel, message: BaseMessage, messageGroupType: MessageGroupType) {
+    override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
+        val messageGroupType = params.messageGroupType
         val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
         val hasOgTag = message.ogMetaData != null
         val hasReaction = message.reactions.isNotEmpty()
@@ -114,7 +116,7 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
         binding.ovOgtag.visibility = if (hasOgTag) VISIBLE else GONE
         binding.tvSentAt.visibility =
             if (isSent && (messageGroupType === MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType === MessageGroupType.GROUPING_TYPE_SINGLE)) VISIBLE else GONE
-        binding.ivStatus.drawStatus(message, channel)
+        binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
 
         messageUIConfig?.let {
             it.myMessageTextUIConfig.mergeFromTextAppearance(context, messageTextAppearance)
@@ -142,6 +144,16 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
         val paddingBottom =
             resources.getDimensionPixelSize(if (messageGroupType === MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType === MessageGroupType.GROUPING_TYPE_BODY) R.dimen.sb_size_1 else R.dimen.sb_size_8)
         binding.root.setPadding(binding.root.paddingLeft, paddingTop, binding.root.paddingRight, paddingBottom)
-        ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message, messageUIConfig?.repliedMessageTextUIConfig)
+        if (params.shouldUseQuotedView()) {
+            ViewUtils.drawQuotedMessage(
+                binding.quoteReplyPanel,
+                channel,
+                message,
+                messageUIConfig?.repliedMessageTextUIConfig
+            )
+        } else {
+            binding.quoteReplyPanel.visibility = GONE
+        }
+        ViewUtils.drawThreadInfo(binding.threadInfo, message)
     }
 }

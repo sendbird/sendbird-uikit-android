@@ -2,6 +2,7 @@ package com.sendbird.uikit.consts;
 
 public class StringSet {
     public final static String KEY_CHANNEL_URL = "KEY_CHANNEL_URL";
+    public final static String KEY_ANCHOR_MESSAGE_ID = "KEY_ANCHOR_MESSAGE_ID";
 
     public final static String KEY_USE_HEADER_RIGHT_BUTTON = "KEY_USE_HEADER_RIGHT_BUTTON";
     public final static String KEY_USE_HEADER_LEFT_BUTTON = "KEY_USE_HEADER_LEFT_BUTTON";
@@ -21,6 +22,7 @@ public class StringSet {
     public final static String KEY_USE_USER_PROFILE = "KEY_USE_USER_PROFILE";
 
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
+    public final static String KEY_PARENT_MESSAGE = "KEY_PARENT_MESSAGE";
     public final static String KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED = "KEY_MESSAGE_INITIAL_ANIMATE";
     public final static String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
     public final static String KEY_USE_MESSAGE_GROUP_UI = "KEY_USE_MESSAGE_GROUP_UI";
@@ -47,6 +49,7 @@ public class StringSet {
 
     public final static String KEY_THEME_RES_ID = "KEY_THEME_RES_ID";
     public final static String KEY_USE_HEADER = "KEY_USE_HEADER";
+    public final static String KEY_USE_MESSAGE_LIST_BANNER = "KEY_USE_MESSAGE_LIST_BANNER";
     public final static String KEY_USE_TYPING_INDICATOR = "KEY_USE_TYPING_INDICATOR";
     public final static String KEY_HEADER_TITLE = "KEY_HEADER_TITLE";
     public final static String KEY_HEADER_LEFT_BUTTON_ICON_RES_ID = "KEY_HEADER_LEFT_BUTTON_ICON_RES_ID";
@@ -109,14 +112,18 @@ public class StringSet {
     public final static String ACTION_INIT_FROM_REMOTE = "ACTION_INIT_FROM_REMOTE";
     public final static String ACTION_NEXT = "ACTION_NEXT";
     public final static String ACTION_PREVIOUS = "ACTION_PREVIOUS";
+    public final static String ACTION_PARENT_MESSAGE_UPDATED = "ACTION_PARENT_MESSAGE_UPDATED";
     public final static String MESSAGE_CHANGELOG = "MESSAGE_CHANGELOG";
     public final static String MESSAGE_FILL = "MESSAGE_FILL";
     public final static String EVENT_MESSAGE_SENT = "EVENT_MESSAGE_SENT";
     public final static String EVENT_MESSAGE_RECEIVED = "EVENT_MESSAGE_RECEIVED";
+    public final static String EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED";
     public final static String photo = "photo";
 
     public final static String Chat = "Chat";
     public final static String Profile = "Profile";
     public final static String QuoteReply = "QuoteReply";
+    public final static String ThreadInfo = "ThreadInfo";
+    public final static String ParentMessageMenu = "ParentMessageMenu";
     public final static String _AT = "@";
 }

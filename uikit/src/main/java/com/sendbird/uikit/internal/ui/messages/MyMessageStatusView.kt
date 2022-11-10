@@ -71,7 +71,7 @@ internal class MyMessageStatusView @JvmOverloads constructor(
         }
     }
 
-    fun drawStatus(message: BaseMessage, channel: BaseChannel) {
+    fun drawStatus(message: BaseMessage, channel: BaseChannel, useMessageReceipt: Boolean) {
         when (message.sendingStatus) {
             SendingStatus.CANCELED, SendingStatus.FAILED -> {
                 visibility = VISIBLE
@@ -79,7 +79,7 @@ internal class MyMessageStatusView @JvmOverloads constructor(
             }
             SendingStatus.SUCCEEDED -> {
                 if (channel.isGroupChannel && channel is GroupChannel) {
-                    if (channel.isSuper || channel.isBroadcast) {
+                    if (!useMessageReceipt || channel.isSuper || channel.isBroadcast) {
                         visibility = GONE
                         return
                     }

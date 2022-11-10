@@ -10,11 +10,13 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.UserMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewOtherQuotedMessageBinding
 import com.sendbird.uikit.internal.extensions.hasParentMessage
@@ -76,7 +78,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         }
     }
 
-    override fun drawQuotedMessage(message: BaseMessage, textUIConfig: TextUIConfig?) {
+    override fun drawQuotedMessage(channel: GroupChannel, message: BaseMessage, textUIConfig: TextUIConfig?) {
         binding.quoteReplyPanel.visibility = GONE
         if (!message.hasParentMessage()) return
 
@@ -85,16 +87,36 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         binding.quoteReplyMessagePanel.visibility = GONE
         binding.ivQuoteReplyMessageIcon.visibility = GONE
         binding.quoteReplyThumbnailPanel.visibility = GONE
+        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+
+        parentMessage?.let {
+            if (SendbirdUIKit.getReplyType() == ReplyType.THREAD && it.createdAt < channel.joinedAt * 1000) {
+                val messageUnavailable = context.getString(R.string.sb_text_channel_message_unavailable)
+                binding.quoteReplyMessagePanel.visibility = VISIBLE
+                binding.tvQuoteReplyMessage.text =
+                    textUIConfig?.apply(context, messageUnavailable) ?: messageUnavailable
+                binding.tvQuoteReplyMessage.isSingleLine = true
+                binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
+                binding.tvQuoteReplyTitle.text = String.format(
+                    context.getString(R.string.sb_text_replied_to),
+                    UserUtils.getDisplayName(context, message.sender, true),
+                    UserUtils.getDisplayName(context, null, true)
+                )
+                return
+            }
+        }
+
         binding.tvQuoteReplyTitle.text = String.format(
             context.getString(R.string.sb_text_replied_to),
-            UserUtils.getDisplayName(context, message.sender, true),
+            UserUtils.getDisplayName(context, message.sender, true, 10),
             UserUtils.getDisplayName(context, parentMessage?.sender, true)
         )
-        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+
         when (parentMessage) {
             is UserMessage -> {
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
-                binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.message) ?: parentMessage.message
+                binding.tvQuoteReplyMessage.text =
+                    textUIConfig?.apply(context, parentMessage.message) ?: parentMessage.message
                 binding.tvQuoteReplyMessage.isSingleLine = false
                 binding.tvQuoteReplyMessage.maxLines = 2
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
@@ -123,7 +145,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     }
                 }
                 val type = parentMessage.type
-                binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_8).toFloat()
+                binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_16).toFloat()
                 binding.tvQuoteReplyMessage.isSingleLine = true
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.MIDDLE
                 if (type.lowercase(Locale.getDefault()).contains(StringSet.gif)) {
@@ -154,7 +176,8 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_audio)
-                    binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
+                    binding.tvQuoteReplyMessage.text =
+                        textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
                 } else if (type.startsWith(StringSet.image) && !type.contains(StringSet.svg)) {
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageResource(android.R.color.transparent)
@@ -167,7 +190,8 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_document)
-                    binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
+                    binding.tvQuoteReplyMessage.text =
+                        textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
                 }
             }
         }

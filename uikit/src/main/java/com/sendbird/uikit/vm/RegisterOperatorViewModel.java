@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
-import com.sendbird.uikit.vm.queries.ChannelMemberListQuery;
+import com.sendbird.uikit.internal.queries.ChannelMemberListQuery;
 
 /**
  * ViewModel preparing and managing data related with the list of members who can be operator

@@ -799,7 +799,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
     public MessageListParams createMessageListParams() {
         final MessageListParams messageListParams = new MessageListParams();
         messageListParams.setReverse(true);
-        messageListParams.setNextResultSize(0);
+        messageListParams.setNextResultSize(1);
         messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, false, false, false));
         if (messageListParams.getPreviousResultSize() <= 0) {
             messageListParams.setPreviousResultSize(40);

@@ -17,5 +17,11 @@ public enum ReplyType {
      *
      * @since 2.2.0
      */
-    QUOTE_REPLY
+    QUOTE_REPLY,
+    /**
+     * Displays replies to a parent message on a separate screen.
+     *
+     * @since 3.3.0
+     */
+    THREAD
 }

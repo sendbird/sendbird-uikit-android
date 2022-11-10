@@ -11,11 +11,11 @@ import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.message.Emoji;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
-import com.sendbird.uikit.activities.viewholder.EmojiMoreViewHolder;
-import com.sendbird.uikit.activities.viewholder.EmojiViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.ui.reactions.EmojiView;
+import com.sendbird.uikit.internal.ui.viewholders.EmojiMoreViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.EmojiViewHolder;
 
 import java.util.HashMap;
 import java.util.List;

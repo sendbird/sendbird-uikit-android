@@ -51,7 +51,7 @@
         android:id="@+id/quoteReplyPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:translationY="@dimen/sb_size_6"
+        android:translationY="@dimen/sb_size_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/contentPanelWithReactions"
@@ -147,5 +147,14 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="contentPanelWithReactions, tvSentAt, ivStatus" />
+
+    <com.sendbird.uikit.internal.ui.messages.ThreadInfoView
+        android:id="@+id/threadInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="@id/contentPanelWithReactions"
+        app:layout_constraintTop_toBottomOf="@id/contentPanelWithReactions"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

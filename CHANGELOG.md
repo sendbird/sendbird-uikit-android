@@ -1,5 +1,28 @@
 # Changelog
 
+### v3.3.0 (Nov 10, 2022) with Core SDK `v4.1.1`
+* Support thread type in GroupChannel
+  * Added `THREAD` in `ReplyType`
+  * Added `enum ThreadReplySelectType { PARENT, THREAD }`
+  * Added `setThreadReplySelectType(threadReplySelectType)` in `SendBirdUIKit`
+  * Added `getThreadReplySelectType()` in `SendBirdUIKit`
+  * Added `MessageThreadActivity`, `MessageThreadFragment`, `MessageThreadModule`, `MessageThreadViewModel`, `MessageThreadHeaderComponent`, `ThreadListComponent`, `MessageThreadInputComponent`, and `ThreadListAdapter`
+  * Added `newRedirectToMessageThreadIntent(Context, String, long)` in `ChannelActivity`
+  * Added `VIEW_TYPE_PARENT_MESSAGE_INFO` in `MessageType`
+  * Added `ThreadInfo`, `ParentMessageMenu` in `ClickableViewIdentifier`
+  * Added `onThreadInfoClicked(View, int, BaseMessage)` in `ChannelFragment`
+  * Added `setOnThreadInfoClickListener(OnItemClickListener<BaseMessage>)` in `ChannelFragment.Builder`
+* Added `MessageListUIParams` class
+* Added `bind(BaseChannel, BaseMessage, MessageListUIParams)` in `MessageViewHolder`
+* Added `createViewHolder(LayoutInflater, ViewGroup, MessageType, MessageListUIParams)` in `MessageViewHolderFactory`
+* Added `createOpenChannelViewHolder(LayoutInflater, ViewGroup, MessageType, MessageListUIParams)` in `MessageViewHolderFactory`
+* Deprecated `bind(BaseChannel, BaseMessage, MessageGroupType)` in `MessageViewHolder`
+* Deprecated `createViewHolder(LayoutInflater, ViewGroup, MessageType, boolean)` in `MessageViewHolderFactory`
+* Deprecated `createOpenChannelViewHolder(LayoutInflater, ViewGroup, MessageType, boolean)` in `MessageViewHolderFactory`
+* Added `setUseMessageListBanner(boolean)` in `ChannelFragment.Builder`
+* Added `setUseBanner(boolean)` in `MessageListComponent.Params`
+* Added `setUseUserIdForNickname(boolean)` and `isUsingUserIdForNickname()` in `SendbirdUIKit`
+
 ### v3.2.2 (Oct 27, 2022) with Core SDK `v4.1.1` 
 * Added `setOnScrollFirstButtonClickListener(OnConsumableClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
 * Added `scrollToFirst()`, `setOnScrollFirstButtonClickListener(OnConsumableClickListener)`, and `onScrollFirstButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
