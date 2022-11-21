@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.3.1 (Nov 21, 2022) with Core SDK `v4.1.3`
+* Fixed message update issue when an app is built with Proguard on
+* Improved stability
+
 ### v3.3.0 (Nov 10, 2022) with Core SDK `v4.1.1`
 * Support thread type in GroupChannel
   * Added `THREAD` in `ReplyType`

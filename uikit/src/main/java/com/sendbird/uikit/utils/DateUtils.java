@@ -39,8 +39,10 @@ public class DateUtils {
             return formatTime(context, timeInMillis);
         } else if (isYesterday(timeInMillis)) {
             return context.getString(R.string.sb_text_yesterday);
-        } else {
+        } else if (isThisYear(timeInMillis)) {
             return formatDate2(timeInMillis);
+        } else {
+            return formatDate3(timeInMillis);
         }
     }
 
@@ -69,6 +71,17 @@ public class DateUtils {
     }
 
     /**
+     * Formats timestamp to 'month/date/year' format (e.g. '12/19/2022').
+     */
+    @NonNull
+    public static String formatDate3(long timeInMillis) {
+        int flags = android.text.format.DateUtils.FORMAT_SHOW_YEAR
+                | android.text.format.DateUtils.FORMAT_SHOW_DATE
+                | android.text.format.DateUtils.FORMAT_NUMERIC_DATE;
+        return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
+    }
+
+    /**
      * Returns whether the given date is today, based on the user's current locale.
      */
     public static boolean isToday(long timeInMillis) {
@@ -85,6 +98,13 @@ public class DateUtils {
         return now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
                 && now.get(Calendar.MONTH) == date.get(Calendar.MONTH)
                 && now.get(Calendar.DATE) == date.get(Calendar.DATE);
+    }
+
+    public static boolean isThisYear(long timeInMillis) {
+        Calendar now = Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(timeInMillis);
+        return now.get(Calendar.YEAR) == date.get(Calendar.YEAR);
     }
 
     @NonNull

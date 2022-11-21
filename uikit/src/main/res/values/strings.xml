@@ -186,7 +186,7 @@
     <string name="sb_text_reply_to">Reply to %s</string>
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
-    <string name="sb_text_exceed_mention_limit_count">"You can have up to %d mentions per message."</string>
+    <string name="sb_text_exceed_mention_limit_count">You can have up to %d mentions per message.</string>
     <string name="sb_text_number_of_reply">%d reply</string>
     <string name="sb_text_number_of_replies">%d replies</string>
     <string name="sb_text_max_number_of_replies">99+ replies</string>

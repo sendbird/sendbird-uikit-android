@@ -58,13 +58,13 @@ public class SendbirdUIKit {
     public enum LogLevel {
         ALL(Log.VERBOSE), INFO(Log.INFO), WARN(Log.WARN), ERROR(Log.ERROR), NONE(Integer.MAX_VALUE);
 
-        int level;
+        final int level;
 
         LogLevel(int level) {
             this.level = level;
         }
 
-        int getLevel() {
+        public int getLevel() {
             return level;
         }
     }
