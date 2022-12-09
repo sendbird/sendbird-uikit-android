@@ -942,6 +942,17 @@
         <item name="android:windowSoftInputMode">stateUnchanged|adjustPan</item>
     </style>
 
+    <style name="Sendbird.BottomSheetDialogStyle.MessageInputDialogWrapper" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="bottomSheetStyle">@style/Sendbird.BottomSheetStyle.MessageInputDialogWrapper</item>
+    </style>
+
+    <style name="Sendbird.BottomSheetStyle.MessageInputDialogWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+
     <style name="Animation"/>
     <style name="Animation.Sendbird.Dialog" parent="Animation">
         <item name="android:windowEnterAnimation">@anim/fade_in_center</item>

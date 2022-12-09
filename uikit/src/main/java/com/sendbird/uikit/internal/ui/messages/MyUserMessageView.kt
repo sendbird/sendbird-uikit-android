@@ -123,11 +123,11 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
             it.myEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
             it.myMentionUIConfig.mergeFromTextAppearance(context, mentionAppearance)
             it.mySentAtTextUIConfig.mergeFromTextAppearance(context, sentAtAppearance)
-            it.otherMessageBackground?.let { background -> binding.contentPanel.background = background }
-            it.otherReactionListBackground?.let { reactionBackground ->
+            it.myMessageBackground?.let { background -> binding.contentPanel.background = background }
+            it.myReactionListBackground?.let { reactionBackground ->
                 binding.emojiReactionListBackground.background = reactionBackground
             }
-            it.otherOgtagBackground?.let { ogtagBackground ->
+            it.myOgtagBackground?.let { ogtagBackground ->
                 binding.ogtagBackground.background = ogtagBackground
                 binding.ovOgtag.background = ogtagBackground
             }

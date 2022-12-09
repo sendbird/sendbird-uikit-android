@@ -7,30 +7,22 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
-import com.sendbird.uikit.consts.KeyboardDisplayType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewMessageInputBinding
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setCursorDrawable
-import com.sendbird.uikit.internal.ui.reactions.DialogView
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.utils.TextUtils
@@ -46,7 +38,6 @@ class MessageInputView @JvmOverloads constructor(
     val binding: SbViewMessageInputBinding
     val layout: View
         get() = this
-    var keyboardDisplayType = KeyboardDisplayType.Plane
     var onSendClickListener: OnClickListener? = null
         set(value) {
             field = value
@@ -135,10 +126,11 @@ class MessageInputView @JvmOverloads constructor(
         QUOTE_REPLY
     }
 
-    fun showKeyboard() =
-        if (keyboardDisplayType == KeyboardDisplayType.Dialog) showInputDialog() else SoftInputUtils.showSoftKeyboard(
+    fun showKeyboard() {
+        SoftInputUtils.showSoftKeyboard(
             binding.etInputText
         )
+    }
 
     fun drawMessageToReply(message: BaseMessage) {
         var displayMessage = message.message
@@ -220,120 +212,6 @@ class MessageInputView @JvmOverloads constructor(
 
     fun applyTextUIConfig(textUIConfig: TextUIConfig) {
         binding.etInputText.applyTextUIConfig(textUIConfig)
-    }
-
-    private fun showInputDialog() {
-        val messageInputView = createDialogInputView()
-        val themeResId: Int = if (useOverlay) {
-            R.style.Widget_Sendbird_Overlay_DialogView
-        } else {
-            if (SendbirdUIKit.isDarkMode()) R.style.Widget_Sendbird_Dark_DialogView else R.style.Widget_Sendbird_DialogView
-        }
-        val themeWrapperContext: Context = ContextThemeWrapper(context, themeResId)
-        val dialogView = DialogView(themeWrapperContext).apply {
-            setContentView(messageInputView)
-            setBackgroundBottom()
-        }
-        val builder = AlertDialog.Builder(context, R.style.Sendbird_Dialog_Bottom)
-        builder.setView(dialogView)
-        val dialog = builder.create()
-        val context = messageInputView.context
-        val prevSoftInputMode = SoftInputUtils.getSoftInputMode(context)
-        SoftInputUtils.setSoftInputMode(context, WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        onSendClickListener?.let {
-            messageInputView.onSendClickListener = OnClickListener {
-                dialog.dismiss()
-                binding.ibtnSend.postDelayed({
-                    onSendClickListener?.onClick(binding.ibtnSend)
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode)
-                }, 200)
-            }
-        }
-        onAddClickListener?.let {
-            messageInputView.onAddClickListener = OnClickListener {
-                dialog.dismiss()
-                binding.ibtnAdd.postDelayed({
-                    onAddClickListener?.onClick(binding.ibtnAdd)
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode)
-                }, 200)
-            }
-        }
-        onEditSaveClickListener?.let {
-            messageInputView.onEditSaveClickListener = OnClickListener {
-                inputText = messageInputView.inputText
-                dialog.dismiss()
-                binding.btnSave.postDelayed({
-                    onEditSaveClickListener?.onClick(binding.btnSave)
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode)
-                }, 200)
-            }
-        }
-        onEditCancelClickListener?.let {
-            messageInputView.onEditCancelClickListener = OnClickListener {
-                dialog.dismiss()
-                binding.btnCancel.postDelayed({
-                    onEditCancelClickListener?.onClick(binding.btnCancel)
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode)
-                }, 200)
-            }
-        }
-        onReplyCloseClickListener?.let {
-            messageInputView.onReplyCloseClickListener = OnClickListener {
-                dialog.dismiss()
-                binding.ivQuoteReplyClose.postDelayed({
-                    onReplyCloseClickListener?.onClick(binding.ivQuoteReplyClose)
-                    SoftInputUtils.setSoftInputMode(context, prevSoftInputMode)
-                }, 200)
-            }
-        }
-        messageInputView.onInputTextChangedListener =
-            OnInputTextChangedListener { s, start, before, count ->
-                if (Mode.EDIT == inputMode) {
-                    onEditModeTextChangedListener?.onInputTextChanged(s, start, before, count)
-                } else {
-                    onInputTextChangedListener?.onInputTextChanged(s, start, before, count)
-                    inputText = s.toString()
-                }
-            }
-        dialog.apply {
-            setOnCancelListener {
-                inputMode = Mode.DEFAULT
-                binding.root.postDelayed({ SoftInputUtils.setSoftInputMode(context, prevSoftInputMode) }, 200)
-            }
-            show()
-            window?.apply {
-                setGravity(Gravity.BOTTOM)
-                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            }
-        }
-        messageInputView.showKeyboard()
-    }
-
-    private fun createDialogInputView(): MessageInputView {
-        return MessageInputView(context).apply {
-            if (showSendButtonAlways) setSendButtonVisibility(VISIBLE)
-            showSendButtonAlways = this@MessageInputView.showSendButtonAlways
-            inputMode = this@MessageInputView.mode
-            when (mode) {
-                Mode.EDIT -> {
-                    inputText = this@MessageInputView.inputText
-                }
-                Mode.QUOTE_REPLY -> {
-                    binding.ivQuoteReplyMessageIcon.visibility =
-                        this@MessageInputView.binding.ivQuoteReplyMessageIcon.visibility
-                    binding.ivQuoteReplyMessageImage.visibility =
-                        this@MessageInputView.binding.ivQuoteReplyMessageImage.visibility
-                    binding.ivQuoteReplyMessageIcon.setImageDrawable(this@MessageInputView.binding.ivQuoteReplyMessageIcon.drawable)
-                    binding.ivQuoteReplyMessageImage.content.setImageDrawable(this@MessageInputView.binding.ivQuoteReplyMessageImage.content.drawable)
-                    binding.tvQuoteReplyTitle.text = this@MessageInputView.binding.tvQuoteReplyTitle.text
-                    binding.tvQuoteReplyMessage.text = this@MessageInputView.binding.tvQuoteReplyMessage.text
-                }
-                Mode.DEFAULT -> {}
-            }
-            binding.ibtnSend.setImageDrawable(this@MessageInputView.binding.ibtnSend.drawable)
-            binding.ibtnAdd.setImageDrawable(this@MessageInputView.binding.ibtnAdd.drawable)
-            binding.etInputText.hint = this@MessageInputView.binding.etInputText.hint
-        }
     }
 
     init {
@@ -474,10 +352,10 @@ class MessageInputView @JvmOverloads constructor(
                 }
             })
             binding.etInputText.inputType = (
-                InputType.TYPE_CLASS_TEXT
-                    or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                    or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                )
+                    InputType.TYPE_CLASS_TEXT
+                            or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                            or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    )
         } finally {
             a.recycle()
         }

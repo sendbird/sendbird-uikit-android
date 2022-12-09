@@ -24,6 +24,6 @@ public class TimelineMessage extends CustomizableMessage {
     @Override
     @NonNull
     public String getMessage() {
-        return DateUtils.formatDate(getCreatedAt());
+        return DateUtils.formatTimelineMessage(getCreatedAt());
     }
 }

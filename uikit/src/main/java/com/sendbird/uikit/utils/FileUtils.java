@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -273,5 +274,12 @@ public class FileUtils {
     public static File createCachedDirFile(@NonNull Context context, @NonNull String fileName) {
         File dir = context.getCacheDir();
         return new File(dir, fileName);
+    }
+
+    public static void copyFile(@NonNull File src, @NonNull File dst) throws IOException
+    {
+        try (FileChannel inChannel = new FileInputStream(src).getChannel(); FileChannel outChannel = new FileOutputStream(dst).getChannel()) {
+            inChannel.transferTo(0, inChannel.size(), outChannel);
+        }
     }
 }

@@ -43,6 +43,6 @@ internal class TimelineMessageView @JvmOverloads internal constructor(
     }
 
     fun drawTimeline(message: BaseMessage) {
-        binding.tvTimeline.text = DateUtils.formatDate(message.createdAt)
+        binding.tvTimeline.text = DateUtils.formatTimelineMessage(message.createdAt)
     }
 }

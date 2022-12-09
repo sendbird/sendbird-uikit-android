@@ -8,6 +8,19 @@ import com.sendbird.uikit.interfaces.OnPagedDataLoader
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
+internal class InnerLinearLayoutManager(context: Context) : LinearLayoutManager(context) {
+    var listener: OnLayoutCompleteListener? = null
+
+    override fun onLayoutCompleted(state: RecyclerView.State) {
+        super.onLayoutCompleted(state)
+        listener?.onLayoutComplete(state)
+    }
+}
+
+internal interface OnLayoutCompleteListener {
+    fun onLayoutComplete(state: RecyclerView.State)
+}
+
 internal class PagerRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -15,6 +28,11 @@ internal class PagerRecyclerView @JvmOverloads constructor(
 ) : ThemeableRecyclerView(context, attrs, defStyle) {
     private var layoutManager: LinearLayoutManager? = null
     private val onScrollListener: OnScrollListener by lazy { OnScrollListener(layoutManager) }
+    var onLayoutCompleteListener: OnLayoutCompleteListener? = null
+        set(value) {
+            field = value
+            if (layoutManager is InnerLinearLayoutManager) (layoutManager as InnerLinearLayoutManager).listener = value
+        }
 
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         require(layoutManager is LinearLayoutManager) { "LinearLayoutManager supports only." }
@@ -51,11 +69,7 @@ internal class PagerRecyclerView @JvmOverloads constructor(
     }
 
     fun setStackFromEnd(stackFromEnd: Boolean) {
-        val prevStackFromEnd = layoutManager?.stackFromEnd ?: false
-        if (prevStackFromEnd != stackFromEnd) {
-            layoutManager?.stackFromEnd = stackFromEnd
-            post { requestLayout() }
-        }
+        post { layoutManager?.stackFromEnd = stackFromEnd }
     }
 
     fun isScrollable(): Boolean {

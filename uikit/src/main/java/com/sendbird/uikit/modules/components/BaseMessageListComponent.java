@@ -31,6 +31,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
@@ -197,7 +198,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
 
         this.messageRecyclerView.getTooltipView().setOnClickListener(this::onMessageTooltipClicked);
 
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        final LinearLayoutManager layoutManager = new InnerLinearLayoutManager(recyclerView.getContext());
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         return this.messageRecyclerView;

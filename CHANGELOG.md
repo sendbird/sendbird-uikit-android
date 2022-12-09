@@ -1,10 +1,17 @@
 # Changelog
 
-### v3.3.1 (Nov 21, 2022) with Core SDK `v4.1.3`
+### v3.3.2 (Dec 09, 2022) with Chat SDK `v4.1.3`
+* Support authenticated file caching
+* Change the default value of `SendbirdUIKit.shouldUseImageCompression()` to `true`
+* Change the default value of `SendbirdUIKit.getCompressQuality()` to `70`
+* Improved message input dialog mode
+* Improved stability
+
+### v3.3.1 (Nov 21, 2022) with Chat SDK `v4.1.3`
 * Fixed message update issue when an app is built with Proguard on
 * Improved stability
 
-### v3.3.0 (Nov 10, 2022) with Core SDK `v4.1.1`
+### v3.3.0 (Nov 10, 2022) with Chat SDK `v4.1.1`
 * Support thread type in GroupChannel
   * Added `THREAD` in `ReplyType`
   * Added `enum ThreadReplySelectType { PARENT, THREAD }`
@@ -27,14 +34,14 @@
 * Added `setUseBanner(boolean)` in `MessageListComponent.Params`
 * Added `setUseUserIdForNickname(boolean)` and `isUsingUserIdForNickname()` in `SendbirdUIKit`
 
-### v3.2.2 (Oct 27, 2022) with Core SDK `v4.1.1` 
+### v3.2.2 (Oct 27, 2022) with Chat SDK `v4.1.1` 
 * Added `setOnScrollFirstButtonClickListener(OnConsumableClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
 * Added `scrollToFirst()`, `setOnScrollFirstButtonClickListener(OnConsumableClickListener)`, and `onScrollFirstButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
 * Deprecated `setOnScrollBottomButtonClickListener(View.OnClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
 * Deprecated `scrollToBottom()`, `setOnScrollBottomButtonClickListener(View.OnClickListener)`, and `onScrollBottomButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
 * Improved stability
 
-### v3.2.1 (Sep 29, 2022) with Core SDK `v4.0.9`
+### v3.2.1 (Sep 29, 2022) with Chat SDK `v4.0.9`
 * Added `takeVideo()` in `ChannelFragment` and `OpenChannelFragment`
 * Support custom font in message bubble and input filed.
   * Added `setRepliedMessageTextUIConfig(TextUIConfig)`, and `setMessageInputTextUIConfig(TextUIConfig)` in `ChannelFragment.Builder`
@@ -44,7 +51,7 @@
   * Added `setRepliedMessageTextUIConfig(TextUIConfig)` in `MessageListComponent.Params`
   * Added `setCustomFontRes(int)` in `TextUIConfig.Builder`
 
-### v3.2.0 (Sep 15, 2022) with Core SDK `v4.0.8`
+### v3.2.0 (Sep 15, 2022) with Chat SDK `v4.0.8`
 * Support OpenChannel list
   * Added `OpenChannelListActivity`, `OpenChannelListFragment`, `OpenChannelListModule`, `OpenChannelListViewModel`, `OpenChannelListComponent`, and `OpenChannelListAdapter`
   * Added `CreateOpenChannelActivity`, `CreateOpenChannelFragment`, `CreateOpenChannelModule`, `CreateOpenChannelViewModel`, and `ChannelProfileInputComponent`
@@ -52,7 +59,7 @@
 * `setCustomFragment()` functions have been added in the all Fragment.Builder class
 * Improved stability
 
-### v3.1.1 (Aug 17, 2022) with Core SDK `v4.0.5`
+### v3.1.1 (Aug 17, 2022) with Chat SDK `v4.0.5`
 * Added `setMessageTextUIConfig(TextUIConfig, TextUIConfig)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`, `MessageListComponent.Params`, `OpenChannelMessageListComponent.Params`
 * Added `setSentAtTextUIConfig(TextUIConfig, TextUIConfig)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`, `MessageListComponent.Params`, `OpenChannelMessageListComponent.Params`
 * Added `setNicknameTextUIConfig(TextUIConfig)` in `ChannelFragment.Builder`, `MessageListComponent.Params`
@@ -66,7 +73,7 @@
 * Added `setLinkedTextColor(int)` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`
 * Added `setLinkedTextColor(ColorStateList)` in `MessageListComponent.Params`, `OpenChannelMessageListComponent.Params`
 
-### v3.1.0 (Aug 3, 2022) with Core SDK `v4.0.5`
+### v3.1.0 (Aug 3, 2022) with Chat SDK `v4.0.5`
 * Support Android 13
   * Set the `maxSdkVersion` of `android.permission.READ_EXTERNAL_STORAGE` to `32`
 * Removed `android.permission.REQUEST_INSTALL_PACKAGES` permission
@@ -80,7 +87,7 @@
   * Added `newOpenChannelModerationFragment()`, `newOpenChannelOperatorListFragment()`, `newOpenChannelRegisterOperatorFragment()`, `newOpenChannelMutedParticipantListFragment()`, `newOpenChannelBannedUserListFragment()` in `UIKitFragmentFactory`
 * Improved stability
 
-### v3.0.0 (Jul 12, 2022) with Core SDK `v4.0.4`
+### v3.0.0 (Jul 12, 2022) with Chat SDK `v4.0.4`
 * Support `modules` and `components` in the UIKit
 * Added `setEditedTextMarkUIConfig(TextUIConfig, TextUIConfig)` in `OpenChannelFragment.Builder`
 * Rename `PromoteOperator` to `RegisterOperator`
@@ -99,7 +106,7 @@
 * See more details and breaking changes. [[details](/changelogs/BREAKINGCHANGES_V3.md)]
 * See the Migration Guide for Converting V2 to V3. [[details](/changelogs/MIGRATIONGUIDE_V3.md)]
 
-### v3.0.0-beta.3 (Jun 02, 2022) with Core SDK `v3.1.14`
+### v3.0.0-beta.3 (Jun 02, 2022) with Chat SDK `v3.1.14`
 * Synchronized Builder methods and Params methods
   * Added `setErrorText()` in `BannedUserListFragment.Builder`, `ChannelListFragment.Builder`, `MemberListFragment.Builder`, `MutedMemberListFragment.Builder`, `OperatorListFragment.Builder`
   * Added `setOnInputRightButtonClickListener()`, `setOnEditModeCancelButtonClickListener()`, `setOnEditModeSaveButtonClickListener()`, `setOnQuoteReplyModeCloseButtonClickListener()`, `setOnInputModeChangedListener()`, `setUseSuggestedMentionListDivider()`, `setOnTooltipClickListener()`, `setOnScrollBottomButtonClickListener()`, `setErrorText()` in `ChannelFragment.Builder`, `OpenChannelFragment.Builder`
@@ -122,7 +129,7 @@
 * Added `ChannelPushSettingFragment` and `ChannelPushSettingActivity`
 * Added `ChannelPushSettingViewModel`, `ChannelPushSettingModule`, and `ChannelPushSettingComponent`
 
-### v3.0.0-beta.2 (Apr 29, 2022) with Core SDK `v3.1.12`
+### v3.0.0-beta.2 (Apr 29, 2022) with Chat SDK `v3.1.12`
 * Supported user mention in `GroupChannel`
 * Now you can send mentioning text to the other users in `GroupChannel`. These following functions are available
     * Added `setUseMention(boolean)`, `setUserMentionConfig(UserMentionConfig)`, `getUserMentionConfig()` and `isUsingMention()` in `SendbirdUIKit`
@@ -142,7 +149,7 @@
     * Added `getMentionSuggestion()` in `ChannelViewModel`
     * Added `loadMemberList(String)` in `ChannelViewModel`
 
-### v3.0.0-beta (Apr 12, 2022) with Core SDK `v3.1.10`
+### v3.0.0-beta (Apr 12, 2022) with Chat SDK `v3.1.10`
 * Support `modules` and `components` in the UIKit
 * See more details and breaking changes. [[details](/changelogs/BREAKINGCHANGES_V3.md)]
 * See the Migration Guide for Converting V2 to V3. [[details](/changelogs/MIGRATIONGUIDE_V3.md)]

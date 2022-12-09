@@ -11,6 +11,8 @@ public class StringSet {
 
     public final static String KEY_MESSAGE_FILENAME = "KEY_MESSAGE_FILENAME";
     public final static String KEY_IMAGE_URL = "KEY_IMAGE_URL";
+    public final static String KEY_IMAGE_PLAIN_URL = "KEY_IMAGE_PLAIN_URL";
+    public final static String KEY_REQUEST_ID = "KEY_REQUEST_ID";
     public final static String KEY_MESSAGE_MIMETYPE = "KEY_MESSAGE_MIMETYPE";
     public final static String KEY_MESSAGE_CREATEDAT = "KEY_MESSAGE_CREATEDAT";
     public final static String KEY_MESSAGE_SENDER_NAME = "KEY_MESSAGE_SENDER_NAME";
@@ -118,6 +120,7 @@ public class StringSet {
     public final static String EVENT_MESSAGE_SENT = "EVENT_MESSAGE_SENT";
     public final static String EVENT_MESSAGE_RECEIVED = "EVENT_MESSAGE_RECEIVED";
     public final static String EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED";
+    public final static String INVALID_URL = "INVALID_URL";
     public final static String photo = "photo";
 
     public final static String Chat = "Chat";

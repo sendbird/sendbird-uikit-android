@@ -26,6 +26,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnMentionEventListener;
+import com.sendbird.uikit.internal.ui.widgets.MessageInputDialogWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
@@ -73,6 +74,10 @@ public class MessageInputComponent {
      */
     public MessageInputComponent() {
         this.params = new Params();
+    }
+
+    MessageInputComponent(@NonNull Params params) {
+        this.params = params;
     }
 
     /**
@@ -146,7 +151,6 @@ public class MessageInputComponent {
         if (params.textUIConfig != null) {
             this.messageInputView.applyTextUIConfig(params.textUIConfig);
         }
-        this.messageInputView.setKeyboardDisplayType(params.keyboardDisplayType);
         this.messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
 
         if (params.alwaysShowRightButton) messageInputView.setSendButtonVisibility(View.VISIBLE);
@@ -160,7 +164,13 @@ public class MessageInputComponent {
         this.messageInputView.setOnReplyCloseClickListener(this::onQuoteReplyModeCloseButtonClicked);
         this.messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
         this.setUseSuggestedMentionListDivider(params.useSuggestedMentionListDivider);
-        return messageInputView;
+        if (params.keyboardDisplayType == KeyboardDisplayType.Dialog) {
+            final MessageInputDialogWrapper messageInputDialogWrapper = new MessageInputDialogWrapper(context);
+            messageInputDialogWrapper.initInputView(messageInputView);
+            return messageInputDialogWrapper;
+        } else {
+            return messageInputView;
+        }
     }
 
     /**

@@ -29,7 +29,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
@@ -43,6 +42,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
 import com.sendbird.uikit.internal.ui.messages.OgtagView;
 import com.sendbird.uikit.internal.ui.messages.ThreadInfoView;
@@ -246,24 +246,24 @@ public class ViewUtils {
         Sender sender = message.getSender();
 
         String url = "";
+        String plainUrl = "";
         if (sender != null && !TextUtils.isEmpty(sender.getProfileUrl())) {
             url = sender.getProfileUrl();
+            plainUrl = sender.getPlainProfileImageUrl();
         }
 
-        drawProfile(ivProfile, url);
+        drawProfile(ivProfile, url, plainUrl);
     }
 
-    public static void drawProfile(@NonNull ImageView ivProfile, @Nullable String url) {
+    public static void drawProfile(@NonNull ImageView ivProfile, @Nullable String url, @Nullable String plainUrl) {
         int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
         int backgroundTint = R.color.background_300;
         Drawable errorDrawable = DrawableUtils.createOvalIcon(ivProfile.getContext(),
                 backgroundTint, R.drawable.icon_user, iconTint);
 
-        if (url == null) return;
-        Glide.with(ivProfile.getContext())
-                .load(url)
+        if (url == null || plainUrl == null) return;
+        GlideCachedUrlLoader.load(Glide.with(ivProfile.getContext()), url, String.valueOf(plainUrl.hashCode()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(new ObjectKey(url))
                 .error(errorDrawable)
                 .apply(RequestOptions.circleCropTransform())
                 .into(ivProfile);
@@ -336,25 +336,36 @@ public class ViewUtils {
                             AppCompatResources.getColorStateList(context, thumbnailIconTint)));
         }
 
-        Logger.d("-- will load thumbnail url : %s", url);
-        builder.load(url).centerCrop().listener(new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                if (requestListener != null) {
-                    requestListener.onLoadFailed(e, model, target, isFirstResource);
-                }
-                return false;
-            }
+        final String cacheKey = generateThumbnailCacheKey(message);
+        GlideCachedUrlLoader.load(builder, url, cacheKey)
+                .centerCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        if (requestListener != null) {
+                            requestListener.onLoadFailed(e, model, target, isFirstResource);
+                        }
+                        return false;
+                    }
 
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                view.getContent().setScaleType(ImageView.ScaleType.CENTER_CROP);
-                if (requestListener != null) {
-                    requestListener.onResourceReady(resource, model, target, dataSource, isFirstResource);
-                }
-                return false;
-            }
-        }).into(view.getContent());
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        view.getContent().setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        if (requestListener != null) {
+                            requestListener.onResourceReady(resource, model, target, dataSource, isFirstResource);
+                        }
+                        return false;
+                    }
+                })
+                .into(view.getContent());
+    }
+
+    private static String generateThumbnailCacheKey(@NonNull FileMessage message) {
+        final String requestId = message.getRequestId();
+        if (TextUtils.isNotEmpty(requestId)) {
+            return "thumbnail_" + message.getRequestId();
+        }
+        return String.valueOf(message.getPlainUrl().hashCode());
     }
 
     public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
@@ -423,6 +434,24 @@ public class ViewUtils {
             final boolean isMine = MessageUtils.isMine(message);
             final TextUIConfig textUIConfig = isMine ? uiConfig.getMySentAtTextUIConfig() : uiConfig.getOtherSentAtTextUIConfig();
             textUIConfig.bind(tvSentAt.getContext(), sentAt, 0, sentAt.length());
+        }
+        tvSentAt.setText(sentAt);
+    }
+
+    public static void drawParentMessageSentAt(@NonNull TextView tvSentAt, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
+        if (message == null) {
+            return;
+        }
+
+        final Context context = tvSentAt.getContext();
+        final long createdAt = message.getCreatedAt();
+        final String sentAtTime = DateUtils.formatTime(context, createdAt);
+        final String sentAtDate = DateUtils.isThisYear(createdAt) ? DateUtils.formatDate2(createdAt) : DateUtils.formatDate4(createdAt);
+        final Spannable sentAt = new SpannableString(sentAtDate + " " + sentAtTime);
+        if (uiConfig != null) {
+            final boolean isMine = MessageUtils.isMine(message);
+            final TextUIConfig textUIConfig = isMine ? uiConfig.getMySentAtTextUIConfig() : uiConfig.getOtherSentAtTextUIConfig();
+            textUIConfig.bind(context, sentAt, 0, sentAt.length());
         }
         tvSentAt.setText(sentAt);
     }

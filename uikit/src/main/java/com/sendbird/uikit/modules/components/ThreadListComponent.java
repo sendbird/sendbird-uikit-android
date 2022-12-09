@@ -9,19 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.activities.adapter.ThreadListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
-
-import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the thread list area in Sendbird UIKit.
@@ -53,16 +49,6 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
         return (Params) super.getParams();
     }
 
-    @Override
-    public void notifyDataSetChanged(@NonNull List<BaseMessage> messageList, @NonNull GroupChannel channel, @Nullable OnMessageListUpdateHandler callback) {
-        if (messageRecyclerView == null) return;
-        Logger.d("++ stackFromEnd=%s, messageList.size = %s, scrollable=%s", messageRecyclerView.getRecyclerView().getStackFromEnd(), messageList.size(), isScrollable());
-
-        // if the message count is changed, item's position should be relocated in the recyclerview.
-        messageRecyclerView.getRecyclerView().setStackFromEnd(!isScrollable());
-        super.notifyDataSetChanged(messageList, channel, callback);
-    }
-
     private boolean isScrollable() {
         if (messageRecyclerView == null) return false;
         return messageRecyclerView.getRecyclerView().isScrollable();
@@ -83,6 +69,12 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
                 if (messageRecyclerView.getRecyclerView().getStackFromEnd()) {
                     recyclerView.scrollBy(0, oldBottom - bottom);
                 }
+            });
+
+            recyclerView.setOnLayoutCompleteListener(state -> {
+                if (state.getItemCount() <= 0) return;
+                Logger.d("++ onLayoutComplete isScrollable=%s, state=%s", isScrollable(), state);
+                messageRecyclerView.getRecyclerView().setStackFromEnd(!isScrollable());
             });
         }
         if (getAdapter() == null) {

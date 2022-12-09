@@ -28,9 +28,11 @@ public class PhotoViewActivity extends AppCompatActivity {
         intent.putExtra(StringSet.KEY_MESSAGE_FILENAME, message.getName());
         intent.putExtra(StringSet.KEY_CHANNEL_URL, message.getChannelUrl());
         intent.putExtra(StringSet.KEY_IMAGE_URL, message.getUrl());
+        intent.putExtra(StringSet.KEY_IMAGE_PLAIN_URL, message.getPlainUrl());
+        intent.putExtra(StringSet.KEY_REQUEST_ID, message.getRequestId());
         intent.putExtra(StringSet.KEY_MESSAGE_MIMETYPE, message.getType());
         intent.putExtra(StringSet.KEY_MESSAGE_CREATEDAT, message.getCreatedAt());
-        intent.putExtra(StringSet.KEY_SENDER_ID, message.getSender().getUserId());
+        intent.putExtra(StringSet.KEY_SENDER_ID, message.getSender() == null ? 0 : message.getSender().getUserId());
         intent.putExtra(StringSet.KEY_MESSAGE_SENDER_NAME, message.getSender().getNickname());
         intent.putExtra(StringSet.KEY_CHANNEL_TYPE, channelType);
         intent.putExtra(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isDeletableMessage(message));
@@ -50,6 +52,8 @@ public class PhotoViewActivity extends AppCompatActivity {
         final String channelUrl = intent.getStringExtra(StringSet.KEY_CHANNEL_URL);
         final String fileName = intent.getStringExtra(StringSet.KEY_MESSAGE_FILENAME);
         final String url = intent.getStringExtra(StringSet.KEY_IMAGE_URL);
+        final String plainUrl = intent.getStringExtra(StringSet.KEY_IMAGE_PLAIN_URL);
+        final String requestId = intent.getStringExtra(StringSet.KEY_REQUEST_ID);
         final String mimeType = intent.getStringExtra(StringSet.KEY_MESSAGE_MIMETYPE);
         final String senderNickname = intent.getStringExtra(StringSet.KEY_MESSAGE_SENDER_NAME);
         final long createdAt = intent.getLongExtra(StringSet.KEY_MESSAGE_CREATEDAT, 0L);
@@ -57,7 +61,7 @@ public class PhotoViewActivity extends AppCompatActivity {
         final boolean isDeletable = intent.getBooleanExtra(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isMine(senderId));
 
         final PhotoViewFragment fragment = new PhotoViewFragment.Builder(senderId, fileName,
-                channelUrl, url, mimeType, senderNickname, createdAt,
+                channelUrl, url, plainUrl, requestId, mimeType, senderNickname, createdAt,
                 messageId, channelType, SendbirdUIKit.getDefaultThemeMode(), isDeletable)
                 .build();
 

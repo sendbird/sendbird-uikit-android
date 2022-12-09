@@ -21,6 +21,7 @@ import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
+import com.sendbird.uikit.internal.ui.widgets.MessageInputDialogWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.widgets.MessageInputView;
@@ -134,7 +135,6 @@ public class OpenChannelMessageInputComponent {
         if (params.textUIConfig != null) {
             messageInputView.applyTextUIConfig(params.textUIConfig);
         }
-        messageInputView.setKeyboardDisplayType(params.keyboardDisplayType);
         messageInputView.setAddButtonVisibility(params.useLeftButton ? View.VISIBLE : View.GONE);
 
         if (params.alwaysShowRightButton) messageInputView.setSendButtonVisibility(View.VISIBLE);
@@ -148,7 +148,13 @@ public class OpenChannelMessageInputComponent {
         messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
 
         this.messageInputView = messageInputView;
-        return messageInputView;
+        if (params.keyboardDisplayType == KeyboardDisplayType.Dialog) {
+            final MessageInputDialogWrapper messageInputDialogWrapper = new MessageInputDialogWrapper(context);
+            messageInputDialogWrapper.initInputView(messageInputView);
+            return messageInputDialogWrapper;
+        } else {
+            return messageInputView;
+        }
     }
 
     /**

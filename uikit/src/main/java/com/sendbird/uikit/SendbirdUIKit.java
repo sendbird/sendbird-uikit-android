@@ -198,12 +198,12 @@ public class SendbirdUIKit {
     @NonNull
     private static volatile ThemeMode defaultThemeMode = ThemeMode.Light;
     private static volatile boolean useDefaultUserProfile = false;
-    private static volatile boolean useCompression = false;
+    private static volatile boolean useCompression = true;
     @Nullable
     private static CustomUserListQueryHandler customUserListQueryHandler;
     @Nullable
     private static CustomParamsHandler customParamsHandler;
-    private static int compressQuality = 100;
+    private static int compressQuality = 70;
     @NonNull
     private static Pair<Integer, Integer> resizingSize = new Pair<>(DEFAULT_RESIZING_WIDTH_SIZE, DEFAULT_RESIZING_HEIGHT_SIZE);
     @NonNull
@@ -637,7 +637,7 @@ public class SendbirdUIKit {
     }
 
     /**
-     * Sets whether the image file compress when trying to send image file message. Default value is <code>false</code>.
+     * Sets whether the image file compress when trying to send image file message. Default value is <code>true</code>.
      * The target image types are 'image/jpg`, `image/jpeg`, and `image/png`, the others will be ignored.
      *
      * @param useCompression If <code>true</code> the image file will be transferred to the original image, <code>false</code> other wise.
@@ -658,11 +658,11 @@ public class SendbirdUIKit {
     }
 
     /**
-     * Image compression quality value that will be used when sending image. Default value is 100.
+     * Image compression quality value that will be used when sending image. Default value is 70.
      * It has to be bigger than 0 and cannot exceed 100.
      *
      * @param compressQuality Hint to the compressor, 0-100. 0 meaning compress for
-     *                        small size, 100 meaning compress for max quality. Some
+     *                        smallest size, 100 meaning compress for max quality. Some
      *                        formats, like PNG which is lossless, will ignore the
      *                        quality setting
      * @see android.graphics.Bitmap#compress(Bitmap.CompressFormat format, int quality, OutputStream stream)

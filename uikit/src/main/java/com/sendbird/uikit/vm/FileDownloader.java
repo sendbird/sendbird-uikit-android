@@ -11,12 +11,14 @@ import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.Thumbnail;
 import com.sendbird.uikit.interfaces.OnResultHandler;
+import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,33 +54,49 @@ public class FileDownloader {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
-    public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException {
+    public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException, IOException {
         final String url = message.getUrl();
+        final String plainUrl = message.getPlainUrl();
+        final File destFile = FileUtils.createDeletableFile(context, message.getName());
+
+        if (isFileValid(destFile, message)) {
+            Logger.dev("__ return exist file");
+            return destFile;
+        } else {
+            destFile.delete();
+        }
+
         if (downloadingFileSet.contains(url)) {
             return null;
         }
         try {
             downloadingFileSet.add(url);
-            File destFile = Glide.with(context).asFile().load(url).submit().get();;
-            Logger.dev("__ file size : " + destFile.length());
-            Logger.d("__ destFile path : " + destFile.getAbsolutePath());
 
-            if (destFile.exists()) {
-                if (destFile.length() == message.getSize()) {
-                    Logger.dev("__ return exist file");
-                    return destFile;
-                }
-                destFile.delete();
+            File glideFile = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, String.valueOf(plainUrl.hashCode())).submit().get();
+            Logger.dev("__ file size : " + glideFile.length());
+            Logger.d("__ destFile path : " + glideFile.getAbsolutePath());
+            // if glide returns cached file, it can return the failed or different file.
+            if (isFileValid(glideFile, message)) {
+                FileUtils.copyFile(glideFile, destFile);
+                Logger.dev("__ return exist file");
+                return destFile;
+            } else {
+                glideFile.delete();
             }
 
-            destFile = Glide.with(context).asFile().load(url).submit().get();
-            if (destFile != null && destFile.exists()) {
+            glideFile = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, String.valueOf(plainUrl.hashCode())).submit().get();
+            if (isFileValid(glideFile, message)) {
+                FileUtils.copyFile(glideFile, destFile);
                 return destFile;
             }
         } finally {
             downloadingFileSet.remove(url);
         }
         return null;
+    }
+
+    private boolean isFileValid(@Nullable File file, @NonNull FileMessage fileMessage) {
+        return file != null && file.exists() && file.length() == fileMessage.getSize();
     }
 
     public boolean isDownloading(@NonNull String url) {
@@ -112,7 +130,7 @@ public class FileDownloader {
         }
         TaskQueue.addTask(new JobResultTask<File>() {
             @Override
-            public File call() throws ExecutionException, InterruptedException {
+            public File call() throws ExecutionException, InterruptedException, IOException {
                 return FileDownloader.getInstance().downloadToCache(context, message);
             }
 

@@ -25,6 +25,7 @@ internal class ThemeableSnackbar @JvmOverloads constructor(
     private var snackbar: Snackbar? = null
 
     fun init(anchorView: View) {
+        if (this.parent != null) (this.parent as ViewGroup).removeAllViews()
         val snackbar = Snackbar.make(anchorView, "", Snackbar.LENGTH_INDEFINITE).apply {
             this.view.setBackgroundColor(Color.TRANSPARENT)
             this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE

@@ -196,7 +196,7 @@ final public class FileInfo {
                             }
 
                             if (mimeType != null) {
-                                Pair<Integer, Integer> dimension = ImageUtils.getDimensions(originPath, mimeType);
+                                Pair<Integer, Integer> dimension = ImageUtils.getDimensions(path, mimeType);
                                 thumbnailPath = path;
                                 thumbnailWidth = dimension.first;
                                 thumbnailHeight = dimension.second;

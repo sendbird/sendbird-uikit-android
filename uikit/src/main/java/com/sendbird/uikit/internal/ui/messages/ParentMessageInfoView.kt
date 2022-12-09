@@ -18,6 +18,7 @@ import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
 import com.sendbird.uikit.utils.Available
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.ReactionUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
 
@@ -35,10 +36,10 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         // sender
         ViewUtils.drawNickname(binding.tvNickname, message, null, false)
         ViewUtils.drawProfile(binding.ivProfile, message)
-        ViewUtils.drawSentAt(binding.tvSentAt, message, null)
+        ViewUtils.drawParentMessageSentAt(binding.tvSentAt, message, null)
 
         // reaction
-        binding.rvEmojiReactionList.visibility = if (Available.isSupportReaction()) VISIBLE else GONE
+        binding.rvEmojiReactionList.visibility = if (ReactionUtils.useReaction(channel)) VISIBLE else INVISIBLE
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
 
         // thread info

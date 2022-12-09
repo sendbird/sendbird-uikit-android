@@ -36,6 +36,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbFragmentPhotoViewBinding;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
@@ -60,6 +61,10 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     private String channelUrl;
     @Nullable
     private String url;
+    @Nullable
+    private String plainUrl;
+    @Nullable
+    private String requestId;
     @Nullable
     private String mimeType;
     @Nullable
@@ -90,6 +95,8 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             fileName = args.getString(StringSet.KEY_MESSAGE_FILENAME);
             channelUrl = args.getString(StringSet.KEY_CHANNEL_URL);
             url = args.getString(StringSet.KEY_IMAGE_URL);
+            plainUrl = args.getString(StringSet.KEY_IMAGE_PLAIN_URL);
+            requestId = args.getString(StringSet.KEY_REQUEST_ID);
             mimeType = args.getString(StringSet.KEY_MESSAGE_MIMETYPE);
             senderNickname = args.getString(StringSet.KEY_MESSAGE_SENDER_NAME);
             createdAt = args.getLong(StringSet.KEY_MESSAGE_CREATEDAT);
@@ -133,11 +140,11 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
-    private <T> RequestBuilder<T> makeRequestBuilder(@NonNull String url, @NonNull Class<T> clazz) {
+    private <T> RequestBuilder<T> makeRequestBuilder(@NonNull String url, @NonNull String cacheKey, @NonNull Class<T> clazz) {
         final View loading = binding.loading;
         final RequestManager glide = Glide.with(this);
 
-        return glide.as(clazz).diskCacheStrategy(DiskCacheStrategy.ALL).load(url).listener(new RequestListener<T>() {
+        return GlideCachedUrlLoader.load(glide.as(clazz), url, cacheKey).diskCacheStrategy(DiskCacheStrategy.ALL).listener(new RequestListener<T>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<T> target, boolean isFirstResource) {
                 if (!isFragmentAlive()) return false;
@@ -167,6 +174,8 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         final TextView tvCreatedAt = binding.tvCreatedAt;
         final View loading = binding.loading;
         final String url = this.url;
+        final String plainUrl = this.plainUrl == null ? "" : this.plainUrl;
+        final String requestId = this.requestId == null ? "" : this.requestId;
 
         tvTitle.setText(senderNickname);
         tvCreatedAt.setText(DateUtils.formatTime(requireContext(), this.createdAt));
@@ -174,9 +183,9 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
 
         if (url != null) {
             if (mimeType != null && mimeType.toLowerCase().contains(StringSet.gif)) {
-                makeRequestBuilder(url, GifDrawable.class).into(ivPhoto);
+                makeRequestBuilder(url, generateCacheKey(plainUrl, requestId), GifDrawable.class).into(ivPhoto);
             } else {
-                makeRequestBuilder(url, Bitmap.class).into(ivPhoto);
+                makeRequestBuilder(url, generateCacheKey(plainUrl, requestId), Bitmap.class).into(ivPhoto);
             }
         }
 
@@ -218,6 +227,11 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
 
         PhotoViewAttacher attacher = new PhotoViewAttacher(ivPhoto);
         attacher.setOnPhotoTapListener((view, x, y) -> togglePhotoActionBar());
+    }
+
+    @NonNull
+    private String generateCacheKey(@NonNull String plainUrl, @NonNull String requestId) {
+        return (TextUtils.isNotEmpty(requestId)) ? requestId : String.valueOf(plainUrl.hashCode());
     }
 
     private void togglePhotoActionBar() {
@@ -342,12 +356,14 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         private LoadingDialogHandler loadingDialogHandler;
 
         public Builder(@Nullable String senderId, @Nullable String fileName, @Nullable String channelUrl,
-                       @Nullable String url, @Nullable String mimeType, @Nullable String senderNickname, long createdAt,
+                       @Nullable String url, @Nullable String plainUrl, @Nullable String requestId, @Nullable String mimeType, @Nullable String senderNickname, long createdAt,
                        long messageId, @Nullable ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode  themeMode, boolean isDeletableMessage) {
             bundle.putString(StringSet.KEY_SENDER_ID, senderId);
             bundle.putString(StringSet.KEY_MESSAGE_FILENAME, fileName);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
             bundle.putString(StringSet.KEY_IMAGE_URL, url);
+            bundle.putString(StringSet.KEY_IMAGE_PLAIN_URL, plainUrl);
+            bundle.putString(StringSet.KEY_REQUEST_ID, requestId);
             bundle.putString(StringSet.KEY_MESSAGE_MIMETYPE, mimeType);
             bundle.putString(StringSet.KEY_MESSAGE_SENDER_NAME, senderNickname);
             bundle.putLong(StringSet.KEY_MESSAGE_CREATEDAT, createdAt);

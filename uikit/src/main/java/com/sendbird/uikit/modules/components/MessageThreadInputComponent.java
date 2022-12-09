@@ -31,7 +31,7 @@ public class MessageThreadInputComponent extends MessageInputComponent {
      * @since 3.3.0
      */
     public MessageThreadInputComponent(@NonNull BaseMessage parentMessage) {
-        super();
+        super(new Params());
         this.parentMessage = parentMessage;
     }
 

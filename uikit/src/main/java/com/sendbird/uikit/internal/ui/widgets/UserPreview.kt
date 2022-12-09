@@ -57,8 +57,8 @@ internal class UserPreview @JvmOverloads constructor(
         binding.tvNickname.text = name
     }
 
-    fun setImageFromUrl(url: String?) {
-        ViewUtils.drawProfile(binding.ivProfile, url)
+    fun setImageFromUrl(url: String?, plainUrl: String?) {
+        ViewUtils.drawProfile(binding.ivProfile, url, plainUrl)
     }
 
     fun setVisibleOverlay(visibility: Int) {
@@ -78,7 +78,7 @@ internal class UserPreview @JvmOverloads constructor(
             val nickname = UserUtils.getDisplayName(context, user)
             preview.setName(nickname)
             preview.setDescription(description)
-            preview.setImageFromUrl(user.profileUrl)
+            preview.setImageFromUrl(user.profileUrl, user.plainProfileImageUrl)
             preview.enableActionMenu(!isMe)
             preview.setVisibleOverlay(if (isMuted) VISIBLE else GONE)
             if (isMe) {

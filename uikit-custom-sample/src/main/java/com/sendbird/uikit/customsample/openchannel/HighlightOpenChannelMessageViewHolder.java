@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.message.BaseMessage;
@@ -87,7 +86,6 @@ public class HighlightOpenChannelMessageViewHolder extends MessageViewHolder {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(new ObjectKey(url))
                 .error(errorIcon)
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.ivProfileView);

@@ -22,6 +22,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.databinding.SbViewThreadInfoBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.model.GlideCachedUrlLoader
 import com.sendbird.uikit.utils.DrawableUtils
 import java.io.ByteArrayOutputStream
 import java.nio.charset.Charset
@@ -64,8 +65,11 @@ internal class ThreadInfoView @JvmOverloads internal constructor(
                 MoreIcon(resources, moreDrawable)
             ) else MultiTransformation(CircleCrop())
 
-            Glide.with(context)
-                .load(user.profileUrl)
+            GlideCachedUrlLoader.load(
+                Glide.with(context),
+                user.profileUrl,
+                user.plainProfileImageUrl.hashCode().toString()
+            )
                 .override(overrideSize, overrideSize)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(

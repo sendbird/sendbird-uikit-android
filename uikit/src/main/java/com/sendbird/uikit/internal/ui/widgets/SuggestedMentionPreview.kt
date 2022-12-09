@@ -45,8 +45,8 @@ internal class SuggestedMentionPreview @JvmOverloads constructor(
         binding.tvNickname.text = name
     }
 
-    private fun setImageFromUrl(url: String?) {
-        ViewUtils.drawProfile(binding.ivProfile, url)
+    private fun setImageFromUrl(url: String?, plainUrl: String?) {
+        ViewUtils.drawProfile(binding.ivProfile, url, plainUrl)
     }
 
     fun drawUser(user: User, showUserId: Boolean) {
@@ -62,7 +62,7 @@ internal class SuggestedMentionPreview @JvmOverloads constructor(
             val description = user.userId
             setDescription(description)
         }
-        setImageFromUrl(user.profileUrl)
+        setImageFromUrl(user.profileUrl, user.plainProfileImageUrl)
     }
 
     init {

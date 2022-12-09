@@ -106,12 +106,9 @@ internal class ListPopupDialog<T : Any>(context: Context) {
     }
 
     private fun getHeightAbove(anchor: View): Int {
-        val appScreenLocation = IntArray(2)
-        val appRootView = anchor.rootView
-        appRootView.getLocationOnScreen(appScreenLocation)
         val screenLocation = IntArray(2)
         anchor.getLocationOnScreen(screenLocation)
-        val lengthAboveAnchor = screenLocation[1] - appScreenLocation[1]
+        val lengthAboveAnchor = screenLocation[1]
         var statusBarHeight = 0
 
         // calculated Android top status bar.

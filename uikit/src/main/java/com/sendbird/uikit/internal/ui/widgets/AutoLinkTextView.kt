@@ -28,7 +28,7 @@ internal class AutoLinkTextView @JvmOverloads internal constructor(
     var onLinkLongClickListener: OnLinkLongClickListener? = null
     var clickedLinkBackgroundColor = 0
     var clickedLinkTextColor = 0
-    var linkifyMask = Linkify.ALL
+    var linkifyMask = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
 
     init {
         setSpannableFactory(Factory.instance)

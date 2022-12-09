@@ -82,6 +82,26 @@ public class DateUtils {
     }
 
     /**
+     * Formats timestamp to 'date month, year' format (e.g. '19 Dec, 2022').
+     */
+    @NonNull
+    public static String formatDate4(long timeInMillis) {
+        int flags = android.text.format.DateUtils.FORMAT_SHOW_YEAR
+                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
+                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
+        return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
+    }
+
+    @NonNull
+    public static String formatTimelineMessage(long timeInMillis) {
+        if (isThisYear(timeInMillis)) {
+            return formatDate(timeInMillis);
+        } else {
+            return formatDate4(timeInMillis);
+        }
+    }
+
+    /**
      * Returns whether the given date is today, based on the user's current locale.
      */
     public static boolean isToday(long timeInMillis) {
