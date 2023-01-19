@@ -350,6 +350,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     }
 
     private synchronized void loadInitial(long startingPoint) {
+        if (!isFragmentAlive()) return;
         isInitCallFinished.set(false);
         getViewModel().loadInitial(startingPoint);
     }

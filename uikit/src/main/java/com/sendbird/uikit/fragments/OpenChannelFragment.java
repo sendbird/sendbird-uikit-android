@@ -252,12 +252,11 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
 
         module.getStatusComponent().notifyStatusChanged(StatusFrameView.Status.LOADING);
         viewModel.enterChannel(channel, e -> {
+            if (!isFragmentAlive()) return;
             module.getStatusComponent().notifyStatusChanged(StatusFrameView.Status.NONE);
             if (e != null) {
-                if (isFragmentAlive()) {
-                    toastError(R.string.sb_text_error_get_channel, getModule().getParams().shouldUseOverlayMode());
-                    shouldActivityFinish();
-                }
+                toastError(R.string.sb_text_error_get_channel, getModule().getParams().shouldUseOverlayMode());
+                shouldActivityFinish();
                 return;
             }
             viewModel.loadInitial();

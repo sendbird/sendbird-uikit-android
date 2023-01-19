@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.3.3 (Jan 19, 2023) with Chat SDK `v4.2.1`
+* Improved stability
+
 ### v3.3.2 (Dec 09, 2022) with Chat SDK `v4.1.3`
 * Support authenticated file caching
 * Change the default value of `SendbirdUIKit.shouldUseImageCompression()` to `true`
