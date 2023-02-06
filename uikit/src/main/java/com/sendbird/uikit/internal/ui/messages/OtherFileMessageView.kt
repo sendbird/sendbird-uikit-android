@@ -37,7 +37,7 @@ internal class OtherFileMessageView @JvmOverloads constructor(
             messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL
         val showNickname =
             (messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD) &&
-                    (!params.shouldUseQuotedView() || !MessageUtils.hasParentMessage(message))
+                (!params.shouldUseQuotedView() || !MessageUtils.hasParentMessage(message))
 
         binding.ivProfileView.visibility = if (showProfile) VISIBLE else INVISIBLE
         binding.tvNickname.visibility = if (showNickname) VISIBLE else GONE

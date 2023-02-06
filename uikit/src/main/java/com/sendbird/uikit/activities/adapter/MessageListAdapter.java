@@ -10,7 +10,6 @@ import com.sendbird.uikit.model.MessageListUIParams;
  * MessageListAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
  */
 public class MessageListAdapter extends BaseMessageListAdapter {
-
     public MessageListAdapter(boolean useMessageGroupUI) {
         this(null, useMessageGroupUI);
     }

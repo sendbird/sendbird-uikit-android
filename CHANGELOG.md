@@ -1,5 +1,21 @@
 # Changelog
 
+### v3.5.0.beta.0 (Feb 6, 2023) with Chat SDK `v4.2.1`
+* Support Notification Channel
+A notification channel is a new group channel dedicated to receiving one way marketing and transactional messages.To allow users to view messages sent through Sendbird Message Builder with the correct rendering, you need to implement the notification channel view using `NotificationChannelActivity`, `NotificationChannelViewModel`, or `NotificationChannelFragment`
+  * Added `NotificationChannelActivity`, `NotificationChannelViewModel`, and `NotificationChannelFragment`
+  * Added `Action` class to pass data about events
+  * Added Notification module
+    * Added `NotificationChannelModule`, `NotificationMessageListComponent`, and `NotificationMessageListAdapter`
+  * Added `newNotificationChannelFragment(String, Bundle)` in `UIKitFragmentFactory`
+  * Added new style sets
+    * `Widget.Sendbird.Message.NotificationChannel` and `Widget.Sendbird.Dark.Message.NotificationChannel`
+    * `Widget.Sendbird.Message.MessageTemplateView` and `Widget.Sendbird.Dark.Message.MessageTemplateView`
+    * `Module.NotificationChannel` and `Module.Dark.NotificationChannel`
+    * `Component.Header.NotificationChannel` and `Component.Dark.Header.NotificationChannel`
+    * `Component.List.NotificationChannel` and `Component.Dark.List.NotificationChannel`
+    * `Component.Status.NotificationChannel` and `Component.Dark.Status.NotificationChannel`
+
 ### v3.3.3 (Jan 19, 2023) with Chat SDK `v4.2.1`
 * Improved stability
 

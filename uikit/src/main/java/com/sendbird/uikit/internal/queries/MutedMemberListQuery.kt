@@ -11,10 +11,13 @@ import com.sendbird.uikit.interfaces.PagedQueryHandler
 internal class MutedMemberListQuery(private val channelUrl: String) : PagedQueryHandler<Member> {
     private var query: MemberListQuery? = null
     override fun loadInitial(handler: OnListResultHandler<Member>) {
-        query = GroupChannel.createMemberListQuery(channelUrl, MemberListQueryParams().apply {
-            limit = 30
-            mutedMemberFilter = MutedMemberFilter.MUTED
-        })
+        query = GroupChannel.createMemberListQuery(
+            channelUrl,
+            MemberListQueryParams().apply {
+                limit = 30
+                mutedMemberFilter = MutedMemberFilter.MUTED
+            }
+        )
         loadMore(handler)
     }
 

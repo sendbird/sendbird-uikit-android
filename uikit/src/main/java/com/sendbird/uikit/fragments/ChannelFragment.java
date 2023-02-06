@@ -496,6 +496,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     params.setMentionedUsers(mentionedUsers);
                 }
             }
+
             sendUserMessage(params);
         }
     }

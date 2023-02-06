@@ -397,4 +397,18 @@ public class UIKitFragmentFactory {
                 .withArguments(args)
                 .build();
     }
+
+    /**
+     * Returns the NotificationChannelFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link NotificationChannelFragment}
+     * @since 3.5.0
+     */
+    @NonNull
+    public Fragment newNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new NotificationChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
 }

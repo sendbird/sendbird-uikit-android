@@ -60,7 +60,13 @@ public enum MessageType {
      *
      * @since 3.3.0
      */
-    VIEW_TYPE_PARENT_MESSAGE_INFO(12);
+    VIEW_TYPE_PARENT_MESSAGE_INFO(12),
+    /**
+     * Type of notification channel's message sent by the administrator.
+     *
+     * @since 3.5.0
+     */
+    VIEW_TYPE_NOTIFICATION_CHANNEL_MESSAGE(13);
 
     final int value;
     MessageType(int value) {

@@ -16,6 +16,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.sendbird.uikit.R;
@@ -73,6 +74,13 @@ public class DrawableUtils {
     }
 
     @NonNull
+    public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int color) {
+        final ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        drawable.getPaint().setColor(ContextCompat.getColor(context, color));
+        return drawable;
+    }
+
+    @NonNull
     public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor,
                                           @DrawableRes int iconRes, @ColorRes int iconTint) {
         return createOvalIcon(context, backgroundColor, 255, iconRes, iconTint);
@@ -90,6 +98,15 @@ public class DrawableUtils {
     }
 
     @NonNull
+    public static Drawable createOvalIconWithInset(@NonNull Context context, @ColorRes int background, @DrawableRes int iconRes, @ColorRes int iconTint, int inset) {
+        final ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        drawable.getPaint().setColor(ContextCompat.getColor(context, background));
+        final Drawable icon = setTintList(context, iconRes, iconTint);
+        return createLayerIcon(drawable, icon, inset);
+    }
+
+
+        @NonNull
     public static Drawable createLayerIcon(@Nullable Drawable background, @Nullable Drawable icon, int inset) {
         Drawable[] layer = {background, icon};
         LayerDrawable layerDrawable = new LayerDrawable(layer);

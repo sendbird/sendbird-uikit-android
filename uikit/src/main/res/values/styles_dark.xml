@@ -32,6 +32,7 @@
         <item name="sb_module_create_open_channel">@style/Module.Dark.CreateOpenChannel</item>
         <item name="sb_module_open_channel_list">@style/Module.Dark.OpenChannelList</item>
         <item name="sb_module_message_thread">@style/Module.Dark.MessageThread</item>
+        <item name="sb_module_notification_channel">@style/Module.Dark.NotificationChannel</item>
 
         <item name="sb_component_channel_message_input">@style/Component.Dark.ChannelMessageInput</item>
         <item name="sb_component_channel_settings_info">@style/Component.Dark.ChannelSettingsInfo</item>
@@ -170,6 +171,11 @@
         <item name="sb_component_channel_message_input">@style/Component.Dark.MessageThreadInput</item>
         <item name="sb_component_status">@style/Component.Dark.Status.MessageThread</item>
     </style>
+    <style name="Module.Dark.NotificationChannel">
+        <item name="sb_component_header">@style/Component.Dark.Header.NotificationChannel</item>
+        <item name="sb_component_list">@style/Component.Dark.List.NotificationChannel</item>
+        <item name="sb_component_status">@style/Component.Dark.Status.NotificationChannel</item>
+    </style>
 
     <style name="Component.Dark.ChannelProfileInput">
         <item name="sb_channel_profile_input_background">@color/background_600</item>
@@ -240,6 +246,18 @@
         <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_channel_message_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_thread_list</item>
+    </style>
+    <style name="Component.Dark.Header.NotificationChannel">
+        <item name="sb_appbar_title">@string/sb_text_header_channel_list</item>
+    </style>
+    <style name="Component.Dark.List.NotificationChannel">
+        <item name="sb_widget_notification_channel_message">@style/Widget.Sendbird.Dark.Message.NotificationChannel</item>
+        <item name="sb_widget_message_template">@style/Widget.Sendbird.Dark.Message.MessageTemplateView</item>
+    </style>
+    <style name="Component.Dark.Status.NotificationChannel">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_notification_channel_message_empty</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_notification_channel_list_error</item>
     </style>
 
     <!-- COMPONENTS -->
@@ -743,6 +761,19 @@
         <item name="sb_message_ogtag_title_appearance">@style/SendbirdBody2OnDark01</item>
         <item name="sb_message_ogtag_description_appearance">@style/SendbirdCaption2OnDark01</item>
         <item name="sb_message_ogtag_url_appearance">@style/SendbirdCaption2OnDark02</item>
+    </style>
+
+    <style name="Widget.Sendbird.Dark.Message.NotificationChannel">
+        <item name="sb_notification_channel_message_background">@color/background_500</item>
+        <item name="sb_notification_channel_message_radius">@dimen/sb_size_8</item>
+        <item name="sb_notification_channel_new_badge_color">@color/secondary_300</item>
+    </style>
+
+    <style name="Widget.Sendbird.Dark.Message.MessageTemplateView">
+        <item name="sb_message_textview_text_appearance">@style/SendbirdBody3OnDark01</item>
+        <item name="sb_message_button_background">@color/ondark_04</item>
+        <item name="sb_message_button_text_appearance">@style/SendbirdButtonPrimary200</item>
+        <item name="sb_message_button_radius">@dimen/sb_size_6</item>
     </style>
 
     <style name="Widget.Sendbird.Dark.Message.Me">

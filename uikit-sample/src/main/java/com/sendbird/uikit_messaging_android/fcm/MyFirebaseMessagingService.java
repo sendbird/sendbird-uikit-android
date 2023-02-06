@@ -88,18 +88,22 @@ public class MyFirebaseMessagingService extends SendbirdPushHandler {
      * @param sendBird JSONObject payload from FCM
      */
     public static void sendNotification(@NonNull Context context, @NonNull JSONObject sendBird) throws JSONException {
-        String message = sendBird.getString(StringSet.message);
-        JSONObject channel = sendBird.getJSONObject(StringSet.channel);
-        String channelUrl = channel.getString(StringSet.channel_url);
-        long messageId = sendBird.getLong(StringSet.message_id);
+        final String message = sendBird.getString(StringSet.message);
+        final JSONObject channel = sendBird.getJSONObject(StringSet.channel);
+        final String channelUrl = channel.getString(StringSet.channel_url);
+        final long messageId = sendBird.getLong(StringSet.message_id);
 
-        String senderName = context.getString(R.string.app_name);
+        String pushTitle = context.getString(R.string.app_name);
         if (sendBird.has(StringSet.sender)) {
             JSONObject sender = sendBird.getJSONObject(StringSet.sender);
-            senderName = sender.getString(StringSet.name);
+            pushTitle = sender.getString(StringSet.name);
         }
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (sendBird.has(StringSet.push_title) && !sendBird.isNull(StringSet.push_title)) {
+            pushTitle = sendBird.getString(StringSet.push_title);
+        }
+
+        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         final String CHANNEL_ID = StringSet.CHANNEL_ID;
         if (Build.VERSION.SDK_INT >= 26) {  // Build.VERSION_CODES.O
@@ -119,7 +123,7 @@ public class MyFirebaseMessagingService extends SendbirdPushHandler {
                 .setSmallIcon(R.drawable.icon_push_lollipop)
                 .setColor(ContextCompat.getColor(context, R.color.primary_300))  // small icon background color
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_push_oreo))
-                .setContentTitle(senderName)
+                .setContentTitle(pushTitle)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setPriority(Notification.PRIORITY_MAX)

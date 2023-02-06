@@ -31,6 +31,7 @@
         <item name="sb_module_create_open_channel">@style/Module.CreateOpenChannel</item>
         <item name="sb_module_open_channel_list">@style/Module.OpenChannelList</item>
         <item name="sb_module_message_thread">@style/Module.MessageThread</item>
+        <item name="sb_module_notification_channel">@style/Module.NotificationChannel</item>
 
         <item name="sb_component_channel_message_input">@style/Component.ChannelMessageInput</item>
         <item name="sb_component_channel_settings_info">@style/Component.ChannelSettingsInfo</item>
@@ -168,6 +169,11 @@
         <item name="sb_component_list">@style/Component.List.MessageThread</item>
         <item name="sb_component_channel_message_input">@style/Component.MessageThreadInput</item>
         <item name="sb_component_status">@style/Component.Status.MessageThread</item>
+    </style>
+    <style name="Module.NotificationChannel">
+        <item name="sb_component_header">@style/Component.Header.NotificationChannel</item>
+        <item name="sb_component_list">@style/Component.List.NotificationChannel</item>
+        <item name="sb_component_status">@style/Component.Status.NotificationChannel</item>
     </style>
 
     <!-- COMPONENTS -->
@@ -421,7 +427,6 @@
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.OpenChannel">
-
         <item name="sb_message_recyclerview_background">@color/background_50</item>
         <item name="sb_message_recyclerview_tooltip_background">@drawable/selector_tooltip_background_light</item>
         <item name="sb_message_recyclerview_tooltip_textappearance">@style/SendbirdCaption1Primary300</item>
@@ -691,6 +696,18 @@
         <item name="sb_status_frame_empty_text">@string/sb_text_channel_message_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_thread_list</item>
     </style>
+    <style name="Component.Header.NotificationChannel">
+        <item name="sb_appbar_title">@string/sb_text_channel_settings_notification</item>
+    </style>
+    <style name="Component.List.NotificationChannel">
+        <item name="sb_widget_notification_channel_message">@style/Widget.Sendbird.Message.NotificationChannel</item>
+        <item name="sb_widget_message_template">@style/Widget.Sendbird.Message.MessageTemplateView</item>
+    </style>
+    <style name="Component.Status.NotificationChannel">
+        <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
+        <item name="sb_status_frame_empty_text">@string/sb_text_notification_channel_message_empty</item>
+        <item name="sb_status_frame_error_text">@string/sb_text_notification_channel_list_error</item>
+    </style>
 
     <!-- WIDGETS -->
     <style name="Widget.Sendbird" parent="android:Widget"/>
@@ -749,6 +766,19 @@
         <item name="sb_message_ogtag_title_appearance">@style/SendbirdBody2OnLight01</item>
         <item name="sb_message_ogtag_description_appearance">@style/SendbirdCaption2OnLight01</item>
         <item name="sb_message_ogtag_url_appearance">@style/SendbirdCaption2OnLight02</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.NotificationChannel">
+        <item name="sb_notification_channel_message_background">@color/background_100</item>
+        <item name="sb_notification_channel_message_radius">@dimen/sb_size_8</item>
+        <item name="sb_notification_channel_new_badge_color">@color/secondary_300</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.MessageTemplateView">
+        <item name="sb_message_textview_text_appearance">@style/SendbirdBody3OnLight01</item>
+        <item name="sb_message_button_background">@color/onlight_04</item>
+        <item name="sb_message_button_text_appearance">@style/SendbirdButtonPrimary300</item>
+        <item name="sb_message_button_radius">@dimen/sb_size_6</item>
     </style>
 
     <style name="Widget.Sendbird.Message.Me">

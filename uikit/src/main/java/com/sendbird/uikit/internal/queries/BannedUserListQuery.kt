@@ -16,9 +16,11 @@ internal class BannedUserListQuery(
 ) : PagedQueryHandler<User> {
     private var query: BannedUserListQuery? = null
     override fun loadInitial(handler: OnListResultHandler<User>) {
-        query = createBannedUserListQuery(BannedUserListQueryParams(channelType, channelUrl).apply {
-            limit = 30
-        })
+        query = createBannedUserListQuery(
+            BannedUserListQueryParams(channelType, channelUrl).apply {
+                limit = 30
+            }
+        )
         loadMore(handler)
     }
 

@@ -25,7 +25,8 @@ import com.sendbird.uikit_messaging_android.utils.PushUtils;
  */
 public class BaseApplication extends MultiDexApplication {
 
-    private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
+    // this app is only used for Notification channel testing.
+    private static final String APP_ID = "60E22A13-CC2E-4E83-98BE-578E72FC92F3";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     /**

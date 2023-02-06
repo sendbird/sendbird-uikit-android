@@ -16,7 +16,6 @@ import com.sendbird.uikit.databinding.SbViewParentMessageInfoBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
-import com.sendbird.uikit.utils.Available
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ReactionUtils
 import com.sendbird.uikit.utils.ViewUtils

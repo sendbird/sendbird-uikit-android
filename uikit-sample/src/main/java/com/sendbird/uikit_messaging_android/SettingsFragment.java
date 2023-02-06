@@ -110,7 +110,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        headerComponent.getParams().setTitle(getString(R.string.text_settings_header_title));
+        headerComponent.getParams().setTitle(getString(R.string.text_tab_settings));
         headerComponent.getParams().setUseLeftButton(false);
         headerComponent.getParams().setRightButtonText(getString(R.string.text_settings_header_edit_button));
         final View header = headerComponent.onCreateView(requireContext(), inflater, binding.headerComponent, savedInstanceState);

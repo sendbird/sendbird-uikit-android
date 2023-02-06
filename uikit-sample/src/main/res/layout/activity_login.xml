@@ -63,6 +63,7 @@
                     android:hint="@string/text_hint_user_id"
                     android:maxLines="1"
                     android:layout_gravity="center_vertical"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
                     android:background="@drawable/shape_rect_transparent"
                     android:textSize="@dimen/sb_text_size_16"
                     android:textCursorDrawable="@drawable/shape_cursor_drawable"

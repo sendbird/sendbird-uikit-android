@@ -26,6 +26,7 @@
         <attr name="sb_module_open_channel_list" format="reference"/>
         <attr name="sb_module_create_open_channel" format="reference"/>
         <attr name="sb_module_message_thread" format="reference"/>
+        <attr name="sb_module_notification_channel" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">
@@ -112,6 +113,8 @@
         <attr name="sb_widget_timeline_message" format="reference"/>
         <attr name="sb_widget_emoji_message" format="reference"/>
         <attr name="sb_widget_parent_message_info" format="reference"/>
+        <attr name="sb_widget_notification_channel_message" format="reference"/>
+        <attr name="sb_widget_message_template" format="reference"/>
 
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
@@ -292,6 +295,21 @@
     <declare-styleable name="MessageView.Admin">
         <attr name="sb_admin_message_text_appearance" format="reference"/>
         <attr name="sb_admin_message_background" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageView.NotificationChannel">
+        <attr name="sb_message_time_text_appearance" />
+        <attr name="sb_message_sender_name_text_appearance"/>`
+        <attr name="sb_notification_channel_message_background" format="reference"/>
+        <attr name="sb_notification_channel_message_radius" format="dimension"/>
+        <attr name="sb_notification_channel_new_badge_color" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageView.MessageTemplate">
+        <attr name="sb_message_textview_text_appearance" format="reference"/>
+        <attr name="sb_message_button_background" format="reference"/>
+        <attr name="sb_message_button_text_appearance" format="reference"/>
+        <attr name="sb_message_button_radius" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="Emoji">

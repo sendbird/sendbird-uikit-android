@@ -39,6 +39,8 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new ChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
         } else if (modelClass.isAssignableFrom(ChannelListViewModel.class)) {
             return (T) new ChannelListViewModel(params != null && params.length > 0 ? (GroupChannelListQuery) params[0] : null);
+        } else if (modelClass.isAssignableFrom(NotificationChannelViewModel.class)) {
+            return (T) new NotificationChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
         } else if (modelClass.isAssignableFrom(OpenChannelViewModel.class)) {
             return (T) new OpenChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
         } else if (modelClass.isAssignableFrom(OpenChannelSettingsViewModel.class)) {

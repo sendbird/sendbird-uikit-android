@@ -99,6 +99,7 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
     private void notifyChannelChanged() {
         if (collection == null) return;
         List<GroupChannel> newList = collection.getChannelList();
+        Logger.d(">> ChannelListViewModel::notifyDataSetChanged(), size = %s", newList.size());
         channelList.postValue(newList);
     }
 

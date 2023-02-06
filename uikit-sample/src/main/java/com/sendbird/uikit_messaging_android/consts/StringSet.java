@@ -20,6 +20,7 @@ public class StringSet {
     public static final String sender = "sender";
     public static final String name = "name";
     public static final String profile_url = "profile_url";
+    public static final String push_title = "push_title";
 
     public static final String id = "id";
     public static final String tags = "tags";

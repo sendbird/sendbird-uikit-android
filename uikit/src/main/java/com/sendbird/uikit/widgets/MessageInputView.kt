@@ -352,10 +352,10 @@ class MessageInputView @JvmOverloads constructor(
                 }
             })
             binding.etInputText.inputType = (
-                    InputType.TYPE_CLASS_TEXT
-                            or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                            or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                    )
+                InputType.TYPE_CLASS_TEXT
+                    or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                )
         } finally {
             a.recycle()
         }
