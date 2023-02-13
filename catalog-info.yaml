@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: Public UIKit Android SDK and Samples
+  name: sendbird-uikit-android
   description: UIKit for Android
   annotations:
     github.com/project-slug: sendbird/sendbird-uikit-android
