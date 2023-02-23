@@ -60,7 +60,19 @@ public enum MessageType {
      *
      * @since 3.3.0
      */
-    VIEW_TYPE_PARENT_MESSAGE_INFO(12);
+    VIEW_TYPE_PARENT_MESSAGE_INFO(12),
+    /**
+     * Type of voice message sent by the current user.
+     *
+     * @since 3.4.0
+     */
+    VIEW_TYPE_VOICE_MESSAGE_ME(15),
+    /**
+     * Type of voice message sent by users other than the current user.
+     * 
+     * @since 3.4.0
+     */
+    VIEW_TYPE_VOICE_MESSAGE_OTHER(16);
 
     final int value;
     MessageType(int value) {

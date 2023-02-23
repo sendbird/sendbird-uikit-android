@@ -15,6 +15,7 @@ import com.sendbird.uikit.databinding.SbViewMyFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyUserMessageBinding;
+import com.sendbird.uikit.databinding.SbViewMyVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOpenChannelFileMessageBinding;
@@ -24,6 +25,7 @@ import com.sendbird.uikit.databinding.SbViewOtherFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileVideoMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
+import com.sendbird.uikit.databinding.SbViewOtherVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
 import com.sendbird.uikit.internal.ui.viewholders.AdminMessageViewHolder;
@@ -31,6 +33,7 @@ import com.sendbird.uikit.internal.ui.viewholders.MyFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyImageFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyVideoFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyVoiceMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OpenChannelAdminMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OpenChannelFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OpenChannelImageFileMessageViewHolder;
@@ -40,6 +43,7 @@ import com.sendbird.uikit.internal.ui.viewholders.OtherFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherImageFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherVoiceMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.ParentMessageInfoViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.TimelineViewHolder;
 import com.sendbird.uikit.model.MessageListUIParams;
@@ -192,6 +196,12 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_PARENT_MESSAGE_INFO:
                 holder = new ParentMessageInfoViewHolder(SbViewParentMessageInfoHolderBinding.inflate(inflater, parent, false));
                 break;
+            case VIEW_TYPE_VOICE_MESSAGE_ME:
+                holder = new MyVoiceMessageViewHolder(SbViewMyVoiceMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
+            case VIEW_TYPE_VOICE_MESSAGE_OTHER:
+                holder = new OtherVoiceMessageViewHolder(SbViewOtherVoiceMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
@@ -232,7 +242,13 @@ public class MessageViewHolderFactory {
         } else if (message instanceof FileMessage) {
             FileMessage fileMessage = (FileMessage) message;
             String mimeType = fileMessage.getType().toLowerCase();
-            if (mimeType.startsWith(StringSet.image)) {
+            if (MessageUtils.isVoiceMessage(fileMessage)) {
+                if (MessageUtils.isMine(message)) {
+                    type = MessageType.VIEW_TYPE_VOICE_MESSAGE_ME;
+                } else {
+                    type = MessageType.VIEW_TYPE_VOICE_MESSAGE_OTHER;
+                }
+            } else if (mimeType.startsWith(StringSet.image)) {
                 if (mimeType.contains(StringSet.svg)) {
                     if (MessageUtils.isMine(message)) {
                         type = MessageType.VIEW_TYPE_FILE_MESSAGE_ME;

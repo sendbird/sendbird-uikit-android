@@ -168,6 +168,8 @@ public class BaseApplication extends MultiDexApplication {
         SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
         // set whether to use user mention
         SendbirdUIKit.setUseUserMention(true);
+        // set the voice message
+        SendbirdUIKit.setUseVoiceMessage(true);
         // set the mention configuration
         SendbirdUIKit.setMentionConfig(new UserMentionConfig.Builder()
                 .setMaxMentionCount(5)

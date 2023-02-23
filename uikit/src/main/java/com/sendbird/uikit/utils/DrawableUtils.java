@@ -81,11 +81,17 @@ public class DrawableUtils {
     @NonNull
     public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor, int backgroundAlpha,
                                           @DrawableRes int iconRes, @ColorRes int iconTint) {
+        int inset = (int) context.getResources().getDimension(R.dimen.sb_size_24);
+        return createOvalIcon(context, backgroundColor, 255, iconRes, iconTint, inset);
+    }
+
+    @NonNull
+    public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor, int backgroundAlpha,
+                                          @DrawableRes int iconRes, @ColorRes int iconTint, int inset) {
         ShapeDrawable ovalBackground = new ShapeDrawable(new OvalShape());
         ovalBackground.getPaint().setColor(context.getResources().getColor(backgroundColor));
         ovalBackground.getPaint().setAlpha(backgroundAlpha);
         Drawable icon = setTintList(context, iconRes, iconTint);
-        int inset = (int) context.getResources().getDimension(R.dimen.sb_size_24);
         return createLayerIcon(ovalBackground, icon, inset);
     }
 

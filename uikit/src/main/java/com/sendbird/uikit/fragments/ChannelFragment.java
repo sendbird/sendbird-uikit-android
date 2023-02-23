@@ -49,6 +49,7 @@ import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.model.VoicePlayerManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
@@ -117,6 +118,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     private OnInputModeChangedListener inputModeChangedListener;
     @Nullable
     private View.OnClickListener tooltipClickListener;
+    @Nullable
+    private View.OnClickListener onVoiceRecorderButtonClickListener;
     @Nullable
     private MessageListParams params;
     @NonNull
@@ -190,6 +193,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        VoicePlayerManager.disposeAll();
         if (!isInitCallFinished.get()) {
             shouldDismissLoadingDialog();
         }
@@ -344,6 +348,16 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             }
         });
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), messageListComponent::notifyChannelChanged);
+        viewModel.onMessagesDeleted().observe(getViewLifecycleOwner(), deletedMessages -> {
+            for (final BaseMessage deletedMessage : deletedMessages) {
+                if (deletedMessage instanceof FileMessage && MessageUtils.isVoiceMessage((FileMessage) deletedMessage)) {
+                    final String key = MessageUtils.getVoiceMessageKey((FileMessage) deletedMessage);
+                    if (key.equals(VoicePlayerManager.getCurrentKey())) {
+                        VoicePlayerManager.pause();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -384,6 +398,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         inputComponent.setOnInputTextChangedListener(inputTextChangedListener != null ? inputTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
         inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : this::onInputModeChanged);
         inputComponent.setOnQuoteReplyModeCloseButtonClickListener(replyModeCloseButtonClickListener != null ? replyModeCloseButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
+        inputComponent.setOnVoiceRecorderButtonClickListener((onVoiceRecorderButtonClickListener != null) ? onVoiceRecorderButtonClickListener : v -> takeVoiceRecorder());
 
         if (SendbirdUIKit.isUsingUserMention()) {
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
@@ -584,6 +599,22 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     actions = new DialogListItem[]{save, reply};
                 }
                 break;
+            case VIEW_TYPE_VOICE_MESSAGE_ME:
+                if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                } else {
+                    if (replyType == ReplyType.NONE) {
+                        actions = new DialogListItem[]{delete};
+                    } else {
+                        actions = new DialogListItem[]{delete, reply};
+                    }
+                }
+                break;
+            case VIEW_TYPE_VOICE_MESSAGE_OTHER:
+                if (replyType != ReplyType.NONE) {
+                    actions = new DialogListItem[]{reply};
+                }
+                break;
             case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
                 actions = new DialogListItem[]{delete};
             default:
@@ -640,16 +671,15 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
         if (!ReactionUtils.canSendReaction(getViewModel().getChannel())) {
             final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
-            if (getContext() != null && messageListView != null) {
-                MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
-                        .setOnItemClickListener(createMessageActionListener(message))
-                        .setOnDismissListener(() -> anchorDialogShowing.set(false))
-                        .build();
-                messageAnchorDialog.show();
-                anchorDialogShowing.set(true);
-            }
+            if (getContext() == null || messageListView == null || size <= 0) return;
+            MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
+                    .setOnItemClickListener(createMessageActionListener(message))
+                    .setOnDismissListener(() -> anchorDialogShowing.set(false))
+                    .build();
+            messageAnchorDialog.show();
+            anchorDialogShowing.set(true);
         } else if (MessageUtils.isUnknownType(message)) {
-            if (getContext() == null) return;
+            if (getContext() == null || size <= 0) return;
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
             showEmojiActionsDialog(message, actions);
@@ -786,6 +816,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         private OnConsumableClickListener scrollFirstButtonClickListener;
         @Nullable
         private OnItemClickListener<BaseMessage> threadInfoClickListener;
+        @Nullable
+        private View.OnClickListener voiceRecorderButtonClickListener;
         @Nullable
         private ChannelFragment customFragment;
 
@@ -1730,6 +1762,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         }
 
         /**
+         * Register a callback to be invoked when the button to show voice recorder is clicked.
+         *
+         * @param voiceRecorderButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.4.0
+         */
+        @NonNull
+        public Builder setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
+            this.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link ChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -1766,6 +1811,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             fragment.setAdapter(adapter);
             fragment.params = params;
             fragment.threadInfoClickListener = threadInfoClickListener;
+            fragment.onVoiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
 
             // set animation flag to TRUE to animate searched text.
             if (bundle.containsKey(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED)) {

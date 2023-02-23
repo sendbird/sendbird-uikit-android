@@ -8,6 +8,7 @@ import com.sendbird.android.message.AdminMessage;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.CustomizableMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.MessageMetaArray;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.android.user.User;
@@ -16,8 +17,13 @@ import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TimelineMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageUtils {
     public static boolean isMine(@NonNull BaseMessage message) {
@@ -118,5 +124,59 @@ public class MessageUtils {
     public static boolean hasThread(@NonNull BaseMessage message) {
         if (message instanceof CustomizableMessage) return false;
         return message.getThreadInfo().getReplyCount() > 0;
+    }
+
+    public static boolean isVoiceMessage(@Nullable FileMessage fileMessage) {
+        if (fileMessage == null) return false;
+        final String[] typeParts = fileMessage.getType().split(";");
+        if (typeParts.length > 1) {
+            for (final String typePart : typeParts) {
+                if (typePart.startsWith(StringSet.sbu_type)) {
+                    final String[] paramKeyValue = typePart.split("=");
+                    if (paramKeyValue.length > 1) {
+                        if (paramKeyValue[1].equals(StringSet.voice)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        final List<String> typeArrayKeys = new ArrayList<>();
+        typeArrayKeys.add(StringSet.KEY_INTERNAL_MESSAGE_TYPE);
+        final List<MessageMetaArray> typeArray = fileMessage.getMetaArrays(typeArrayKeys);
+        final String type = typeArray.isEmpty() ? "" : typeArray.get(0).getValue().get(0);
+        return type.startsWith(StringSet.voice);
+    }
+
+    @NonNull
+    public static String getVoiceMessageKey(@NonNull FileMessage fileMessage) {
+        if (fileMessage.getSendingStatus() == SendingStatus.PENDING) {
+            return fileMessage.getRequestId();
+        } else {
+            return String.valueOf(fileMessage.getMessageId());
+        }
+    }
+
+    @NonNull
+    public static String getVoiceFilename(@NonNull FileMessage message) {
+        String key = message.getRequestId();
+        if (key.isEmpty() || key.equals("0")) {
+            key = String.valueOf(message.getMessageId());
+        }
+        return "Voice_file_" + key + "." + StringSet.m4a;
+    }
+
+    public static int extractDuration(@NonNull FileMessage message) {
+        final List<String> durationArrayKeys = new ArrayList<>();
+        durationArrayKeys.add(StringSet.KEY_VOICE_MESSAGE_DURATION);
+        final List<MessageMetaArray> durationArray = message.getMetaArrays(durationArrayKeys);
+        final String duration = durationArray.isEmpty() ? "" : durationArray.get(0).getValue().get(0);
+        try {
+            return Integer.parseInt(duration);
+        } catch (NumberFormatException e) {
+            Logger.w(e);
+        }
+        return 0;
     }
 }

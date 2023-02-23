@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.4.0 (Feb 23, 2023) with Chat SDK `v4.4.0`
+* Support voice message in GroupChannel
+  * Added `setUseVoiceMessage(boolean)` in `SendbirdUIKit`
+  * Added `isUsingVoiceMessage()` in `SendbirdUIKit`
+  * Added `VIEW_TYPE_VOICE_MESSAGE_ME`, `VIEW_TYPE_VOICE_MESSAGE_OTHER` in `MessageType`
+  * Added `takeVoiceRecorder(View, int, BaseMessage)` in `ChannelFragment`, `MessageThreadFragment`
+  * Added `sendVoiceFileMessage(VoiceMessageInfo)` in `ChannelFragment`, `MessageThreadFragment`
+  * Added `setOnVoiceRecorderButtonClickListener(OnClickListener)` in `ChannelFragment.Builder`, `MessageThreadFragment.Builder`
+
 ### v3.3.3 (Jan 19, 2023) with Chat SDK `v4.2.1`
 * Improved stability
 
@@ -18,8 +27,8 @@
 * Support thread type in GroupChannel
   * Added `THREAD` in `ReplyType`
   * Added `enum ThreadReplySelectType { PARENT, THREAD }`
-  * Added `setThreadReplySelectType(threadReplySelectType)` in `SendBirdUIKit`
-  * Added `getThreadReplySelectType()` in `SendBirdUIKit`
+  * Added `setThreadReplySelectType(threadReplySelectType)` in `SendbirdUIKit`
+  * Added `getThreadReplySelectType()` in `SendbirdUIKit`
   * Added `MessageThreadActivity`, `MessageThreadFragment`, `MessageThreadModule`, `MessageThreadViewModel`, `MessageThreadHeaderComponent`, `ThreadListComponent`, `MessageThreadInputComponent`, and `ThreadListAdapter`
   * Added `newRedirectToMessageThreadIntent(Context, String, long)` in `ChannelActivity`
   * Added `VIEW_TYPE_PARENT_MESSAGE_INFO` in `MessageType`

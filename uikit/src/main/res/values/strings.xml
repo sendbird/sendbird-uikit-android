@@ -127,6 +127,8 @@
     <string name="sb_text_error_unmute_participant">Couldn\&#39;t unmute participant. Try again.</string>
     <string name="sb_text_error_unban_member">Couldn\&#39;t unban member. Try again.</string>
     <string name="sb_text_error_unban_participant">Couldn\&#39;t unban participant. Try again.</string>
+    <string name="sb_text_error_user_muted">You\&#39;re muted by the operator.</string>
+    <string name="sb_text_error_channel_frozen">Channel is frozen</string>
 
     <!-- File Error -->
     <string name="sb_text_error_open_camera">Couldn\&#39;t open camera.</string>
@@ -201,4 +203,7 @@
     <!-- Create OpenChannel -->
     <string name="text_input_channel_name_hint">Enter channel name</string>
     <string name="text_remove_photo">Remove photo</string>
+
+    <!-- Voice message -->
+    <string name="sb_text_voice_message">Voice message</string>
 </resources>

@@ -207,7 +207,11 @@ internal class ChannelPreview @JvmOverloads constructor(
                     is FileMessage -> {
                         textView.maxLines = 1
                         textView.ellipsize = TextUtils.TruncateAt.MIDDLE
-                        message = it.name
+                        message = if (MessageUtils.isVoiceMessage(it)) {
+                            textView.context.getString(R.string.sb_text_voice_message)
+                        } else {
+                            it.name
+                        }
                     }
                 }
             }

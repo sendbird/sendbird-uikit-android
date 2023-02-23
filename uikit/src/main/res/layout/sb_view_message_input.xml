@@ -155,6 +155,20 @@
                 app:layout_constraintStart_toEndOf="@id/etInputText"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ibtnVoiceRecorder" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/ibtnVoiceRecorder"
+                android:src="@drawable/icon_voice_message_on"
+                android:layout_width="@dimen/sb_size_24"
+                android:layout_height="@dimen/sb_size_24"
+                android:layout_marginEnd="@dimen/sb_size_0"
+                android:layout_marginStart="@dimen/sb_size_12"
+                android:padding="@dimen/sb_size_0"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toEndOf="@id/ibtnSend"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

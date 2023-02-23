@@ -20,6 +20,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.user.MutedState;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
@@ -56,6 +57,8 @@ public class MessageInputComponent {
     private View.OnClickListener editModeCancelButtonClickListener;
     @Nullable
     private View.OnClickListener editModeSaveButtonClickListener;
+    @Nullable
+    private View.OnClickListener voiceRecorderButtonClickListener;
     @Nullable
     private View.OnClickListener replyModeCloseButtonClickListener;
     @Nullable
@@ -163,6 +166,8 @@ public class MessageInputComponent {
         this.messageInputView.setOnEditModeTextChangedListener(this::onEditModeTextChanged);
         this.messageInputView.setOnReplyCloseClickListener(this::onQuoteReplyModeCloseButtonClicked);
         this.messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
+        this.messageInputView.setOnVoiceRecorderButtonClickListener(this::onVoiceRecorderButtonClicked);
+        this.messageInputView.setUseVoiceButton(SendbirdUIKit.isUsingVoiceMessage());
         this.setUseSuggestedMentionListDivider(params.useSuggestedMentionListDivider);
         if (params.keyboardDisplayType == KeyboardDisplayType.Dialog) {
             final MessageInputDialogWrapper messageInputDialogWrapper = new MessageInputDialogWrapper(context);
@@ -294,6 +299,16 @@ public class MessageInputComponent {
     }
 
     /**
+     * Register a callback to be invoked when the voice recorder button is clicked.
+     *
+     * @param voiceRecorderButtonClickListener The callback that will run
+     * @since 3.4.0
+     */
+    public void setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
+        this.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
+    }
+
+    /**
      * Called when the left button of the input is clicked.
      *
      * @param view The View clicked
@@ -390,6 +405,16 @@ public class MessageInputComponent {
      */
     protected void onEditModeSaveButtonClicked(@NonNull View view) {
         if (editModeSaveButtonClickListener != null) editModeSaveButtonClickListener.onClick(view);
+    }
+
+    /**
+     * Called when the voice recorder button is clicked.
+     *
+     * @param view The View clicked
+     * @since 3.4.0
+     */
+    protected void onVoiceRecorderButtonClicked(@NonNull View view) {
+        if (voiceRecorderButtonClickListener != null) voiceRecorderButtonClickListener.onClick(view);
     }
 
     /**

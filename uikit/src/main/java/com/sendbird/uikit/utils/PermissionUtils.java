@@ -23,8 +23,13 @@ public class PermissionUtils {
 
     public final static String[] CAMERA_PERMISSION = getCameraPermission();
     public final static String[] GET_CONTENT_PERMISSION = getGetContentPermission();
+    public final static String[] RECORD_AUDIO_PERMISSION = getRecordAudioPermission();
 
     private PermissionUtils() {
+    }
+
+    private static String[] getRecordAudioPermission() {
+        return new String[]{Manifest.permission.RECORD_AUDIO};
     }
 
     private static String[] getCameraPermission() {

@@ -217,6 +217,7 @@ public class SendbirdUIKit {
     private static volatile boolean useMention = false;
     private static volatile boolean useUserIdForNickname = true;
     private static UserMentionConfig userMentionConfig = new UserMentionConfig.Builder().build();
+    private static volatile boolean useVoiceMessage = false;
 
     static void clearAll() {
         SendbirdUIKit.customUserListQueryHandler = null;
@@ -476,6 +477,28 @@ public class SendbirdUIKit {
      */
     public static boolean isUsingUserIdForNickname() {
         return useUserIdForNickname;
+    }
+
+    /**
+     * Sets whether the voice message is used on the channel screen and message thread screen.
+     * The voice message is only active in group channels.
+     *
+     * @param useVoiceMessage If <code>true</code> the voice message will be used, <code>false</code> other wise.
+     * @since 3.4.0
+     */
+    public static void setUseVoiceMessage(boolean useVoiceMessage) {
+        SendbirdUIKit.useVoiceMessage = useVoiceMessage;
+    }
+
+    /**
+     * Returns set value whether the voice message is used on the channel screen and message thread screen.
+     * The voice message is only active in group channels.
+     *
+     * @return The value whether the voice message is used on the channel screen, message thread screen.
+     * @since 3.4.0
+     */
+    public static boolean isUsingVoiceMessage() {
+        return SendbirdUIKit.useVoiceMessage;
     }
 
     /**

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
@@ -16,8 +17,8 @@ import com.sendbird.uikit.databinding.SbViewParentMessageInfoBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
-import com.sendbird.uikit.utils.Available
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ReactionUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
@@ -60,7 +61,9 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
             is UserMessage -> drawUserMessage(message)
             is FileMessage -> {
                 val mimeType: String = message.type.lowercase(Locale.getDefault())
-                if (mimeType.startsWith(StringSet.image)) {
+                if (MessageUtils.isVoiceMessage(message)) {
+                    drawVoiceMessage(channel, message)
+                } else if (mimeType.startsWith(StringSet.image)) {
                     if (mimeType.contains(StringSet.svg)) {
                         drawFileMessage(message)
                     } else {
@@ -83,13 +86,26 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.tvTextMessage.visibility = VISIBLE
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
+        binding.voiceMessage.visibility = GONE
         ViewUtils.drawTextMessage(binding.tvTextMessage, message, parentMessageInfoUIConfig, null)
+    }
+
+    private fun drawVoiceMessage(channel: GroupChannel, message: FileMessage) {
+        binding.tvTextMessage.visibility = GONE
+        binding.fileGroup.visibility = GONE
+        binding.imageGroup.visibility = GONE
+        binding.voiceMessage.visibility = VISIBLE
+        binding.voiceMessage.setOnClickListener {
+            binding.voiceMessage.callOnPlayerButtonClick()
+        }
+        ViewUtils.drawVoiceMessage(binding.voiceMessage, message)
     }
 
     private fun drawFileMessage(message: FileMessage) {
         binding.tvTextMessage.visibility = GONE
         binding.fileGroup.visibility = VISIBLE
         binding.imageGroup.visibility = GONE
+        binding.voiceMessage.visibility = GONE
         ViewUtils.drawFilename(binding.tvFileName, message, parentMessageInfoUIConfig)
         ViewUtils.drawFileIcon(binding.ivFileIcon, message)
     }
@@ -98,6 +114,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.tvTextMessage.visibility = GONE
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = VISIBLE
+        binding.voiceMessage.visibility = GONE
         ViewUtils.drawThumbnail(binding.ivThumbnail, message)
         ViewUtils.drawThumbnailIcon(binding.ivThumbnailIcon, message)
     }
@@ -146,6 +163,21 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
                 R.styleable.ParentMessageInfoView_sb_parent_message_info_divider_line_color,
                 R.color.onlight_04
             )
+            val progressColor =
+                a.getResourceId(
+                    R.styleable.ParentMessageInfoView_sb_parent_message_info_voice_message_progress_color,
+                    R.color.ondark_03
+                )
+            val progressTrackColor =
+                a.getResourceId(
+                    R.styleable.ParentMessageInfoView_sb_parent_message_info_voice_message_progress_track_color,
+                    R.color.background_100
+                )
+            val timelineTextAppearance =
+                a.getResourceId(
+                    R.styleable.ParentMessageInfoView_sb_parent_message_info_voice_message_timeline_text_appearance,
+                    R.style.SendbirdBody3OnLight01
+                )
 
             binding.tvNickname.setAppearance(context, nicknameAppearance)
             binding.tvSentAt.setAppearance(context, sentAtAppearance)
@@ -187,6 +219,38 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
                     R.color.ondark_02
                 ) else ContextCompat.getColor(context, R.color.onlight_02)
             )
+            binding.voiceMessage.setProgressCornerRadius(context.resources.getDimension(R.dimen.sb_size_16))
+            binding.voiceMessage.setProgressTrackColor(
+                AppCompatResources.getColorStateList(
+                    context,
+                    progressTrackColor
+                )
+            )
+            binding.voiceMessage.setProgressProgressColor(AppCompatResources.getColorStateList(context, progressColor))
+            binding.voiceMessage.setTimelineTextAppearance(timelineTextAppearance)
+            val buttonBackgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.background_600 else R.color.background_50
+            val buttonTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_200 else R.color.primary_300
+            val inset = context.resources.getDimension(R.dimen.sb_size_12).toInt()
+            val playIcon =
+                DrawableUtils.createOvalIcon(
+                    context,
+                    buttonBackgroundTint,
+                    224,
+                    R.drawable.icon_play,
+                    buttonTint,
+                    inset
+                )
+            binding.voiceMessage.setPlayButtonImageDrawable(playIcon)
+            val pauseIcon =
+                DrawableUtils.createOvalIcon(
+                    context,
+                    buttonBackgroundTint,
+                    224,
+                    R.drawable.icon_pause,
+                    buttonTint,
+                    inset
+                )
+            binding.voiceMessage.setPauseButtonImageDrawable(pauseIcon)
         } finally {
             a.recycle()
         }

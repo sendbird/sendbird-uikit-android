@@ -10,8 +10,8 @@ import com.sendbird.android.handler.InitResultHandler;
 import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
-import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit_messaging_android.consts.InitState;
@@ -112,6 +112,8 @@ public class BaseApplication extends MultiDexApplication {
         // set reply type
         SendbirdUIKit.setReplyType(ReplyType.THREAD);
         SendbirdUIKit.setThreadReplySelectType(ThreadReplySelectType.THREAD);
+        // set whether to use voice message
+        SendbirdUIKit.setUseVoiceMessage(true);
 
         // set custom params
         SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {

@@ -42,6 +42,7 @@ import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.model.VoicePlayerManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.FileInfo;
@@ -105,6 +106,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     private View.OnClickListener editModeSaveButtonClickListener;
     @Nullable
     private OnInputModeChangedListener inputModeChangedListener;
+    @Nullable
+    private View.OnClickListener voiceRecorderButtonClickListener;
 
     @Nullable
     private ThreadMessageListParams params;
@@ -272,6 +275,11 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
                 }
             });
         });
+        viewModel.onThreadMessageDeleted().observe(getViewLifecycleOwner(), deletedMessageId -> {
+            if (String.valueOf(deletedMessageId).equals(VoicePlayerManager.getCurrentKey())) {
+                VoicePlayerManager.pause();
+            }
+        });
     }
 
     /**
@@ -323,6 +331,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         inputComponent.setOnEditModeCancelButtonClickListener(editModeCancelButtonClickListener != null ? editModeCancelButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
         inputComponent.setOnInputTextChangedListener(inputTextChangedListener != null ? inputTextChangedListener : (s, start, before, count) -> viewModel.setTyping(s.length() > 0));
         inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : this::onInputModeChanged);
+        inputComponent.setOnVoiceRecorderButtonClickListener((voiceRecorderButtonClickListener != null) ? voiceRecorderButtonClickListener : v -> takeVoiceRecorder());
 
         if (SendbirdUIKit.isUsingUserMention()) {
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
@@ -446,6 +455,13 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
                 actions = new DialogListItem[]{save};
                 break;
+            case VIEW_TYPE_VOICE_MESSAGE_ME:
+                if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                } else {
+                    actions = new DialogListItem[]{delete};
+                }
+                break;
             case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
                 actions = new DialogListItem[]{delete};
             default:
@@ -494,7 +510,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         int size = items.size();
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
         if (!ReactionUtils.canSendReaction(getViewModel().getChannel()) || MessageUtils.isUnknownType(message)) {
-            if (getContext() == null) return;
+            if (getContext() == null || size <= 0) return;
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
             showEmojiActionsDialog(message, actions);
@@ -577,6 +593,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         private View.OnClickListener editModeSaveButtonClickListener;
         @Nullable
         private OnInputModeChangedListener inputModeChangedListener;
+        @Nullable
+        private View.OnClickListener voiceRecorderButtonClickListener;
         @Nullable
         private MessageThreadFragment customFragment;
 
@@ -1417,6 +1435,19 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         }
 
         /**
+         * Register a callback to be invoked when the button to show voice recorder is clicked.
+         *
+         * @param voiceRecorderButtonClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.4.0
+         */
+        @NonNull
+        public Builder setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
+            this.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link MessageThreadFragment} with the arguments supplied to this
          * builder.
          *
@@ -1447,6 +1478,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             fragment.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
             fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
             fragment.inputModeChangedListener = inputModeChangedListener;
+            fragment.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
             fragment.setAdapter(adapter);
             fragment.params = params;
             return fragment;

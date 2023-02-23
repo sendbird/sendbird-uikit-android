@@ -263,6 +263,8 @@
         <item name="sb_widget_timeline_message">@style/Widget.Sendbird.Message.Timeline</item>
         <item name="sb_widget_emoji_message">@style/Widget.Sendbird.Emoji</item>
         <item name="sb_widget_thread_info">@style/Widget.Sendbird.ThreadInfoView</item>
+        <item name="sb_widget_my_voice_message">@style/Widget.Sendbird.Message.Me.VoiceMessage</item>
+        <item name="sb_widget_other_voice_message">@style/Widget.Sendbird.Message.Other.VoiceMessage</item>
     </style>
     <style name="Component.ChannelMessageInput">
         <item name="sb_message_input_background">@color/background_50</item>
@@ -278,6 +280,9 @@
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
         <item name="sb_message_input_right_button_tint">@color/primary_300</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_light</item>
+        <item name="sb_message_input_voice_recorder_button_icon">@drawable/icon_voice_message_on</item>
+        <item name="sb_message_input_voice_recorder_button_tint">@color/sb_selector_input_voice_color_light</item>
+        <item name="sb_message_input_voice_recorder_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_edit_save_button_text_appearance">@style/SendbirdButtonOnDark01</item>
         <item name="sb_message_input_edit_save_button_text_color">@color/sb_button_contained_text_color_light</item>
         <item name="sb_message_input_edit_save_button_background">@drawable/sb_button_contained_background_light</item>
@@ -299,6 +304,8 @@
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
         <item name="sb_widget_suggested_mention_preview">@style/Widget.Sendbird.SuggestedMentionPreview</item>
         <item name="sb_widget_themeable_snackbar">@style/Widget.Sendbird.Snackbar</item>
+
+        <item name="sb_widget_voice_message_input_view">@style/Widget.Sendbird.VoiceMessageInputView</item>
     </style>
     <style name="Component.Status.Channel">
         <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
@@ -655,6 +662,8 @@
         <item name="sb_widget_timeline_message">@style/Widget.Sendbird.Message.Timeline</item>
         <item name="sb_widget_emoji_message">@style/Widget.Sendbird.Emoji</item>
         <item name="sb_widget_parent_message_info">@style/Widget.Sendbird.ParentMessageInfo</item>
+        <item name="sb_widget_my_voice_message">@style/Widget.Sendbird.Message.Me.VoiceMessage</item>
+        <item name="sb_widget_other_voice_message">@style/Widget.Sendbird.Message.Other.VoiceMessage</item>
     </style>
     <style name="Component.MessageThreadInput">
         <item name="sb_message_input_background">@color/background_50</item>
@@ -670,6 +679,9 @@
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
         <item name="sb_message_input_right_button_tint">@color/primary_300</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_light</item>
+        <item name="sb_message_input_voice_recorder_button_icon">@drawable/icon_voice_message_on</item>
+        <item name="sb_message_input_voice_recorder_button_tint">@color/sb_selector_input_voice_color_light</item>
+        <item name="sb_message_input_voice_recorder_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_edit_save_button_text_appearance">@style/SendbirdButtonOnDark01</item>
         <item name="sb_message_input_edit_save_button_text_color">@color/sb_button_contained_text_color_light</item>
         <item name="sb_message_input_edit_save_button_background">@drawable/sb_button_contained_background_light</item>
@@ -685,6 +697,8 @@
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
         <item name="sb_widget_suggested_mention_preview">@style/Widget.Sendbird.SuggestedMentionPreview</item>
         <item name="sb_widget_themeable_snackbar">@style/Widget.Sendbird.Snackbar</item>
+
+        <item name="sb_widget_voice_message_input_view">@style/Widget.Sendbird.VoiceMessageInputView</item>
     </style>
     <style name="Component.Status.MessageThread">
         <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>
@@ -900,7 +914,57 @@
         <item name="sb_parent_message_info_reply_count_appearance">@style/SendbirdBody3OnLight03</item>
         <item name="sb_message_recyclerview_background">@color/background_50</item>
         <item name="sb_parent_message_info_divider_line_color">@color/onlight_04</item>
+        <item name="sb_parent_message_info_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_parent_message_info_voice_message_progress_track_color">@color/sb_message_other_tint_light</item>
+        <item name="sb_parent_message_info_voice_message_timeline_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_widget_emoji_message">@style/Widget.Sendbird.Emoji</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.Me.VoiceMessage">
+        <item name="sb_message_me_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_message_me_background_tint">@color/sb_message_me_tint_light</item>
+        <item name="sb_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_progress_track_color">@color/sb_message_me_tint_light</item>
+        <item name="sb_voice_message_timeline_text_appearance">@style/SendbirdBody3OnDark01</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.Other.VoiceMessage">
+        <item name="sb_message_other_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_message_other_background_tint">@color/sb_message_other_tint_light</item>
+        <item name="sb_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_progress_track_color">@color/sb_message_other_tint_light</item>
+        <item name="sb_voice_message_timeline_text_appearance">@style/SendbirdBody3OnLight01</item>
+    </style>
+
+    <style name="Widget.Sendbird.VoiceMessageInputView">
+        <item name="sb_voice_message_input_background">@android:color/transparent</item>
+        <item name="sb_voice_message_input_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_input_progress_track_color">@color/sb_voice_message_recorder_progress_background_light</item>
+        <item name="sb_voice_message_input_timeline_text_appearance">@style/SendbirdCaption1OnDark01</item>
+        <item name="sb_voice_message_input_timeline_text_color">@color/sb_voice_message_recorder_timeline_light</item>
+        <item name="sb_voice_message_input_record_button_icon">@drawable/icon_recording</item>
+        <item name="sb_voice_message_input_record_button_tint">@color/error_300</item>
+        <item name="sb_voice_message_input_record_button_background">@drawable/sb_shape_oval_button</item>
+        <item name="sb_voice_message_input_record_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
+        <item name="sb_voice_message_input_play_button_icon">@drawable/icon_play</item>
+        <item name="sb_voice_message_input_play_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_play_button_background">@drawable/sb_shape_oval_button</item>
+        <item name="sb_voice_message_input_play_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
+        <item name="sb_voice_message_input_pause_button_icon">@drawable/icon_pause</item>
+        <item name="sb_voice_message_input_pause_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_pause_button_background">@drawable/sb_shape_oval_button</item>
+        <item name="sb_voice_message_input_pause_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
+        <item name="sb_voice_message_input_stop_button_icon">@drawable/icon_stop</item>
+        <item name="sb_voice_message_input_stop_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_stop_button_background">@drawable/sb_shape_oval_button</item>
+        <item name="sb_voice_message_input_stop_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
+        <item name="sb_voice_message_input_send_button_icon">@drawable/icon_send</item>
+        <item name="sb_voice_message_input_send_button_tint">@color/sb_voice_message_recorder_send_icon_light</item>
+        <item name="sb_voice_message_input_send_button_background">@drawable/sb_shape_oval_button</item>
+        <item name="sb_voice_message_input_send_button_background_tint">@color/sb_voice_message_recorder_send_background_light</item>
+        <item name="sb_voice_message_input_cancel_button_text_appearance">@style/SendbirdButtonPrimary300</item>
+        <item name="sb_voice_message_input_cancel_button_text_color">@color/sb_button_uncontained_text_color_light</item>
+        <item name="sb_voice_message_input_cancel_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
 
     <!-- DialogView -->
@@ -969,7 +1033,6 @@
         <item name="sb_message_preview_message_metaphor_background_color">@color/background_100</item>
         <item name="sb_message_preview_message_metaphor_icon_tint_color">@color/primary_300</item>
     </style>
-
 
     <!-- OpenChannel -->
     <style name="Widget.Sendbird.OpenChannel"/>

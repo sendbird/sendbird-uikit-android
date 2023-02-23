@@ -24,6 +24,7 @@ import com.sendbird.uikit.interfaces.OnInputTextChangedListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setCursorDrawable
 import com.sendbird.uikit.model.TextUIConfig
+import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.utils.TextUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -42,6 +43,11 @@ class MessageInputView @JvmOverloads constructor(
         set(value) {
             field = value
             binding.ibtnSend.setOnClickListener(value)
+        }
+    var onVoiceRecorderButtonClickListener: OnClickListener? = null
+        set(value) {
+            field = value
+            binding.ibtnVoiceRecorder.setOnClickListener(value)
         }
     var onAddClickListener: OnClickListener? = null
         set(value) {
@@ -73,6 +79,11 @@ class MessageInputView @JvmOverloads constructor(
             binding.ibtnAdd.visibility = value
         }
     var showSendButtonAlways = false
+    var useVoiceButton = false
+        set(value) {
+            field = value
+            setVoiceRecorderButtonVisibility(if (value) VISIBLE else GONE)
+        }
     var useOverlay = false
     var inputText: CharSequence?
         get() = binding.etInputText.text?.trim { it <= ' ' }
@@ -93,6 +104,7 @@ class MessageInputView @JvmOverloads constructor(
                 Mode.EDIT -> {
                     setQuoteReplyPanelVisibility(GONE)
                     setEditPanelVisibility(VISIBLE)
+                    setVoiceRecorderButtonVisibility(GONE)
                     binding.ibtnAdd.visibility = GONE
                 }
                 Mode.QUOTE_REPLY -> {
@@ -135,11 +147,18 @@ class MessageInputView @JvmOverloads constructor(
     fun drawMessageToReply(message: BaseMessage) {
         var displayMessage = message.message
         if (message is FileMessage) {
-            ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, message)
-            ViewUtils.drawThumbnail(binding.ivQuoteReplyMessageImage, message)
-            binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
-            binding.ivQuoteReplyMessageImage.visibility = VISIBLE
-            displayMessage = if (message.type.contains(StringSet.gif)) {
+            if (MessageUtils.isVoiceMessage(message)) {
+                binding.ivQuoteReplyMessageIcon.visibility = GONE
+                binding.ivQuoteReplyMessageImage.visibility = GONE
+            } else {
+                ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, message)
+                ViewUtils.drawThumbnail(binding.ivQuoteReplyMessageImage, message)
+                binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
+                binding.ivQuoteReplyMessageImage.visibility = VISIBLE
+            }
+            displayMessage = if (MessageUtils.isVoiceMessage(message)) {
+                context.getString(R.string.sb_text_voice_message)
+            } else if (message.type.contains(StringSet.gif)) {
                 StringSet.gif.uppercase(Locale.getDefault())
             } else if (message.type.startsWith(StringSet.image)) {
                 TextUtils.capitalize(StringSet.photo)
@@ -167,10 +186,15 @@ class MessageInputView @JvmOverloads constructor(
         binding.ibtnAdd.isEnabled = enabled
         binding.etInputText.isEnabled = enabled
         binding.ibtnSend.isEnabled = enabled
+        binding.ibtnVoiceRecorder.isEnabled = enabled
     }
 
     fun setSendButtonVisibility(visibility: Int) {
         binding.ibtnSend.visibility = visibility
+    }
+
+    fun setVoiceRecorderButtonVisibility(visibility: Int) {
+        binding.ibtnVoiceRecorder.visibility = visibility
     }
 
     fun setSendImageResource(@DrawableRes sendImageResource: Int) {
@@ -254,6 +278,16 @@ class MessageInputView @JvmOverloads constructor(
                 R.styleable.MessageInputComponent_sb_message_input_right_button_background,
                 R.drawable.sb_button_uncontained_background_light
             )
+            val micButtonIcon = a.getResourceId(
+                R.styleable.MessageInputComponent_sb_message_input_voice_recorder_button_icon,
+                R.drawable.icon_send
+            )
+            val micButtonTint =
+                a.getColorStateList(R.styleable.MessageInputComponent_sb_message_input_voice_recorder_button_tint)
+            val micButtonBackground = a.getResourceId(
+                R.styleable.MessageInputComponent_sb_message_input_voice_recorder_button_background,
+                R.drawable.sb_button_uncontained_background_light
+            )
             val editSaveButtonTextAppearance = a.getResourceId(
                 R.styleable.MessageInputComponent_sb_message_input_edit_save_button_text_appearance,
                 R.style.SendbirdButtonOnDark01
@@ -307,6 +341,10 @@ class MessageInputView @JvmOverloads constructor(
             binding.ibtnSend.setBackgroundResource(rightButtonBackground)
             setSendImageResource(rightButtonIcon)
             binding.ibtnSend.imageTintList = rightButtonTint
+            binding.ibtnVoiceRecorder.setBackgroundResource(micButtonBackground)
+            binding.ibtnVoiceRecorder.setImageResource(micButtonIcon)
+            binding.ibtnVoiceRecorder.imageTintList = micButtonTint
+            setVoiceRecorderButtonVisibility(if (useVoiceButton) VISIBLE else GONE)
             binding.btnSave.setAppearance(context, editSaveButtonTextAppearance)
             if (editSaveButtonTextColor != null) {
                 binding.btnSave.setTextColor(editSaveButtonTextColor)
@@ -330,8 +368,14 @@ class MessageInputView @JvmOverloads constructor(
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                     if (!TextUtils.isEmpty(s) && Mode.EDIT != inputMode || showSendButtonAlways) {
                         setSendButtonVisibility(VISIBLE)
+                        if (useVoiceButton) {
+                            setVoiceRecorderButtonVisibility(GONE)
+                        }
                     } else {
                         setSendButtonVisibility(GONE)
+                        if (useVoiceButton && Mode.EDIT != inputMode) {
+                            setVoiceRecorderButtonVisibility(VISIBLE)
+                        }
                     }
                 }
 
@@ -346,16 +390,22 @@ class MessageInputView @JvmOverloads constructor(
                 override fun afterTextChanged(s: Editable) {
                     if (!TextUtils.isEmpty(s) && Mode.EDIT != inputMode || showSendButtonAlways) {
                         setSendButtonVisibility(VISIBLE)
+                        if (useVoiceButton) {
+                            setVoiceRecorderButtonVisibility(GONE)
+                        }
                     } else {
                         setSendButtonVisibility(GONE)
+                        if (useVoiceButton && Mode.EDIT != inputMode) {
+                            setVoiceRecorderButtonVisibility(VISIBLE)
+                        }
                     }
                 }
             })
             binding.etInputText.inputType = (
-                    InputType.TYPE_CLASS_TEXT
-                            or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                            or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                    )
+                InputType.TYPE_CLASS_TEXT
+                    or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                )
         } finally {
             a.recycle()
         }

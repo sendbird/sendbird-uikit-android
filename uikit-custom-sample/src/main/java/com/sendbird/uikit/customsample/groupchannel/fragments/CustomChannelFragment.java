@@ -84,12 +84,13 @@ public class CustomChannelFragment extends ChannelFragment {
 
         if (inputComponent instanceof CustomMessageInputComponent) {
             CustomMessageInputComponent customInput = (CustomMessageInputComponent) getModule().getMessageInputComponent();
-            customInput.setMenuCameraClickListener(v -> takeCamera());
-            customInput.setMenuPhotoClickListener(v -> takePhoto());
-            customInput.setMenuFileClickListener(v -> takeFile());
-            customInput.setHighlightCheckedListener((buttonView, isChecked) ->
+            customInput.setOnMenuCameraClickListener(v -> takeCamera());
+            customInput.setOnMenuPhotoClickListener(v -> takePhoto());
+            customInput.setOnMenuFileClickListener(v -> takeFile());
+            customInput.setOnVoiceMessageClickListener(v -> takeVoiceRecorder());
+            customInput.setOnHighlightCheckedListener((buttonView, isChecked) ->
                     customMessageType = isChecked ? CustomMessageType.HIGHLIGHT : CustomMessageType.NONE);
-            customInput.setEmojiClickListener((view, position, url) -> {
+            customInput.setOnEmojiClickListener((view, position, url) -> {
                 final UserMessageCreateParams params = new UserMessageCreateParams();
                 params.setMessage(url);
                 customMessageType = CustomMessageType.EMOJI;

@@ -29,7 +29,6 @@ import java.nio.charset.Charset
 import java.security.MessageDigest
 import kotlin.math.min
 
-
 internal class ThreadInfoView @JvmOverloads internal constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -152,7 +151,6 @@ internal class ThreadInfoView @JvmOverloads internal constructor(
             val layerDrawable = LayerDrawable(layer)
             return DrawableUtils.toBitmap(layerDrawable) ?: toTransform
         }
-
 
         override fun updateDiskCacheKey(messageDigest: MessageDigest) {
             messageDigest.update(ID_BYTES)

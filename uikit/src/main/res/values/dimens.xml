@@ -166,6 +166,7 @@
     <dimen name="sb_default_thumbnail_width">240dp</dimen>
     <dimen name="sb_default_thumbnail_height">160dp</dimen>
     <dimen name="sb_file_name_max_width">180dp</dimen>
+    <dimen name="sb_voice_message_min_width">136dp</dimen>
     <dimen name="sb_emoji_reaction_dialog_max_height">276dp</dimen>
     <dimen name="sb_list_popup_max_height">196dp</dimen>
     <dimen name="sb_suggestion_nickname_max_width">222dp</dimen>

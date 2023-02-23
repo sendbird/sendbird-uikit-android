@@ -17,6 +17,7 @@ import com.sendbird.uikit.databinding.SbViewMessagePreviewBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
 
@@ -80,25 +81,36 @@ internal class MessagePreview @JvmOverloads constructor(
         binding.tvUserName.text = message.sender?.nickname ?: ""
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
         if (message is FileMessage) {
-            val icon = getIconDrawable(message.type)
-            binding.tvMessage.apply {
-                isSingleLine = true
-                maxLines = 1
-                ellipsize = TextUtils.TruncateAt.MIDDLE
-                setAppearance(context, messageFileTextAppearance)
-            }
-            metaphorTintColor?.let {
-                binding.ivIcon.setImageDrawable(
-                    DrawableUtils.setTintList(
-                        binding.ivIcon.context,
-                        icon,
-                        metaphorTintColor
+            if (MessageUtils.isVoiceMessage(message)) {
+                binding.tvMessage.apply {
+                    isSingleLine = true
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                    setAppearance(context, messageTextAppearance)
+                    text = context.getString(R.string.sb_text_voice_message)
+                }
+                binding.ivIcon.visibility = GONE
+            } else {
+                val icon = getIconDrawable(message.type)
+                binding.tvMessage.apply {
+                    isSingleLine = true
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.MIDDLE
+                    setAppearance(context, messageFileTextAppearance)
+                }
+                metaphorTintColor?.let {
+                    binding.ivIcon.setImageDrawable(
+                        DrawableUtils.setTintList(
+                            binding.ivIcon.context,
+                            icon,
+                            metaphorTintColor
+                        )
                     )
-                )
-            } ?: binding.ivIcon.setImageDrawable(AppCompatResources.getDrawable(binding.ivIcon.context, icon))
-            binding.ivIcon.setImageResource(icon)
-            binding.ivIcon.visibility = VISIBLE
-            binding.tvMessage.text = message.name
+                } ?: binding.ivIcon.setImageDrawable(AppCompatResources.getDrawable(binding.ivIcon.context, icon))
+                binding.ivIcon.setImageResource(icon)
+                binding.ivIcon.visibility = VISIBLE
+                binding.tvMessage.text = message.name
+            }
         } else {
             binding.tvMessage.apply {
                 isSingleLine = false

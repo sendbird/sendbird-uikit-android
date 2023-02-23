@@ -6,8 +6,13 @@ import androidx.lifecycle.Observer;
 
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.uikit.internal.tasks.JobTask;
+import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.model.FileInfo;
+import com.sendbird.uikit.utils.FileUtils;
+import com.sendbird.uikit.utils.MessageUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +56,20 @@ public class PendingMessageRepository {
 
     public void addFileInfo(@NonNull FileMessage message, @NonNull FileInfo fileInfo) {
         cachedFileInfos.put(message.getRequestId(), fileInfo);
+        if (MessageUtils.isVoiceMessage(message) && fileInfo.getCacheDir() != null) {
+            TaskQueue.addTask(new JobTask<File>() {
+                @NonNull
+                @Override
+                protected File call() throws Exception {
+                    final String filename = MessageUtils.getVoiceFilename(message);
+                    final File destFile = new File(fileInfo.getCacheDir(), filename);
+                    // As cachedFileInfos is cleared after the message is sent,
+                    // the voice file is copied to play it from the cache dir.
+                    FileUtils.copyFile(fileInfo.getFile(), destFile);
+                    return destFile;
+                }
+            });
+        }
     }
 
     void clearAllFileInfo(@NonNull List<BaseMessage> messages) {

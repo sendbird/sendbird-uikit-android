@@ -43,15 +43,17 @@ public class CustomMessageInputComponent extends MessageInputComponent {
 
     private ViewCustomChannelInputBinding binding;
     @Nullable
-    private CompoundButton.OnCheckedChangeListener highlightCheckedListener;
+    private CompoundButton.OnCheckedChangeListener onHighlightCheckedListener;
     @Nullable
-    private View.OnClickListener menuCameraClickListener;
+    private View.OnClickListener onMenuCameraClickListener;
     @Nullable
-    private View.OnClickListener menuPhotoClickListener;
+    private View.OnClickListener onMenuPhotoClickListener;
     @Nullable
-    private View.OnClickListener menuFileClickListener;
+    private View.OnClickListener onMenuFileClickListener;
     @Nullable
-    private OnItemClickListener<String> emojiClickListener;
+    private View.OnClickListener onVoiceMessageClickListener;
+    @Nullable
+    private OnItemClickListener<String> onEmojiClickListener;
     @NonNull
     private MessageInputView.Mode mode = MessageInputView.Mode.DEFAULT;
     @NonNull
@@ -109,16 +111,19 @@ public class CustomMessageInputComponent extends MessageInputComponent {
             }
         });
         binding.highlightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (highlightCheckedListener != null) highlightCheckedListener.onCheckedChanged(buttonView, isChecked);
+            if (onHighlightCheckedListener != null) onHighlightCheckedListener.onCheckedChanged(buttonView, isChecked);
         });
         binding.camera.setOnClickListener(v -> {
-            if (menuCameraClickListener != null) menuCameraClickListener.onClick(v);
+            if (onMenuCameraClickListener != null) onMenuCameraClickListener.onClick(v);
         });
         binding.photo.setOnClickListener(v -> {
-            if (menuPhotoClickListener != null) menuPhotoClickListener.onClick(v);
+            if (onMenuPhotoClickListener != null) onMenuPhotoClickListener.onClick(v);
         });
         binding.file.setOnClickListener(v -> {
-            if (menuFileClickListener != null) menuFileClickListener.onClick(v);
+            if (onMenuFileClickListener != null) onMenuFileClickListener.onClick(v);
+        });
+        binding.voiceMessageButton.setOnClickListener(v -> {
+            if (onVoiceMessageClickListener != null) onVoiceMessageClickListener.onClick(v);
         });
         binding.input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -133,7 +138,7 @@ public class CustomMessageInputComponent extends MessageInputComponent {
             public void afterTextChanged(Editable s) {}
         });
 
-        adapter.emojiClickListener = emojiClickListener;
+        adapter.emojiClickListener = onEmojiClickListener;
         return binding.getRoot();
     }
 
@@ -204,25 +209,29 @@ public class CustomMessageInputComponent extends MessageInputComponent {
         setLeftButton(true);
     }
 
-    public void setHighlightCheckedListener(@Nullable CompoundButton.OnCheckedChangeListener highlightCheckedListener) {
-        this.highlightCheckedListener = highlightCheckedListener;
+    public void setOnHighlightCheckedListener(@Nullable CompoundButton.OnCheckedChangeListener onHighlightCheckedListener) {
+        this.onHighlightCheckedListener = onHighlightCheckedListener;
     }
 
-    public void setMenuCameraClickListener(@Nullable View.OnClickListener menuCameraClickListener) {
-        this.menuCameraClickListener = menuCameraClickListener;
+    public void setOnMenuCameraClickListener(@Nullable View.OnClickListener onMenuCameraClickListener) {
+        this.onMenuCameraClickListener = onMenuCameraClickListener;
     }
 
-    public void setMenuPhotoClickListener(@Nullable View.OnClickListener menuPhotoClickListener) {
-        this.menuPhotoClickListener = menuPhotoClickListener;
+    public void setOnMenuPhotoClickListener(@Nullable View.OnClickListener onMenuPhotoClickListener) {
+        this.onMenuPhotoClickListener = onMenuPhotoClickListener;
     }
 
-    public void setMenuFileClickListener(@Nullable View.OnClickListener menuFileClickListener) {
-        this.menuFileClickListener = menuFileClickListener;
+    public void setOnMenuFileClickListener(@Nullable View.OnClickListener onMenuFileClickListener) {
+        this.onMenuFileClickListener = onMenuFileClickListener;
     }
 
-    public void setEmojiClickListener(@Nullable OnItemClickListener<String> emojiClickListener) {
-        this.emojiClickListener = emojiClickListener;
-        adapter.emojiClickListener = emojiClickListener;
+    public void setOnVoiceMessageClickListener(@Nullable View.OnClickListener onVoiceMessageClickListener) {
+        this.onVoiceMessageClickListener = onVoiceMessageClickListener;
+    }
+
+    public void setOnEmojiClickListener(@Nullable OnItemClickListener<String> onEmojiClickListener) {
+        this.onEmojiClickListener = onEmojiClickListener;
+        adapter.emojiClickListener = onEmojiClickListener;
     }
 
     private void setLeftButton(final boolean isLeftClosed) {

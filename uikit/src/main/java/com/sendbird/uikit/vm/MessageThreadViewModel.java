@@ -69,6 +69,8 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
     @NonNull
     private final MutableLiveData<Boolean> parentMessageDeleted = new MutableLiveData<>();
     @NonNull
+    private final MutableLiveData<Long> threadMessageDeleted = new MutableLiveData<>();
+    @NonNull
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<Boolean> onReconnected = new MutableLiveData<>();
@@ -303,6 +305,17 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
     }
 
     /**
+     * Returns LiveData that can be observed if the thread message has been deleted.
+     *
+     * @return LiveData holding whether the thread message has been deleted
+     * @since 3.4.0
+     */
+    @NonNull
+    public LiveData<Long> onThreadMessageDeleted() {
+        return threadMessageDeleted;
+    }
+
+    /**
      * Returns LiveData that can be observed for the status of the result of fetching the thread list.
      * When the thread list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
@@ -366,7 +379,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
     public ThreadMessageListParams createMessageListParams() {
         final ThreadMessageListParams messageListParams = new ThreadMessageListParams();
         messageListParams.setReverse(true);
-        messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), false, false));
+        messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), false, false));
         return messageListParams;
     }
 
@@ -500,7 +513,12 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
         params.setInclusive(true);
         params.setPreviousResultSize(1);
         params.setNextResultSize(1);
-        params.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), true, true));
+        if (messageListParams != null) {
+            params.setMessagePayloadFilter(new MessagePayloadFilter(messageListParams.getMessagePayloadFilter().getIncludeMetaArray(),
+                    messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
+        } else {
+            params.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
+        }
         return SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, params, parentMessage.getCreatedAt(), new MessageCollectionHandler() {
             @Override
             public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel groupChannel, @NonNull List<BaseMessage> messages) {
@@ -565,7 +583,12 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
         params.setReplyType(com.sendbird.android.message.ReplyType.ONLY_REPLY_TO_CHANNEL);
         params.setPreviousResultSize(1);
         params.setNextResultSize(1);
-        params.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), true, true));
+        if (messageListParams != null) {
+            params.setMessagePayloadFilter(new MessagePayloadFilter(messageListParams.getMessagePayloadFilter().getIncludeMetaArray(),
+                    messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
+        } else {
+            params.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
+        }
         return SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, params, Long.MAX_VALUE, new MessageCollectionHandler() {
             @Override
             public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel groupChannel, @NonNull List<BaseMessage> messages) {
@@ -663,6 +686,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
             public void onMessageDeleted(@NonNull BaseChannel channel, long msgId) {
                 Logger.d(">> MessageThreadViewModel::onMessageDeleted()");
                 if (!isCurrentChannel(channel.getUrl())) return;
+                threadMessageDeleted.postValue(msgId);
                 final BaseMessage deletedMessage = cachedMessages.getById(msgId);
                 if (deletedMessage != null) {
                     cachedMessages.deleteByMessageId(msgId);

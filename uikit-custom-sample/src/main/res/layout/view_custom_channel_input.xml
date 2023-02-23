@@ -37,6 +37,17 @@
         android:src="@drawable/icon_emoji_more"
         android:padding="@dimen/sb_size_8"
         app:layout_constraintLeft_toRightOf="@id/input"
+        app:layout_constraintRight_toLeftOf="@id/voiceMessageButton"
+        app:layout_constraintTop_toBottomOf="@id/topLine"
+        app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/voiceMessageButton"
+        android:layout_width="@dimen/sb_size_56"
+        android:layout_height="@dimen/sb_size_56"
+        android:src="@drawable/icon_voice_message_on"
+        android:padding="@dimen/sb_size_8"
+        app:layout_constraintLeft_toRightOf="@id/emojiButton"
         app:layout_constraintRight_toLeftOf="@id/sendButton"
         app:layout_constraintTop_toBottomOf="@id/topLine"
         app:layout_constraintBottom_toTopOf="@id/menuPanel"/>
@@ -47,7 +58,7 @@
         android:layout_height="@dimen/sb_size_56"
         android:src="@drawable/icon_send"
         android:padding="@dimen/sb_size_8"
-        app:layout_constraintLeft_toRightOf="@id/emojiButton"
+        app:layout_constraintLeft_toRightOf="@id/voiceMessageButton"
         app:layout_constraintRight_toLeftOf="@id/highlightSwitch"
         app:layout_constraintTop_toBottomOf="@id/topLine"
         app:layout_constraintBottom_toTopOf="@id/menuPanel"/>

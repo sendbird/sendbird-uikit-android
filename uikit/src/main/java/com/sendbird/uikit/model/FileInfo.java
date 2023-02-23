@@ -48,6 +48,8 @@ final public class FileInfo {
     private final String thumbnailPath;
     @NonNull
     private final File file;
+    @Nullable
+    private final File cacheDir;
 
     public FileInfo(@NonNull String path,
                     int size,
@@ -56,7 +58,8 @@ final public class FileInfo {
                     @NonNull Uri uri,
                     int thumbnailWidth,
                     int thumbnailHeight,
-                    @Nullable String thumbnailPath) {
+                    @Nullable String thumbnailPath,
+                    @Nullable File cacheDir) {
         this.path = path;
         this.size = size;
         this.mimeType = mimeType;
@@ -66,6 +69,7 @@ final public class FileInfo {
         this.thumbnailHeight = thumbnailHeight;
         this.thumbnailPath = thumbnailPath;
         this.file = new File(path);
+        this.cacheDir = cacheDir;
     }
 
     @NonNull
@@ -103,6 +107,11 @@ final public class FileInfo {
     @Nullable
     public String getThumbnailPath() {
         return thumbnailPath;
+    }
+
+    @Nullable
+    public File getCacheDir() {
+        return cacheDir;
     }
 
     @Nullable
@@ -146,6 +155,22 @@ final public class FileInfo {
     private static boolean isCompressible(@NonNull String mimeType) {
         return mimeType.startsWith(StringSet.image)
                 && (mimeType.endsWith(StringSet.jpeg) || mimeType.endsWith(StringSet.jpg) || mimeType.endsWith(StringSet.png));
+    }
+
+    @NonNull
+    public static FileInfo fromVoiceFileInfo(@NonNull VoiceMessageInfo voiceMessageInfo, @NonNull File cacheDir) {
+        File file = new File(voiceMessageInfo.getPath());
+        int fileSize = Integer.parseInt(String.valueOf(file.length()/1024));
+        return new FileInfo(
+                voiceMessageInfo.getPath(),
+                fileSize,
+                voiceMessageInfo.getMimeType(),
+                "Voice message",
+                Uri.parse(voiceMessageInfo.getPath()),
+                0,
+                0,
+                null,
+                cacheDir);
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -211,7 +236,7 @@ final public class FileInfo {
                             Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailWidth);
                             Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailHeight);
                             Logger.d("==============================================================================");
-                            fileInfo = new FileInfo(path, size, mimeType, name, uri, thumbnailWidth, thumbnailHeight, thumbnailPath);
+                            fileInfo = new FileInfo(path, size, mimeType, name, uri, thumbnailWidth, thumbnailHeight, thumbnailPath, null);
                         }
                     }
                 }

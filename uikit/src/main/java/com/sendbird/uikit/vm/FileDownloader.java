@@ -16,6 +16,7 @@ import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.FileUtils;
+import com.sendbird.uikit.utils.MessageUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,29 +36,25 @@ public class FileDownloader {
     }
     private final Set<String> downloadingFileSet = new HashSet<>();
 
-    @NonNull
-    private File getDownloadFile(@NonNull Context context, @NonNull FileMessage message) {
-        String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
-        return FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
-    }
-
-    public boolean hasFile(@NonNull Context context, @NonNull FileMessage message) {
-        File file = getDownloadFile(context, message);
-        if (file.exists()) {
-            if (file.length() == message.getSize()) {
-                Logger.dev("__ return exist file");
-                return true;
-            }
-        }
-        return false;
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Nullable
+    public File downloadVoiceFileToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException, IOException {
+        final File destFile = FileUtils.getVoiceFile(context, message);
+        return downloadToCache(context, message, destFile);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException, IOException {
+        final File destFile = FileUtils.createCachedDirFile(context, System.currentTimeMillis() + "_" + message.getName());
+        return downloadToCache(context, message, destFile);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Nullable
+    public File downloadToCache(@NonNull Context context, @NonNull FileMessage message, @NonNull final File destFile) throws ExecutionException, InterruptedException, IOException {
         final String url = message.getUrl();
         final String plainUrl = message.getPlainUrl();
-        final File destFile = FileUtils.createDeletableFile(context, message.getName());
 
         if (isFileValid(destFile, message)) {
             Logger.dev("__ return exist file");
@@ -131,7 +128,11 @@ public class FileDownloader {
         TaskQueue.addTask(new JobResultTask<File>() {
             @Override
             public File call() throws ExecutionException, InterruptedException, IOException {
-                return FileDownloader.getInstance().downloadToCache(context, message);
+                if (MessageUtils.isVoiceMessage(message)) {
+                    return FileDownloader.getInstance().downloadVoiceFileToCache(context, message);
+                } else {
+                    return FileDownloader.getInstance().downloadToCache(context, message);
+                }
             }
 
             @Override

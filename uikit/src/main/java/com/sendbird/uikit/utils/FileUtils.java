@@ -265,6 +265,26 @@ public class FileUtils {
         return file;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @NonNull
+    public static File getChannelFileCacheDir(@NonNull Context context, @NonNull String channelUrl) {
+        File dir = context.getCacheDir();
+        File file = new File(dir, channelUrl);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return file;
+    }
+
+    @NonNull
+    public static File getVoiceFile(@NonNull Context context, @NonNull FileMessage message) {
+        return FileUtils.createChannelCacheFile(
+                context.getApplicationContext(),
+                message.getChannelUrl(),
+                MessageUtils.getVoiceFilename(message)
+        );
+    }
+
     @NonNull
     public static File createDeletableFile(@NonNull Context context, @NonNull String fileName) {
         return new File(getDeletableDir(context), fileName);
@@ -274,6 +294,11 @@ public class FileUtils {
     public static File createCachedDirFile(@NonNull Context context, @NonNull String fileName) {
         File dir = context.getCacheDir();
         return new File(dir, fileName);
+    }
+
+    @NonNull
+    public static File createChannelCacheFile(@NonNull Context context, @NonNull String channelUrl, @NonNull String fileName) {
+        return new File(getChannelFileCacheDir(context, channelUrl), fileName);
     }
 
     public static void copyFile(@NonNull File src, @NonNull File dst) throws IOException

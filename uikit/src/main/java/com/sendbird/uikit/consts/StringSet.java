@@ -79,16 +79,21 @@ public class StringSet {
     public final static String KEY_ERROR_TEXT_RES_ID = "KEY_ERROR_TEXT_RES_ID";
     public final static String KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER = "KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER";
     public final static String KEY_USE_REFRESH_LAYOUT = "KEY_USE_REFRESH_LAYOUT";
+    public final static String KEY_VOICE_MESSAGE_DURATION = "KEY_VOICE_MESSAGE_DURATION";
+    public final static String KEY_INTERNAL_MESSAGE_TYPE = "KEY_INTERNAL_MESSAGE_TYPE";
 
     public final static String sb_uikit = "sb_uikit";
+    public final static String sbu_type = "sbu_type";
     public final static String audio = "audio";
     public final static String image = "image";
     public final static String video = "video";
+    public final static String voice = "voice";
     public final static String jpg = "jpg";
     public final static String jpeg = "jpeg";
     public final static String gif = "gif";
     public final static String png = "png";
     public final static String webp = "webp";
+    public final static String m4a = "m4a";
     public final static String svg = "svg";
     public final static String size = "size";
     public final static String name = "name";
@@ -98,6 +103,7 @@ public class StringSet {
     public final static String mCursorDrawableRes = "mCursorDrawableRes";
     public final static String LABEL_COPY_TEXT = "COPY_TEXT";
     public final static String DEFAULT_CHANNEL_COVER_URL = "https://static.sendbird.com/sample/cover/cover_";
+    public final static String Voice_message = "Voice_message";
 
     // attributes list
     public final static String reactions = "reactions";

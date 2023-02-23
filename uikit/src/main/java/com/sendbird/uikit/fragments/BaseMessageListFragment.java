@@ -21,10 +21,12 @@ import androidx.appcompat.app.AlertDialog;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.channel.Role;
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Emoji;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.MessageMetaArray;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.message.UserMessage;
@@ -32,6 +34,7 @@ import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.android.user.Member;
+import com.sendbird.android.user.MutedState;
 import com.sendbird.android.user.Sender;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
@@ -50,13 +53,16 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnResultHandler;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
+import com.sendbird.uikit.internal.ui.messages.VoiceMessageView;
 import com.sendbird.uikit.internal.ui.reactions.EmojiListView;
 import com.sendbird.uikit.internal.ui.reactions.EmojiReactionUserListView;
+import com.sendbird.uikit.internal.ui.widgets.VoiceMessageInputView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.VoiceMessageInfo;
 import com.sendbird.uikit.modules.BaseMessageListModule;
 import com.sendbird.uikit.modules.components.BaseMessageListComponent;
 import com.sendbird.uikit.utils.ContextUtils;
@@ -219,6 +225,12 @@ abstract public class BaseMessageListFragment<
                         }
                     });
                     break;
+                case VIEW_TYPE_VOICE_MESSAGE_ME:
+                case VIEW_TYPE_VOICE_MESSAGE_OTHER:
+                    if (view instanceof VoiceMessageView) {
+                        ((VoiceMessageView) view).callOnPlayerButtonClick();
+                    }
+                    break;
                 default:
             }
         } else {
@@ -354,20 +366,22 @@ abstract public class BaseMessageListFragment<
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
         final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), showMoreButton);
         hideKeyboard();
-        final AlertDialog dialog = DialogUtils.showContentViewAndListDialog(requireContext(), emojiListView, actions, createMessageActionListener(message));
+        if (actions.length > 0 || emojiList.size() > 0) {
+            final AlertDialog dialog = DialogUtils.showContentViewAndListDialog(requireContext(), emojiListView, actions, createMessageActionListener(message));
 
-        emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
-            dialog.dismiss();
-            getViewModel().toggleReaction(view, message, emojiKey, e -> {
-                if (e != null)
-                    toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
+            emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
+                dialog.dismiss();
+                getViewModel().toggleReaction(view, message, emojiKey, e -> {
+                    if (e != null)
+                        toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
+                });
             });
-        });
 
-        emojiListView.setMoreButtonClickListener(v -> {
-            dialog.dismiss();
-            showEmojiListDialog(message);
-        });
+            emojiListView.setMoreButtonClickListener(v -> {
+                dialog.dismiss();
+                showEmojiListDialog(message);
+            });
+        }
     }
 
     private void showUserProfile(@NonNull User sender) {
@@ -603,6 +617,29 @@ abstract public class BaseMessageListFragment<
     }
 
     /**
+     * Call taking voice recorder.
+     *
+     * @since 3.4.0
+     */
+    public void takeVoiceRecorder() {
+        requestPermission(PermissionUtils.RECORD_AUDIO_PERMISSION, () -> {
+            if (getContext() == null) return;
+            final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_channel_message_input);
+            final VoiceMessageInputView recorderView = new VoiceMessageInputView(contextThemeWrapper);
+            hideKeyboard();
+            final AlertDialog dialog = DialogUtils.showContentDialog(contextThemeWrapper, recorderView);
+            dialog.setCanceledOnTouchOutside(false);
+            recorderView.setOnSendButtonClickListener((sendButton, position, voiceMessageInfo) -> {
+                sendVoiceFileMessage(voiceMessageInfo);
+                dialog.dismiss();
+            });
+            recorderView.setOnCancelButtonClickListener(cancelButton -> {
+                dialog.dismiss();
+            });
+        });
+    }
+
+    /**
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
@@ -678,13 +715,7 @@ abstract public class BaseMessageListFragment<
                 @Override
                 public void onResult(@NonNull FileInfo info) {
                     BaseMessageListFragment.this.mediaUri = null;
-                    final FileMessageCreateParams params = info.toFileParams();
-                    final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
-                    if (customHandler != null) {
-                        customHandler.onBeforeSendFileMessage(params);
-                    }
-                    onBeforeSendFileMessage(params);
-                    sendFileMessageInternal(info, params);
+                    sendFileMessage(info, info.toFileParams());
                 }
 
                 @Override
@@ -695,6 +726,55 @@ abstract public class BaseMessageListFragment<
                 }
             });
         }
+    }
+
+    /**
+     * Sends a voice message with given file information.
+     *
+     * @param info A voice file information
+     * @since 3.4.0
+     */
+    protected void sendVoiceFileMessage(@NonNull VoiceMessageInfo info) {
+        final GroupChannel channel = getViewModel().getChannel();
+        if (channel == null) return;
+        boolean isOperator = channel.getMyRole() == Role.OPERATOR;
+        boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
+        boolean isFrozen = channel.isFrozen() && !isOperator;
+        if (isMuted || isFrozen) {
+            if (isMuted) {
+                toastError(R.string.sb_text_error_user_muted);
+            } else {
+                toastError(R.string.sb_text_error_channel_frozen);
+            }
+            final File voiceFile = new File(info.getPath());
+            voiceFile.delete();
+            return;
+        }
+
+        if (getContext() != null) {
+            final FileInfo fileInfo = FileInfo.fromVoiceFileInfo(info,
+                    FileUtils.getChannelFileCacheDir(getContext(), getViewModel().getChannelUrl()));
+            final FileMessageCreateParams params = fileInfo.toFileParams();
+            final List<MessageMetaArray> metaArrays =  new ArrayList<>();
+            final List<String> duration = new ArrayList<>();
+            duration.add(String.valueOf(info.getDuration()));
+            metaArrays.add(new MessageMetaArray(StringSet.KEY_VOICE_MESSAGE_DURATION, duration));
+            final List<String> type = new ArrayList<>();
+            type.add(StringSet.voice + "/" + StringSet.m4a);
+            metaArrays.add(new MessageMetaArray(StringSet.KEY_INTERNAL_MESSAGE_TYPE, type));
+            params.setMetaArrays(metaArrays);
+            params.setFileName(StringSet.Voice_message + "." + StringSet.m4a);
+            sendFileMessage(fileInfo, params);
+        }
+    }
+
+    private void sendFileMessage(@NonNull FileInfo info, @NonNull FileMessageCreateParams params) {
+        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeSendFileMessage(params);
+        }
+        onBeforeSendFileMessage(params);
+        sendFileMessageInternal(info, params);
     }
 
     /**

@@ -164,7 +164,6 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                 PendingMessageRepository.getInstance().addFileInfo(pendingFileMessage, fileInfo);
             }
         }
-
     }
 
     /**

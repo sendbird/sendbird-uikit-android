@@ -16,7 +16,6 @@ import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.widgets.MessageInputView
 
-
 internal class MessageInputDialogWrapper @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -105,7 +104,8 @@ internal class MessageInputDialogWrapper @JvmOverloads constructor(
 
     private fun attachInputViewToDialog(messageInputView: MessageInputView) {
         dialogCustomView.addView(
-            messageInputView, ViewGroup.LayoutParams(
+            messageInputView,
+            ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
@@ -115,7 +115,8 @@ internal class MessageInputDialogWrapper @JvmOverloads constructor(
 
     private fun attachInputViewToDisplayView(messageInputView: MessageInputView) {
         binding.contentView.addView(
-            messageInputView, ViewGroup.LayoutParams(
+            messageInputView,
+            ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )

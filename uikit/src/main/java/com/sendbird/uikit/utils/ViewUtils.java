@@ -46,8 +46,10 @@ import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
 import com.sendbird.uikit.internal.ui.messages.OgtagView;
 import com.sendbird.uikit.internal.ui.messages.ThreadInfoView;
+import com.sendbird.uikit.internal.ui.messages.VoiceMessageView;
 import com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView;
 import com.sendbird.uikit.internal.ui.widgets.RoundCornerView;
+import com.sendbird.uikit.internal.ui.widgets.VoiceProgressView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MentionSpan;
@@ -57,6 +59,8 @@ import com.sendbird.uikit.vm.PendingMessageRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -478,5 +482,27 @@ public class ViewUtils {
             return;
         }
         threadInfoView.drawThreadInfo(message.getThreadInfo());
+    }
+
+    public static void drawVoiceMessage(@NonNull VoiceMessageView voiceMessageView, @NonNull FileMessage message) {
+        voiceMessageView.drawVoiceMessage(message);
+    }
+
+    public static void drawTimeline(@NonNull TextView timelineView, int milliseconds) {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
+        long sec = TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(minutes);
+        timelineView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, sec));
+    }
+
+    public static void drawVoicePlayerProgress(@NonNull VoiceProgressView progressView, int milliseconds, int duration) {
+        if (duration == 0) return;
+        int progress = milliseconds * 1000 / duration;
+        int prevProgress = progressView.getProgress();
+
+        if (prevProgress <= progress) {
+            progressView.drawProgressWithAnimation(progress);
+        } else {
+            progressView.drawProgress(progress);
+        }
     }
 }

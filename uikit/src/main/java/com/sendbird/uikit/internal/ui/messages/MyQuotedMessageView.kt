@@ -22,6 +22,7 @@ import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.UserUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
@@ -127,7 +128,15 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
                 binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_16).toFloat()
                 binding.tvQuoteReplyMessage.isSingleLine = true
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.MIDDLE
-                if (type.lowercase(Locale.getDefault()).contains(StringSet.gif)) {
+
+                if (MessageUtils.isVoiceMessage(parentMessage)) {
+                    val text = context.getString(R.string.sb_text_voice_message)
+                    binding.quoteReplyMessagePanel.visibility = VISIBLE
+                    binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, text) ?: text
+                    binding.tvQuoteReplyMessage.isSingleLine = true
+                    binding.tvQuoteReplyMessage.maxLines = 1
+                    binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
+                } else if (type.lowercase(Locale.getDefault()).contains(StringSet.gif)) {
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageDrawable(
                         DrawableUtils.createOvalIcon(

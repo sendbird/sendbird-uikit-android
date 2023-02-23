@@ -699,10 +699,10 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         messageListParams.setReverse(true);
         if (SendbirdUIKit.getReplyType() != ReplyType.NONE) {
             messageListParams.setReplyType(com.sendbird.android.message.ReplyType.ONLY_REPLY_TO_CHANNEL);
-            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), true, true));
+            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
         } else {
             messageListParams.setReplyType(com.sendbird.android.message.ReplyType.NONE);
-            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(false, Available.isSupportReaction(), false, true));
+            messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), false, true));
         }
         return messageListParams;
     }
