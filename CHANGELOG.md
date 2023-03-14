@@ -2,8 +2,8 @@
 ### v3.5.0 (Mar 14, 2023) with Chat SDK `v4.6.0`
 We’re excited to announce the launch of Sendbird Notifications v1.0! It’s a powerful solutions that makes it easier for brands to send marketing, transactional, and operational messages to their users. We’ve introduced a new type of channel called the notification channel that’s specifically designed for these kinds of messages. Just a heads up, you’ll need to use notification channels with Sendbird Notifications, otherwise things might not work properly.
 * Support Notification Channel
-  * Added FeedNotificationChannelActivity` and `FeedNotificationChannelFragment`
-  * Added ChatNotificationChannelActivity` and `ChatNotificationChannelFragment`
+  * Added `FeedNotificationChannelActivity` and `FeedNotificationChannelFragment`
+  * Added `ChatNotificationChannelActivity` and `ChatNotificationChannelFragment`
 
 ### v3.4.0 (Feb 23, 2023) with Chat SDK `v4.4.0`
 * Support voice message in GroupChannel
