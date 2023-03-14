@@ -18,6 +18,7 @@ import com.sendbird.android.channel.query.GroupChannelListQuery;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
+import com.sendbird.uikit.activities.ChatNotificationChannelActivity;
 import com.sendbird.uikit.activities.CreateChannelActivity;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
 import com.sendbird.uikit.consts.CreatableChannelType;
@@ -168,13 +169,18 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         }
     }
 
-    private void startChannelActivity(@NonNull String channelUrl) {
+    private void startChannelActivity(@NonNull GroupChannel channel) {
         if (isFragmentAlive()) {
-            startActivity(ChannelActivity.newIntent(requireContext(), channelUrl));
+            if (channel.isChatNotification()) {
+                startActivity(ChatNotificationChannelActivity.newIntent(requireContext(), channel.getUrl()));
+            } else {
+                startActivity(ChannelActivity.newIntent(requireContext(), channel.getUrl()));
+            }
         }
     }
 
     private void showListContextMenu(@NonNull GroupChannel channel) {
+        if (channel.isChatNotification()) return;
         DialogListItem pushOnOff = new DialogListItem(ChannelUtils.isChannelPushOff(channel) ? R.string.sb_text_channel_list_push_on : R.string.sb_text_channel_list_push_off);
         DialogListItem leaveChannel = new DialogListItem(R.string.sb_text_channel_list_leave);
         DialogListItem[] items = {pushOnOff, leaveChannel};
@@ -236,7 +242,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
             itemClickListener.onItemClick(view, position, channel);
             return;
         }
-        startChannelActivity(channel.getUrl());
+        startChannelActivity(channel);
     }
 
     /**

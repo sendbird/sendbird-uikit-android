@@ -22,7 +22,6 @@ public class StringSet {
     public final static String KEY_DELETABLE_MESSAGE = "KEY_DELETABLE_MESSAGE";
 
     public final static String KEY_USE_USER_PROFILE = "KEY_USE_USER_PROFILE";
-
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
     public final static String KEY_PARENT_MESSAGE = "KEY_PARENT_MESSAGE";
     public final static String KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED = "KEY_MESSAGE_INITIAL_ANIMATE";
@@ -135,4 +134,10 @@ public class StringSet {
     public final static String ThreadInfo = "ThreadInfo";
     public final static String ParentMessageMenu = "ParentMessageMenu";
     public final static String _AT = "@";
+
+    // template message syntax
+    public final static String web = "web";
+    public final static String custom = "custom";
+    public final static String uikit = "uikit";
+    public final static String delete = "delete";
 }

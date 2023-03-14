@@ -2,17 +2,15 @@ package com.sendbird.uikit.activities.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
-
 import java.util.List;
 
 /**
  * BaseMessageAdapter provides a binding from an app-specific data set to views that are displayed within a RecyclerView.
  *
  * @param <T> A class of data's type.
- * @param <VH> A class that extends MessageViewHolder that will be used by the adapter.
+ * @param <VH> A class that extends RecyclerView.ViewHolder that will be used by the adapter.
  */
-abstract class BaseMessageAdapter<T, VH extends MessageViewHolder> extends RecyclerView.Adapter<VH> {
+abstract class BaseMessageAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     /**
      * Returns item that located given position.
      *

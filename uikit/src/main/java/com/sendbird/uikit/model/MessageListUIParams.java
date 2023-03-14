@@ -185,13 +185,14 @@ final public class MessageListUIParams {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MessageListUIParams)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         MessageListUIParams that = (MessageListUIParams) o;
 
         if (useMessageGroupUI != that.useMessageGroupUI) return false;
         if (useReverseLayout != that.useReverseLayout) return false;
         if (useQuotedView != that.useQuotedView) return false;
+        if (useMessageReceipt != that.useMessageReceipt) return false;
         return messageGroupType == that.messageGroupType;
     }
 
@@ -201,6 +202,7 @@ final public class MessageListUIParams {
         result = 31 * result + (useMessageGroupUI ? 1 : 0);
         result = 31 * result + (useReverseLayout ? 1 : 0);
         result = 31 * result + (useQuotedView ? 1 : 0);
+        result = 31 * result + (useMessageReceipt ? 1 : 0);
         return result;
     }
 

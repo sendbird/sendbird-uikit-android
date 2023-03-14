@@ -83,4 +83,13 @@ public class MetricsUtils {
         display.getSize(point);
         return new Pair<>(point.x, point.y);
     }
+
+    @NonNull
+    public static int getDeviceWidth(@NonNull Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        return Math.min(point.x, point.y);
+    }
 }

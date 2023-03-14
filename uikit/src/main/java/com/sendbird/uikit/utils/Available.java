@@ -3,6 +3,7 @@ package com.sendbird.uikit.utils;
 import androidx.annotation.NonNull;
 
 import com.sendbird.android.AppInfo;
+import com.sendbird.android.NotificationInfo;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.consts.StringSet;
 
@@ -61,5 +62,23 @@ public class Available {
      */
     public static boolean isSupportMessageSearch() {
         return isAvailable(StringSet.message_search_v3);
+    }
+
+    /**
+     * Checks if the application support chat notification.
+     *
+     * @return <code>true</code> if the chat notification is available, <code>false</code> otherwise.
+     * @since 3.5.0
+     */
+    public static boolean isSupportChatNotification() {
+        boolean includeChatNotification = false;
+        final AppInfo appInfo = SendbirdChat.getAppInfo();
+        if (appInfo != null) {
+            final NotificationInfo notificationInfo = appInfo.getNotificationInfo();
+            if (notificationInfo != null) {
+                includeChatNotification = notificationInfo.isEnabled();
+            }
+        }
+        return includeChatNotification;
     }
 }

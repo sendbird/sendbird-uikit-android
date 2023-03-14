@@ -397,4 +397,32 @@ public class UIKitFragmentFactory {
                 .withArguments(args)
                 .build();
     }
+
+    /**
+     * Returns the FeedNotificationChannelFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link FeedNotificationChannelFragment}
+     * @since 3.5.0
+     */
+    @NonNull
+    public Fragment newFeedNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new FeedNotificationChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
+
+    /**
+     * Returns the ChatNotificationChannelFragment.
+     *
+     * @param args the arguments supplied when the fragment was instantiated.
+     * @return The {@link FeedNotificationChannelFragment}
+     * @since 3.5.0
+     */
+    @NonNull
+    public Fragment newChatNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
+        return new ChatNotificationChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .build();
+    }
 }

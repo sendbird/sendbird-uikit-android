@@ -16,6 +16,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.AppInfo;
 import com.sendbird.android.ConnectionState;
+import com.sendbird.android.NotificationInfo;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.handler.CompletionHandler;
@@ -33,6 +34,7 @@ import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
@@ -223,6 +225,7 @@ public class SendbirdUIKit {
         SendbirdUIKit.customUserListQueryHandler = null;
         defaultThemeMode = ThemeMode.Light;
         UIKitPrefs.clearAll();
+        NotificationChannelManager.dispose();
     }
 
     /**
@@ -269,6 +272,7 @@ public class SendbirdUIKit {
                 Logger.d(">> onInitSucceed()");
                 FileUtils.removeDeletableDir(context.getApplicationContext());
                 UIKitPrefs.init(context.getApplicationContext());
+                NotificationChannelManager.init(context.getApplicationContext());
                 EmojiManager.getInstance().init();
 
                 try {
@@ -528,11 +532,29 @@ public class SendbirdUIKit {
 
                     Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
 
-                    AppInfo appInfo = SendbirdChat.getAppInfo();
-                    if (appInfo != null &&
-                            appInfo.getUseReaction() &&
-                            appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
-                        updateEmojiList();
+                    final AppInfo appInfo = SendbirdChat.getAppInfo();
+                    if (appInfo != null) {
+                        if (appInfo.getUseReaction() &&
+                                appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
+                            updateEmojiList();
+                        }
+
+                        final NotificationInfo notificationInfo = appInfo.getNotificationInfo();
+                        if (notificationInfo != null && notificationInfo.isEnabled()) {
+                            // Even if the request fails, it should not affect the result of the connection request.
+                            try {
+                                // if the cache exists or no need to update, blocking is released right away
+                                final String latestToken = notificationInfo.getTemplateListToken();
+                                NotificationChannelManager.requestTemplateListBlocking(latestToken);
+                            } catch (Exception ignore) {
+                            }
+                            try {
+                                // if the cache exists or no need to update, blocking is released right away
+                                final long settingsUpdatedAt = notificationInfo.getSettingsUpdatedAt();
+                                NotificationChannelManager.requestNotificationChannelSettingBlocking(settingsUpdatedAt);
+                            } catch (Exception ignore) {
+                            }
+                        }
                     }
                 }
 

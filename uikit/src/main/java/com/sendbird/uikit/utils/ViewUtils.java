@@ -243,6 +243,15 @@ public class ViewUtils {
         tvNickname.setText(nickname);
     }
 
+    public static void drawNotificationProfile(@NonNull ImageView ivProfile, @Nullable BaseMessage message) {
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+        int backgroundTint = R.color.background_300;
+        int inset = ivProfile.getContext().getResources().getDimensionPixelSize(R.dimen.sb_size_6);
+        final Drawable profile = DrawableUtils.createOvalIconWithInset(ivProfile.getContext(),
+                backgroundTint, R.drawable.icon_channels, iconTint, inset);
+        ivProfile.setImageDrawable(profile);
+    }
+
     public static void drawProfile(@NonNull ImageView ivProfile, @Nullable BaseMessage message) {
         if (message == null) {
             return;

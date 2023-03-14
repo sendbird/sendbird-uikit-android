@@ -69,6 +69,7 @@ import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
+import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -172,7 +173,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     protected void onReady(@NonNull ReadyStatus status, @NonNull ChannelModule module, @NonNull ChannelViewModel viewModel) {
         shouldDismissLoadingDialog();
         final GroupChannel channel = viewModel.getChannel();
-        if (status == ReadyStatus.ERROR || channel == null) {
+        if (status == ReadyStatus.ERROR || channel == null || channel.isChatNotification()) {
             if (isFragmentAlive()) {
                 toastError(R.string.sb_text_error_get_channel);
                 shouldActivityFinish();
@@ -435,6 +436,10 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelFragment::onBindStatusComponent()");
+        statusComponent.setOnActionButtonClickListener(v -> {
+            statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
+            shouldAuthenticate();
+        });
         viewModel.getStatusFrame().observe(getViewLifecycleOwner(), statusComponent::notifyStatusChanged);
     }
 
@@ -511,6 +516,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     params.setMentionedUsers(mentionedUsers);
                 }
             }
+
             sendUserMessage(params);
         }
     }

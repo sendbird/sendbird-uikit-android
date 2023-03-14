@@ -11,6 +11,7 @@ import androidx.annotation.UiThread
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.message.FileMessage
 import com.sendbird.uikit.interfaces.OnResultHandler
+import com.sendbird.uikit.internal.extensions.runOnUiThread
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.ClearableScheduledExecutorService
 import com.sendbird.uikit.utils.FileUtils
@@ -198,12 +199,6 @@ internal class VoicePlayer(val key: String) {
                 }
             }
         }, 0, 100, TimeUnit.MILLISECONDS)
-    }
-
-    private fun <T> T?.runOnUiThread(block: (T) -> Unit) {
-        if (this != null) {
-            uiThreadHandler.post { block(this) }
-        }
     }
 
     @Synchronized

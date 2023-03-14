@@ -155,6 +155,7 @@
 
     <string name="text_tab_channels">채널</string>
     <string name="text_tab_settings">설정</string>
+    <string name="text_tab_notifications">알림채널</string>
     <string name="text_tab_badge_max_count">99+</string>
 
     <string name="text_create_community">커뮤니티 만들기</string>

@@ -26,6 +26,8 @@
         <attr name="sb_module_open_channel_list" format="reference"/>
         <attr name="sb_module_create_open_channel" format="reference"/>
         <attr name="sb_module_message_thread" format="reference"/>
+        <attr name="sb_module_feed_notification_channel" format="reference"/>
+        <attr name="sb_module_chat_notification_channel" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="Components">
@@ -114,6 +116,8 @@
         <attr name="sb_widget_timeline_message" format="reference"/>
         <attr name="sb_widget_emoji_message" format="reference"/>
         <attr name="sb_widget_parent_message_info" format="reference"/>
+        <attr name="sb_widget_feed_notification" format="reference"/>
+        <attr name="sb_widget_chat_notification" format="reference"/>
 
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
@@ -302,6 +306,21 @@
         <attr name="sb_admin_message_background" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="MessageView.FeedNotification">
+        <attr name="sb_feed_notification_background" format="reference"/>
+        <attr name="sb_feed_notification_radius" format="dimension"/>
+        <attr name="sb_feed_notification_unread_indicator_color" format="reference"/>
+        <attr name="sb_feed_notification_category_text_appearance" format="reference"/>
+        <attr name="sb_feed_notification_sent_at_text_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageView.ChatNotification">
+        <attr name="sb_chat_notification_background" format="reference"/>
+        <attr name="sb_chat_notification_radius" format="dimension"/>
+        <attr name="sb_chat_notification_category_text_appearance" format="reference"/>
+        <attr name="sb_chat_notification_sent_at_text_appearance" format="reference"/>
+    </declare-styleable>
+
     <declare-styleable name="Emoji">
         <attr name="sb_emoji_background" format="reference"/>
         <attr name="sb_emoji_more_button_src" format="reference"/>
@@ -361,6 +380,12 @@
 
         <attr name="sb_recycler_view_divide_line_color" />
         <attr name="sb_recycler_view_divide_line_height" />
+    </declare-styleable>
+
+    <declare-styleable name="NotificationListView">
+        <attr name="sb_notification_recyclerview_background" format="reference"/>
+        <attr name="sb_notification_recyclerview_tooltip_background" format="reference"/>
+        <attr name="sb_notification_recyclerview_tooltip_text_appearance" format="reference"/>
     </declare-styleable>
 
     <!-- Message Input -->

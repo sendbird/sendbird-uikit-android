@@ -47,6 +47,10 @@
     <string name="sb_text_channel_reaction_count_max">99</string>
     <string name="sb_text_channel_message_empty">No messages</string>
     <string name="sb_text_channel_message_unavailable">Message unavailable</string>
+    <string name="sb_text_notification_fallback_title">(Template error)</string>
+    <string name="sb_text_notification_fallback_description">Can\'t read this notification.</string>
+    <string name="sb_text_notification_channel_message_empty">No notifications</string>
+    <string name="sb_text_notification_channel_list_error">Something went wrong.</string>
 
     <!-- Channel Settings -->
     <string name="sb_text_channel_settings_moderations">Moderations</string>

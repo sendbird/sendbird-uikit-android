@@ -7,8 +7,11 @@ import android.view.View
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageComponentBinding
+import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.utils.DateUtils
+import com.sendbird.uikit.utils.DrawableUtils
 
 internal class TimelineMessageView @JvmOverloads internal constructor(
     context: Context,
@@ -44,5 +47,21 @@ internal class TimelineMessageView @JvmOverloads internal constructor(
 
     fun drawTimeline(message: BaseMessage) {
         binding.tvTimeline.text = DateUtils.formatTimelineMessage(message.createdAt)
+    }
+
+    fun drawTimeline(message: BaseMessage, uiConfig: NotificationConfig?) {
+        binding.tvTimeline.run {
+            text = DateUtils.formatTimelineMessage(message.createdAt)
+            uiConfig?.let {
+                val themeMode = it.themeMode
+                it.theme.listTheme.timeline.apply {
+                    DrawableUtils.createRoundedShapeDrawable(
+                        backgroundColor.getColor(themeMode),
+                        resources.intToDp(10).toFloat()
+                    ).apply { background = this }
+                    setTextColor(textColor.getColor(themeMode))
+                }
+            }
+        }
     }
 }

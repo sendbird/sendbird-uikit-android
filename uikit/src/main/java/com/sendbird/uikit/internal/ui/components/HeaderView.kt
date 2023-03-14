@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
 import androidx.annotation.DrawableRes
 import com.sendbird.uikit.R
@@ -67,6 +68,14 @@ internal class HeaderView @JvmOverloads constructor(
 
     fun setUseRightButton(useRightButton: Boolean) {
         binding.rightButton.visibility = if (useRightButton) VISIBLE else GONE
+    }
+
+    fun setDividerColor(@ColorInt color: Int) {
+        binding.elevationView.setBackgroundColor(color)
+    }
+
+    override fun setBackgroundColor(@ColorInt color: Int) {
+        binding.getRoot().setBackgroundColor(color)
     }
 
     val descriptionTextView: TextView

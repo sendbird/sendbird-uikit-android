@@ -8,10 +8,4 @@
 
     <solid
         android:color="@color/overlay_02"/>
-
-    <padding
-        android:left="@dimen/sb_size_10"
-        android:right="@dimen/sb_size_10"
-        android:top="@dimen/sb_size_4"
-        android:bottom="@dimen/sb_size_4"/>
 </shape>

@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.sendbird.android.message.FileMessage
-import com.sendbird.android.message.SendingStatus
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewVoiceMessageBinding
 import com.sendbird.uikit.internal.extensions.setAppearance

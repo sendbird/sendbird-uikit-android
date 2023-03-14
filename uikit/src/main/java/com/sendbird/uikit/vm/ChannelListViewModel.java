@@ -20,6 +20,7 @@ import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.tasks.JobTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.utils.Available;
 
 import java.util.Collections;
 import java.util.List;
@@ -99,6 +100,7 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
     private void notifyChannelChanged() {
         if (collection == null) return;
         List<GroupChannel> newList = collection.getChannelList();
+        Logger.d(">> ChannelListViewModel::notifyDataSetChanged(), size = %s", newList.size());
         channelList.postValue(newList);
     }
 
@@ -248,6 +250,8 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
      */
     @NonNull
     protected GroupChannelListQuery createGroupChannelListQuery() {
-        return GroupChannel.createMyGroupChannelListQuery(new GroupChannelListQueryParams());
+        final GroupChannelListQueryParams params = new GroupChannelListQueryParams();
+        params.setIncludeChatNotification(Available.isSupportChatNotification());
+        return GroupChannel.createMyGroupChannelListQuery(params);
     }
 }

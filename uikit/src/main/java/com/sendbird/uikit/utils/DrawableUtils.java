@@ -11,11 +11,13 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.sendbird.uikit.R;
@@ -73,6 +75,13 @@ public class DrawableUtils {
     }
 
     @NonNull
+    public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int color) {
+        final ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        drawable.getPaint().setColor(ContextCompat.getColor(context, color));
+        return drawable;
+    }
+
+    @NonNull
     public static Drawable createOvalIcon(@NonNull Context context, @ColorRes int backgroundColor,
                                           @DrawableRes int iconRes, @ColorRes int iconTint) {
         return createOvalIcon(context, backgroundColor, 255, iconRes, iconTint);
@@ -96,11 +105,28 @@ public class DrawableUtils {
     }
 
     @NonNull
+    public static Drawable createOvalIconWithInset(@NonNull Context context, @ColorRes int background, @DrawableRes int iconRes, @ColorRes int iconTint, int inset) {
+        final ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+        drawable.getPaint().setColor(ContextCompat.getColor(context, background));
+        final Drawable icon = setTintList(context, iconRes, iconTint);
+        return createLayerIcon(drawable, icon, inset);
+    }
+
+
+    @NonNull
     public static Drawable createLayerIcon(@Nullable Drawable background, @Nullable Drawable icon, int inset) {
         Drawable[] layer = {background, icon};
         LayerDrawable layerDrawable = new LayerDrawable(layer);
         layerDrawable.setLayerInset(1, inset, inset, inset, inset);
         return layerDrawable;
+    }
+
+    @NonNull
+    public static Drawable createRoundedShapeDrawable(@ColorInt int color, float radius) {
+        final GradientDrawable shape =  new GradientDrawable();
+        shape.setCornerRadius(radius);
+        shape.setColor(color);
+        return shape;
     }
 
     @Nullable

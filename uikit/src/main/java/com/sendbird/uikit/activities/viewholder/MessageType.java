@@ -62,6 +62,18 @@ public enum MessageType {
      */
     VIEW_TYPE_PARENT_MESSAGE_INFO(12),
     /**
+     * Type of chat notification channel's message sent by the administrator.
+     *
+     * @since 3.5.0
+     */
+    VIEW_TYPE_CHAT_NOTIFICATION(13),
+    /**
+     * Type of feed notification channel's message sent by the administrator.
+     *
+     * @since 3.5.0
+     */
+    VIEW_TYPE_FEED_NOTIFICATION(14),
+    /**
      * Type of voice message sent by the current user.
      *
      * @since 3.4.0

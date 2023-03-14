@@ -41,7 +41,7 @@ public class HeaderComponent {
         this.params = new Params();
     }
 
-    HeaderComponent(@NonNull Params params) {
+    public HeaderComponent(@NonNull Params params) {
         this.params = params;
     }
 

@@ -1,14 +1,11 @@
 package com.sendbird.uikit.modules.components;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
@@ -49,14 +46,12 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
         return (Params) super.getParams();
     }
 
-    @NonNull
     @Override
-    public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
-        final View view = super.onCreateView(context, inflater, parent, args);
+    public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (getAdapter() == null) {
-            setAdapter(new MessageListAdapter(null, getParams().shouldUseGroupUI()));
+            setAdapter(new MessageListAdapter(channel, getParams().shouldUseGroupUI()));
         }
-        return view;
+        super.notifyChannelChanged(channel);
     }
 
     @Override

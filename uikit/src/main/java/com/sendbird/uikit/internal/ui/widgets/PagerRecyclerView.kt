@@ -60,6 +60,10 @@ internal class PagerRecyclerView @JvmOverloads constructor(
         return layoutManager?.findLastVisibleItemPosition() ?: 0
     }
 
+    fun isReverseLayout(): Boolean {
+        return layoutManager?.reverseLayout ?: false
+    }
+
     fun setOnScrollEndDetectListener(scrollEndDetectListener: OnScrollEndDetectListener?) {
         onScrollListener.scrollEndDetectListener = scrollEndDetectListener
     }
@@ -77,6 +81,10 @@ internal class PagerRecyclerView @JvmOverloads constructor(
     }
 
     fun getStackFromEnd(): Boolean = layoutManager?.stackFromEnd ?: false
+
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
 
     private class OnScrollListener constructor(var layoutManager: LinearLayoutManager?) :
         RecyclerView.OnScrollListener() {

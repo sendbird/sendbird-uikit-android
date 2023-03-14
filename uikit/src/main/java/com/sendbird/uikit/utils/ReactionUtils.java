@@ -10,7 +10,7 @@ public class ReactionUtils {
     public static boolean useReaction(@Nullable BaseChannel channel) {
         if (channel instanceof GroupChannel) {
             GroupChannel groupChannel = (GroupChannel) channel;
-            if (groupChannel.isSuper() || groupChannel.isBroadcast()) {
+            if (groupChannel.isSuper() || groupChannel.isBroadcast() || groupChannel.isChatNotification()) {
                 return false;
             } else {
                 return Available.isSupportReaction();

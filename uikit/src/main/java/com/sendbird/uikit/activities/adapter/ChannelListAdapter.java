@@ -257,7 +257,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             this.createdAt = channel.getCreatedAt();
             this.memberCount = channel.getMemberCount();
             this.lastMessage = channel.getLastMessage();
-            this.channelName = channel.getName() != null ? channel.getName() : "";
+            this.channelName = channel.getName();
             this.coverImageUrl = channel.getCoverUrl();
             this.pushTriggerOption = channel.getMyPushTriggerOption();
             this.unreadMessageCount = channel.getUnreadMessageCount();
@@ -268,8 +268,10 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
                 this.typingMembers = channel.getTypingUsers();
             }
             if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
-                this.unReadMemberCount = channel.getUnreadMemberCount(channel.getLastMessage());
-                this.unDeliveredMemberCount = channel.getUndeliveredMemberCount(channel.getLastMessage());
+                if (channel.getLastMessage() != null) {
+                    this.unReadMemberCount = channel.getUnreadMemberCount(channel.getLastMessage());
+                    this.unDeliveredMemberCount = channel.getUndeliveredMemberCount(channel.getLastMessage());
+                }
             }
         }
 
