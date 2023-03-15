@@ -3,6 +3,7 @@ package com.sendbird.uikit.fragments;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +86,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     @Override
     public void onResume() {
         super.onResume();
+        if (getActivity() == null || getContext() == null) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.background_700));
         }
@@ -164,6 +166,8 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
     }
 
     protected void onDrawPage() {
+        if (!isActive()) return;
+        final Context context = getContext();
         Logger.d("PhotoViewFragment::onDrawPage() - nickname:" + senderNickname);
         final ImageView ivPhoto = binding.ivPhoto;
         final ImageView ivDelete = binding.ivDelete;
@@ -174,7 +178,7 @@ public class PhotoViewFragment extends BaseFragment implements PermissionFragmen
         final String url = this.url;
 
         tvTitle.setText(senderNickname);
-        tvCreatedAt.setText(DateUtils.formatTime(getContext(), this.createdAt));
+        tvCreatedAt.setText(DateUtils.formatTime(context, this.createdAt));
         loading.setVisibility(View.VISIBLE);
 
         if (mimeType.toLowerCase().contains(StringSet.gif)) {
