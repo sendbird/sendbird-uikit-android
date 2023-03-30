@@ -24,10 +24,10 @@ import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationChannelModule;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationHeaderComponent;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationListComponent;
+import com.sendbird.uikit.internal.ui.notifications.NotificationStatusComponent;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.Action;
 import com.sendbird.uikit.model.ReadyStatus;
-import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChatNotificationChannelViewModel;
@@ -153,14 +153,14 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     }
 
     /**
-     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChatNotificationChannelModule, ChatNotificationChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the NotificationStatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, ChatNotificationChannelModule, ChatNotificationChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
      * @since 3.5.0
      */
-    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ChatNotificationChannelViewModel viewModel, @Nullable GroupChannel channel) {
+    protected void onBindStatusComponent(@NonNull NotificationStatusComponent statusComponent, @NonNull ChatNotificationChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChatNotificationChannelFragment::onBindStatusComponent()");
         statusComponent.setOnActionButtonClickListener(v -> {
             statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);

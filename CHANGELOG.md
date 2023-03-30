@@ -1,4 +1,10 @@
 # Changelog
+### v3.5.1 (Mar 30, 2023) with Chat SDK `v4.6.0`
+* Extended the maximum recording time of voice message to 10 minutes.
+* Notifications
+  * Fixed bug that the theme is not applying when the notifications are empty
+* Improved stability
+
 ### v3.5.0 (Mar 14, 2023) with Chat SDK `v4.6.0`
 We’re excited to announce the launch of Sendbird Notifications v1.0! It’s a powerful solutions that makes it easier for brands to send marketing, transactional, and operational messages to their users. We’ve introduced a new type of channel called the notification channel that’s specifically designed for these kinds of messages. Just a heads up, you’ll need to use notification channels with Sendbird Notifications, otherwise things might not work properly.
 * Support Notification Channel

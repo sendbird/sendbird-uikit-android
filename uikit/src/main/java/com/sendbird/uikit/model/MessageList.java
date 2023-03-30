@@ -147,7 +147,7 @@ public class MessageList {
             for (BaseMessage message : messages) {
                 if (message.getMessageId() == msgId) {
                     removedMessage = message;
-                    messages.remove(message);
+                    delete(message);
                     break;
                 }
             }

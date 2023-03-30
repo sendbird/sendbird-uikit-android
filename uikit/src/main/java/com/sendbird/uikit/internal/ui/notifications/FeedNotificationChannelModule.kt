@@ -16,7 +16,6 @@ import com.sendbird.uikit.SendbirdUIKit.ThemeMode
 import com.sendbird.uikit.interfaces.LoadingDialogHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.modules.BaseModule
-import com.sendbird.uikit.modules.components.StatusComponent
 
 /**
  * A module for notification channel.
@@ -55,7 +54,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * @return The status component of this module
      * @since 3.5.0
      */
-    var statusComponent: StatusComponent
+    var statusComponent: NotificationStatusComponent
         private set
 
     /**
@@ -73,7 +72,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
             params.setUseLeftButton(false)
         }
         notificationListComponent = FeedNotificationListComponent(uiConfig = uiConfig)
-        statusComponent = StatusComponent()
+        statusComponent = NotificationStatusComponent(uiConfig)
     }
 
     override fun onCreateView(context: Context, inflater: LayoutInflater, args: Bundle?): View {

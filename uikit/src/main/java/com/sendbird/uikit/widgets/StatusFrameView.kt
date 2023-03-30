@@ -57,6 +57,14 @@ class StatusFrameView @JvmOverloads constructor(
         binding.actionPanel.setOnClickListener(listener)
     }
 
+    override fun setBackgroundColor(color: Int) {
+        binding.frameParentPanel.setBackgroundColor(color)
+    }
+
+    override fun setBackground(drawable: Drawable) {
+        binding.frameParentPanel.background = drawable
+    }
+
     private fun setAlert(text: String?, icon: Drawable?, iconTint: ColorStateList?) {
         this.visibility = VISIBLE
         binding.ivAlertIcon.setImageDrawable(DrawableUtils.setTintList(icon, iconTint))

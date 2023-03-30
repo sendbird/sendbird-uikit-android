@@ -145,6 +145,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
 
     // It shouldn't exist other than a function that is always called.
     void onAuthenticateComplete(@NonNull ReadyStatus status, @NonNull MT module) {
+        if (!isFragmentAlive()) return;
         onBeforeReady(status, module, viewModel);
         onReady(status, module, viewModel);
     }

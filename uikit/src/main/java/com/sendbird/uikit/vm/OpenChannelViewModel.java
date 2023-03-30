@@ -153,7 +153,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                 if (messageListParams == null || !messageListParams.belongsTo(baseMessage)) return;
 
                 if (isCurrentChannel(baseChannel.getUrl())) {
-                    Logger.i(">> ChannelFragnemt::onMessageReceived(%s)", baseMessage.getMessageId());
+                    Logger.i(">> OpenChannelViewModel::onMessageReceived(%s)", baseMessage.getMessageId());
                     messageCollection.add(baseMessage);
                     notifyDataSetChanged();
                 }
@@ -777,11 +777,6 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
                     if (handler != null) handler.onComplete(e);
                     return;
                 }
-
-                Logger.i("++ deleted message : %s", message);
-                messageDeleted.postValue(message.getMessageId());
-                messageCollection.delete(message);
-                notifyDataSetChanged();
             });
         } else {
             PendingMessageRepository.getInstance().removePendingMessage(message.getChannelUrl(), message);

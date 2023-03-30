@@ -39,8 +39,9 @@ dependencies {
 //    implementation project(":uikit")
 	implementation "com.sendbird.sdk:uikit:$UIKIT_VERSION"
 
+    implementation platform('com.google.firebase:firebase-bom:31.3.0')
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation 'com.google.firebase:firebase-messaging:23.0.3'
+    implementation 'com.google.firebase:firebase-messaging'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'

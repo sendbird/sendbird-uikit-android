@@ -32,11 +32,7 @@ internal class VoiceRecorder(
 
     interface OnProgressUpdateListener {
         @UiThread
-        fun onProgressUpdated(status: Status, milliseconds: Int, amplitude: Int)
-    }
-
-    companion object {
-        const val maxDurationMillis = 60000
+        fun onProgressUpdated(status: Status, milliseconds: Int, maxDurationMillis: Int)
     }
 
     private val recorder: MediaRecorder
@@ -49,6 +45,8 @@ internal class VoiceRecorder(
     private var isRunningOnTest: Boolean = false
     private val progressExecutor by lazy { ClearableScheduledExecutorService() }
     private val uiThreadHandler by lazy { Handler(Looper.getMainLooper()) }
+
+    private val maxDurationMillis = TimeUnit.MINUTES.toMillis(10).toInt()
 
     init {
         recorder = createRecorder(context)

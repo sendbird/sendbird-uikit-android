@@ -247,13 +247,17 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
                 }
             }
             onRecorderProgressUpdateListener = object : VoiceRecorder.OnProgressUpdateListener {
-                override fun onProgressUpdated(status: VoiceRecorder.Status, milliseconds: Int, amplitude: Int) {
+                override fun onProgressUpdated(
+                    status: VoiceRecorder.Status,
+                    milliseconds: Int,
+                    maxDurationMillis: Int
+                ) {
                     if (status == VoiceRecorder.Status.COMPLETED) return
                     if (milliseconds >= 1000) {
                         binding.ibtnSend.isEnabled = true
                     }
                     ViewUtils.drawTimeline(binding.tvTimeline, milliseconds)
-                    ViewUtils.drawVoicePlayerProgress(binding.progress, milliseconds, VoiceRecorder.maxDurationMillis)
+                    ViewUtils.drawVoicePlayerProgress(binding.progress, milliseconds, maxDurationMillis)
                 }
             }
             recorder = VoiceRecorder(context, onRecorderUpdateListener, onRecorderProgressUpdateListener)

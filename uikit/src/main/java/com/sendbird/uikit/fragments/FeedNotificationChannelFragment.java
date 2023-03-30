@@ -23,6 +23,7 @@ import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationChannelModule;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationHeaderComponent;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationListComponent;
+import com.sendbird.uikit.internal.ui.notifications.NotificationStatusComponent;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.Action;
 import com.sendbird.uikit.model.ReadyStatus;
@@ -150,14 +151,14 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
     }
 
     /**
-     * Called to bind events to the StatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, FeedNotificationChannelModule, FeedNotificationChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
+     * Called to bind events to the NotificationStatusComponent. This is called from {@link #onBeforeReady(ReadyStatus, FeedNotificationChannelModule, FeedNotificationChannelViewModel)}  regardless of the value of {@link ReadyStatus}.
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code FeedChannel} that contains the data needed for this fragment
      * @since 3.5.0
      */
-    protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull FeedNotificationChannelViewModel viewModel, @Nullable FeedChannel channel) {
+    protected void onBindStatusComponent(@NonNull NotificationStatusComponent statusComponent, @NonNull FeedNotificationChannelViewModel viewModel, @Nullable FeedChannel channel) {
         Logger.d(">> FeedNotificationChannelFragment::onBindStatusComponent()");
         statusComponent.setOnActionButtonClickListener(v -> {
             statusComponent.notifyStatusChanged(StatusFrameView.Status.LOADING);
