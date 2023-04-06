@@ -409,6 +409,7 @@ public class UIKitFragmentFactory {
     public Fragment newFeedNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
         return new FeedNotificationChannelFragment.Builder(channelUrl)
                 .withArguments(args)
+                .setUseHeaderLeftButton(true)
                 .build();
     }
 
@@ -423,6 +424,7 @@ public class UIKitFragmentFactory {
     public Fragment newChatNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
         return new ChatNotificationChannelFragment.Builder(channelUrl)
                 .withArguments(args)
+                .setUseHeaderLeftButton(true)
                 .build();
     }
 }

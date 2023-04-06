@@ -1,4 +1,8 @@
 # Changelog
+### v3.5.2 (Apr 6, 2023) with Chat SDK `v4.6.1`
+* Added `setUseHeaderLeftButton(boolean)` in `FeedNotificationChannelFragment.Builder`
+* Added `setUseHeaderLeftButton(boolean)` in `ChatNotificationChannelFragment.Builder`
+
 ### v3.5.1 (Mar 30, 2023) with Chat SDK `v4.6.0`
 * Extended the maximum recording time of voice message to 10 minutes.
 * Notifications

@@ -363,6 +363,20 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
         }
 
         /**
+         * Sets whether the left button of the header is used.
+         *
+         * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
+         *                            <code>false</code> otherwise.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.5.2
+         */
+        @NonNull
+        public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
+            bundle.putBoolean(StringSet.KEY_USE_HEADER_LEFT_BUTTON, useHeaderLeftButton);
+            return this;
+        }
+
+        /**
          * Sets the custom fragment. It must inherit {@link FeedNotificationChannelFragment}.
          *
          * @param fragment custom fragment.
