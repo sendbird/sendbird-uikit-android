@@ -13,23 +13,15 @@ import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.loadCircle
 import com.sendbird.uikit.internal.extensions.setAppearance
-import com.sendbird.uikit.internal.extensions.toStringMap
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
-import com.sendbird.uikit.internal.model.template_messages.KeySet
-import com.sendbird.uikit.internal.model.template_messages.Params
-import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator
-import com.sendbird.uikit.internal.singleton.MessageTemplateParser
-import com.sendbird.uikit.internal.singleton.NotificationChannelManager
-import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.DateUtils
-import org.json.JSONObject
 
 internal class ChatNotificationView @JvmOverloads internal constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = R.attr.sb_widget_chat_notification
-) : BaseMessageView(context, attrs, defStyle) {
+) : BaseNotificationView(context, attrs, defStyle) {
     override val binding: SbViewChatNotificationComponentBinding
     override val layout: View
         get() = binding.root
@@ -100,50 +92,11 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
             }
         }
 
-        binding.contentPanel.removeAllViews()
-        binding.contentPanel.addView(
-            makeTemplateView(
-                message,
-                config?.themeMode ?: NotificationThemeMode.Default,
-                onNotificationTemplateActionHandler
-            )
+        makeTemplateView(
+            message,
+            binding.contentPanel,
+            config?.themeMode ?: NotificationThemeMode.Default,
+            onNotificationTemplateActionHandler
         )
-    }
-
-    @Throws(Throwable::class)
-    private fun makeTemplateView(
-        message: BaseMessage,
-        themeMode: NotificationThemeMode,
-        onNotificationTemplateActionHandler: OnNotificationTemplateActionHandler? = null
-    ): View {
-        return try {
-            val subData: String = message.extendedMessage[KeySet.sub_data]
-                ?: throw RuntimeException("this message must have template key.")
-            val json = JSONObject(subData)
-            val templateKey = json.getString(KeySet.template_key)
-            var templateVariables: Map<String, String> = mapOf()
-            if (json.has(KeySet.template_variables)) {
-                templateVariables = json.getJSONObject(KeySet.template_variables).toStringMap()
-            }
-            val template = NotificationChannelManager.getTemplate(templateKey, templateVariables, themeMode)
-            template?.let { jsonTemplate ->
-                val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
-                TemplateViewGenerator.inflateViews(context, viewParams) { view, params ->
-                    params.action?.register(view, onNotificationTemplateActionHandler, message)
-                }
-            } ?: throw RuntimeException("binding color variables or data variables are failed")
-        } catch (e: Throwable) {
-            Logger.w("${e.printStackTrace()}")
-            MessageTemplateParser.createDefaultViewParam(
-                message,
-                context.getString(R.string.sb_text_notification_fallback_title),
-                context.getString(R.string.sb_text_notification_fallback_description),
-                themeMode
-            ).run {
-                TemplateViewGenerator.inflateViews(context, this) { view, params ->
-                    params.action?.register(view, onNotificationTemplateActionHandler, message)
-                }
-            }
-        }
     }
 }

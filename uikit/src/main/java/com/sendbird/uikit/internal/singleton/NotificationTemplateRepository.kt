@@ -5,7 +5,6 @@ import androidx.annotation.WorkerThread
 import com.sendbird.android.SendbirdChat
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.params.NotificationTemplateListParams
-import com.sendbird.uikit.internal.interfaces.Disposable
 import com.sendbird.uikit.internal.model.notifications.NotificationTemplate
 import com.sendbird.uikit.internal.model.notifications.NotificationTemplateList
 import com.sendbird.uikit.log.Logger
@@ -17,7 +16,7 @@ private const val TEMPLATE_KEY_PREFIX = "SB_TEMPLATE_"
 private const val LAST_UPDATED_TEMPLATE_LIST_TOKEN = "LAST_UPDATED_TEMPLATE_LIST_AT"
 private const val PREFERENCE_FILE_NAME = "com.sendbird.notifications.templates"
 
-internal class NotificationTemplateRepository(context: Context) : Disposable {
+internal class NotificationTemplateRepository(context: Context) {
     private val templateCache: MutableMap<String, NotificationTemplate> = ConcurrentHashMap()
     private val preferences = BaseSharedPreference(context.applicationContext, PREFERENCE_FILE_NAME)
     private var lastCacheToken: String = ""
@@ -121,7 +120,7 @@ internal class NotificationTemplateRepository(context: Context) : Disposable {
         return result.get().also { saveToCache(it) }
     }
 
-    override fun dispose() {
+    fun clearAll() {
         lastCacheToken = ""
         templateCache.clear()
         preferences.clearAll()

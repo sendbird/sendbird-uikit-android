@@ -1,7 +1,7 @@
 package com.sendbird.uikit.internal.model.template_messages
 
-import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
@@ -39,7 +39,7 @@ internal data class ImageStyle(
 ) {
     fun apply(view: ImageView): ImageStyle {
         contentMode?.let { view.scaleType = it.scaleType }
-        tintColor?.let { view.imageTintList = ColorStateList.valueOf(it) }
+        tintColor?.let { view.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
         return this
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import com.sendbird.android.SendbirdChat
 import com.sendbird.android.exception.SendbirdException
-import com.sendbird.uikit.internal.interfaces.Disposable
 import com.sendbird.uikit.internal.model.notifications.NotificationChannelSettings
 import com.sendbird.uikit.log.Logger
 import java.util.concurrent.CountDownLatch
@@ -14,7 +13,7 @@ private const val NOTIFICATION_CHANNEL_SETTINGS = "GLOBAL_NOTIFICATION_CHANNEL_T
 private const val LAST_UPDATED_CHANNEL_SETTINGS_AT = "LAST_UPDATED_CHANNEL_SETTINGS_AT"
 private const val PREFERENCE_FILE_NAME = "com.sendbird.notifications.channel_settings"
 
-internal class NotificationChannelRepository(context: Context) : Disposable {
+internal class NotificationChannelRepository(context: Context) {
     private val preferences = BaseSharedPreference(context.applicationContext, PREFERENCE_FILE_NAME)
 
     private var currentUpdatedAt: Long = 0L
@@ -76,7 +75,8 @@ internal class NotificationChannelRepository(context: Context) : Disposable {
         }
     }
 
-    override fun dispose() {
+    fun clearAll() {
+        Logger.d("NotificationChannelRepository::clearAll()")
         currentUpdatedAt = 0L
         settings = null
         preferences.clearAll()

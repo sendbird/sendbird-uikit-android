@@ -225,7 +225,7 @@ public class SendbirdUIKit {
         SendbirdUIKit.customUserListQueryHandler = null;
         defaultThemeMode = ThemeMode.Light;
         UIKitPrefs.clearAll();
-        NotificationChannelManager.dispose();
+        NotificationChannelManager.clearAll();
     }
 
     /**

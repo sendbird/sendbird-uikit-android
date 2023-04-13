@@ -216,6 +216,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         messageListComponent.setOnMessageProfileLongClickListener(this::onMessageProfileLongClicked);
         messageListComponent.setOnMessageProfileClickListener(this::onMessageProfileClicked);
         messageListComponent.setOnMessageLongClickListener(this::onMessageLongClicked);
+        messageListComponent.setOnMessageMentionClickListener(this::onMessageMentionClicked);
         messageListComponent.setOnEmojiReactionClickListener(emojiReactionClickListener != null ? emojiReactionClickListener : (view, position, message, reactionKey) -> toggleReaction(view, message, reactionKey));
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
@@ -595,6 +596,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         private OnInputModeChangedListener inputModeChangedListener;
         @Nullable
         private View.OnClickListener voiceRecorderButtonClickListener;
+        @Nullable
+        private OnItemClickListener<User> messageMentionClickListener;
         @Nullable
         private MessageThreadFragment customFragment;
 
@@ -1448,6 +1451,19 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         }
 
         /**
+         * Sets the click listener on the mentioned user of message.
+         *
+         * @param mentionClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * @since 3.5.3
+         */
+        @NonNull
+        public Builder setOnMessageMentionClickListener(@NonNull OnItemClickListener<User> mentionClickListener) {
+            this.messageMentionClickListener = mentionClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link MessageThreadFragment} with the arguments supplied to this
          * builder.
          *
@@ -1479,6 +1495,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             fragment.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
             fragment.inputModeChangedListener = inputModeChangedListener;
             fragment.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
+            fragment.setOnMessageMentionClickListener(messageMentionClickListener);
             fragment.setAdapter(adapter);
             fragment.params = params;
             return fragment;

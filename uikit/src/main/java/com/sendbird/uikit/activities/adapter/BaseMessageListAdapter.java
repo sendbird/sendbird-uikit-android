@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Reaction;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
@@ -29,6 +30,8 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
@@ -59,6 +62,8 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     private OnIdentifiableItemClickListener<BaseMessage> listItemClickListener;
     @Nullable
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
+    @Nullable
+    protected OnItemClickListener<User> mentionClickListener;
     @NonNull
     private final MessageListUIParams messageListUIParams;
     @Nullable
@@ -246,6 +251,26 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
                             messagePosition,
                             getItem(messagePosition)
                     );
+                }
+            });
+        }
+
+        if (holder instanceof MyUserMessageViewHolder) {
+            MyUserMessageViewHolder myUserMessageViewHolder = (MyUserMessageViewHolder) holder;
+            myUserMessageViewHolder.setOnMentionClickListener((view, pos, mentionedUser) -> {
+                int messagePosition = holder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION && mentionClickListener != null) {
+                    mentionClickListener.onItemClick(view, messagePosition, mentionedUser);
+                }
+            });
+        }
+
+        if (holder instanceof OtherUserMessageViewHolder) {
+            OtherUserMessageViewHolder otherUserMessageViewHolder = (OtherUserMessageViewHolder) holder;
+            otherUserMessageViewHolder.setOnMentionClickListener((view, pos, mentionedUser) -> {
+                int messagePosition = holder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION && mentionClickListener != null) {
+                    mentionClickListener.onItemClick(view, messagePosition, mentionedUser);
                 }
             });
         }
@@ -503,6 +528,27 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @Nullable
     public OnItemClickListener<BaseMessage> getEmojiReactionMoreButtonClickListener() {
         return emojiReactionMoreButtonClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the mentioned user is clicked.
+     *
+     * @param listener The callback that will run
+     * @since 3.5.3
+     */
+    public void setMentionClickListener(@Nullable OnItemClickListener<User> listener) {
+        this.mentionClickListener = listener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the mentioned user is clicked.
+     *
+     * @return {OnItemClickListener<User>} to be invoked when the mentioned user is clicked.
+     * @since 3.5.3
+     */
+    @Nullable
+    public OnItemClickListener<User> getMentionClickListener() {
+        return mentionClickListener;
     }
 
     /**

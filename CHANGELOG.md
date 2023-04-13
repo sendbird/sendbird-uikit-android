@@ -1,4 +1,9 @@
 # Changelog
+### v3.5.3 (Apr 12, 2023) with Chat SDK `v4.6.1`
+* Added `setOnMessageMentionClickListener(OnItemClickListener<User>)` in `ChannelFragment.Builder`
+* Added `setOnMessageMentionClickListener(OnItemClickListener<User>)` in `MessageThreadFragment.Builder`
+* Improved stability
+
 ### v3.5.2 (Apr 6, 2023) with Chat SDK `v4.6.1`
 * Added `setUseHeaderLeftButton(boolean)` in `FeedNotificationChannelFragment.Builder`
 * Added `setUseHeaderLeftButton(boolean)` in `ChatNotificationChannelFragment.Builder`

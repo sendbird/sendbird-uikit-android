@@ -10,10 +10,12 @@ import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.UserMessage
+import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
@@ -32,6 +34,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
     override val layout: View
         get() = binding.root
     private val parentMessageInfoUIConfig: MessageUIConfig = MessageUIConfig()
+    var mentionClickListener: OnItemClickListener<User>? = null
 
     override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
         // sender
@@ -87,7 +90,8 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
-        ViewUtils.drawTextMessage(binding.tvTextMessage, message, parentMessageInfoUIConfig, null)
+        ViewUtils.drawTextMessage(binding.tvTextMessage, message, parentMessageInfoUIConfig, null
+        ) { view, position, data -> mentionClickListener?.onItemClick(view, position, data) }
     }
 
     private fun drawVoiceMessage(channel: GroupChannel, message: FileMessage) {

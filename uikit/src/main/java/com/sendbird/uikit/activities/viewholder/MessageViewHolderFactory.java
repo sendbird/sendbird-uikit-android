@@ -138,7 +138,7 @@ public class MessageViewHolderFactory {
                                                      @NonNull ViewGroup parent,
                                                      @NonNull MessageType viewType,
                                                      boolean useMessageGroupUI) {
-        return createOpenChannelViewHolder(
+        return createViewHolder(
                 inflater,
                 parent,
                 viewType,

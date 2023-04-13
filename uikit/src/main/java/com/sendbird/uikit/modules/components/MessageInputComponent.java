@@ -461,7 +461,7 @@ public class MessageInputComponent {
         final MessageInputView.Mode mode = inputView.getInputMode();
         if (MessageInputView.Mode.EDIT == mode) {
             if (message != null) {
-                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig, null, true);
+                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig, null, true, null);
                 inputView.setInputText(text);
             }
             inputView.showKeyboard();
@@ -514,12 +514,12 @@ public class MessageInputComponent {
         // set hint
         final Context context = inputView.getContext();
         String hintText = this.hintText != null ? this.hintText.toString() : null;
-        if (MessageInputView.Mode.QUOTE_REPLY == mode) {
-            hintText = context.getString(R.string.sb_text_channel_input_reply_text_hint);
-        } else if (isMuted) {
+        if (isMuted) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
         } else if (isFrozen) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_frozen);
+        } else if (MessageInputView.Mode.QUOTE_REPLY == mode) {
+            hintText = context.getString(R.string.sb_text_channel_input_reply_text_hint);
         }
         Logger.dev("++ hint text : " + hintText);
         inputView.setInputTextHint(hintText);

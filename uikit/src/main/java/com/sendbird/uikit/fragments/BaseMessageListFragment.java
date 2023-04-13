@@ -95,6 +95,8 @@ abstract public class BaseMessageListFragment<
     @Nullable
     private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
     @Nullable
+    private OnItemClickListener<User> messageMentionClickListener;
+    @Nullable
     private LoadingDialogHandler loadingDialogHandler;
     @Nullable
     private LA adapter;
@@ -290,6 +292,23 @@ abstract public class BaseMessageListFragment<
         if (messageProfileLongClickListener != null) {
             messageProfileLongClickListener.onItemLongClick(view, position, message);
         }
+    }
+
+    /**
+     * Called when the mentioned user of the message is clicked.
+     *
+     * @param view     The View clicked
+     * @param position The position clicked
+     * @param user  The user that the clicked item displays
+     * @since 3.5.3
+     */
+    protected void onMessageMentionClicked(@NonNull View view, int position, @NonNull User user) {
+        if (messageMentionClickListener != null) {
+            messageMentionClickListener.onItemClick(view, position, user);
+            return;
+        }
+
+        showUserProfile(user);
     }
 
     @NonNull
@@ -870,6 +889,16 @@ abstract public class BaseMessageListFragment<
      */
     void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
+    }
+
+    /**
+     * Sets the click listener on the mentioned user of message.
+     *
+     * @param messageMentionClickListener The callback that will run.
+     * @since 3.5.3
+     */
+    void setOnMessageMentionClickListener(@Nullable OnItemClickListener<User> messageMentionClickListener) {
+        this.messageMentionClickListener = messageMentionClickListener;
     }
 
     /**

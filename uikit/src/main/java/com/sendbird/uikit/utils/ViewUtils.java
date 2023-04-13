@@ -42,6 +42,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
 import com.sendbird.uikit.internal.ui.messages.OgtagView;
@@ -89,10 +90,10 @@ public class ViewUtils {
     }
 
     public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
-        drawTextMessage(textView, message, uiConfig, null);
+        drawTextMessage(textView, message, uiConfig, null, null);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, @Nullable OnItemClickListener<User> mentionClickListener) {
         if (message == null) {
             return;
         }
@@ -104,7 +105,7 @@ public class ViewUtils {
 
         final boolean isMine = MessageUtils.isMine(message);
         final Context context = textView.getContext();
-        final CharSequence text = getDisplayableText(context, message, uiConfig, mentionedCurrentUserUIConfig, true);
+        final CharSequence text = getDisplayableText(context, message, uiConfig, mentionedCurrentUserUIConfig, true, mentionClickListener);
         final SpannableStringBuilder builder = new SpannableStringBuilder(text);
         if (message.getUpdatedAt() > 0L) {
             final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
@@ -120,7 +121,7 @@ public class ViewUtils {
     }
 
     @NonNull
-    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, boolean mentionClickable) {
+    public static CharSequence getDisplayableText(@NonNull Context context, @NonNull BaseMessage message, @Nullable MessageUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig, boolean mentionClickable, @Nullable OnItemClickListener<User> mentionClickListener) {
         final String mentionedText = message.getMentionedMessageTemplate();
         final SpannableString text = new SpannableString(message.getMessage());
         if (uiConfig != null) {
@@ -163,8 +164,9 @@ public class ViewUtils {
                             spannable.setSpan(new ClickableSpan() {
                                 @Override
                                 public void onClick(@NonNull View widget) {
-                                    SoftInputUtils.hideSoftKeyboard(widget);
-                                    DialogUtils.showUserProfileDialog(context, mentionedUser, !isMentionedCurrentUser, null, null);
+                                    if (mentionClickListener != null) {
+                                        mentionClickListener.onItemClick(widget, 0, mentionedUser);
+                                    }
                                 }
 
                                 @Override

@@ -17,7 +17,7 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr), ViewRoundable {
-    private lateinit var rectF: RectF
+    private val rectF: RectF = RectF()
     private val path: Path = Path()
     private var strokePaint: Paint? = null
     override var radius: Float = 0F
@@ -45,7 +45,7 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        rectF = RectF(0f, 0f, w.toFloat(), h.toFloat())
+        rectF.set(0f, 0f, w.toFloat(), h.toFloat())
         resetPath()
     }
 
@@ -53,15 +53,11 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
         val save = canvas.save()
         canvas.clipPath(path)
         super.draw(canvas)
-        strokePaint?.let { canvas.drawRoundRect(rectF, radius, radius, it) }
-        canvas.restoreToCount(save)
-    }
-
-    override fun dispatchDraw(canvas: Canvas) {
-        val save = canvas.save()
-        canvas.clipPath(path)
-        super.dispatchDraw(canvas)
-        strokePaint?.let { canvas.drawRoundRect(rectF, radius, radius, it) }
+        strokePaint?.let {
+            val inlineWidth = it.strokeWidth
+            rectF.set(inlineWidth / 2, inlineWidth / 2, width - inlineWidth / 2, height - inlineWidth / 2)
+            canvas.drawRoundRect(rectF, radius, radius, it)
+        }
         canvas.restoreToCount(save)
     }
 
@@ -69,5 +65,14 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
         path.reset()
         path.addRoundRect(rectF, radius, radius, Path.Direction.CW)
         path.close()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        // In the Android platform, even if a view is not drawn on the screen due to left and right views, its height value exists.
+        // In the template message syntax, the views that are not drawn have to hide. (spec. since v3.5.2)
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        visibility = if (width == 0) GONE else VISIBLE
     }
 }

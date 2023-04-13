@@ -1,5 +1,7 @@
 package com.sendbird.uikit.activities.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.ParentMessageInfoViewHolder;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.utils.MessageUtils;
 
@@ -29,6 +32,21 @@ public class ThreadListAdapter extends BaseMessageListAdapter {
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return super.onCreateViewHolder(parent, viewType);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+        if (holder instanceof ParentMessageInfoViewHolder) {
+            ParentMessageInfoViewHolder parentMessageInfoViewHolder = (ParentMessageInfoViewHolder) holder;
+            parentMessageInfoViewHolder.setOnMentionClickListener((view, pos, mentionedUser) -> {
+                int messagePosition = holder.getBindingAdapterPosition();
+                if (messagePosition != NO_POSITION && mentionClickListener != null) {
+                    mentionClickListener.onItemClick(view, messagePosition, mentionedUser);
+                }
+            });
+        }
+
+        super.onBindViewHolder(holder, position);
     }
 
     @Override

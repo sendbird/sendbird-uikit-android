@@ -90,12 +90,12 @@ public class MessageThreadInputComponent extends MessageInputComponent {
         // set hint
         final Context context = inputView.getContext();
         String hintText;
-        if (MessageInputView.Mode.EDIT == mode) {
-            hintText = context.getString(R.string.sb_text_channel_input_text_hint);
-        } else if (isMuted) {
+        if (isMuted) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
         } else if (isFrozen) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_frozen);
+        } else if (MessageInputView.Mode.EDIT == mode) {
+            hintText = context.getString(R.string.sb_text_channel_input_text_hint);
         } else if (parentMessage.getThreadInfo().getReplyCount() > 0) {
             hintText = context.getString(R.string.sb_text_channel_input_reply_to_thread_hint);
         } else {

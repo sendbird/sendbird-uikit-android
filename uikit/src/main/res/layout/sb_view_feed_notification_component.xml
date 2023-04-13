@@ -16,11 +16,13 @@
         android:ellipsize="end"
         android:gravity="bottom"
         android:singleLine="true"
+        android:layout_marginBottom="@dimen/sb_size_4"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@+id/contentPanel"
         app:layout_constraintEnd_toStartOf="@id/ivUnreadIndicator"
-        app:layout_constraintBottom_toTopOf="@id/contentPanel"
+        app:layout_constraintBottom_toTopOf="@id/contentTopBarrier"
         />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -40,20 +42,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end|bottom"
-        android:paddingBottom="@dimen/sb_size_4"
+        android:layout_marginBottom="@dimen/sb_size_4"
         android:layout_marginStart="@dimen/sb_size_4"
         app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivUnreadIndicator"
         app:layout_constraintEnd_toEndOf="@+id/contentPanel"
-        app:layout_constraintBottom_toTopOf="@id/contentPanel"
+        app:layout_constraintBottom_toTopOf="@id/contentTopBarrier"
         />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/contentTopBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_4"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvCategory, tvSentAt" />
+        app:constraint_referenced_ids="tvCategory, tvSentAt, ivUnreadIndicator" />
 
     <com.sendbird.uikit.internal.ui.widgets.RoundCornerLayout
         android:id="@+id/contentPanel"

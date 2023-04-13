@@ -9,9 +9,11 @@ import androidx.core.content.ContextCompat
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.SendingStatus
+import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
@@ -32,6 +34,7 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
     private val mentionedCurrentUserUIConfig: TextUIConfig
     private val sentAtAppearance: Int
     private val messageTextAppearance: Int
+    var mentionClickListener: OnItemClickListener<User>? = null
 
     init {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0)
@@ -134,7 +137,14 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
             it.linkedTextColor?.let { linkedTextColor -> binding.tvMessage.setLinkTextColor(linkedTextColor) }
         }
 
-        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig, mentionedCurrentUserUIConfig)
+        ViewUtils.drawTextMessage(
+            binding.tvMessage,
+            message,
+            messageUIConfig,
+            mentionedCurrentUserUIConfig
+        ) { view, position, user ->
+            mentionClickListener?.onItemClick(view, position, user)
+        }
         ViewUtils.drawOgtag(binding.ovOgtag, message.ogMetaData)
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)

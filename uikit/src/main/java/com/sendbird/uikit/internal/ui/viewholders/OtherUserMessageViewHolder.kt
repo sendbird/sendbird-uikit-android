@@ -5,6 +5,7 @@ import com.sendbird.android.channel.BaseChannel
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.Reaction
+import com.sendbird.android.user.User
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder
 import com.sendbird.uikit.consts.ClickableViewIdentifier
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding
@@ -45,5 +46,9 @@ internal class OtherUserMessageViewHolder internal constructor(
             ClickableViewIdentifier.QuoteReply.name to binding.otherMessageView.binding.quoteReplyPanel,
             ClickableViewIdentifier.ThreadInfo.name to binding.otherMessageView.binding.threadInfo
         )
+    }
+
+    fun setOnMentionClickListener(listener: OnItemClickListener<User>?) {
+        binding.otherMessageView.mentionClickListener = listener
     }
 }

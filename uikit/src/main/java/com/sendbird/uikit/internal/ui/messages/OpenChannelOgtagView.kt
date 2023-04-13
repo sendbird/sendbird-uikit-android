@@ -84,7 +84,7 @@ internal class OpenChannelOgtagView private constructor(
                 )
             binding.ivOgImage.radius = resources.getDimensionPixelSize(R.dimen.sb_size_8).toFloat()
             binding.ivOgImage.content.scaleType = ImageView.ScaleType.CENTER
-            builder.load(ogImageUrl).centerCrop().sizeMultiplier(0.3f).listener(object : RequestListener<Drawable?> {
+            builder.load(ogImageUrl).centerCrop().listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any,

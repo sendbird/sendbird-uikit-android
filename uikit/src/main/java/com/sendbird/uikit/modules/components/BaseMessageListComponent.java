@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.BaseMessageListAdapter;
@@ -61,6 +62,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     private OnItemClickListener<BaseMessage> messageClickListener;
     @Nullable
     private OnItemClickListener<BaseMessage> messageProfileClickListener;
+    @Nullable
+    private OnItemClickListener<User> messageMentionClickListener;
     @Nullable
     private OnItemLongClickListener<BaseMessage> messageLongClickListener;
     @Nullable
@@ -147,6 +150,9 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         }
         if (this.adapter.getEmojiReactionMoreButtonClickListener() == null) {
             this.adapter.setEmojiReactionMoreButtonClickListener(this::onEmojiReactionMoreButtonClicked);
+        }
+        if (this.adapter.getMentionClickListener() == null) {
+            this.adapter.setMentionClickListener(this::onMessageMentionClicked);
         }
         if (messageRecyclerView == null) return;
         messageRecyclerView.getRecyclerView().setAdapter(this.adapter);
@@ -309,6 +315,16 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      */
     public void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the mentioned user of the message is clicked.
+     *
+     * @param messageMentionClickListener The callback that will run
+     * @since 3.5.3
+     */
+    public void setOnMessageMentionClickListener(@Nullable OnItemClickListener<User> messageMentionClickListener) {
+        this.messageMentionClickListener = messageMentionClickListener;
     }
 
     /**
@@ -507,6 +523,19 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         if (!params.useUserProfile) return;
         if (messageProfileClickListener != null)
             messageProfileClickListener.onItemClick(view, position, message);
+    }
+
+    /**
+     * Called when the mentioned user of the message is clicked.
+     *
+     * @param view     The View clicked
+     * @param position The position clicked
+     * @param user  The mentioned user that the clicked item displays
+     * @since 3.5.3
+     */
+    protected void onMessageMentionClicked(@NonNull View view, int position, @NonNull User user) {
+        if (messageMentionClickListener != null)
+            messageMentionClickListener.onItemClick(view, position, user);
     }
 
     /**

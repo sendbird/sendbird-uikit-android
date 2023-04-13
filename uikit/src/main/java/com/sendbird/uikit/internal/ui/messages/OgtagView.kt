@@ -81,7 +81,7 @@ internal class OgtagView private constructor(
                     )
                 )
             binding.ivOgImage.scaleType = ImageView.ScaleType.CENTER
-            builder.load(ogImageUrl).centerCrop().sizeMultiplier(0.3f).listener(object : RequestListener<Drawable?> {
+            builder.load(ogImageUrl).centerCrop().listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any,
