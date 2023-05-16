@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the channel list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelListComponent {
     @NonNull
@@ -45,7 +46,7 @@ public class ChannelListComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelListComponent() {
         this.params = new Params();
@@ -55,7 +56,7 @@ public class ChannelListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -66,7 +67,7 @@ public class ChannelListComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -78,7 +79,7 @@ public class ChannelListComponent {
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends ChannelListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
@@ -118,7 +119,7 @@ public class ChannelListComponent {
      * Returns the channel list adapter.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public ChannelListAdapter getAdapter() {
@@ -134,12 +135,12 @@ public class ChannelListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
         if (args != null) params.apply(context, args);
-        this.pagerRecyclerView = new PagerRecyclerView(context, null, R.attr.sb_component_list);
+        this.pagerRecyclerView = createPagerRecyclerView(context);
         this.pagerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         this.pagerRecyclerView.setHasFixedSize(true);
         this.pagerRecyclerView.setItemAnimator(new ItemAnimator());
@@ -152,7 +153,7 @@ public class ChannelListComponent {
      * Register a callback to be invoked when the item of the channel is clicked.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<GroupChannel> listener) {
         this.itemClickListener = listener;
@@ -162,7 +163,7 @@ public class ChannelListComponent {
      * Register a callback to be invoked when the item of the channel is long-clicked.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<GroupChannel> listener) {
         this.itemLongClickListener = listener;
@@ -172,7 +173,7 @@ public class ChannelListComponent {
      * Sets the paged data loader for channel list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<GroupChannel>> pagedDataLoader) {
         if (pagerRecyclerView != null) pagerRecyclerView.setPager(pagedDataLoader);
@@ -182,7 +183,7 @@ public class ChannelListComponent {
      * Called when the channel list is changed.
      *
      * @param channelList The list of channels to be displayed on this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<GroupChannel> channelList) {
         Logger.d("++ ChannelListComponent::notifyDataSetChanged()");
@@ -195,7 +196,7 @@ public class ChannelListComponent {
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param channel  The channel that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
         if (itemClickListener != null) itemClickListener.onItemClick(view, position, channel);
@@ -207,7 +208,7 @@ public class ChannelListComponent {
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
      * @param channel  The channel that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
         if (itemLongClickListener != null)
@@ -220,7 +221,7 @@ public class ChannelListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         protected Params() {
@@ -232,11 +233,17 @@ public class ChannelListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
             return this;
         }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    PagerRecyclerView createPagerRecyclerView(@NonNull Context context) {
+        return new PagerRecyclerView(context, null, R.attr.sb_component_list);
     }
 }

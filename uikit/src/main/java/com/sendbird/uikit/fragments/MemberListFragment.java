@@ -113,7 +113,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull MemberListViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MemberListFragment::onBindHeaderComponent()");
@@ -132,7 +132,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMemberListComponent(@NonNull MemberListComponent listComponent, @NonNull MemberListViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MemberListFragment::onBindMemberListComponent()");
@@ -154,7 +154,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull MemberListViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MemberListFragment::onBindStatusComponent()");
@@ -172,10 +172,12 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
      * @param member   The member data that was clicked.
-     * @since 1.2.2
+     * since 1.2.2
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull Member member) {
-        if (getContext() == null) return;
+        final Bundle args = getArguments();
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        if (getContext() == null || SendbirdUIKit.getAdapter() == null || !useUserProfile) return;
         boolean useChannelCreateButton = !member.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), member, useChannelCreateButton, null, getModule().getLoadingDialogHandler());
     }
@@ -240,7 +242,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected boolean shouldShowLoadingDialog() {
         if (getContext() != null) {
@@ -252,7 +254,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -262,7 +264,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -328,7 +330,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends MemberListFragment> Builder setCustomFragment(T fragment) {
@@ -341,7 +343,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -416,7 +418,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -443,7 +445,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -469,7 +471,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -495,7 +497,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -508,7 +510,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -521,7 +523,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -546,7 +548,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<Member> itemClickListener) {
@@ -559,7 +561,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<Member> itemLongClickListener) {
@@ -572,7 +574,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param actionItemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnActionItemClickListener(@NonNull OnItemClickListener<Member> actionItemClickListener) {
@@ -585,7 +587,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param profileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.2
+         * since 1.2.2
          */
         @NonNull
         public Builder setOnProfileClickListener(@NonNull OnItemClickListener<Member> profileClickListener) {
@@ -598,7 +600,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param useUserProfile <code>true</code> if the user profile is shown when the profile image clicked, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.2
+         * since 1.2.2
          */
         @NonNull
         public Builder setUseUserProfile(boolean useUserProfile) {
@@ -611,7 +613,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {

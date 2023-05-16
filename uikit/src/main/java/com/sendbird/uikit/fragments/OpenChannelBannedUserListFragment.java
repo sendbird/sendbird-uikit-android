@@ -36,7 +36,7 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 /**
  * Fragment displaying the banned user list of the channel.
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenChannelBannedUserListModule, OpenChannelBannedUserListViewModel> {
     @Nullable
@@ -116,6 +116,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
         viewModel.loadInitial();
 
         viewModel.getUserBanned().observe(getViewLifecycleOwner(), restrictedUser -> {
+            if (SendbirdUIKit.getAdapter() == null) return;
             if (restrictedUser.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId())) {
                 shouldActivityFinish();
             } else {
@@ -131,7 +132,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull OpenChannelBannedUserListViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelBannedUserListFragment::onBindHeaderComponent()");
@@ -145,7 +146,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * @param listComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindBannedUserListComponent(@NonNull OpenChannelBannedUserListComponent listComponent, @NonNull OpenChannelBannedUserListViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelBannedUserListFragment::onBindOpenChannelBannedUserListComponent()");
@@ -169,7 +170,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * @param statusComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull OpenChannelBannedUserListViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelBannedUserListFragment::onBindStatusComponent()");
@@ -187,10 +188,12 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
      * @param user     The user data that was clicked.
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
-        if (getContext() == null) return;
+        final Bundle args = getArguments();
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        if (getContext() == null || !useUserProfile) return;
         DialogUtils.showUserProfileDialog(getContext(), user, false, null, getModule().getLoadingDialogHandler());
     }
 
@@ -200,7 +203,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
      * @param user     The user data that was clicked.
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull User user) {
         if (getContext() == null) return;
@@ -226,7 +229,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected boolean shouldShowLoadingDialog() {
         if (getContext() != null) {
@@ -238,7 +241,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -248,7 +251,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -282,7 +285,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -293,7 +296,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -304,7 +307,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -317,7 +320,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelBannedUserListFragment> Builder setCustomFragment(T fragment) {
@@ -330,7 +333,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -343,7 +346,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -356,7 +359,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -370,7 +373,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -384,7 +387,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -398,7 +401,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -413,7 +416,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -428,7 +431,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -442,7 +445,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -455,7 +458,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -468,7 +471,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -481,7 +484,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -494,7 +497,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param adapter the adapter for the banned user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public <T extends OpenChannelBannedUserListAdapter> Builder setBannedUserListAdapter(T adapter) {
@@ -507,7 +510,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<User> itemClickListener) {
@@ -520,7 +523,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<User> itemLongClickListener) {
@@ -533,7 +536,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param actionItemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnActionItemClickListener(@NonNull OnItemClickListener<User> actionItemClickListener) {
@@ -546,7 +549,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param profileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnProfileClickListener(@NonNull OnItemClickListener<User> profileClickListener) {
@@ -559,7 +562,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          *
          * @param useUserProfile <code>true</code> if the user profile is shown when the profile image clicked, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseUserProfile(boolean useUserProfile) {
@@ -573,7 +576,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @return This Builder object to allow for chaining of calls to set methods.
          * @see LoadingDialogHandler
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -586,7 +589,7 @@ public class OpenChannelBannedUserListFragment extends BaseModuleFragment<OpenCh
          * builder.
          *
          * @return The {@link OpenChannelBannedUserListFragment} applied to the {@link Bundle}.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public OpenChannelBannedUserListFragment build() {

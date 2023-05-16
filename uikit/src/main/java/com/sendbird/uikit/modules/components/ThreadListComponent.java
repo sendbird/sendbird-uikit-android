@@ -22,7 +22,7 @@ import com.sendbird.uikit.model.MessageListUIParams;
 /**
  * This class creates and performs a view corresponding the thread list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdapter> {
     @Nullable
@@ -31,7 +31,7 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ThreadListComponent() {
         super(new Params(), false, false);
@@ -42,7 +42,7 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public Params getParams() {
@@ -125,7 +125,7 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
      * Register a callback to be invoked when the parent message menu is clicked.
      *
      * @param parentMessageMenuClickListener The callback that will run
-     * @since 3.3.0
+     * since 3.3.0
      */
     public void setOnParentMessageMenuClickListener(@Nullable OnItemClickListener<BaseMessage> parentMessageMenuClickListener) {
         this.parentMessageMenuClickListener = parentMessageMenuClickListener;
@@ -137,7 +137,7 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The parent message clicked
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onParentMessageMenuClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (parentMessageMenuClickListener != null)
@@ -165,7 +165,7 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
      * <p><b>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</b></p>
      *
      * @see #getParams()
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static class Params extends BaseMessageListComponent.Params {}
 }

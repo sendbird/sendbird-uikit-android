@@ -203,7 +203,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      *
      * @return OpenChannelViewModel
      * @see OpenChannelViewModel
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -285,7 +285,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindChannelHeaderComponent(@NonNull OpenChannelHeaderComponent headerComponent, @NonNull OpenChannelViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelFragment::onBindChannelHeaderComponent()");
@@ -311,7 +311,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param messageListComponent The component to which the event will be bound
      * @param viewModel            A view model that provides the data needed for the fragment
      * @param channel              The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMessageListComponent(@NonNull OpenChannelMessageListComponent messageListComponent, @NonNull OpenChannelViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelFragment::onBindMessageListComponent()");
@@ -342,7 +342,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param inputComponent The component to which the event will be bound
      * @param viewModel      A view model that provides the data needed for the fragment
      * @param channel        The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMessageInputComponent(@NonNull OpenChannelMessageInputComponent inputComponent, @NonNull OpenChannelViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelFragment::onBindMessageInputComponent()");
@@ -406,7 +406,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull OpenChannelViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelFragment::onBindStatusComponent()");
@@ -426,7 +426,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      *
      * @param message A clicked message.
      * @return Collection of {@link DialogListItem}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
@@ -509,7 +509,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param position The position that was clicked.
      * @param item     {@link DialogListItem} that was clicked.
      * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @SuppressWarnings("UnusedReturnValue")
     protected boolean onMessageContextMenuItemClicked(@NonNull BaseMessage message, @NonNull View view, int position, @NonNull DialogListItem item) {
@@ -546,7 +546,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * It will be called when the input message's left button is clicked.
      * The default behavior is showing the menu, like, taking camera, gallery, and file.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     protected void showMediaSelectDialog() {
         if (getContext() == null) return;
@@ -587,7 +587,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     /**
      * Call taking camera application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takeCamera() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -606,7 +606,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     /**
      * Call taking camera application for video capture.
      *
-     * @since 3.2.1
+     * since 3.2.1
      */
     public void takeVideo() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -625,7 +625,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     /**
      * Call taking gallery application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takePhoto() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -645,7 +645,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     /**
      * Call taking file chooser application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takeFile() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -665,7 +665,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected boolean shouldShowLoadingDialog() {
         return getModule().shouldShowLoadingDialog();
@@ -674,7 +674,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -827,7 +827,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageClickListener != null) {
@@ -874,7 +874,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageProfileClickListener != null) {
@@ -893,7 +893,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageLongClickListener != null) {
@@ -969,7 +969,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * After permission is granted, the download will be also called automatically.
      *
      * @param message A file message to download contents.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void saveFileMessage(@NonNull FileMessage message) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
@@ -983,7 +983,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -995,7 +995,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * This is a Builder that is able to create the OpenChannel fragment.
      * The builder provides options how the channel is showing and working. Also you can set the event handler what you want to override.
      *
-     * @since 2.0.0
+     * since 2.0.0
      */
     public static class Builder {
         @NonNull
@@ -1078,7 +1078,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelFragment> Builder setCustomFragment(T fragment) {
@@ -1091,7 +1091,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -1116,7 +1116,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.1
+         * since 2.1.1
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -1179,7 +1179,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1205,7 +1205,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1218,7 +1218,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * Sets whether showing the right button of the input always.
          *
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.2
+         * since 2.1.2
          */
         @NonNull
         public Builder showInputRightButtonAlways() {
@@ -1232,7 +1232,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param useInputLeftButton <code>true</code> if the left button of the input is used,
          *                           <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.1
+         * since 2.0.1
          */
         @NonNull
         public Builder setUseInputLeftButton(boolean useInputLeftButton) {
@@ -1257,7 +1257,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1284,7 +1284,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1310,7 +1310,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param headerLeftButtonClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener headerLeftButtonClickListener) {
@@ -1323,7 +1323,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param headerRightButtonClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener headerRightButtonClickListener) {
@@ -1348,7 +1348,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param messageClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageClickListener(@NonNull OnItemClickListener<BaseMessage> messageClickListener) {
@@ -1361,7 +1361,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param messageLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> messageLongClickListener) {
@@ -1411,7 +1411,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param messageProfileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnProfileClickListener(@NonNull OnItemClickListener<BaseMessage> messageProfileClickListener) {
@@ -1470,7 +1470,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
@@ -1483,7 +1483,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1497,7 +1497,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -1510,7 +1510,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -1523,7 +1523,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param inputText the message text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputText(@NonNull String inputText) {
@@ -1536,7 +1536,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param inputTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setOnInputTextChangedListener(@NonNull OnInputTextChangedListener inputTextChangedListener) {
@@ -1549,7 +1549,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param editModeTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setOnEditModeTextChangedListener(@NonNull OnInputTextChangedListener editModeTextChangedListener) {
@@ -1562,7 +1562,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param useHeaderProfileImage <code>true</code> if the profile image of the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.2.4
+         * since 2.2.4
          */
         @NonNull
         public Builder setUseHeaderProfileImage(boolean useHeaderProfileImage) {
@@ -1575,7 +1575,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param inputRightButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
@@ -1588,7 +1588,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param editModeCancelButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
@@ -1601,7 +1601,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param editModeSaveButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
@@ -1614,7 +1614,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param inputModeChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
@@ -1627,7 +1627,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param scrollBottomButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          * @deprecated 3.2.2
          * This method is no longer acceptable to invoke event.
          * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
@@ -1644,7 +1644,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param scrollFirstButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.2
+         * since 3.2.2
          */
         @NonNull
         public Builder setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
@@ -1657,7 +1657,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param messageProfileLongClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageProfileLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
@@ -1670,7 +1670,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param messageInsertedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageInsertedListener(@Nullable OnItemEventListener<BaseMessage> messageInsertedListener) {
@@ -1684,7 +1684,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1701,7 +1701,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param configSentFromMe       the UI configuration of the message text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message text that was sent from others.\
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1718,7 +1718,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1736,7 +1736,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
          * @param configSentFromOperator the UI configuration of the sender nickname text that was sent from operator.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setNicknameTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers, @Nullable TextUIConfig configSentFromOperator) {
@@ -1754,7 +1754,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param textUIConfig the UI configuration of the message input text.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @NonNull
         public Builder setMessageInputTextUIConfig(@NonNull TextUIConfig textUIConfig) {
@@ -1768,7 +1768,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param drawableResSentFromMe     the UI configuration of the message background that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the message background that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setMessageBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1783,7 +1783,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          * @param drawableResSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setOgtagBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1797,7 +1797,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
          *
          * @param colorRes  the UI configuration of the linked text color.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setLinkedTextColor(@ColorRes int colorRes) {

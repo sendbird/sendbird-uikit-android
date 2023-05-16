@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Manager providing emoji information from Sendbird server.
  *
- * @since 1.1.0
+ * since 1.1.0
  */
 public final class EmojiManager {
     private EmojiManager() {}
@@ -32,7 +32,7 @@ public final class EmojiManager {
      * Returns the {@link EmojiManager} working as a singleton.
      *
      * @return The {@link EmojiManager}
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     public static EmojiManager getInstance() {
@@ -85,7 +85,7 @@ public final class EmojiManager {
      * Returns the emoji hash
      *
      * @return The emoji hash
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Nullable
     public String getEmojiHash() {
@@ -97,7 +97,7 @@ public final class EmojiManager {
      *
      * @param key emoji key
      * @return The emoji url corresponding to emoji key
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Nullable
     public String getEmojiUrl(final @NonNull String key) {
@@ -114,7 +114,7 @@ public final class EmojiManager {
      * Returns the {@link List<EmojiCategory>} registering Sendbird server
      *
      * @return The {@link List<EmojiCategory>} Emoji category list
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     public List<EmojiCategory> getAllEmojiCategories() {
@@ -126,7 +126,7 @@ public final class EmojiManager {
      * Returns the {@link List<Emoji>} registering Sendbird server
      *
      * @return The {@link List<Emoji>} registering Sendbird server
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     public List<Emoji> getAllEmojis() {
@@ -139,7 +139,7 @@ public final class EmojiManager {
      *
      * @param emojiCategoryId Emoji category id
      * @return The {@link List<Emoji>} corresponding to emoji category id
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Nullable
     public List<Emoji> getEmojis(long emojiCategoryId) {

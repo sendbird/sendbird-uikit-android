@@ -108,7 +108,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      *
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ChannelListViewModel viewModel) {
         Logger.d(">> ChannelListFragment::setupHeaderComponent()");
@@ -121,7 +121,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      *
      * @param channelListComponent The component to which the event will be bound
      * @param viewModel            A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindChannelListComponent(@NonNull ChannelListComponent channelListComponent, @NonNull ChannelListViewModel viewModel) {
         Logger.d(">> ChannelListFragment::setupChannelListComponent()");
@@ -135,7 +135,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ChannelListViewModel viewModel) {
         Logger.d(">> ChannelListFragment::setupStatusComponent()");
@@ -212,7 +212,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      *
      * @param channelType selected channel type.
      * @see CreatableChannelType
-     * @since 1.2.0
+     * since 1.2.0
      */
     protected void onSelectedChannelType(@NonNull CreatableChannelType channelType) {
         startActivity(CreateChannelActivity.newIntent(requireContext(), channelType));
@@ -221,7 +221,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
     /**
      * Leaves this channel.
      *
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void leaveChannel(@NonNull GroupChannel channel) {
         getViewModel().leaveChannel(channel, e -> {
@@ -235,7 +235,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param channel  The channel that the clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
         if (itemClickListener != null) {
@@ -251,7 +251,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
      * @param channel  The channel that the long-clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull GroupChannel channel) {
         if (itemLongClickListener != null) {
@@ -310,7 +310,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ChannelListFragment> Builder setCustomFragment(T fragment) {
@@ -323,7 +323,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -398,7 +398,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -424,7 +424,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -438,7 +438,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -451,7 +451,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -476,7 +476,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<GroupChannel> itemClickListener) {
@@ -489,7 +489,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<GroupChannel> itemLongClickListener) {
@@ -502,7 +502,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param query The GroupChannelListQuery instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.0.5
+         * since 1.0.5
          */
         @NonNull
         public Builder setGroupChannelListQuery(@NonNull GroupChannelListQuery query) {
@@ -515,7 +515,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
@@ -528,7 +528,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -542,7 +542,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -555,7 +555,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {

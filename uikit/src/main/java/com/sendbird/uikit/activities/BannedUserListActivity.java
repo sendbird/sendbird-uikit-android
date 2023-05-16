@@ -18,7 +18,7 @@ import com.sendbird.uikit.fragments.BannedUserListFragment;
 /**
  * Activity displays a list of banned members from a channel.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class BannedUserListActivity extends AppCompatActivity {
     /**
@@ -27,7 +27,7 @@ public class BannedUserListActivity extends AppCompatActivity {
      * @param context A Context of the application package implementing this class.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
@@ -42,7 +42,7 @@ public class BannedUserListActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl The url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends BannedUserListActivity> cls, @NonNull String channelUrl) {
@@ -70,7 +70,7 @@ public class BannedUserListActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link BannedUserListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

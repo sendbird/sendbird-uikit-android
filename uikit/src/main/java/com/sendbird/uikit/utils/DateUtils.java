@@ -150,7 +150,7 @@ public class DateUtils {
      * @param millisFirst   The time in milliseconds of the first date.
      * @param millisSecond  The time in milliseconds of the second date.
      * @return  Whether {@param millisFirst} and {@param millisSecond} are off the same day.
-     * @since 1.2.1
+     * since 1.2.1
      */
     public static boolean hasSameTimeInMinute(long millisFirst, long millisSecond) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());

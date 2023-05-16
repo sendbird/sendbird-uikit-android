@@ -105,7 +105,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      *
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull CreateChannelViewModel viewModel) {
         Logger.d(">> CreateChannelFragment::onBindHeaderComponent()");
@@ -122,7 +122,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      *
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindUserListComponent(@NonNull CreateChannelUserListComponent listComponent, @NonNull CreateChannelViewModel viewModel) {
         Logger.d(">> CreateChannelFragment::onBindUserListComponent()");
@@ -139,7 +139,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull CreateChannelViewModel viewModel) {
         Logger.d(">> CreateChannelFragment::onBindStatusComponent()");
@@ -155,7 +155,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * Returns the lists of user ids that you want to disable.
      *
      * @return The user id list.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     protected List<String> getDisabledUserIds() {
@@ -166,7 +166,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * Called when the user selection completed.
      *
      * @param selectedUsers selected user's ids.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
         GroupChannelCreateParams params = new GroupChannelCreateParams();
@@ -198,7 +198,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params) {
     }
@@ -207,7 +207,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * Creates <code>GroupChannel</code> with GroupChannelParams.
      *
      * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void createGroupChannel(@NonNull GroupChannelCreateParams params) {
         Logger.dev(">> CreateChannelFragment::createGroupChannel()");
@@ -234,7 +234,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
      * It will be called when the new channel has been created.
      *
      * @param channel the new channel
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onNewChannelCreated(@NonNull GroupChannel channel) {
         if (isFragmentAlive()) {
@@ -281,7 +281,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          * Constructor
          *
          * @param type A type of channel. Default is a {@link CreatableChannelType#Normal}
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder(@NonNull CreatableChannelType type) {
             this(SendbirdUIKit.getDefaultThemeMode().getResId(), type);
@@ -301,7 +301,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param customThemeResId the resource identifier for custom theme.
          * @param type             A type of channel. Default is a {@link CreatableChannelType#Normal}
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder(@StyleRes int customThemeResId, @NonNull CreatableChannelType type) {
             bundle = new Bundle();
@@ -314,7 +314,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends CreateChannelFragment> Builder setCustomFragment(T fragment) {
@@ -327,7 +327,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -340,7 +340,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param createButtonText text to be displayed to the right button.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setCreateButtonText(@NonNull String createButtonText) {
@@ -353,7 +353,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setCustomPagedQueryHandler(@NonNull PagedQueryHandler<UserInfo> handler) {
@@ -391,7 +391,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.3
+         * since 1.2.3
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -429,7 +429,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -455,7 +455,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param adapter the adapter for the user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setCreateChannelUserListAdapter(@NonNull CreateChannelUserListAdapter adapter) {
@@ -468,7 +468,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -481,7 +481,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -495,7 +495,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -509,7 +509,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -522,7 +522,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -535,7 +535,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param userSelectChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
@@ -548,7 +548,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
          *
          * @param userSelectionCompleteListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {

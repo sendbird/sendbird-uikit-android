@@ -23,7 +23,7 @@ import com.sendbird.uikit.utils.ChannelUtils;
 /**
  * This class creates and performs a view corresponding the channel settings menu area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelSettingsMenuComponent {
     public enum Menu {
@@ -64,7 +64,7 @@ public class ChannelSettingsMenuComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelSettingsMenuComponent() {
         this.params = new Params();
@@ -74,7 +74,7 @@ public class ChannelSettingsMenuComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -85,7 +85,7 @@ public class ChannelSettingsMenuComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -101,7 +101,7 @@ public class ChannelSettingsMenuComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -154,7 +154,7 @@ public class ChannelSettingsMenuComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (this.menuView == null) return;
@@ -177,7 +177,7 @@ public class ChannelSettingsMenuComponent {
      *
      * @param menuClickListener The callback that will run
      * @see Menu
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMenuClickListener(@NonNull OnItemClickListener<Menu> menuClickListener) {
         this.menuClickListener = menuClickListener;
@@ -189,7 +189,7 @@ public class ChannelSettingsMenuComponent {
      * @param view The View clicked
      * @param menu The menu that the clicked item displays
      * @see Menu
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMenuClicked(@NonNull View view, @NonNull Menu menu) {
         if (this.menuClickListener != null) this.menuClickListener.onItemClick(view, 0, menu);
@@ -201,13 +201,13 @@ public class ChannelSettingsMenuComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -218,7 +218,7 @@ public class ChannelSettingsMenuComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

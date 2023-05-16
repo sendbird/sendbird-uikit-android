@@ -19,7 +19,7 @@ import com.sendbird.uikit.log.Logger;
 /**
  * ViewModel preparing and managing data related with the push setting of a channel
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelModerationViewModel extends BaseViewModel {
     @NonNull
@@ -39,7 +39,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     public OpenChannelModerationViewModel(@NonNull String channelUrl) {
         super();
@@ -80,7 +80,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.1.0
+     * since 3.1.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -110,7 +110,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed whether the current user is banned.
      *
      * @return LiveData holding whether the current user is banned or not
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public LiveData<Boolean> getCurrentUserBanned() {
@@ -121,7 +121,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the current user is operator or not.
      *
      * @return LiveData holding whether the current user is registered as operator or not
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public LiveData<Boolean> getCurrentUserRegisteredOperator() {
@@ -132,7 +132,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding the URL of the deleted channel
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public LiveData<String> getChannelDeleted() {
@@ -143,7 +143,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Returns {@code OpenChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code OpenChannel} this view model is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     @Nullable
     public OpenChannel getChannel() {
@@ -154,7 +154,7 @@ public class OpenChannelModerationViewModel extends BaseViewModel {
      * Returns URL of OpenChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public String getChannelUrl() {

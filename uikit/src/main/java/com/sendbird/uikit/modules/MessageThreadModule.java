@@ -34,7 +34,7 @@ import com.sendbird.uikit.modules.components.ThreadListComponent;
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class MessageThreadModule extends BaseMessageListModule<ThreadListComponent> {
     @NonNull
@@ -47,7 +47,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
      *
      * @param context The {@code Context} this module is currently associated with
      * @param parentMessage The parent message to be shown in this module
-     * @since 3.3.0
+     * since 3.3.0
      */
     public MessageThreadModule(@NonNull Context context, @NonNull BaseMessage parentMessage) {
         this(context, parentMessage, new Params(context));
@@ -59,7 +59,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
      * @param context The {@code Context} this module is currently associated with
      * @param parentMessage The parent message to be shown in this module
      * @param params  The Parameter object that can customize a default Fragment.
-     * @since 3.3.0
+     * since 3.3.0
      */
     public MessageThreadModule(@NonNull Context context, @NonNull BaseMessage parentMessage, @NonNull Params params) {
         super(context, new ThreadListComponent());
@@ -116,7 +116,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
      * Sets a custom header component.
      *
      * @param component The header component to be used in this module
-     * @since 3.3.0
+     * since 3.3.0
      */
     public <T extends MessageThreadHeaderComponent> void setHeaderComponent(@NonNull T component) {
         this.headerComponent = component;
@@ -126,7 +126,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
      * Returns the header component.
      *
      * @return The header component of this module
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public MessageThreadHeaderComponent getHeaderComponent() {
@@ -144,7 +144,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
          * Constructor
          *
          * @param context The {@code Context} this module is currently associated with
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Params(@NonNull Context context) {
             this(context, SendbirdUIKit.getDefaultThemeMode());
@@ -155,7 +155,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
          *
          * @param context   The {@code Context} this module is currently associated with
          * @param themeMode The theme of Sendbird UIKit to be applied to this module
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             super(context, themeMode, R.attr.sb_module_message_thread);
@@ -166,7 +166,7 @@ public class MessageThreadModule extends BaseMessageListModule<ThreadListCompone
          *
          * @param context    The {@code Context} this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
             super(context, themeResId, R.attr.sb_module_message_thread);

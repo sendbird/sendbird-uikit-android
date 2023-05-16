@@ -38,7 +38,6 @@ internal class NotificationChannelRepository(context: Context) {
         preferences.getString(NOTIFICATION_CHANNEL_SETTINGS)?.let {
             this.settings = NotificationChannelSettings.fromJson(it)
         }
-
     }
 
     fun needToUpdate(latestUpdatedAt: Long): Boolean {

@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.sendbird.android.channel.GroupChannel;
@@ -36,12 +37,14 @@ import com.sendbird.uikit.utils.ViewUtils;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.List;
 
 /**
  * This class creates and performs a view corresponding the message input area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MessageInputComponent {
     @NonNull
@@ -73,7 +76,7 @@ public class MessageInputComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MessageInputComponent() {
         this.params = new Params();
@@ -87,7 +90,7 @@ public class MessageInputComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -98,7 +101,7 @@ public class MessageInputComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -109,7 +112,7 @@ public class MessageInputComponent {
      * Returns the edit text view used in the input component bt default.
      *
      * @return {@link EditText} used in this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public EditText getEditTextView() {
@@ -126,12 +129,12 @@ public class MessageInputComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
         if (args != null) params.apply(context, args);
-        this.messageInputView = new MessageInputView(context, null, R.attr.sb_component_channel_message_input);
+        this.messageInputView = createMessageInputView(context);
         if (params.leftButtonIcon != null) {
             this.messageInputView.setAddImageDrawable(params.leftButtonIcon);
         }
@@ -183,7 +186,7 @@ public class MessageInputComponent {
      *
      * @param mentionConfig The configuration to be applied for the mention in this input component.
      * @param handler The handler to be invoked when the mention text is detected in this input component.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void bindUserMention(@NonNull UserMentionConfig mentionConfig, @NonNull OnMentionEventListener handler) {
         if (getEditTextView() instanceof MentionEditText) {
@@ -198,7 +201,7 @@ public class MessageInputComponent {
      * Sets the adapter for suggested mention list.
      *
      * @param adapter The adapter to be used in suggested mention list.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setSuggestedMentionListAdapter(@NonNull SuggestedMentionListAdapter adapter) {
         if (getEditTextView() instanceof MentionEditText) {
@@ -210,7 +213,7 @@ public class MessageInputComponent {
      * Sets whether to use divider in suggested mention list.
      *
      * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setUseSuggestedMentionListDivider(boolean useDivider) {
         if (getEditTextView() instanceof MentionEditText) {
@@ -222,7 +225,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the right button of the input is clicked.
      *
      * @param inputRightButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
         this.inputRightButtonClickListener = inputRightButtonClickListener;
@@ -232,7 +235,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the left button of the input is clicked.
      *
      * @param inputLeftButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputLeftButtonClickListener(@Nullable View.OnClickListener inputLeftButtonClickListener) {
         this.inputLeftButtonClickListener = inputLeftButtonClickListener;
@@ -242,7 +245,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the cancel button is clicked, when the input is the edited mode.
      *
      * @param editModeCancelButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
         this.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
@@ -252,7 +255,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the save button is clicked, when the input is the edited mode.
      *
      * @param editModeSaveButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
         this.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
@@ -262,7 +265,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the input text is changed, when the input is the edited mode.
      *
      * @param editModeTextChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeTextChangedListener(@Nullable OnInputTextChangedListener editModeTextChangedListener) {
         this.editModeTextChangedListener = editModeTextChangedListener;
@@ -272,7 +275,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the input text is changed.
      *
      * @param inputTextChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputTextChangedListener(@Nullable OnInputTextChangedListener inputTextChangedListener) {
         this.inputTextChangedListener = inputTextChangedListener;
@@ -282,7 +285,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the close button is clicked, when the input is the quote reply mode.
      *
      * @param replyModeCloseButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnQuoteReplyModeCloseButtonClickListener(@Nullable View.OnClickListener replyModeCloseButtonClickListener) {
         this.replyModeCloseButtonClickListener = replyModeCloseButtonClickListener;
@@ -292,7 +295,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the input mode is changed.
      *
      * @param inputModeChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
         this.inputModeChangedListener = inputModeChangedListener;
@@ -302,7 +305,7 @@ public class MessageInputComponent {
      * Register a callback to be invoked when the voice recorder button is clicked.
      *
      * @param voiceRecorderButtonClickListener The callback that will run
-     * @since 3.4.0
+     * since 3.4.0
      */
     public void setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
         this.voiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
@@ -312,7 +315,7 @@ public class MessageInputComponent {
      * Called when the left button of the input is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputLeftButtonClicked(@NonNull View view) {
         if (inputLeftButtonClickListener != null) inputLeftButtonClickListener.onClick(view);
@@ -322,7 +325,7 @@ public class MessageInputComponent {
      * Called when the right button of the input is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputRightButtonClicked(@NonNull View view) {
         if (inputRightButtonClickListener != null) inputRightButtonClickListener.onClick(view);
@@ -338,7 +341,7 @@ public class MessageInputComponent {
      * this callback.
      * </p>
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (editModeTextChangedListener != null)
@@ -355,7 +358,7 @@ public class MessageInputComponent {
      * this callback.
      * </p>
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (inputTextChangedListener != null) {
@@ -367,7 +370,7 @@ public class MessageInputComponent {
      * Called when the close button is clicked, when the input is the quote reply mode.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onQuoteReplyModeCloseButtonClicked(@NonNull View view) {
         if (replyModeCloseButtonClickListener != null)
@@ -379,7 +382,7 @@ public class MessageInputComponent {
      *
      * @param before  Input mode before change
      * @param current The latest input mode
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputModeChanged(@NonNull MessageInputView.Mode before, @NonNull MessageInputView.Mode current) {
         if (inputModeChangedListener != null)
@@ -390,7 +393,7 @@ public class MessageInputComponent {
      * Called when the cancel button is clicked, when the input is the edited mode.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeCancelButtonClicked(@NonNull View view) {
         if (editModeCancelButtonClickListener != null)
@@ -401,7 +404,7 @@ public class MessageInputComponent {
      * Called when the save button is clicked, when the input is the edited mode.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeSaveButtonClicked(@NonNull View view) {
         if (editModeSaveButtonClickListener != null) editModeSaveButtonClickListener.onClick(view);
@@ -411,7 +414,7 @@ public class MessageInputComponent {
      * Called when the voice recorder button is clicked.
      *
      * @param view The View clicked
-     * @since 3.4.0
+     * since 3.4.0
      */
     protected void onVoiceRecorderButtonClicked(@NonNull View view) {
         if (voiceRecorderButtonClickListener != null) voiceRecorderButtonClickListener.onClick(view);
@@ -421,7 +424,7 @@ public class MessageInputComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (messageInputView == null) return;
@@ -440,7 +443,7 @@ public class MessageInputComponent {
      *
      * @param message Message required for current input information
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataChanged(@Nullable BaseMessage message, @NonNull GroupChannel channel) {
         notifyDataChanged(message, channel, "");
@@ -452,7 +455,7 @@ public class MessageInputComponent {
      * @param message     Message required for current input information
      * @param channel     The latest group channel
      * @param defaultText Text set as initial value for input
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataChanged(@Nullable BaseMessage message, @NonNull GroupChannel channel, @NonNull String defaultText) {
         if (messageInputView == null) return;
@@ -483,7 +486,7 @@ public class MessageInputComponent {
      * Notifies changes of suggested mention list.
      *
      * @param suggestedMentionList The updated suggested mention list.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifySuggestedMentionDataChanged(@NonNull List<User> suggestedMentionList) {
         Logger.d(">> MessageInputComponent::notifySuggestedMentionDataChanged()");
@@ -497,7 +500,7 @@ public class MessageInputComponent {
      *
      * @param mode Input mode to be set to this component
      * @see MessageInputView.Mode
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void requestInputMode(@NonNull MessageInputView.Mode mode) {
         if (messageInputView == null) return;
@@ -531,7 +534,7 @@ public class MessageInputComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useLeftButton = true;
@@ -564,7 +567,7 @@ public class MessageInputComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
             this.messageUIConfig = new MessageUIConfig();
@@ -575,7 +578,7 @@ public class MessageInputComponent {
          * Sets the icon on the left button of the input view.
          *
          * @param leftButtonIcon The Drawable to be displayed on the left button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIcon(@Nullable Drawable leftButtonIcon) {
             this.leftButtonIcon = leftButtonIcon;
@@ -585,7 +588,7 @@ public class MessageInputComponent {
          * Sets the icon on the right button of the input view.
          *
          * @param rightButtonIcon The Drawable to be displayed on the right button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setRightButtonIcon(@Nullable Drawable rightButtonIcon) {
             this.rightButtonIcon = rightButtonIcon;
@@ -595,7 +598,7 @@ public class MessageInputComponent {
          * Sets whether the left button of the input view is used.
          *
          * @param useLeftButton <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseLeftButton(boolean useLeftButton) {
             this.useLeftButton = useLeftButton;
@@ -605,7 +608,7 @@ public class MessageInputComponent {
          * Sets the color of the icon on the left button of the input view.
          *
          * @param leftButtonIconTint Color state list to be applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIconTint(@Nullable ColorStateList leftButtonIconTint) {
             this.leftButtonIconTint = leftButtonIconTint;
@@ -615,7 +618,7 @@ public class MessageInputComponent {
          * Sets the color of the icon on the right button of the input view.
          *
          * @param rightButtonIconTint Color state list to be applied to the right button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setRightButtonIconTint(@Nullable ColorStateList rightButtonIconTint) {
             this.rightButtonIconTint = rightButtonIconTint;
@@ -624,7 +627,7 @@ public class MessageInputComponent {
         /**
          * Shows always the right button of the input view.
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void showInputRightButtonAlways() {
             this.alwaysShowRightButton = true;
@@ -634,7 +637,7 @@ public class MessageInputComponent {
          * Sets the hint of the input view.
          *
          * @param hint The String displayed as a hint message
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setInputHint(@Nullable String hint) {
             this.hintText = hint;
@@ -644,7 +647,7 @@ public class MessageInputComponent {
          * Sets the input text.
          *
          * @param inputText The String to be set on the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setInputText(@Nullable String inputText) {
             this.inputText = inputText;
@@ -655,7 +658,7 @@ public class MessageInputComponent {
          *
          * @param type Keyboard display type to be used in this component
          * @see KeyboardDisplayType
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setKeyboardDisplayType(@NonNull KeyboardDisplayType type) {
             this.keyboardDisplayType = type;
@@ -665,7 +668,7 @@ public class MessageInputComponent {
          * Sets whether to use divider in suggested mention list.
          *
          * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseSuggestedMentionListDivider(boolean useDivider) {
             this.useSuggestedMentionListDivider = useDivider;
@@ -675,7 +678,7 @@ public class MessageInputComponent {
          * Returns the keyboard display type. (Refer to {@link KeyboardDisplayType})
          *
          * @return Keyboard display type used in this component
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public KeyboardDisplayType getKeyboardDisplayType() {
@@ -686,7 +689,7 @@ public class MessageInputComponent {
          * Returns whether the left button of the input view is used.
          *
          * @return <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseLeftButton() {
             return useLeftButton;
@@ -696,7 +699,7 @@ public class MessageInputComponent {
          * Returns whether the right button of the input view is shown always.
          *
          * @return <code>true</code> if the right button of the input view is shown always, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean isAlwaysShowRightButton() {
             return alwaysShowRightButton;
@@ -706,7 +709,7 @@ public class MessageInputComponent {
          * Returns the icon on the left button of the input view.
          *
          * @return The Drawable to be displayed on the left button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getLeftButtonIcon() {
@@ -717,7 +720,7 @@ public class MessageInputComponent {
          * Returns the icon on the right button of the input view.
          *
          * @return The Drawable to be displayed on the right button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getRightButtonIcon() {
@@ -728,7 +731,7 @@ public class MessageInputComponent {
          * Returns the color of the icon on the left button of the input view.
          *
          * @return Color state list to be applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getLeftButtonIconTint() {
@@ -739,7 +742,7 @@ public class MessageInputComponent {
          * Returns the color of the icon on the right button of the input view.
          *
          * @return Color state list to be applied to the right button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getRightButtonIconTint() {
@@ -750,7 +753,7 @@ public class MessageInputComponent {
          * Returns the hint of the input view.
          *
          * @return The String displayed as a hint message
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getHintText() {
@@ -761,7 +764,7 @@ public class MessageInputComponent {
          * Returns the input text.
          *
          * @return The String to be set on the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getInputText() {
@@ -772,7 +775,7 @@ public class MessageInputComponent {
          * Returns whether to use divider in suggested mention list.
          *
          * @return If <code>true</code> the divider is used at suggested mention list, <code>false</code> other wise.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseSuggestedMentionListDivider() {
             return useSuggestedMentionListDivider;
@@ -783,7 +786,7 @@ public class MessageInputComponent {
          *
          * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMentionUIConfig().apply(configSentFromMe);
@@ -794,7 +797,7 @@ public class MessageInputComponent {
          * Sets the UI configuration of message input text.
          *
          * @param textUIConfig the UI configuration of the message input text.
-         * @since 3.2.1
+         * since 3.2.1
          */
         public void setMessageInputTextUIConfig(@Nullable TextUIConfig textUIConfig) {
             this.textUIConfig = textUIConfig;
@@ -804,7 +807,7 @@ public class MessageInputComponent {
          * Returns the UI configuration of message input text.
          *
          * @return the UI configuration of message input text.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @Nullable
         public TextUIConfig getMessageInputTextUIConfig() {
@@ -829,7 +832,7 @@ public class MessageInputComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
@@ -874,5 +877,17 @@ public class MessageInputComponent {
             }
             return this;
         }
+
+        @TestOnly
+        @NonNull
+        MessageUIConfig getMessageUIConfig() {
+            return messageUIConfig;
+        }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    MessageInputView createMessageInputView(@NonNull Context context) {
+        return new MessageInputView(context, null, R.attr.sb_component_channel_message_input);
     }
 }

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * ViewModel preparing and managing data when creating a channel
  *
- * @since 3.2.0
+ * since 3.2.0
  */
 public class CreateOpenChannelViewModel extends BaseViewModel {
     private final AtomicBoolean isCreatingChannel = new AtomicBoolean();
@@ -22,7 +22,7 @@ public class CreateOpenChannelViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -45,7 +45,7 @@ public class CreateOpenChannelViewModel extends BaseViewModel {
      *
      * @param params Params to be applied when creating a channel
      * @param handler Callback notifying the result of authentication
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void createOpenChannel(@NonNull OpenChannelCreateParams params, @Nullable OpenChannelCallbackHandler handler) {
         Logger.dev("++ createOpenChannel isCreatingChannel : " + isCreatingChannel.get());

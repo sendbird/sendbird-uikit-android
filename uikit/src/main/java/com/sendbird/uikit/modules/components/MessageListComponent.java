@@ -16,7 +16,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 /**
  * This class creates and performs a view corresponding the message list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MessageListComponent extends BaseMessageListComponent<MessageListAdapter> {
     @Nullable
@@ -29,7 +29,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MessageListComponent() {
         super(new Params(), true, true);
@@ -39,7 +39,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -100,7 +100,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     /**
      * Register a callback to be invoked when the quoted message is clicked.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnQuoteReplyMessageClickListener(@Nullable OnItemClickListener<BaseMessage> quoteReplyMessageClickListener) {
         this.quoteReplyMessageClickListener = quoteReplyMessageClickListener;
@@ -110,7 +110,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * Register a callback to be invoked when the quoted message is long-clicked.
      *
      * @param quoteReplyMessageLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnQuoteReplyMessageLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> quoteReplyMessageLongClickListener) {
         this.quoteReplyMessageLongClickListener = quoteReplyMessageLongClickListener;
@@ -122,7 +122,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onQuoteReplyMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (quoteReplyMessageClickListener != null)
@@ -135,7 +135,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onQuoteReplyMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (quoteReplyMessageLongClickListener != null)
@@ -145,7 +145,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     /**
      * Register a callback to be invoked when the thread info is clicked.
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     public void setOnThreadInfoClickListener(@Nullable OnItemClickListener<BaseMessage> threadInfoClickListener) {
         this.threadInfoClickListener = threadInfoClickListener;
@@ -157,7 +157,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onThreadInfoClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (threadInfoClickListener != null)
@@ -170,7 +170,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * <p><b>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</b></p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params extends BaseMessageListComponent.Params {}
 }

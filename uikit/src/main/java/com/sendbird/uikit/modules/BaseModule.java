@@ -29,7 +29,7 @@ public abstract class BaseModule {
      * @param inflater The LayoutInflater object that can be used to inflate any views in the module
      * @param args     The arguments supplied when the module was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public abstract View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @Nullable Bundle args);
@@ -38,7 +38,7 @@ public abstract class BaseModule {
      * Parameters applied to this module and view of this module. The values of params are not dynamically applied at runtime.
      * When used in each fragment, it is recommended to get the created params and set values in {@code onConfigureParams(BaseModule, Bundle)}.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         @StyleRes
@@ -57,7 +57,7 @@ public abstract class BaseModule {
          * @param context        The {@code Context} this module is currently associated with
          * @param themeMode      The theme of Sendbird UIKit to be applied to this module
          * @param themeAttrResId The attribute ID to apply to this module.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode, @AttrRes int themeAttrResId) {
             this(context, themeMode.getResId(), themeAttrResId);
@@ -69,7 +69,7 @@ public abstract class BaseModule {
          * @param context        The {@code Context} this module is currently associated with
          * @param themeResId     The theme resource ID to be applied to this module
          * @param themeAttrResId The attribute ID to apply to this module.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId, @AttrRes int themeAttrResId) {
             this.context = context;
@@ -81,7 +81,7 @@ public abstract class BaseModule {
          * Returns the theme, which can be applied to a fragment.
          *
          * @return The resource identifier of the style to be applied to a fragment.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @StyleRes
         public int getTheme() {
@@ -95,7 +95,7 @@ public abstract class BaseModule {
          * Returns whether the header is used.
          *
          * @return <code>true</code> if the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseHeader() {
             return useHeader;
@@ -105,7 +105,7 @@ public abstract class BaseModule {
          * Sets whether the header is used. The default is <code>false</code>.
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseHeader(boolean useHeader) {
             this.useHeader = useHeader;
@@ -120,7 +120,7 @@ public abstract class BaseModule {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

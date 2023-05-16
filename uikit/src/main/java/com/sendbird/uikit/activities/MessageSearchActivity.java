@@ -23,7 +23,7 @@ public class MessageSearchActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @return MessageSearchActivity Intent
      *
-     * @since 2.1.0
+     * since 2.1.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
@@ -37,7 +37,7 @@ public class MessageSearchActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 2.1.0
+     * since 2.1.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends MessageSearchActivity> cls, @NonNull String channelUrl) {
@@ -65,7 +65,7 @@ public class MessageSearchActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.MessageSearchFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

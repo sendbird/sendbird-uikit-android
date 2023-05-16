@@ -11,14 +11,14 @@ import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 /**
  * This class creates and performs a view corresponding the channel settings header area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelSettingsHeaderComponent extends StateHeaderComponent {
     /**
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         final View rootView = getRootView();

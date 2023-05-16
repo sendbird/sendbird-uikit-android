@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the message search result list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MessageSearchListComponent {
     @NonNull
@@ -42,7 +42,7 @@ public class MessageSearchListComponent {
      * Constructor that is called when a module is created, supplying parameters
      * that can customize a default View.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MessageSearchListComponent() {
         this.params = new Params();
@@ -52,7 +52,7 @@ public class MessageSearchListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -64,7 +64,7 @@ public class MessageSearchListComponent {
      *
      * @return The data sets of this component.
      * @see MessageListComponent.Params
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public MessageSearchListComponent.Params getParams() {
@@ -76,7 +76,7 @@ public class MessageSearchListComponent {
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends MessageSearchAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
@@ -116,7 +116,7 @@ public class MessageSearchListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -143,7 +143,7 @@ public class MessageSearchListComponent {
      * Sets the paged data loader for message search result list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<BaseMessage>> pagedDataLoader) {
         if (pagerRecyclerView != null) pagerRecyclerView.setPager(pagedDataLoader);
@@ -153,7 +153,7 @@ public class MessageSearchListComponent {
      * Notifies this component that the message search result is changed.
      *
      * @param messageList The list of message search result to be displayed on this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<BaseMessage> messageList) {
         Logger.d("++ ChannelListComponent::notifyDataSetChanged()");
@@ -167,7 +167,7 @@ public class MessageSearchListComponent {
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (itemClickListener != null) itemClickListener.onItemClick(view, position, message);
@@ -179,7 +179,7 @@ public class MessageSearchListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         protected Params() {
@@ -191,7 +191,7 @@ public class MessageSearchListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

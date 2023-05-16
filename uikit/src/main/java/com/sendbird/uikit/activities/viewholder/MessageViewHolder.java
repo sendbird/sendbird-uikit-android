@@ -14,6 +14,8 @@ import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.Map;
 
 /**
@@ -72,7 +74,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      *
      * @param messageUIConfig the configurations of the message's properties to highlight text.
      * @see com.sendbird.uikit.model.TextUIConfig
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
         this.messageUIConfig = messageUIConfig;
@@ -112,7 +114,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * @param channel          Channel used for as item view.
      * @param message          Message used for as item view.
      * @param messageGroupType The type of message group UI.
-     * @since 1.2.1
+     * since 1.2.1
      * @deprecated 3.3.0
      * <p> Use {@link #bind(BaseChannel, BaseMessage, MessageListUIParams)} instead.
      * When binding view holders, this method is still invoked.
@@ -127,7 +129,7 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * @param channel Channel used for as item view.
      * @param message Message used for as item view.
      * @param params  Params used for as item view.
-     * @since 3.3.0
+     * since 3.3.0
      */
     public void bind(@NonNull BaseChannel channel, @NonNull BaseMessage message, @NonNull MessageListUIParams params) {}
 
@@ -135,9 +137,21 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
      * Returns a Map containing views to register a click event with an identifier.
      *
      * @return A Map containing views to register a click event with an identifier.
-     * @since 2.2.0
+     * since 2.2.0
      */
     @NonNull
     abstract public Map<String, View> getClickableViewMap();
+
+    @TestOnly
+    @Nullable
+    MessageUIConfig getMessageUIConfig() {
+        return this.messageUIConfig;
+    }
+
+    @TestOnly
+    @NonNull
+    MessageListUIParams getMessageListUIParams() {
+        return this.messageListUIParams;
+    }
 }
 

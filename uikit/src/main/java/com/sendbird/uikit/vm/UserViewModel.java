@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * ViewModel preparing and managing data related with the list of users
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedDataLoader<List<T>> {
     @NonNull
@@ -69,7 +69,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public UserViewModel(@NonNull String channelUrl) {
         this(channelUrl, null);
@@ -80,7 +80,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param queryHandler A callback to be invoked when a list of data is loaded.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public UserViewModel(@NonNull String channelUrl, @Nullable PagedQueryHandler<T> queryHandler) {
         super();
@@ -218,7 +218,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -229,7 +229,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -240,7 +240,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns LiveData that can be observed if the current user has been unregistered from the operator.
      *
      * @return LiveData holding whether the current user has been unregistered from the operator
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> getOperatorUnregistered() {
@@ -251,7 +251,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding whether the channel has been deleted
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> getChannelDeleted() {
@@ -270,7 +270,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * When the user list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
      * @return The Status for the user list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<StatusFrameView.Status> getStatusFrame() {
@@ -292,7 +292,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns LiveData that can be observed for the list of users.
      *
      * @return LiveData holding the latest list of users
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<List<T>> getUserList() {
@@ -312,7 +312,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns {@code false} as the user list do not support to load for the previous by default.
      *
      * @return Always {@code false}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public boolean hasPrevious() {
@@ -329,7 +329,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * If there is no more pages to be read, an empty <code>List</code> (not <code>null</code>) returns.
      * If the request is succeed, you can observe updated data through {@link #getUserList()}.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public synchronized boolean loadInitial() {
         Logger.d(">> UserViewModel::loadInitial()");
@@ -356,7 +356,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @return Returns the queried list of <code>User</code>s if no error occurs
      * @throws Exception Throws exception if getting the user list are failed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -394,7 +394,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Returns the empty list as the user list do not support to load for the previous by default.
      *
      * @return The empty list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -407,7 +407,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userIds User IDs to be added as operators
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void addOperators(@NonNull List<String> userIds, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -424,7 +424,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId User ID to be added as operator
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void addOperator(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -441,7 +441,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId User ID to be dismissed from operator
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void removeOperator(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -458,7 +458,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId ID of the user to be muted
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void muteUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -475,7 +475,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId ID of the user to be unmuted
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void unmuteUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -492,7 +492,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId ID of the user to be banned
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void banUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -509,7 +509,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userId ID of the user to be unbanned
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void unbanUser(@NonNull String userId, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -526,7 +526,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param userIds User IDs to be invited to the channel
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void inviteUser(@NonNull List<String> userIds, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -542,7 +542,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -571,7 +571,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
      *
      * @param channelUrl channel's url
      * @return A paged query handler.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected abstract PagedQueryHandler<T> createQueryHandler(@NonNull String channelUrl);

@@ -22,7 +22,7 @@ import com.sendbird.uikit.log.Logger;
 /**
  * ViewModel preparing and managing data related with the settings of an open channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class OpenChannelSettingsViewModel extends BaseViewModel {
     @NonNull
@@ -40,7 +40,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelSettingsViewModel(@NonNull String channelUrl) {
         this.channelUrl = channelUrl;
@@ -50,7 +50,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -73,7 +73,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
 
     /**
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     protected void onCleared() {
@@ -85,7 +85,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Returns {@code OpenChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code OpenChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OpenChannel getChannel() {
@@ -96,7 +96,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -107,7 +107,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code OpenChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<OpenChannel> getChannelUpdated() {
@@ -118,7 +118,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the Activity or Fragment should be finished.
      *
      * @return LiveData holding the event for whether the Activity or Fragment should be finished
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> shouldFinish() {
@@ -209,7 +209,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      *
      * @param params Target OpenChannel.
      * @param handler Callback handler called when this method is completed.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void updateChannel(@NonNull OpenChannelUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -226,7 +226,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
      * Updates current channel.
      *
      * @param handler Callback handler called when this method is completed.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void deleteChannel(@Nullable OnCompleteHandler handler) {
         if (channel == null) {

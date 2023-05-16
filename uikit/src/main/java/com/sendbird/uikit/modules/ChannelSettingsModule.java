@@ -33,7 +33,7 @@ import com.sendbird.uikit.modules.components.ChannelSettingsMenuComponent;
  *  <li>Menu component is {@link ChannelSettingsMenuComponent} and you can set custom menu component by {@link #setChannelSettingsMenuComponent(ChannelSettingsMenuComponent)}
  * </ul>
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelSettingsModule extends BaseModule {
     @NonNull
@@ -52,7 +52,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Constructor
      *
      * @param context The {@code Context} this module is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelSettingsModule(@NonNull Context context) {
         this(context, new Params(context));
@@ -63,7 +63,7 @@ public class ChannelSettingsModule extends BaseModule {
      *
      * @param context The {@code Context} this module is currently associated with
      * @param params The Parameter object that can customize a default Fragment.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelSettingsModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
@@ -121,7 +121,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Sets a custom header component.
      *
      * @param component The header component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends ChannelSettingsHeaderComponent> void setHeaderComponent(@NonNull T component) {
         this.headerComponent = component;
@@ -131,7 +131,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Sets the settings menu component.
      *
      * @param component the settings menu component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends ChannelSettingsMenuComponent> void setChannelSettingsMenuComponent(@NonNull T component) {
         this.menuComponent = component;
@@ -141,7 +141,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Sets the channel information component.
      *
      * @param component the channel information component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends ChannelSettingsInfoComponent> void setChannelSettingsInfoComponent(@NonNull T component) {
         this.infoComponent = component;
@@ -151,7 +151,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Returns the header component.
      *
      * @return The header component of this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public ChannelSettingsHeaderComponent getHeaderComponent() {
@@ -162,7 +162,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Returns the settings menu component.
      *
      * @return The settings menu component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public ChannelSettingsMenuComponent getChannelSettingsMenuComponent() {
@@ -173,7 +173,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Returns the channel information component.
      *
      * @return The channel information component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public ChannelSettingsInfoComponent getChannelSettingsInfoComponent() {
@@ -184,7 +184,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Returns a collection of parameters applied to this module.
      *
      * @return {@link Params} applied to this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -195,7 +195,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
@@ -205,7 +205,7 @@ public class ChannelSettingsModule extends BaseModule {
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public LoadingDialogHandler getLoadingDialogHandler() {
@@ -216,7 +216,7 @@ public class ChannelSettingsModule extends BaseModule {
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean shouldShowLoadingDialog(@NonNull Context context) {
          if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
@@ -229,7 +229,7 @@ public class ChannelSettingsModule extends BaseModule {
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void shouldDismissLoadingDialog() {
         if (loadingDialogHandler != null) {
@@ -244,7 +244,7 @@ public class ChannelSettingsModule extends BaseModule {
          * Constructor
          *
          * @param context The {@code Context} this module is currently associated with
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context) {
             this(context, SendbirdUIKit.getDefaultThemeMode());
@@ -255,7 +255,7 @@ public class ChannelSettingsModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeMode The theme of Sendbird UIKit to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             super(context, themeMode, R.attr.sb_module_channel_settings);
@@ -266,7 +266,7 @@ public class ChannelSettingsModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
             super(context, themeResId, R.attr.sb_module_channel_settings);

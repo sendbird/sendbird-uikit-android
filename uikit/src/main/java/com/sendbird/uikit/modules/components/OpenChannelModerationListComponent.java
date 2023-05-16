@@ -20,14 +20,14 @@ import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 /**
  * This class creates and performs a view corresponding the moderation list area in Sendbird UIKit.
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelModerationListComponent {
 
     /**
      * Represents all moderation menus for open channel.
      *
-     * @since 3.1.0
+     * since 3.1.0
      */
     public enum ModerationMenu {
         /**
@@ -64,7 +64,7 @@ public class OpenChannelModerationListComponent {
     /**
      * Constructor
      *
-     * @since 3.1.0
+     * since 3.1.0
      */
     public OpenChannelModerationListComponent() {
         this.params = new Params();
@@ -74,7 +74,7 @@ public class OpenChannelModerationListComponent {
      * Returns the nested scroll view used in this component.
      *
      * @return {@link NestedScrollView} that this component creates and performs by default
-     * @since 3.1.0
+     * since 3.1.0
      */
     @Nullable
     protected NestedScrollView getNestedScrollView() {
@@ -85,7 +85,7 @@ public class OpenChannelModerationListComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Params getParams() {
@@ -96,7 +96,7 @@ public class OpenChannelModerationListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.1.0
+     * since 3.1.0
      */
     @Nullable
     public View getRootView() {
@@ -112,7 +112,7 @@ public class OpenChannelModerationListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -165,7 +165,7 @@ public class OpenChannelModerationListComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param menuItemClickListener The callback that will run
-     * @since 3.1.0
+     * since 3.1.0
      */
     public void setOnMenuItemClickListener(@Nullable OnMenuItemClickListener<ModerationMenu, Void> menuItemClickListener) {
         this.menuItemClickListener = menuItemClickListener;
@@ -176,7 +176,7 @@ public class OpenChannelModerationListComponent {
      *
      * @param view The View clicked
      * @param menu The menu that the clicked item displays
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onMenuItemClicked(@NonNull View view, @NonNull ModerationMenu menu) {
         if (menuItemClickListener != null)
@@ -189,7 +189,7 @@ public class OpenChannelModerationListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.1.0
+     * since 3.1.0
      */
     public static class Params {
         protected Params() {
@@ -201,7 +201,7 @@ public class OpenChannelModerationListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

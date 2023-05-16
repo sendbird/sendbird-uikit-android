@@ -108,7 +108,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull InviteUserViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onBindHeaderComponent()");
@@ -122,7 +122,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindInviteUserListComponent(@NonNull InviteUserListComponent listComponent, @NonNull InviteUserViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onBindInviteUserListComponent()");
@@ -138,7 +138,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull InviteUserViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onBindStatusComponent()");
@@ -172,7 +172,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * Called when the user selection completed.
      *
      * @param selectedUsers selected user's ids.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
         Logger.d(">> InviteUserFragment::onUserSelectComplete()");
@@ -184,7 +184,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * If you want add more data, you can override this and set the data.
      *
      * @param userIds The user list who will be invited.
-     * @since 1.1.1
+     * since 1.1.1
      */
     protected void onBeforeInviteUsers(@NonNull List<String> userIds) {
     }
@@ -193,7 +193,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * Invites users.
      *
      * @param userIds The user list who will be invited.
-     * @since 1.1.1
+     * since 1.1.1
      */
     protected void inviteUser(@NonNull List<String> userIds) {
         Logger.d(">> InviteUserFragment::inviteUser()");
@@ -215,7 +215,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * It will be called when the new users have been invited.
      *
      * @param channel the channel where new users are invited.
-     * @since 1.1.1
+     * since 1.1.1
      */
     protected void onNewUserInvited(@NonNull GroupChannel channel) {
         Logger.d(">> InviteUserFragment::onNewUserInvited()");
@@ -230,7 +230,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -294,7 +294,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends InviteUserFragment> Builder setCustomFragment(T fragment) {
@@ -307,7 +307,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -320,7 +320,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param inviteButtonText text to be displayed to the right button.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setInviteButtonText(@NonNull String inviteButtonText) {
@@ -358,7 +358,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.3
+         * since 1.2.3
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -396,7 +396,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -410,7 +410,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setCustomPagedQueryHandler(@NonNull PagedQueryHandler<UserInfo> handler) {
@@ -435,7 +435,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -448,7 +448,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -462,7 +462,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -476,7 +476,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -489,7 +489,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -502,7 +502,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param userSelectChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
@@ -515,7 +515,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
          *
          * @param userSelectionCompleteListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {

@@ -17,7 +17,7 @@ import com.sendbird.android.user.User;
  * The text with a MentionSpan attached will be bold and clickable.
  * MentionSpan provides the User data that is relevant to the marked-up text.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MentionSpan extends MetricAffectingSpan {
     @NonNull
@@ -43,7 +43,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param value The text to be mentioned
      * @param user The User relevant to this mention-spanned text
      * @param uiConfig The mention ui config.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MentionSpan(@NonNull Context context, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
         this(context, MentionType.USERS, trigger, value, user, uiConfig);
@@ -58,7 +58,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param user The User relevant to this mention-spanned text
      * @param uiConfig The mention ui config.
      * @param mentionedCurrentUserUIConfig The mention ui config if current user is mentioned
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MentionSpan(@NonNull Context context, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         this(context, MentionType.USERS, trigger, value, user, uiConfig, mentionedCurrentUserUIConfig);
@@ -73,7 +73,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param value The text to be mentioned
      * @param user The User relevant to this mention-spanned text
      * @param uiConfig The mention ui config.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MentionSpan(@NonNull Context context, @NonNull MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig) {
         this(context, mentionType, trigger, value, user, uiConfig, null);
@@ -89,7 +89,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * @param user The User relevant to this mention-spanned text
      * @param uiConfig The mention ui config.
      * @param mentionedCurrentUserUIConfig The mention ui config if current user is mentioned
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MentionSpan(@NonNull Context context, @NonNull MentionType mentionType, @NonNull String trigger, @NonNull String value, @NonNull User user, @NonNull TextUIConfig uiConfig, @Nullable TextUIConfig mentionedCurrentUserUIConfig) {
         this.context = context;
@@ -149,7 +149,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the mentioned text.
      *
      * @return The mentioned text of this spanned text
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getValue() {
@@ -160,7 +160,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the trigger text.
      *
      * @return The trigger text of this spanned text
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getTrigger() {
@@ -171,7 +171,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the text to be displayed by combining trigger and value.
      *
      * @return The text to be displayed from this markup object
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getDisplayText() {
@@ -182,7 +182,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the template text to be used as a mention data.
      *
      * @return The text to be used as a mention data from this markup object
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getTemplateText() {
@@ -193,7 +193,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the User relevant to this spanned text
      *
      * @return The User data relevant to this markup object
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public User getMentionedUser() {
@@ -204,7 +204,7 @@ public class MentionSpan extends MetricAffectingSpan {
      * Returns the length of the text to be displayed.
      *
      * @return The length of the displayed text of this markup object
-     * @since 3.0.0
+     * since 3.0.0
      */
     public int getLength() {
         return getDisplayText().length();

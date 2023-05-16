@@ -7,7 +7,7 @@ import com.sendbird.uikit.interfaces.UserInfo;
 /**
  * Adapters provides a binding from a {@link UserInfo} type to views that are displayed within a RecyclerView.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class UserInfoListAdapter extends SelectUserListAdapter<UserInfo> {
 

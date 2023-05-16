@@ -20,7 +20,6 @@ internal enum class NotificationThemeMode(val value: Int) {
     Default(2)
 }
 
-
 @Serializable
 internal data class CSVColor(
     private val color: String

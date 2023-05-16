@@ -243,7 +243,7 @@ public class SendbirdUIKit {
      *
      * @param adapter The {@link SendbirdUIKitAdapter} providing an app ID, a information of the user.
      * @param context <code>Context</code> of <code>Application</code>.
-     * @since 2.1.8
+     * since 2.1.8
      */
     public synchronized static void initFromForeground(@NonNull SendbirdUIKitAdapter adapter, @NonNull Context context) {
         init(adapter, context, true);
@@ -293,7 +293,7 @@ public class SendbirdUIKit {
     /**
      * @param level set the displaying log level. {@link LogLevel}
      *
-     * @since 1.0.2
+     * since 1.0.2
      */
     public static void setLogLevel(@NonNull LogLevel level) {
         Logger.setLogLevel(level.getLevel());
@@ -335,7 +335,7 @@ public class SendbirdUIKit {
      *
      * @see #init(SendbirdUIKitAdapter, Context)
      */
-    @NonNull
+    @Nullable
     public static SendbirdUIKitAdapter getAdapter() {
         return adapter;
     }
@@ -354,7 +354,7 @@ public class SendbirdUIKit {
      * Returns the custom params handler.
      *
      * @return The callback handler.
-     * @since 1.2.2
+     * since 1.2.2
      */
     @Nullable
     public static CustomParamsHandler getCustomParamsHandler() {
@@ -365,7 +365,7 @@ public class SendbirdUIKit {
      * Returns set value whether the user profile uses.
      *
      * @return the value whether the user profile uses.
-     * @since 1.2.2
+     * since 1.2.2
      */
     public static boolean shouldUseDefaultUserProfile() {
         return useDefaultUserProfile;
@@ -375,7 +375,7 @@ public class SendbirdUIKit {
      * Sets whether the user profile uses.
      *
      * @param useDefaultUserProfile If <code>true</code> the default user profile included the UIKit will be shown, <code>false</code> other wise.
-     * @since 1.2.2
+     * since 1.2.2
      */
     public static void setUseDefaultUserProfile(boolean useDefaultUserProfile) {
         SendbirdUIKit.useDefaultUserProfile = useDefaultUserProfile;
@@ -385,7 +385,7 @@ public class SendbirdUIKit {
      * Sets whether the typing indicator is used on the channel list screen.
      *
      * @param useChannelListTypingIndicators If <code>true</code> the typing indicator will be shown at the channel list item, <code>false</code> other wise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static void setUseChannelListTypingIndicators(boolean useChannelListTypingIndicators) {
         SendbirdUIKit.useChannelListTypingIndicators = useChannelListTypingIndicators;
@@ -395,7 +395,7 @@ public class SendbirdUIKit {
      * Returns set value whether the typing indicator is used on the channel list screen.
      *
      * @return the value whether the typing indicator is used on the channel list screen.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static boolean isUsingChannelListTypingIndicators() {
         return useChannelListTypingIndicators;
@@ -405,7 +405,7 @@ public class SendbirdUIKit {
      * Sets whether the states read-receipt and delivery-receipt are used on the channel list screen.
      *
      * @param useChannelListMessageReceiptStatus If <code>true</code> the states read-receipt and delivery-receipt will be shown at the channel list item, <code>false</code> other wise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static void setUseChannelListMessageReceiptStatus(boolean useChannelListMessageReceiptStatus) {
         SendbirdUIKit.useChannelListMessageReceiptStatus = useChannelListMessageReceiptStatus;
@@ -415,7 +415,7 @@ public class SendbirdUIKit {
      * Returns set value whether the states read-receipt and delivery-receipt are used on the channel list screen.
      *
      * @return the value whether the states read-receipt and delivery-receipt are used on the channel list screen.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static boolean isUsingChannelListMessageReceiptStatus() {
         return useChannelListMessageReceiptStatus;
@@ -425,7 +425,7 @@ public class SendbirdUIKit {
      * Sets whether the user mention is used on the channel screen.
      *
      * @param useMention If <code>true</code> the mention will be used at the channel, <code>false</code> other wise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static void setUseUserMention(boolean useMention) {
         SendbirdUIKit.useMention = useMention;
@@ -436,7 +436,7 @@ public class SendbirdUIKit {
      *
      * @param config The configuration to be applied for the mention
      * @see UserMentionConfig
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static void setMentionConfig(@NonNull UserMentionConfig config) {
         SendbirdUIKit.userMentionConfig = config;
@@ -446,7 +446,7 @@ public class SendbirdUIKit {
      * Sets whether a nickname uses a user ID when there is no user nickname based on the user ID.
      *
      * @param useUserIdForNickname If <code>true</code> the user's nickname uses user ID when the nickname is empty, <code>false</code> other wise.
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static void setUseUserIdForNickname(boolean useUserIdForNickname) {
         SendbirdUIKit.useUserIdForNickname = useUserIdForNickname;
@@ -456,7 +456,7 @@ public class SendbirdUIKit {
      * Returns the user mention configuration.
      *
      * @return The configuration applied for the user mention
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public static UserMentionConfig getUserMentionConfig() {
@@ -467,7 +467,7 @@ public class SendbirdUIKit {
      * Returns set value whether the user mention is used on the channel screen.
      *
      * @return The value whether the user mention is used on the channel screen.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static boolean isUsingUserMention() {
         return SendbirdUIKit.useMention;
@@ -477,7 +477,7 @@ public class SendbirdUIKit {
      * Returns set value whether a nickname uses a user ID when there is no user nickname based on the user ID.
      *
      * @return The value whether a nickname uses a user ID when there is no user nickname based on the user ID.
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static boolean isUsingUserIdForNickname() {
         return useUserIdForNickname;
@@ -488,7 +488,7 @@ public class SendbirdUIKit {
      * The voice message is only active in group channels.
      *
      * @param useVoiceMessage If <code>true</code> the voice message will be used, <code>false</code> other wise.
-     * @since 3.4.0
+     * since 3.4.0
      */
     public static void setUseVoiceMessage(boolean useVoiceMessage) {
         SendbirdUIKit.useVoiceMessage = useVoiceMessage;
@@ -499,7 +499,7 @@ public class SendbirdUIKit {
      * The voice message is only active in group channels.
      *
      * @return The value whether the voice message is used on the channel screen, message thread screen.
-     * @since 3.4.0
+     * since 3.4.0
      */
     public static boolean isUsingVoiceMessage() {
         return SendbirdUIKit.useVoiceMessage;
@@ -642,7 +642,7 @@ public class SendbirdUIKit {
      * Sets the handler so that common custom data can be set.
      *
      * @param handler The callback that will run.
-     * @since 1.2.2
+     * since 1.2.2
      */
     public static void setCustomParamsHandler(@NonNull CustomParamsHandler handler) {
         SendbirdUIKit.customParamsHandler = handler;
@@ -651,7 +651,7 @@ public class SendbirdUIKit {
     /**
      * Sets the factory that creates fragments generated by UIKit's basic activities.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static void setUIKitFragmentFactory(@NonNull UIKitFragmentFactory factory) {
         SendbirdUIKit.fragmentFactory = factory;
@@ -661,7 +661,7 @@ public class SendbirdUIKit {
      * Returns the factory that creates fragments generated by UIKit's basic activities.
      *
      * @return {@link UIKitFragmentFactory} that creates fragments generated by UIKit's basic activities.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public static UIKitFragmentFactory getFragmentFactory() {
@@ -686,7 +686,7 @@ public class SendbirdUIKit {
      * The target image types are 'image/jpg`, `image/jpeg`, and `image/png`, the others will be ignored.
      *
      * @param useCompression If <code>true</code> the image file will be transferred to the original image, <code>false</code> other wise.
-     * @since 2.0.1
+     * since 2.0.1
      */
     public static void setUseImageCompression(boolean useCompression) {
         SendbirdUIKit.useCompression = useCompression;
@@ -696,7 +696,7 @@ public class SendbirdUIKit {
      * Returns the value whether the sending image file will be compressing.
      *
      * @return the value whether the sending image file will be compressing.
-     * @since 2.0.1
+     * since 2.0.1
      */
     public static boolean shouldUseImageCompression() {
         return SendbirdUIKit.useCompression;
@@ -711,7 +711,7 @@ public class SendbirdUIKit {
      *                        formats, like PNG which is lossless, will ignore the
      *                        quality setting
      * @see android.graphics.Bitmap#compress(Bitmap.CompressFormat format, int quality, OutputStream stream)
-     * @since 2.0.1
+     * since 2.0.1
      */
     public static void setCompressQuality(int compressQuality) {
         SendbirdUIKit.compressQuality = compressQuality;
@@ -721,7 +721,7 @@ public class SendbirdUIKit {
      * Returns the value of image compression.
      *
      * @return The value of image compression.
-     * @since 2.0.1
+     * since 2.0.1
      */
     public static int getCompressQuality() {
         return SendbirdUIKit.compressQuality;
@@ -733,7 +733,7 @@ public class SendbirdUIKit {
      * When drawing a thumbnail, half the set size is used, and the minimum value is 100x100.
      *
      * @param resizingSize The value of the image to resize.
-     * @since 2.0.1
+     * since 2.0.1
      */
     public static void setResizingSize(@NonNull Pair<Integer, Integer> resizingSize) {
         SendbirdUIKit.resizingSize = resizingSize;
@@ -743,7 +743,7 @@ public class SendbirdUIKit {
      * Returns a size value to resize.
      *
      * @return The value of the image to resize.
-     * @since 2.0.1
+     * since 2.0.1
      */
     @NonNull
     public static Pair<Integer, Integer> getResizingSize() {
@@ -754,7 +754,7 @@ public class SendbirdUIKit {
      * Sets <code>ReplyType</code>, which is how replies are displayed in the message list.
      *
      * @param replyType A type that represents how to display replies in message list
-     * @since 2.2.0
+     * since 2.2.0
      */
     public static void setReplyType(@NonNull ReplyType replyType) {
         SendbirdUIKit.replyType = replyType;
@@ -765,7 +765,7 @@ public class SendbirdUIKit {
      * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
      *
      * @param threadReplySelectType A type that represents where to go when selecting a reply
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static void setThreadReplySelectType(@NonNull ThreadReplySelectType threadReplySelectType) {
         SendbirdUIKit.threadReplySelectType = threadReplySelectType;
@@ -775,7 +775,7 @@ public class SendbirdUIKit {
      * Returns <code>ReplyType</code>, which is how replies are displayed in the message list.
      *
      * @return The value of <code>ReplyType</code>.
-     * @since 2.2.0
+     * since 2.2.0
      */
     @NonNull
     public static ReplyType getReplyType() {
@@ -787,7 +787,7 @@ public class SendbirdUIKit {
      * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
      *
      * @return The value of <code>ThreadReplySelectType</code>.
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public static ThreadReplySelectType getThreadReplySelectType() {

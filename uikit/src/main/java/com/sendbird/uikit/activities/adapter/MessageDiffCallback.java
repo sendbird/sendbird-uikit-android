@@ -173,11 +173,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
         if (TextUtils.isEmpty(item.getRequestId())) {
             return String.valueOf(item.getMessageId());
         } else {
-            try {
-                return item.getRequestId();
-            } catch (Exception e) {
-                return String.valueOf(item.getMessageId());
-            }
+            return item.getRequestId();
         }
     }
 }

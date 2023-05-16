@@ -9,7 +9,7 @@ import com.sendbird.uikit.consts.StringSet
 /**
  * This class apply disk cache key for only http url.
  *
- * @since 3.3.2
+ * since 3.3.2
  */
 private class GlideCacheKeyUrl(url: String, private val cacheKey: String) :
     GlideUrl(url.ifEmpty { StringSet.INVALID_URL }) {

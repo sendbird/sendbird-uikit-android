@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the message list area for {@code OpenChannel} in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 @SuppressWarnings("unused")
 public class OpenChannelMessageListComponent {
@@ -70,7 +70,7 @@ public class OpenChannelMessageListComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelMessageListComponent() {
         this.params = new Params();
@@ -80,7 +80,7 @@ public class OpenChannelMessageListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -91,7 +91,7 @@ public class OpenChannelMessageListComponent {
      * Returns the recycler view used in the list component by default.
      *
      * @return {@link RecyclerView} used in this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public RecyclerView getRecyclerView() {
@@ -102,7 +102,7 @@ public class OpenChannelMessageListComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -114,7 +114,7 @@ public class OpenChannelMessageListComponent {
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends OpenChannelMessageListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
@@ -149,7 +149,7 @@ public class OpenChannelMessageListComponent {
      * Returns the message list adapter for {@code OpenChannel}.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OpenChannelMessageListAdapter getAdapter() {
@@ -165,7 +165,7 @@ public class OpenChannelMessageListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -225,7 +225,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the button to scroll to the bottom is clicked.
      *
      * @param scrollBottomButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated 3.2.2
      * This method is no longer acceptable to invoke event.
      * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
@@ -239,7 +239,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the button to scroll to the first position is clicked.
      *
      * @param scrollFirstButtonClickListener The callback that will run
-     * @since 3.2.2
+     * since 3.2.2
      */
     public void setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
         this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
@@ -249,7 +249,7 @@ public class OpenChannelMessageListComponent {
      * Sets the paged data loader for open channel message list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<BaseMessage>> pagedDataLoader) {
         this.pagedDataLoader = pagedDataLoader;
@@ -261,7 +261,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the message is clicked.
      *
      * @param messageClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageClickListener(@Nullable OnItemClickListener<BaseMessage> messageClickListener) {
         this.messageClickListener = messageClickListener;
@@ -271,7 +271,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the profile view of the message is clicked.
      *
      * @param messageProfileClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
@@ -281,7 +281,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the message is long-clicked.
      *
      * @param messageLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageLongClickListener) {
         this.messageLongClickListener = messageLongClickListener;
@@ -291,7 +291,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the profile view of the message is long-clicked.
      *
      * @param messageProfileLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageProfileLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
         this.messageProfileLongClickListener = messageProfileLongClickListener;
@@ -301,7 +301,7 @@ public class OpenChannelMessageListComponent {
      * Register a callback to be invoked when the message is inserted.
      *
      * @param messageInsertedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageInsertedListener(@Nullable OnItemEventListener<BaseMessage> messageInsertedListener) {
         this.messageInsertedListener = messageInsertedListener;
@@ -345,7 +345,7 @@ public class OpenChannelMessageListComponent {
     /**
      * Scrolls to the bottom of the message list.
      *
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated 3.2.2
      * <p> Use {@link #scrollToFirst()} instead.
      */
@@ -357,7 +357,7 @@ public class OpenChannelMessageListComponent {
     /**
      * Scrolls to the first position of the recycler view.
      *
-     * @since 3.2.2
+     * since 3.2.2
      */
     public void scrollToFirst() {
         if (messageRecyclerView == null) return;
@@ -372,7 +372,7 @@ public class OpenChannelMessageListComponent {
      * @param messageList The list of messages to be drawn
      * @param channel     The latest group channel
      * @param callback    Callback when the message list is updated
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<BaseMessage> messageList, @NonNull OpenChannel channel, @Nullable OnMessageListUpdateHandler callback) {
         if (messageRecyclerView == null) return;
@@ -386,7 +386,7 @@ public class OpenChannelMessageListComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest open channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull OpenChannel channel) {
         if (messageRecyclerView == null) return;
@@ -403,7 +403,7 @@ public class OpenChannelMessageListComponent {
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageClickListener != null) messageClickListener.onItemClick(view, position, message);
@@ -415,7 +415,7 @@ public class OpenChannelMessageListComponent {
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (!params.useUserProfile) return;
@@ -429,7 +429,7 @@ public class OpenChannelMessageListComponent {
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageLongClickListener != null)
@@ -442,7 +442,7 @@ public class OpenChannelMessageListComponent {
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageProfileLongClickListener != null)
@@ -453,7 +453,7 @@ public class OpenChannelMessageListComponent {
      * Called when the button to scroll to the bottom is clicked.
      *
      * @param view The view that was clicked
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated 3.2.2
      * This method is no longer acceptable to invoke event.
      * <p> Use {@link #onScrollFirstButtonClicked(View)} instead.
@@ -467,7 +467,7 @@ public class OpenChannelMessageListComponent {
      * Called when the button to scroll to the first position is clicked.
      *
      * @param view The view that was clicked
-     * @since 3.2.2
+     * since 3.2.2
      */
     protected boolean onScrollFirstButtonClicked(@NonNull View view) {
         boolean handled = scrollBottomButtonClickListener != null;
@@ -483,7 +483,7 @@ public class OpenChannelMessageListComponent {
      * Called when the message is inserted.
      *
      * @param message The message that has been inserted
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageInserted(@NonNull BaseMessage message) {
         if (messageInsertedListener != null) messageInsertedListener.onItemEvent(message);
@@ -496,7 +496,7 @@ public class OpenChannelMessageListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useGroupUI = true;
@@ -507,7 +507,7 @@ public class OpenChannelMessageListComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
             this.messageUIConfig = new MessageUIConfig();
@@ -517,7 +517,7 @@ public class OpenChannelMessageListComponent {
          * Sets whether the message group UI is used.
          *
          * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseMessageGroupUI(boolean useMessageGroupUI) {
             this.useGroupUI = useMessageGroupUI;
@@ -527,7 +527,7 @@ public class OpenChannelMessageListComponent {
          * Sets whether the user profile is shown when the profile of message is clicked.
          *
          * @param useUserProfile <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseUserProfile(boolean useUserProfile) {
             this.useUserProfile = useUserProfile;
@@ -538,7 +538,7 @@ public class OpenChannelMessageListComponent {
          *
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyEditedTextMarkUIConfig().apply(configSentFromMe);
@@ -550,7 +550,7 @@ public class OpenChannelMessageListComponent {
          *
          * @param configSentFromMe       the UI configuration of the message text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message text that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMessageTextUIConfig().apply(configSentFromMe);
@@ -562,7 +562,7 @@ public class OpenChannelMessageListComponent {
          *
          * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMySentAtTextUIConfig().apply(configSentFromMe);
@@ -575,7 +575,7 @@ public class OpenChannelMessageListComponent {
          * @param configSentFromMe       the UI configuration of the sender nickname text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
          * @param configSentFromOperator the UI configuration of the sender nickname text that was sent from operator.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setNicknameTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers, @Nullable TextUIConfig configSentFromOperator) {
             if (configSentFromMe != null) this.messageUIConfig.getMyNicknameTextUIConfig().apply(configSentFromMe);
@@ -588,7 +588,7 @@ public class OpenChannelMessageListComponent {
          *
          * @param drawableSentFromMe     the UI configuration of the message background that was sent from me.
          * @param drawableSentFromOthers the UI configuration of the message background that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setMessageBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyMessageBackground(drawableSentFromMe);
@@ -600,7 +600,7 @@ public class OpenChannelMessageListComponent {
          *
          * @param drawableSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
          * @param drawableSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setOgtagBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyOgtagBackground(drawableSentFromMe);
@@ -611,7 +611,7 @@ public class OpenChannelMessageListComponent {
          * Sets the UI configuration of the linked text color in the message text.
          *
          * @param color the UI configuration of the linked text color.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setLinkedTextColor(@NonNull ColorStateList color) {
             this.messageUIConfig.setLinkedTextColor(color);
@@ -621,7 +621,7 @@ public class OpenChannelMessageListComponent {
          * Returns whether the user profile uses when the profile of message is clicked.
          *
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseUserProfile() {
             return useUserProfile;
@@ -631,7 +631,7 @@ public class OpenChannelMessageListComponent {
          * Returns whether the message group UI is used.
          *
          * @return <code>true</code> if the message group UI is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseGroupUI() {
             return useGroupUI;
@@ -652,7 +652,7 @@ public class OpenChannelMessageListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

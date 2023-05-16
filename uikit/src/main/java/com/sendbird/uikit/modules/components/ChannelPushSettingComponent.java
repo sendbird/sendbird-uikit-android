@@ -30,7 +30,7 @@ public class ChannelPushSettingComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -41,7 +41,7 @@ public class ChannelPushSettingComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -57,7 +57,7 @@ public class ChannelPushSettingComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -74,7 +74,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param channelPushButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnSwitchButtonClickListener(@Nullable View.OnClickListener channelPushButtonClickListener) {
         this.channelPushButtonClickListener = channelPushButtonClickListener;
@@ -84,7 +84,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param pushOptionAllClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnPushOptionAllClickListener(@Nullable View.OnClickListener pushOptionAllClickListener) {
         this.pushOptionAllClickListener = pushOptionAllClickListener;
@@ -94,7 +94,7 @@ public class ChannelPushSettingComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param pushOptionMentionsOnlyClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnPushOptionMentionsOnlyClickListener(@Nullable View.OnClickListener pushOptionMentionsOnlyClickListener) {
         this.pushOptionMentionsOnlyClickListener = pushOptionMentionsOnlyClickListener;
@@ -104,7 +104,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onSwitchButtonClicked(@NonNull View view) {
         if (channelPushButtonClickListener != null) channelPushButtonClickListener.onClick(view);
@@ -114,7 +114,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onPushOptionAllClicked(@NonNull View view) {
         if (pushOptionAllClickListener != null) pushOptionAllClickListener.onClick(view);
@@ -124,7 +124,7 @@ public class ChannelPushSettingComponent {
      * Called when the item of the menu list is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onPushOptionMentionsOnlyClicked(@NonNull View view) {
         if (pushOptionMentionsOnlyClickListener != null) pushOptionMentionsOnlyClickListener.onClick(view);
@@ -134,7 +134,7 @@ public class ChannelPushSettingComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (this.settingView == null) return;
@@ -147,13 +147,13 @@ public class ChannelPushSettingComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -164,7 +164,7 @@ public class ChannelPushSettingComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

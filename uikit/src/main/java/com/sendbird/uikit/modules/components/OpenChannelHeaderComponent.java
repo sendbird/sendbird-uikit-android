@@ -21,14 +21,14 @@ import com.sendbird.uikit.utils.ChannelUtils;
 /**
  * This class creates and performs a view corresponding the open channel header area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class OpenChannelHeaderComponent extends HeaderComponent {
 
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelHeaderComponent() {
         super(new Params());
@@ -38,7 +38,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -55,7 +55,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -77,7 +77,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest open channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull OpenChannel channel) {
         final View rootView = getRootView();
@@ -111,7 +111,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
             super();
@@ -130,7 +130,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          * Sets whether the profile image placed on the left top is used.
          *
          * @param useProfileImage <code>true</code> if the profile image is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseProfileImage(boolean useProfileImage) {
             this.useProfileImage = useProfileImage;
@@ -140,7 +140,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          * Returns the description of the header.
          *
          * @return The String displayed on the description of header
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getDescription() {
@@ -151,7 +151,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          * Returns whether the profile image placed on the left top is used.
          *
          * @return <code>true</code> if the profile image is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean useProfileImage() {
             return useProfileImage;
@@ -165,7 +165,7 @@ public class OpenChannelHeaderComponent extends HeaderComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.2.2
+         * since 3.2.2
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

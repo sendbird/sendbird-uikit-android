@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,8 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.TimelineMessage;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +97,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -105,7 +108,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Returns the recycler view used in the list component by default.
      *
      * @return {@link RecyclerView} used in this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public RecyclerView getRecyclerView() {
@@ -116,7 +119,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -128,7 +131,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setAdapter(@NonNull LA adapter) {
         this.adapter = adapter;
@@ -162,7 +165,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Returns the message list adapter.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public LA getAdapter() {
@@ -178,13 +181,13 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
         if (args != null) params.apply(context, args);
 
-        this.messageRecyclerView = new MessageRecyclerView(context, null, R.attr.sb_component_list);
+        this.messageRecyclerView = createMessageRecyclerView(context);
         final PagerRecyclerView recyclerView = this.messageRecyclerView.getRecyclerView();
         recyclerView.setHasFixedSize(true);
         recyclerView.setClipToPadding(false);
@@ -204,7 +207,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
 
         this.messageRecyclerView.getTooltipView().setOnClickListener(this::onMessageTooltipClicked);
 
-        final LinearLayoutManager layoutManager = new InnerLinearLayoutManager(recyclerView.getContext());
+        final LinearLayoutManager layoutManager = createInnerLayoutManager(recyclerView);
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         return this.messageRecyclerView;
@@ -213,7 +216,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     /**
      * Scrolls to the bottom of the message list.
      *
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated
      * <p> Use {@link #scrollToFirst()} instead.
      */
@@ -225,7 +228,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     /**
      * Scrolls to the first position of the recycler view.
      *
-     * @since 3.2.2
+     * since 3.2.2
      */
     public void scrollToFirst() {
         if (messageRecyclerView == null) return;
@@ -238,7 +241,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * After receiving the message from another user, handle the necessary tasks at this component.
      *
      * @param showTooltipIfPossible Whether to show the tooltip when new messages are received
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyOtherMessageReceived(boolean showTooltipIfPossible) {
         if (messageRecyclerView == null) return;
@@ -260,7 +263,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      *
      * @param viewPoint            The created timestamp of the message you want to focus on
      * @param shouldAnimateMessage {@code true} animate the message after focusing on it
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void moveToFocusedMessage(long viewPoint, @Nullable BaseMessage shouldAnimateMessage) {
         Logger.d(">> BaseMessageListComponent::moveToFocusedMessage(), startingPoint=%s", viewPoint);
@@ -279,7 +282,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the tooltip view is clicked.
      *
      * @param tooltipClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnTooltipClickListener(@Nullable View.OnClickListener tooltipClickListener) {
         this.tooltipClickListener = tooltipClickListener;
@@ -289,7 +292,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Sets the paged data loader for message list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<BaseMessage>> pagedDataLoader) {
         this.pagedDataLoader = pagedDataLoader;
@@ -301,7 +304,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the message is clicked.
      *
      * @param messageClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageClickListener(@Nullable OnItemClickListener<BaseMessage> messageClickListener) {
         this.messageClickListener = messageClickListener;
@@ -311,7 +314,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the profile view of the message is clicked.
      *
      * @param messageProfileClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
@@ -321,7 +324,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the mentioned user of the message is clicked.
      *
      * @param messageMentionClickListener The callback that will run
-     * @since 3.5.3
+     * since 3.5.3
      */
     public void setOnMessageMentionClickListener(@Nullable OnItemClickListener<User> messageMentionClickListener) {
         this.messageMentionClickListener = messageMentionClickListener;
@@ -331,7 +334,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the message is long-clicked.
      *
      * @param messageLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageLongClickListener) {
         this.messageLongClickListener = messageLongClickListener;
@@ -341,7 +344,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the profile view of the message is long-clicked.
      *
      * @param messageProfileLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMessageProfileLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
         this.messageProfileLongClickListener = messageProfileLongClickListener;
@@ -351,7 +354,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the emoji reaction of the message is clicked.
      *
      * @param emojiReactionClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEmojiReactionClickListener(@Nullable OnEmojiReactionClickListener emojiReactionClickListener) {
         this.emojiReactionClickListener = emojiReactionClickListener;
@@ -361,7 +364,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the emoji reaction of the message is long-clicked.
      *
      * @param emojiReactionLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEmojiReactionLongClickListener(@Nullable OnEmojiReactionLongClickListener emojiReactionLongClickListener) {
         this.emojiReactionLongClickListener = emojiReactionLongClickListener;
@@ -371,7 +374,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the button to see more emojis on the message is clicked.
      *
      * @param emojiReactionMoreButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEmojiReactionMoreButtonClickListener(@Nullable OnItemClickListener<BaseMessage> emojiReactionMoreButtonClickListener) {
         this.emojiReactionMoreButtonClickListener = emojiReactionMoreButtonClickListener;
@@ -381,7 +384,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the button to scroll to the bottom is clicked.
      *
      * @param scrollBottomButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated
      * This method is no longer acceptable to invoke event.
      * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
@@ -395,7 +398,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Register a callback to be invoked when the button to scroll to the first position is clicked.
      *
      * @param scrollFirstButtonClickListener The callback that will run
-     * @since 3.2.2
+     * since 3.2.2
      */
     public void setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
         this.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
@@ -408,7 +411,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param identifier The identifier identifying which area is clicked
      * @param position The position clicked
      * @param message The message that the clicked item displays
-     * @since 3.3.0
+     * since 3.3.0
      */
     abstract void onListItemClicked(@NonNull View view, @NonNull String identifier, int position, @NonNull BaseMessage message);
 
@@ -419,7 +422,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param identifier The identifier identifying which area is long-clicked
      * @param position The position clicked
      * @param message The message that the clicked item displays
-     * @since 3.3.0
+     * since 3.3.0
      */
     abstract void onListItemLongClicked(@NonNull View view, @NonNull String identifier, int position, @NonNull BaseMessage message);
 
@@ -427,7 +430,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Animates the message on the message list.
      *
      * @param message Message to be animated
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void animateMessage(@NonNull BaseMessage message) {
         if (messageRecyclerView == null) return;
@@ -440,7 +443,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param messageList The list of messages to be drawn
      * @param channel     The latest group channel
      * @param callback    Callback when the message list is updated
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<BaseMessage> messageList, @NonNull GroupChannel channel, @Nullable OnMessageListUpdateHandler callback) {
         if (messageRecyclerView == null) return;
@@ -454,7 +457,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Handles a new channel when data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (messageRecyclerView == null) return;
@@ -468,7 +471,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * After the messages are updated, calculate the current position and re-calculate the position of the scroll.
      *
      * @param scrollToFirstIfPossible Whether to scroll to the bottom when there are more messages at the bottom
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyMessagesFilled(boolean scrollToFirstIfPossible) {
         if (messageRecyclerView == null) return;
@@ -485,7 +488,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param context The {@code Context} this view is currently associated with
      * @param count   Number of new messages
      * @return Text to be shown on the tooltip
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getTooltipMessage(@NonNull Context context, int count) {
@@ -505,7 +508,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageClickListener != null) messageClickListener.onItemClick(view, position, message);
@@ -517,7 +520,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (!params.useUserProfile) return;
@@ -531,7 +534,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The View clicked
      * @param position The position clicked
      * @param user  The mentioned user that the clicked item displays
-     * @since 3.5.3
+     * since 3.5.3
      */
     protected void onMessageMentionClicked(@NonNull View view, int position, @NonNull User user) {
         if (messageMentionClickListener != null)
@@ -544,7 +547,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageLongClickListener != null)
@@ -557,7 +560,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageProfileLongClickListener != null)
@@ -571,7 +574,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param position    The position that was clicked
      * @param message     The message that was clicked
      * @param reactionKey The reaction key that was clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEmojiReactionClicked(@NonNull View view, int position, @NonNull BaseMessage message, @NonNull String reactionKey) {
         if (emojiReactionClickListener != null)
@@ -585,7 +588,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param position    The position that was long-clicked
      * @param message     The message that was long-clicked
      * @param reactionKey The reaction key that was long-clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEmojiReactionLongClicked(@NonNull View view, int position, @NonNull BaseMessage message, @NonNull String reactionKey) {
         if (emojiReactionLongClickListener != null)
@@ -598,7 +601,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * @param view     The view that was clicked
      * @param position The position that was clicked
      * @param message  The message that was clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEmojiReactionMoreButtonClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (emojiReactionMoreButtonClickListener != null)
@@ -609,7 +612,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Called when the tooltip view is clicked.
      *
      * @param view The view that was clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageTooltipClicked(@NonNull View view) {
         if (tooltipClickListener != null) tooltipClickListener.onClick(view);
@@ -619,7 +622,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Called when the button to scroll to the bottom is clicked.
      *
      * @param view The view that was clicked
-     * @since 3.0.0
+     * since 3.0.0
      * @deprecated 3.2.2
      * This method is no longer acceptable to invoke event.
      * <p> Use {@link #onScrollFirstButtonClicked(View)} instead.
@@ -633,7 +636,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * Called when the button to scroll to the first position is clicked.
      *
      * @param view The view that was clicked
-     * @since 3.2.2
+     * since 3.2.2
      */
     protected boolean onScrollFirstButtonClicked(@NonNull View view) {
         onScrollBottomButtonClicked(view);
@@ -769,7 +772,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useGroupUI = true;
@@ -783,7 +786,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
             this.messageUIConfig = new MessageUIConfig();
@@ -793,7 +796,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets whether the message group UI is used.
          *
          * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseMessageGroupUI(boolean useMessageGroupUI) {
             this.useGroupUI = useMessageGroupUI;
@@ -803,7 +806,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets whether the user profile is shown when the profile of message is clicked.
          *
          * @param useUserProfile <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseUserProfile(boolean useUserProfile) {
             this.useUserProfile = useUserProfile;
@@ -813,7 +816,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets whether the message list banner is used.
          *
          * @param useBanner <code>true</code> if the message list banner is used, <code>false</code> otherwise.
-         * @since 3.3.0
+         * since 3.3.0
          */
         public void setUseBanner(boolean useBanner) {
             this.useBanner = useBanner;
@@ -823,7 +826,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Returns whether the user profile uses when the profile of message is clicked.
          *
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseUserProfile() {
             return useUserProfile;
@@ -833,7 +836,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Returns whether the message group UI is used.
          *
          * @return <code>true</code> if the message group UI is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseGroupUI() {
             return useGroupUI;
@@ -843,7 +846,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Returns whether the message list banner is used.
          *
          * @return <code>true</code> if the message list banner is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseBanner() {
             return useBanner;
@@ -853,7 +856,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets the timestamp to load the messages with.
          *
          * @param startTimeMillis The timestamp to load initially
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setInitialStartingPoint(long startTimeMillis) {
             this.initialStartingPoint = startTimeMillis;
@@ -863,7 +866,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Returns the timestamp to load the messages with.
          *
          * @return The timestamp to load initially
-         * @since 3.0.0
+         * since 3.0.0
          */
         public long getInitialStartingPoint() {
             return initialStartingPoint;
@@ -874,7 +877,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMentionUIConfig().apply(configSentFromMe);
@@ -886,7 +889,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param configSentFromMe       the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers   the UI configuration of edited text mark in the message that was sent from others.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyEditedTextMarkUIConfig().apply(configSentFromMe);
@@ -898,7 +901,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param configSentFromMe       the UI configuration of the message text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message text that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMessageTextUIConfig().apply(configSentFromMe);
@@ -910,7 +913,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMySentAtTextUIConfig().apply(configSentFromMe);
@@ -921,7 +924,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets the UI configuration of sender nickname text.
          *
          * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setNicknameTextUIConfig(@NonNull TextUIConfig configSentFromOthers) {
             this.messageUIConfig.getOtherNicknameTextUIConfig().apply(configSentFromOthers);
@@ -931,7 +934,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets the UI configuration of the replied parent message text.
          *
          * @param configRepliedMessage the UI configuration of the replied parent message text.
-         * @since 3.2.1
+         * since 3.2.1
          */
         public void setRepliedMessageTextUIConfig(@NonNull TextUIConfig configRepliedMessage) {
             this.messageUIConfig.getRepliedMessageTextUIConfig().apply(configRepliedMessage);
@@ -942,7 +945,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param drawableSentFromMe     the UI configuration of the message background that was sent from me.
          * @param drawableSentFromOthers the UI configuration of the message background that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setMessageBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyMessageBackground(drawableSentFromMe);
@@ -954,7 +957,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param drawableSentFromMe     the UI configuration of the message reaction list background drawable that was sent from me.
          * @param drawableSentFromOthers the UI configuration of the message reaction list background drawable that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setReactionListBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyReactionListBackground(drawableSentFromMe);
@@ -966,7 +969,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          *
          * @param drawableSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
          * @param drawableSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setOgtagBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyOgtagBackground(drawableSentFromMe);
@@ -977,7 +980,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * Sets the UI configuration of the linked text color in the message text.
          *
          * @param color the UI configuration of the linked text color.
-         * @since 3.1.1
+         * since 3.1.1
          */
         public void setLinkedTextColor(@NonNull ColorStateList color) {
             this.messageUIConfig.setLinkedTextColor(color);
@@ -1002,7 +1005,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
@@ -1065,6 +1068,34 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
             }
             return this;
         }
+
+        @TestOnly
+        @NonNull
+        MessageUIConfig getMessageUIConfig() {
+            return messageUIConfig;
+        }
+    }
+
+    @VisibleForTesting
+    @NonNull
+    MessageRecyclerView createMessageRecyclerView(@NonNull Context context) {
+        return new MessageRecyclerView(context, null, R.attr.sb_component_list);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    InnerLinearLayoutManager createInnerLayoutManager(PagerRecyclerView recyclerView) {
+        return new InnerLinearLayoutManager(recyclerView.getContext());
+    }
+
+    @TestOnly
+    boolean useMessageTooltip() {
+        return useMessageTooltip;
+    }
+
+    @TestOnly
+    boolean useScrollFirstButton() {
+        return useScrollFirstButton;
     }
 }
 

@@ -9,7 +9,7 @@ import com.sendbird.uikit.internal.model.template_messages.ActionData;
  * Custom action data to be linked to a custom message.
  * This action data is delivered and used as it is.
  *
- * @since 3.5.0
+ * since 3.5.0
  */
 public final class Action {
     private final String type;
@@ -22,7 +22,7 @@ public final class Action {
      * @param type an action data type.
      * @param data a data delivered and used as it is
      * @param alterData an alternative data that can be used if data is not available
-     * @since 3.5.0
+     * since 3.5.0
      */
     public Action(@NonNull String type, @NonNull String data, @Nullable String alterData) {
         this.type = type;
@@ -35,7 +35,7 @@ public final class Action {
      *
      * @param actionData The data from the given custom data filed.
      * @return Action data.
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public static Action from(@NonNull ActionData actionData) {
@@ -47,7 +47,7 @@ public final class Action {
      * "web", "custom", and "uikit" are available.
      *
      * @return the type of Action.
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public String getType() {
@@ -58,7 +58,7 @@ public final class Action {
      * Returns action data that associated with the view.
      *
      * @return the action data associated with the view.
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public String getData() {
@@ -69,7 +69,7 @@ public final class Action {
      * Alternative data that can be used if data is not available
      *
      * @return the alternative data that can be used if data is not available
-     * @since 3.5.0
+     * since 3.5.0
      */
     @Nullable
     public String getAlterData() {

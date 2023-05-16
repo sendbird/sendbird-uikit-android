@@ -4,13 +4,10 @@ import android.content.Context
 import android.graphics.RectF
 import android.text.Selection
 import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
@@ -30,10 +27,6 @@ internal class AutoLinkTextView @JvmOverloads internal constructor(
     var clickedLinkTextColor = 0
     var linkifyMask = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
 
-    init {
-        setSpannableFactory(Factory.instance)
-    }
-
     override fun setText(text: CharSequence?, type: BufferType?) {
         super.setText(text, type)
         try {
@@ -46,31 +39,6 @@ internal class AutoLinkTextView @JvmOverloads internal constructor(
             )
         } catch (e: Exception) {
             Logger.e(e)
-        }
-    }
-
-    private class Factory : Spannable.Factory() {
-        override fun newSpannable(source: CharSequence): Spannable {
-            return SpannableNoUnderline(source)
-        }
-
-        companion object {
-            val instance = Factory()
-        }
-    }
-
-    private class SpannableNoUnderline(source: CharSequence?) : SpannableString(source) {
-        override fun setSpan(what: Any?, start: Int, end: Int, flags: Int) {
-            var any = what
-            if (what is URLSpan) {
-                any = object : URLSpan(what.url) {
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                    }
-                }
-            }
-            super.setSpan(any, start, end, flags)
         }
     }
 }

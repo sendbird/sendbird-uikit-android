@@ -104,7 +104,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param channel The {@code FeedChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindHeaderComponent(@NonNull FeedNotificationHeaderComponent headerComponent, @NonNull FeedNotificationChannelViewModel viewModel, @Nullable FeedChannel channel) {
         Logger.d(">> FeedNotificationChannelFragment::onFeedNotificationHeaderComponent()");
@@ -118,7 +118,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * @param listComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param channel The {@code FeedChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindNotificationListComponent(@NonNull FeedNotificationListComponent listComponent, @NonNull FeedNotificationChannelViewModel viewModel, @Nullable FeedChannel channel) {
         Logger.d(">> FeedNotificationChannelFragment::onBindFeedNotificationListComponent()");
@@ -156,7 +156,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code FeedChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindStatusComponent(@NonNull NotificationStatusComponent statusComponent, @NonNull FeedNotificationChannelViewModel viewModel, @Nullable FeedChannel channel) {
         Logger.d(">> FeedNotificationChannelFragment::onBindStatusComponent()");
@@ -185,7 +185,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      *
      * @param action the registered Action data
      * @param message a clicked message
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void handleWebAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> FeedNotificationChannelFragment::handleWebAction() action=%s", action);
@@ -202,7 +202,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      *
      * @param action the registered Action data
      * @param message a clicked message
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void handleCustomAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> FeedNotificationChannelFragment::handleCustomAction() action=%s", action);
@@ -231,7 +231,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * Request refreshing the message list.
      * Renews the channel and updates the last read time value together.
      *
-     * @since 3.5.0
+     * since 3.5.0
      */
     public void updateLastReadTimeOnCurrentChannel() {
         Logger.d(">> FeedNotificationChannelFragment::updateLastReadTimeOnCurrentChannel()");
@@ -247,7 +247,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected boolean shouldShowLoadingDialog() {
         return getModule().shouldShowLoadingDialog();
@@ -256,7 +256,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -270,7 +270,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -292,7 +292,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -303,7 +303,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -314,7 +314,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -327,7 +327,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -341,7 +341,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setOnMessageTemplateActionHandler(@NonNull OnNotificationTemplateActionHandler handler) {
@@ -354,7 +354,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -368,7 +368,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.2
+         * since 3.5.2
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -381,7 +381,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public <T extends FeedNotificationChannelFragment> Builder setCustomFragment(T fragment) {
@@ -395,7 +395,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          *
          * @param params The MessageListParams instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setNotificationListParams(@NonNull MessageListParams params) {
@@ -408,7 +408,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
          * builder.
          *
          * @return The {@link FeedNotificationChannelFragment} applied to the {@link Bundle}.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public FeedNotificationChannelFragment build() {

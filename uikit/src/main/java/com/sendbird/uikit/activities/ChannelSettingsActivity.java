@@ -40,7 +40,7 @@ public class ChannelSettingsActivity extends AppCompatActivity {
      * @param cls        The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.1.2
+     * since 1.1.2
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelSettingsActivity> cls, @NonNull String channelUrl) {
@@ -73,7 +73,7 @@ public class ChannelSettingsActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.ChannelSettingsFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

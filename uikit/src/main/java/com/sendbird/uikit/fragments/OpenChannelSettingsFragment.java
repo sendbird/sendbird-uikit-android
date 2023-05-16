@@ -165,7 +165,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull OpenChannelSettingsHeaderComponent headerComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelSettingsFragment::onBindHeaderComponent()");
@@ -179,7 +179,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * @param infoComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindSettingsInfoComponent(@NonNull OpenChannelSettingsInfoComponent infoComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelSettingsFragment::onBindHeaderComponent()");
@@ -192,7 +192,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * @param menuComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindSettingsMenuComponent(@NonNull OpenChannelSettingsMenuComponent menuComponent, @NonNull OpenChannelSettingsViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> OpenChannelSettingsFragment::onBindSettingsMenuComponent()");
@@ -354,7 +354,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     public boolean shouldShowLoadingDialog() {
         if (!isFragmentAlive()) return false;
@@ -364,7 +364,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     public void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -374,7 +374,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -432,7 +432,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelSettingsFragment> Builder setCustomFragment(T fragment) {
@@ -445,7 +445,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -483,7 +483,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.3
+         * since 1.2.3
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -521,7 +521,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -535,7 +535,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -548,7 +548,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param rightButtonText The String to be displayed on the right button
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setRightButtonText(@Nullable String rightButtonText) {
@@ -561,7 +561,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -574,7 +574,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMenuClickListener(@NonNull OnItemClickListener<OpenChannelSettingsMenuComponent.Menu> listener) {
@@ -587,7 +587,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {

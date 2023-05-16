@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * EmojiReactionListAdapter provides a binding from a {@link Reaction} set to views that are displayed within a RecyclerView.
  *
- * @since 1.1.0
+ * since 1.1.0
  */
 public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHolder<Reaction>> {
     private static final int VIEW_EMOJI_REACTION = 0;
@@ -57,7 +57,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @return A new {@link BaseViewHolder<Reaction>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     @Override
@@ -78,7 +78,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * @param holder The {@link BaseViewHolder<Reaction>} which should be updated to represent
      *               the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Reaction> holder, int position) {
@@ -140,7 +140,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public int getItemCount() {
@@ -156,7 +156,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      *
      * @param position The position of the item within the adapter's data set.
      * @return The {@link Reaction} to retrieve the position of in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @Nullable
@@ -171,7 +171,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Returns the {@link List<Reaction>} in the data set held by the adapter.
      *
      * @return The {@link List<Reaction>} in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @NonNull
@@ -185,7 +185,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      *
      * @param position position to query
      * @return integer value identifying the type of the view needed to represent the item at <code>position</code>.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public int getItemViewType(int position) {
@@ -199,7 +199,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Sets the {@link List<Reaction>} to be displayed.
      *
      * @param reactionList list to be displayed
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setReactionList(@NonNull List<Reaction> reactionList) {
         final EmojiReactionDiffCallback diffCallback = new EmojiReactionDiffCallback(this.reactionList, reactionList);
@@ -214,7 +214,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Register a callback to be invoked when the emoji reaction is clicked and held.
      *
      * @param emojiReactionClickListener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiReactionClickListener(@Nullable OnItemClickListener<String> emojiReactionClickListener) {
         this.emojiReactionClickListener = emojiReactionClickListener;
@@ -224,7 +224,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Register a callback to be invoked when the emoji reaction is long clicked and held.
      *
      * @param emojiReactionLongClickListener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiReactionLongClickListener(@Nullable OnItemLongClickListener<String> emojiReactionLongClickListener) {
         this.emojiReactionLongClickListener = emojiReactionLongClickListener;
@@ -234,7 +234,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Register a callback to be invoked when the emoji reaction more button is clicked and held.
      *
      * @param moreButtonClickListener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setMoreButtonClickListener(@Nullable View.OnClickListener moreButtonClickListener) {
         this.moreButtonClickListener = moreButtonClickListener;
@@ -244,7 +244,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Sets a value if using the more button in the reaction view.
      *
      * @param useMoreButton true to make the view using more button, false otherwise
-     * @since 1.1.2
+     * since 1.1.2
      */
     public void setUseMoreButton(boolean useMoreButton) {
         Logger.i("++ useMoreButton : %s", useMoreButton);
@@ -255,7 +255,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Indicates whether this view using a more button or not.
      *
      * @return true if the view is using more button, false otherwise
-     * @since 1.1.2
+     * since 1.1.2
      */
     public boolean useMoreButton() {
         return useMoreButton;
@@ -265,7 +265,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Enables or disables click events for this view.
      *
      * @param clickable true to make the view clickable, false otherwise
-     * @since 1.1.2
+     * since 1.1.2
      */
     public void setClickable(boolean clickable) {
         this.clickable = clickable;
@@ -275,7 +275,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      * Enables or disables long click events for this view.
      *
      * @param longClickable true to make the view long clickable, false otherwise
-     * @since 1.1.2
+     * since 1.1.2
      */
     public void setLongClickable(boolean longClickable) {
         this.longClickable = longClickable;

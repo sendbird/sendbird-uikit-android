@@ -16,7 +16,7 @@ import com.sendbird.uikit.internal.ui.components.ChannelProfileInputView;
 
 /**
  * This class creates and performs a view corresponding the channel profile input area in Sendbird UIKit.
- * @since 3.2.0
+ * since 3.2.0
  */
 public class ChannelProfileInputComponent {
     @Nullable
@@ -39,7 +39,7 @@ public class ChannelProfileInputComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Nullable
     public View getRootView() {
@@ -50,7 +50,7 @@ public class ChannelProfileInputComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public Params getParams() {
@@ -67,7 +67,7 @@ public class ChannelProfileInputComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -84,7 +84,7 @@ public class ChannelProfileInputComponent {
      * Draw cover image when the cover image selected.
      *
      * @param uri the image uri to draw.
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void notifyCoverImageChanged(@Nullable Uri uri) {
         if (this.rootView != null) {
@@ -96,7 +96,7 @@ public class ChannelProfileInputComponent {
      * Register a callback to be invoked when the input text is changed.
      *
      * @param textChangedListener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnInputTextChangedListener(@Nullable OnInputTextChangedListener textChangedListener) {
         this.inputTextChangedListener = textChangedListener;
@@ -106,7 +106,7 @@ public class ChannelProfileInputComponent {
      * Register a callback to be invoked when the clear button related to the input is clicked.
      *
      * @param clearButtonClickListener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnClearButtonClickListener(@Nullable View.OnClickListener clearButtonClickListener) {
         this.clearButtonClickListener = clearButtonClickListener;
@@ -116,7 +116,7 @@ public class ChannelProfileInputComponent {
      * Register a callback to be invoked when the media selector is clicked.
      *
      * @param onMediaSelectButtonClickListener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnMediaSelectButtonClickListener(@Nullable View.OnClickListener onMediaSelectButtonClickListener) {
         this.onMediaSelectButtonClickListener = onMediaSelectButtonClickListener;
@@ -126,7 +126,7 @@ public class ChannelProfileInputComponent {
      * Called when the clear button related to the input is clicked.
      *
      * @param view The view clicked
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onClearButtonClicked(@NonNull View view) {
         if (this.clearButtonClickListener != null) {
@@ -148,7 +148,7 @@ public class ChannelProfileInputComponent {
      * this callback.
      * </p>
      *
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (inputTextChangedListener != null) {
@@ -160,7 +160,7 @@ public class ChannelProfileInputComponent {
      * Called when the clear button related to the input is clicked.
      *
      * @param view The view clicked
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onMediaSelectButtonClicked(@NonNull View view) {
         if (this.onMediaSelectButtonClickListener != null) {
@@ -174,13 +174,13 @@ public class ChannelProfileInputComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.2.0
+     * since 3.2.0
      */
     public static class Params {
         /**
          * Constructor
          *
-         * @since 3.2.0
+         * since 3.2.0
          */
         protected Params() {
         }
@@ -191,7 +191,7 @@ public class ChannelProfileInputComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

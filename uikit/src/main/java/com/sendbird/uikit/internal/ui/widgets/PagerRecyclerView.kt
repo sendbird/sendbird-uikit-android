@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.uikit.interfaces.OnPagedDataLoader
+import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -48,9 +49,15 @@ internal class PagerRecyclerView @JvmOverloads constructor(
         addOnScrollListener(onScrollListener)
     }
 
+    @TestOnly
+    fun getPager() = onScrollListener.pager
+
     fun setThreshold(threshold: Int) {
-        onScrollListener.setThreshold(threshold)
+        onScrollListener.threshold = threshold
     }
+
+    @TestOnly
+    fun getThreshold(): Int = onScrollListener.threshold
 
     fun findFirstVisibleItemPosition(): Int {
         return layoutManager?.findFirstVisibleItemPosition() ?: 0
@@ -88,7 +95,11 @@ internal class PagerRecyclerView @JvmOverloads constructor(
 
     private class OnScrollListener constructor(var layoutManager: LinearLayoutManager?) :
         RecyclerView.OnScrollListener() {
-        private var threshold = 1
+        var threshold = 1
+            set(value) {
+                require(value > 0) { "illegal threshold: $value" }
+                field = value
+            }
         var pager: OnPagedDataLoader<*>? = null
         var scrollEndDetectListener: OnScrollEndDetectListener? = null
         private val prevLoadingWorker = Executors.newSingleThreadExecutor()
@@ -137,11 +148,6 @@ internal class PagerRecyclerView @JvmOverloads constructor(
                     }
                 }
             }
-        }
-
-        fun setThreshold(threshold: Int) {
-            require(threshold > 0) { "illegal threshold: $threshold" }
-            this.threshold = threshold
         }
 
         fun dispose() {

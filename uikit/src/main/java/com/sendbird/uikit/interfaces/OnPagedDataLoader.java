@@ -14,7 +14,7 @@ public interface OnPagedDataLoader<T> {
      *
      * @return Data to be used on the previous page
      * @throws Exception Occurred when the job was failed.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @SuppressWarnings("UnusedReturnValue")
     @NonNull
@@ -26,7 +26,7 @@ public interface OnPagedDataLoader<T> {
      *
      * @return Data to be used on the next page
      * @throws Exception Occurred when the job was failed.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     T loadNext() throws Exception;
@@ -35,14 +35,14 @@ public interface OnPagedDataLoader<T> {
      * Determine whether the data on the next page exists.
      *
      * @return {@code true} if there is any data on the next page, {@code false} otherwise
-     * @since 3.0.0
+     * since 3.0.0
      */
     boolean hasNext();
     /**
      * Determine whether the data on the previous page exists.
      *
      * @return {@code true} if there is any data on the previous page, {@code false} otherwise
-     * @since 3.0.0
+     * since 3.0.0
      */
     boolean hasPrevious();
 }

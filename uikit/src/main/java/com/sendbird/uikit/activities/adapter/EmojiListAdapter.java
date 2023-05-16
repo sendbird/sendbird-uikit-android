@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Adapters provides a binding from an {@link Emoji} data set to views that are displayed within a RecyclerView.
  *
- * @since 1.1.0
+ * since 1.1.0
  */
 public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> {
     private static final int VIEW_EMOJI = 0;
@@ -47,7 +47,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * @param reactionList The {@link List<Reaction>} that contains the data needed for this adapter
      * @param showMoreButton <code>true</code> if the more button is showed,
      *                       <code>false</code> otherwise.
-     * @since 1.1.0
+     * since 1.1.0
      */
     public EmojiListAdapter(@NonNull List<Emoji> emojiList,
                             @Nullable List<Reaction> reactionList,
@@ -72,7 +72,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * @return A new {@link BaseViewHolder<Emoji>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     @Override
@@ -93,7 +93,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * @param holder The {@link BaseViewHolder<Emoji>} which should be updated to represent
      *               the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Emoji> holder, int position) {
@@ -130,7 +130,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public int getItemCount() {
@@ -146,7 +146,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      *
      * @param position The position of the item within the adapter's data set.
      * @return The {@link Emoji} to retrieve the position of in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @Nullable
@@ -161,7 +161,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * Returns the {@link List<Emoji>} in the data set held by the adapter.
      *
      * @return The {@link List<Emoji>} in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @NonNull
@@ -175,7 +175,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      *
      * @param position position to query
      * @return integer value identifying the type of the view needed to represent the item at <code>position</code>.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public int getItemViewType(int position) {
@@ -190,7 +190,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * Register a callback to be invoked when the emoji is clicked and held.
      *
      * @param emojiClickListener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiClickListener(@Nullable OnItemClickListener<String> emojiClickListener) {
         this.emojiClickListener = emojiClickListener;
@@ -200,7 +200,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
      * Register a callback to be invoked when the emoji more button is clicked and held.
      *
      * @param moreButtonClickListener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setMoreButtonClickListener(@Nullable View.OnClickListener moreButtonClickListener) {
         this.moreButtonClickListener = moreButtonClickListener;

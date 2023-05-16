@@ -80,7 +80,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ChannelPushSettingViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelPushSettingFragment::onBindHeaderComponent()");
@@ -94,7 +94,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
      * @param pushSettingComponent The component to which the event will be bound
      * @param viewModel            A view model that provides the data needed for the fragment
      * @param channel              The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindChannelPushSettingComponent(@NonNull ChannelPushSettingComponent pushSettingComponent, @NonNull ChannelPushSettingViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelPushSettingFragment::onBindChannelPushSettingComponent()");
@@ -113,7 +113,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean shouldShowLoadingDialog() {
         if (!isFragmentAlive()) return false;
@@ -123,7 +123,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -133,7 +133,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -183,7 +183,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -194,7 +194,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -205,7 +205,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -217,7 +217,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ChannelPushSettingFragment> Builder setCustomFragment(T fragment) {
@@ -230,7 +230,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -243,7 +243,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -256,7 +256,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -270,7 +270,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -283,7 +283,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
@@ -296,7 +296,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -310,7 +310,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -323,7 +323,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
@@ -336,7 +336,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -350,7 +350,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -364,7 +364,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -377,7 +377,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -390,7 +390,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
          * builder.
          *
          * @return The {@link ChannelPushSettingFragment} applied to the {@link Bundle}.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public ChannelPushSettingFragment build() {

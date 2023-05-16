@@ -7,7 +7,7 @@ import com.sendbird.uikit.consts.StringSet;
 /**
  * Describes a configuration of mention for user.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class UserMentionConfig extends MentionConfig {
     private final String trigger;
@@ -26,7 +26,7 @@ public class UserMentionConfig extends MentionConfig {
      * Returns trigger text for mention.
      *
      * @return A text of trigger.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getTrigger() {
@@ -38,7 +38,7 @@ public class UserMentionConfig extends MentionConfig {
      * Up to 10 users mentioned in the message will be notified.
      *
      * @return A mentioned user counts to be able to mention.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public int getMaxMentionCount() {
         return maxMentionCount;
@@ -48,7 +48,7 @@ public class UserMentionConfig extends MentionConfig {
      * Returns maximum suggestion count.
      *
      * @return Maximum suggestion count.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public int getMaxSuggestionCount() {
         return maxSuggestionCount;
@@ -58,7 +58,7 @@ public class UserMentionConfig extends MentionConfig {
      * Returns the time from now to delay execution.
      *
      * @return The time from now to delay execution
-     * @since 3.0.0
+     * since 3.0.0
      */
     public long getDebounceTime() {
         return debounceTime;
@@ -68,7 +68,7 @@ public class UserMentionConfig extends MentionConfig {
      * Returns mention delimiter string.
      *
      * @return mention delimiter string.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getDelimiter() {
@@ -82,7 +82,7 @@ public class UserMentionConfig extends MentionConfig {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Builder() {
         }
@@ -92,7 +92,7 @@ public class UserMentionConfig extends MentionConfig {
          *
          * @param maxMentionCount maximum mention count
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setMaxMentionCount(int maxMentionCount) {
@@ -106,7 +106,7 @@ public class UserMentionConfig extends MentionConfig {
          *
          * @param maxSuggestionCount Maximum user suggestion count.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setMaxSuggestionCount(int maxSuggestionCount) {
@@ -118,7 +118,7 @@ public class UserMentionConfig extends MentionConfig {
          * Creates an {@link UserMentionConfig} with the arguments supplied to this builder.
          *
          * @return The {@link UserMentionConfig}.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public UserMentionConfig build() {

@@ -206,7 +206,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindChannelHeaderComponent(@NonNull ChannelHeaderComponent headerComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelFragment::onBindChannelHeaderComponent()");
@@ -234,7 +234,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param messageListComponent The component to which the event will be bound
      * @param viewModel            A view model that provides the data needed for the fragment
      * @param channel              The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMessageListComponent(@NonNull MessageListComponent messageListComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelFragment::onBindMessageListComponent()");
@@ -274,7 +274,6 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             final List<BaseMessage> messageList = receivedMessageData.getMessages();
             Logger.d("++ result messageList size : %s, source = %s", messageList.size(), receivedMessageData.getTraceName());
 
-            if (messageList.isEmpty()) return;
             final String eventSource = receivedMessageData.getTraceName();
             // The callback coming from setItems is worked asynchronously. So `isInitCallFinished` flag has to mark in advance.
             messageListComponent.notifyDataSetChanged(messageList, channel, messages -> {
@@ -368,7 +367,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param inputComponent The component to which the event will be bound
      * @param viewModel      A view model that provides the data needed for the fragment
      * @param channel        The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMessageInputComponent(@NonNull MessageInputComponent inputComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelFragment::onBindMessageInputComponent()");
@@ -433,7 +432,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelFragment::onBindStatusComponent()");
@@ -450,7 +449,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onQuoteReplyMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (quoteReplyMessageClickListener != null) {
@@ -471,7 +470,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onQuoteReplyMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (quoteReplyMessageLongClickListener != null)
@@ -484,7 +483,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onThreadInfoClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (threadInfoClickListener != null) {
@@ -867,7 +866,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ChannelFragment> Builder setCustomFragment(T fragment) {
@@ -880,7 +879,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -944,7 +943,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.1
+         * since 2.1.1
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -969,7 +968,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -995,7 +994,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1010,7 +1009,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param useInputLeftButton <code>true</code> if the left button of the input is used,
          *                           <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.1
+         * since 2.0.1
          */
         @NonNull
         public Builder setUseInputLeftButton(boolean useInputLeftButton) {
@@ -1035,7 +1034,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1061,7 +1060,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1074,7 +1073,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * Sets whether showing the right button of the input always.
          *
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.2
+         * since 2.1.2
          */
         @NonNull
         public Builder showInputRightButtonAlways() {
@@ -1099,7 +1098,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -1112,7 +1111,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -1137,7 +1136,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageClickListener(@NonNull OnItemClickListener<BaseMessage> itemClickListener) {
@@ -1150,7 +1149,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> itemLongClickListener) {
@@ -1163,7 +1162,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param quoteReplyMessageClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnQuoteReplyMessageClickListener(@NonNull OnItemClickListener<BaseMessage> quoteReplyMessageClickListener) {
@@ -1176,7 +1175,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param quoteReplyMessageLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnQuoteReplyMessageLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> quoteReplyMessageLongClickListener) {
@@ -1189,7 +1188,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param threadInfoClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnThreadInfoClickListener(@NonNull OnItemClickListener<BaseMessage> threadInfoClickListener) {
@@ -1202,7 +1201,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -1216,7 +1215,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param params The MessageListParams instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.0.5
+         * since 1.0.5
          */
         @NonNull
         public Builder setMessageListParams(@NonNull MessageListParams params) {
@@ -1229,7 +1228,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param emojiReactionClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.1.0
+         * since 1.1.0
          */
         @NonNull
         public Builder setEmojiReactionClickListener(@NonNull OnEmojiReactionClickListener emojiReactionClickListener) {
@@ -1242,7 +1241,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param emojiReactionLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.1.0
+         * since 1.1.0
          */
         @NonNull
         public Builder setEmojiReactionLongClickListener(@NonNull OnEmojiReactionLongClickListener emojiReactionLongClickListener) {
@@ -1255,7 +1254,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param emojiReactionMoreButtonClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.1.0
+         * since 1.1.0
          */
         @NonNull
         public Builder setEmojiReactionMoreButtonClickListener(@NonNull OnItemClickListener<BaseMessage> emojiReactionMoreButtonClickListener) {
@@ -1268,7 +1267,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.1
+         * since 1.2.1
          */
         @NonNull
         public Builder setUseMessageGroupUI(boolean useMessageGroupUI) {
@@ -1281,7 +1280,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param profileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageProfileClickListener(@NonNull OnItemClickListener<BaseMessage> profileClickListener) {
@@ -1294,7 +1293,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param messageProfileLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMessageProfileLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
@@ -1307,7 +1306,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param useUserProfile <code>true</code> if the user profile is shown when the profile image clicked, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.2
+         * since 1.2.2
          */
         @NonNull
         public Builder setUseUserProfile(boolean useUserProfile) {
@@ -1319,7 +1318,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * The message input displays as a dialog type. (Refer to {@link KeyboardDisplayType})
          *
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.0
+         * since 2.0.0
          */
         @NonNull
         public Builder setKeyboardDisplayType(@NonNull KeyboardDisplayType type) {
@@ -1332,7 +1331,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -1345,7 +1344,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
@@ -1358,7 +1357,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1372,7 +1371,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.0.2
+         * since 2.0.2
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -1385,7 +1384,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -1398,7 +1397,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param editModeTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setOnEditModeTextChangedListener(@NonNull OnInputTextChangedListener editModeTextChangedListener) {
@@ -1411,7 +1410,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param inputText the message text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setInputText(@NonNull String inputText) {
@@ -1424,7 +1423,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param inputTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setOnInputTextChangedListener(@NonNull OnInputTextChangedListener inputTextChangedListener) {
@@ -1437,7 +1436,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param startTimemillis The timestamp to load initially.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setStartingPoint(long startTimemillis) {
@@ -1450,7 +1449,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param useHeaderProfileImage <code>true</code> if the profile image of the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.2.4
+         * since 2.2.4
          */
         @NonNull
         public Builder setUseHeaderProfileImage(boolean useHeaderProfileImage) {
@@ -1463,7 +1462,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param adapter the adapter for the mentionable user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setSuggestedMentionListAdapter(@Nullable SuggestedMentionListAdapter adapter) {
@@ -1477,7 +1476,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1494,7 +1493,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param configSentFromMe     the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of edited text mark in the message that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1511,7 +1510,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param configSentFromMe       the UI configuration of the message text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message text that was sent from others.\
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1528,7 +1527,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1544,7 +1543,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setNicknameTextUIConfig(@NonNull TextUIConfig configSentFromOthers) {
@@ -1557,7 +1556,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param configRepliedMessage the UI configuration of the replied parent message text.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @NonNull
         public Builder setRepliedMessageTextUIConfig(@NonNull TextUIConfig configRepliedMessage) {
@@ -1570,7 +1569,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param textUIConfig the UI configuration of the message input text.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @NonNull
         public Builder setMessageInputTextUIConfig(@NonNull TextUIConfig textUIConfig) {
@@ -1584,7 +1583,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param drawableResSentFromMe     the UI configuration of the message background that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the message background that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setMessageBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1599,7 +1598,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param drawableResSentFromMe     the UI configuration of the message reaction list background drawable that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the message reaction list background drawable that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setReactionListBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1614,7 +1613,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param drawableResSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setOgtagBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1628,7 +1627,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param colorRes  the UI configuration of the linked text color.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setLinkedTextColor(@ColorRes int colorRes) {
@@ -1641,7 +1640,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param inputRightButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
@@ -1654,7 +1653,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param editModeCancelButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
@@ -1667,7 +1666,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param editModeSaveButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
@@ -1680,7 +1679,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param replyModeCloseButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnQuoteReplyModeCloseButtonClickListener(@Nullable View.OnClickListener replyModeCloseButtonClickListener) {
@@ -1693,7 +1692,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param inputModeChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
@@ -1706,7 +1705,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setUseSuggestedMentionListDivider(boolean useDivider) {
@@ -1719,7 +1718,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param tooltipClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnTooltipClickListener(@Nullable View.OnClickListener tooltipClickListener) {
@@ -1732,7 +1731,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param scrollBottomButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          * @deprecated 3.2.2
          * This method is no longer acceptable to invoke event.
          * <p> Use {@link #setOnScrollFirstButtonClickListener(OnConsumableClickListener)} instead.
@@ -1749,7 +1748,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param scrollFirstButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.2
+         * since 3.2.2
          */
         @NonNull
         public Builder setOnScrollFirstButtonClickListener(@Nullable OnConsumableClickListener scrollFirstButtonClickListener) {
@@ -1762,7 +1761,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param useBanner <code>true</code> if the message list banner is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseMessageListBanner(boolean useBanner) {
@@ -1775,7 +1774,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param voiceRecorderButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.4.0
+         * since 3.4.0
          */
         @NonNull
         public Builder setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
@@ -1788,7 +1787,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          *
          * @param mentionClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.3
+         * since 3.5.3
          */
         @NonNull
         public Builder setOnMessageMentionClickListener(@NonNull OnItemClickListener<User> mentionClickListener) {

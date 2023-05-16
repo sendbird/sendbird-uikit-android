@@ -29,7 +29,7 @@ import com.sendbird.uikit.widgets.MessageInputView;
 /**
  * This class creates and performs a view corresponding the message input area for {@code OpenChannel} in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class OpenChannelMessageInputComponent {
     @NonNull
@@ -58,7 +58,7 @@ public class OpenChannelMessageInputComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelMessageInputComponent() {
         this.params = new Params();
@@ -68,7 +68,7 @@ public class OpenChannelMessageInputComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -79,7 +79,7 @@ public class OpenChannelMessageInputComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -90,7 +90,7 @@ public class OpenChannelMessageInputComponent {
      * Returns the edit text view used in the input component bt default.
      *
      * @return {@link EditText} used in this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public EditText getEditTextView() {
@@ -107,7 +107,7 @@ public class OpenChannelMessageInputComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -161,7 +161,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the right button of the input is clicked.
      *
      * @param inputRightButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
         this.inputRightButtonClickListener = inputRightButtonClickListener;
@@ -171,7 +171,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the left button of the input is clicked.
      *
      * @param inputLeftButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputLeftButtonClickListener(@Nullable View.OnClickListener inputLeftButtonClickListener) {
         this.inputLeftButtonClickListener = inputLeftButtonClickListener;
@@ -181,7 +181,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the cancel button is clicked, when the input is the edited mode.
      *
      * @param editModeCancelButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
         this.editModeCancelButtonClickListener = editModeCancelButtonClickListener;
@@ -191,7 +191,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the save button is clicked, when the input is the edited mode.
      *
      * @param editModeSaveButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
         this.editModeSaveButtonClickListener = editModeSaveButtonClickListener;
@@ -201,7 +201,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the input text is changed, when the input is the edited mode.
      *
      * @param editModeTextChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnEditModeTextChangedListener(@Nullable OnInputTextChangedListener editModeTextChangedListener) {
         this.editModeTextChangedListener = editModeTextChangedListener;
@@ -211,7 +211,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the input text is changed.
      *
      * @param inputTextChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputTextChangedListener(@Nullable OnInputTextChangedListener inputTextChangedListener) {
         this.inputTextChangedListener = inputTextChangedListener;
@@ -221,7 +221,7 @@ public class OpenChannelMessageInputComponent {
      * Register a callback to be invoked when the input mode is changed.
      *
      * @param inputModeChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
         this.inputModeChangedListener = inputModeChangedListener;
@@ -231,7 +231,7 @@ public class OpenChannelMessageInputComponent {
      * Called when the left button of the input is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputLeftButtonClicked(@NonNull View view) {
         if (inputLeftButtonClickListener != null) inputLeftButtonClickListener.onClick(view);
@@ -241,7 +241,7 @@ public class OpenChannelMessageInputComponent {
      * Called when the right button of the input is clicked.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputRightButtonClicked(@NonNull View view) {
         if (inputRightButtonClickListener != null) inputRightButtonClickListener.onClick(view);
@@ -257,7 +257,7 @@ public class OpenChannelMessageInputComponent {
      * this callback.
      * </p>
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (editModeTextChangedListener != null)
@@ -274,7 +274,7 @@ public class OpenChannelMessageInputComponent {
      * this callback.
      * </p>
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (inputTextChangedListener != null)
@@ -286,7 +286,7 @@ public class OpenChannelMessageInputComponent {
      *
      * @param before  Input mode before change
      * @param current The latest input mode
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputModeChanged(@NonNull MessageInputView.Mode before, @NonNull MessageInputView.Mode current) {
         if (inputModeChangedListener != null)
@@ -298,7 +298,7 @@ public class OpenChannelMessageInputComponent {
      * Called when the cancel button is clicked, when the input is the edited mode.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeCancelButtonClicked(@NonNull View view) {
         if (editModeCancelButtonClickListener != null)
@@ -309,7 +309,7 @@ public class OpenChannelMessageInputComponent {
      * Called when the save button is clicked, when the input is the edited mode.
      *
      * @param view The View clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onEditModeSaveButtonClicked(@NonNull View view) {
         if (editModeSaveButtonClickListener != null) editModeSaveButtonClickListener.onClick(view);
@@ -319,7 +319,7 @@ public class OpenChannelMessageInputComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest open channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull OpenChannel channel) {
         if (messageInputView == null) return;
@@ -332,7 +332,7 @@ public class OpenChannelMessageInputComponent {
      *
      * @param message Message required for current input information
      * @param channel The latest open channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataChanged(@Nullable BaseMessage message, @NonNull OpenChannel channel) {
         notifyDataChanged(message, channel, "");
@@ -344,7 +344,7 @@ public class OpenChannelMessageInputComponent {
      * @param message     Message required for current input information
      * @param channel     The latest open channel
      * @param defaultText Text set as initial value for input
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataChanged(@Nullable BaseMessage message, @NonNull OpenChannel channel, @NonNull String defaultText) {
         if (messageInputView == null) return;
@@ -370,7 +370,7 @@ public class OpenChannelMessageInputComponent {
      *
      * @param mode Input mode to be set to this component
      * @see MessageInputView.Mode
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void requestInputMode(@NonNull MessageInputView.Mode mode) {
         if (messageInputView == null) return;
@@ -382,7 +382,7 @@ public class OpenChannelMessageInputComponent {
      *
      * @param channel The latest open channel
      * @param isMuted Whether the current user is muted or not
-     * @since 3.1.0
+     * since 3.1.0
      */
     public void notifyMyMutedStateChanged(@NonNull OpenChannel channel, boolean isMuted) {
         this.isMuted = isMuted;
@@ -414,7 +414,7 @@ public class OpenChannelMessageInputComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useLeftButton = true;
@@ -443,7 +443,7 @@ public class OpenChannelMessageInputComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -452,7 +452,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the icon on the left button of the input view.
          *
          * @param leftButtonIcon The Drawable to be displayed on the left button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIcon(@Nullable Drawable leftButtonIcon) {
             this.leftButtonIcon = leftButtonIcon;
@@ -462,7 +462,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the icon on the right button of the input view.
          *
          * @param rightButtonIcon The Drawable to be displayed on the right button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setRightButtonIcon(@Nullable Drawable rightButtonIcon) {
             this.rightButtonIcon = rightButtonIcon;
@@ -472,7 +472,7 @@ public class OpenChannelMessageInputComponent {
          * Sets whether the left button of the input view is used.
          *
          * @param useLeftButton <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseLeftButton(boolean useLeftButton) {
             this.useLeftButton = useLeftButton;
@@ -482,7 +482,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the color of the icon on the left button of the input view.
          *
          * @param leftButtonIconTint Color state list to be applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIconTint(@Nullable ColorStateList leftButtonIconTint) {
             this.leftButtonIconTint = leftButtonIconTint;
@@ -492,7 +492,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the color of the icon on the right button of the input view.
          *
          * @param rightButtonIconTint Color state list to be applied to the right button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setRightButtonIconTint(@Nullable ColorStateList rightButtonIconTint) {
             this.rightButtonIconTint = rightButtonIconTint;
@@ -501,7 +501,7 @@ public class OpenChannelMessageInputComponent {
         /**
          * Shows always the right button of the input view.
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void showInputRightButtonAlways() {
             this.alwaysShowRightButton = true;
@@ -511,7 +511,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the hint of the input view.
          *
          * @param hint The String displayed as a hint message
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setInputHint(@Nullable String hint) {
             this.hintText = hint;
@@ -521,7 +521,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the input text.
          *
          * @param inputText The String to be set on the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setInputText(@Nullable String inputText) {
             this.inputText = inputText;
@@ -532,7 +532,7 @@ public class OpenChannelMessageInputComponent {
          *
          * @param type Keyboard display type to be used in this component
          * @see KeyboardDisplayType
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setKeyboardDisplayType(@NonNull KeyboardDisplayType type) {
             this.keyboardDisplayType = type;
@@ -542,7 +542,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the keyboard display type. (Refer to {@link KeyboardDisplayType})
          *
          * @return Keyboard display type used in this component
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public KeyboardDisplayType getKeyboardDisplayType() {
@@ -553,7 +553,7 @@ public class OpenChannelMessageInputComponent {
          * Returns whether the left button of the input view is used.
          *
          * @return <code>true</code> if the left button of the input view is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseLeftButton() {
             return useLeftButton;
@@ -563,7 +563,7 @@ public class OpenChannelMessageInputComponent {
          * Returns whether the right button of the input view is shown always.
          *
          * @return <code>true</code> if the right button of the input view is shown always, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean isAlwaysShowRightButton() {
             return alwaysShowRightButton;
@@ -573,7 +573,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the icon on the left button of the input view.
          *
          * @return The Drawable to be displayed on the left button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getLeftButtonIcon() {
@@ -584,7 +584,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the icon on the right button of the input view.
          *
          * @return The Drawable to be displayed on the right button of the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getRightButtonIcon() {
@@ -595,7 +595,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the color of the icon on the left button of the input view.
          *
          * @return Color state list to be applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getLeftButtonIconTint() {
@@ -606,7 +606,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the color of the icon on the right button of the input view.
          *
          * @return Color state list to be applied to the right button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getRightButtonIconTint() {
@@ -617,7 +617,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the hint of the input view.
          *
          * @return The String displayed as a hint message
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getHintText() {
@@ -628,7 +628,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the input text.
          *
          * @return The String to be set on the input view
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getInputText() {
@@ -639,7 +639,7 @@ public class OpenChannelMessageInputComponent {
          * Sets the UI configuration of message input text.
          *
          * @param textUIConfig the UI configuration of the message input text.
-         * @since 3.2.1
+         * since 3.2.1
          */
         public void setMessageInputTextUIConfig(@Nullable TextUIConfig textUIConfig) {
             this.textUIConfig = textUIConfig;
@@ -649,7 +649,7 @@ public class OpenChannelMessageInputComponent {
          * Returns the UI configuration of message input text.
          *
          * @return the UI configuration of message input text.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @Nullable
         public TextUIConfig getMessageInputTextUIConfig() {
@@ -671,7 +671,7 @@ public class OpenChannelMessageInputComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

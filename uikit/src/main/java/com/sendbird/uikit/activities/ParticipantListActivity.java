@@ -18,7 +18,7 @@ import com.sendbird.uikit.fragments.ParticipantListFragment;
 /**
  * Activity displays a list of participants on this channel.
  *
- * @since 2.0.0
+ * since 2.0.0
  */
 public class ParticipantListActivity extends AppCompatActivity {
 
@@ -68,7 +68,7 @@ public class ParticipantListActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link ParticipantListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

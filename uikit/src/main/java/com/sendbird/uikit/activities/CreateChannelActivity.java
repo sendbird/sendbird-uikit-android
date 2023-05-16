@@ -37,7 +37,7 @@ public class CreateChannelActivity extends AppCompatActivity {
      * @param type The creatable channel type. see the {@link CreatableChannelType}.
      * @return CreateChannelActivity Intent.
      *
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull CreatableChannelType type) {
@@ -51,7 +51,7 @@ public class CreateChannelActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param type The creatable channel type. see the {@link CreatableChannelType}.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends CreateChannelActivity> cls, @NonNull CreatableChannelType type) {
@@ -79,7 +79,7 @@ public class CreateChannelActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.CreateChannelFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.ColorInt
@@ -70,6 +71,15 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
+        // In the Android platform, even if a view is not drawn on the screen due to left and right views, its height value exists.
+        // In the template message syntax, the views that are not drawn have to hide.
+        // onSizeChanged() and onLayout() do not update the view even if the visibility changes, so the status of the view must be updated once again.
+        // Logger.i("-- parent view's width=${(parent as View).width}, x=$x, measureWidth=$width, visible=$visibility")
+        val visibility = if (x <= -width || x >= (parent as View).width) GONE else VISIBLE
+        post {
+            this.visibility = visibility
+        }
+
         rectF = RectF(0f, 0f, w.toFloat(), h.toFloat())
         resetPath()
     }
@@ -96,9 +106,6 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         val width = MeasureSpec.getSize(widthMeasureSpec)
-        // In the Android platform, even if a view is not drawn on the screen due to left and right views, its height value exists.
-        // In the template message syntax, the views that are not drawn have to hide. (spec. since v3.5.2)
-        visibility = if (width == 0) GONE else VISIBLE
         if (width == 0) {
             return
         }
@@ -161,7 +168,6 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
                     setSize(width, height)
                     setImageDrawable(resource)
                 }
-
             })
         }
     }

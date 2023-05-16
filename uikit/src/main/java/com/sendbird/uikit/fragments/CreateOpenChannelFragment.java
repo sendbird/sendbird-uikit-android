@@ -48,7 +48,7 @@ import java.util.Collections;
 /**
  * Fragment displaying the user list to create a open channel.
  *
- * @since 3.2.0
+ * since 3.2.0
  */
 public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChannelModule, CreateOpenChannelViewModel> {
     @Nullable
@@ -136,7 +136,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
      *
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBindHeaderComponentComponent(@NonNull StateHeaderComponent headerComponent, @NonNull CreateOpenChannelViewModel viewModel) {
         Logger.d(">> CreateOpenChannelFragment::onBindHeaderComponent()");
@@ -163,7 +163,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
      *
      * @param channelProfileInputComponent The component to which the event will be bound
      * @param viewModel                    A view model that provides the data needed for the fragment
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBindChannelProfileInputComponent(@NonNull ChannelProfileInputComponent channelProfileInputComponent, @NonNull CreateOpenChannelViewModel viewModel) {
         Logger.d(">> CreateOpenChannelFragment::onBindChannelProfileInputComponent()");
@@ -179,7 +179,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link OpenChannelCreateParams}.
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBeforeCreateOpenChannel(@NonNull OpenChannelCreateParams params) {
     }
@@ -188,7 +188,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
      * Creates <code>OpenChannel</code> with OpenChannelCreateParams.
      *
      * @param params Params of channel. Refer to {@link OpenChannelCreateParams}.
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void createOpenChannel(@NonNull OpenChannelCreateParams params) {
         Logger.dev(">> CreateOpenChannelFragment::createOpenChannel()");
@@ -215,7 +215,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
      * It will be called when the new channel has been created.
      *
      * @param channel the new channel
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onNewChannelCreated(@NonNull OpenChannel channel) {
         if (isFragmentAlive() && getActivity() != null) {
@@ -320,7 +320,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
         /**
          * Constructor
          *
-         * @since 3.2.0
+         * since 3.2.0
          */
         public Builder() {
             this(SendbirdUIKit.getDefaultThemeMode());
@@ -330,7 +330,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * Constructor
          *
          * @param themeMode {@link SendbirdUIKit.ThemeMode}
-         * @since 3.2.0
+         * since 3.2.0
          */
         public Builder(@NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(themeMode.getResId());
@@ -340,7 +340,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * Constructor
          *
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.2.0
+         * since 3.2.0
          */
         public Builder(@StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -352,7 +352,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends CreateOpenChannelFragment> Builder setCustomFragment(T fragment) {
@@ -365,7 +365,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -378,7 +378,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -391,7 +391,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -405,7 +405,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -419,7 +419,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -432,7 +432,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -445,7 +445,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -458,7 +458,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param rightButtonText text to be displayed to the right button.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setRightButtonText(@NonNull String rightButtonText) {
@@ -471,7 +471,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
@@ -484,7 +484,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -498,7 +498,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param textChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnInputTextChangedListener(@NonNull OnInputTextChangedListener textChangedListener) {
@@ -511,7 +511,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param clearButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnClearButtonClickListener(@Nullable View.OnClickListener clearButtonClickListener) {
@@ -524,7 +524,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          *
          * @param onMediaSelectButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnMediaSelectButtonClickListener(@Nullable View.OnClickListener onMediaSelectButtonClickListener) {
@@ -537,7 +537,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * builder.
          *
          * @return The {@link CreateOpenChannelFragment} applied to the {@link Bundle}.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public CreateOpenChannelFragment build() {

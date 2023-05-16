@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Class that holds message data in a channel.
  *
- * @since 3.5.0
+ * since 3.5.0
  */
 public class MessageData {
     final List<BaseMessage> messages;
@@ -25,7 +25,7 @@ public class MessageData {
      * Returns a list of messages for the current channel.
      *
      * @return A list of the latest messages on the current channel
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public List<BaseMessage> getMessages() {
@@ -36,7 +36,7 @@ public class MessageData {
      * Returns data indicating how the message list was updated.
      *
      * @return The String that traces the path of the message list
-     * @since 3.5.0
+     * since 3.5.0
      */
     @Nullable
     public String getTraceName() {

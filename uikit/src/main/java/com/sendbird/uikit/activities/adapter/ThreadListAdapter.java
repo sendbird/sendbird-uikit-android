@@ -20,7 +20,7 @@ import com.sendbird.uikit.utils.MessageUtils;
 /**
  * ThreadListAdapter provides a binding from a thread message type data set to views that are displayed within a RecyclerView.
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class ThreadListAdapter extends BaseMessageListAdapter {
 

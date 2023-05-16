@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * MessageSearchAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolder<BaseMessage>> {
     @NonNull
@@ -117,7 +117,7 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param items list to be displayed
-     * @since 2.1.0
+     * since 2.1.0
      */
     public void setItems(@NonNull List<BaseMessage> items) {
         final MessageSearchDiffCallback diffCallback = new MessageSearchDiffCallback(this.items, items);
@@ -132,7 +132,7 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run
-     * @since 2.1.0
+     * since 2.1.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<BaseMessage> listener) {
         this.listener = listener;
@@ -142,7 +142,7 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener<BaseMessage>} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<BaseMessage> getOnItemClickListener() {

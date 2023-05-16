@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Interface definition for a callback to be invoked when getting a result.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public interface OnListResultHandler<T> {
     /**

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 /**
  * Interface definition for a callback to be invoked when a view is clicked.
  *
- * @since 3.2.2
+ * since 3.2.2
  */
 public interface OnConsumableClickListener {
     /**
@@ -17,7 +17,7 @@ public interface OnConsumableClickListener {
      *
      * @param view The view that was clicked.
      * @return <code>true</code> if the callback consumed the long click, <code>false</code> otherwise.
-     * @since 3.2.2
+     * since 3.2.2
      */
     boolean onClick(@NonNull View view);
 }

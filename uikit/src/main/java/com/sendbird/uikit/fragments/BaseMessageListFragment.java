@@ -167,7 +167,7 @@ abstract public class BaseMessageListFragment<
      *
      * @param message A clicked message.
      * @return Collection of {@link DialogListItem}
-     * @since 2.2.3
+     * since 2.2.3
      */
     @NonNull
     protected List<DialogListItem> makeMessageContextMenu(@NonNull BaseMessage message) {
@@ -184,7 +184,7 @@ abstract public class BaseMessageListFragment<
      * @param position The position that was clicked.
      * @param item     {@link DialogListItem} that was clicked.
      * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
-     * @since 2.2.3
+     * since 2.2.3
      */
     protected boolean onMessageContextMenuItemClicked(@NonNull BaseMessage message, @NonNull View view, int position, @NonNull DialogListItem item) {
         return false;
@@ -196,7 +196,7 @@ abstract public class BaseMessageListFragment<
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageClickListener != null) {
@@ -248,7 +248,7 @@ abstract public class BaseMessageListFragment<
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The message that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageProfileClickListener != null) {
@@ -268,7 +268,7 @@ abstract public class BaseMessageListFragment<
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageLongClickListener != null) {
@@ -286,7 +286,7 @@ abstract public class BaseMessageListFragment<
      * @param view     The View long-clicked
      * @param position The position long-clicked
      * @param message  The message that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMessageProfileLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (messageProfileLongClickListener != null) {
@@ -300,7 +300,7 @@ abstract public class BaseMessageListFragment<
      * @param view     The View clicked
      * @param position The position clicked
      * @param user  The user that the clicked item displays
-     * @since 3.5.3
+     * since 3.5.3
      */
     protected void onMessageMentionClicked(@NonNull View view, int position, @NonNull User user) {
         if (messageMentionClickListener != null) {
@@ -521,7 +521,7 @@ abstract public class BaseMessageListFragment<
      * It will be called when the input message's left button is clicked.
      * The default behavior is showing the menu, like, taking camera, gallery, and file.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     protected void showMediaSelectDialog() {
         if (getContext() == null) return;
@@ -562,7 +562,7 @@ abstract public class BaseMessageListFragment<
     /**
      * Call taking camera application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takeCamera() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -580,7 +580,7 @@ abstract public class BaseMessageListFragment<
     /**
      * Call taking camera application for video capture.
      *
-     * @since 3.2.1
+     * since 3.2.1
      */
     public void takeVideo() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -599,7 +599,7 @@ abstract public class BaseMessageListFragment<
     /**
      * Call taking gallery application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takePhoto() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -619,7 +619,7 @@ abstract public class BaseMessageListFragment<
     /**
      * Call taking file chooser application.
      *
-     * @since 2.0.1
+     * since 2.0.1
      */
     public void takeFile() {
         SendbirdChat.setAutoBackgroundDetection(false);
@@ -638,7 +638,7 @@ abstract public class BaseMessageListFragment<
     /**
      * Call taking voice recorder.
      *
-     * @since 3.4.0
+     * since 3.4.0
      */
     public void takeVoiceRecorder() {
         requestPermission(PermissionUtils.RECORD_AUDIO_PERMISSION, () -> {
@@ -662,7 +662,7 @@ abstract public class BaseMessageListFragment<
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected boolean shouldShowLoadingDialog() {
         return getModule().shouldShowLoadingDialog();
@@ -671,7 +671,7 @@ abstract public class BaseMessageListFragment<
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -682,7 +682,7 @@ abstract public class BaseMessageListFragment<
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {
     }
@@ -692,7 +692,7 @@ abstract public class BaseMessageListFragment<
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {
     }
@@ -702,7 +702,7 @@ abstract public class BaseMessageListFragment<
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {
     }
@@ -711,7 +711,7 @@ abstract public class BaseMessageListFragment<
      * Sends a user message.
      *
      * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void sendUserMessage(@NonNull UserMessageCreateParams params) {
         final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
@@ -726,7 +726,7 @@ abstract public class BaseMessageListFragment<
      * Sends a file with given file information.
      *
      * @param uri A file Uri
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void sendFileMessage(@NonNull Uri uri) {
         if (getContext() != null) {
@@ -751,7 +751,7 @@ abstract public class BaseMessageListFragment<
      * Sends a voice message with given file information.
      *
      * @param info A voice file information
-     * @since 3.4.0
+     * since 3.4.0
      */
     protected void sendVoiceFileMessage(@NonNull VoiceMessageInfo info) {
         final GroupChannel channel = getViewModel().getChannel();
@@ -802,7 +802,7 @@ abstract public class BaseMessageListFragment<
      * @param messageId The ID of the message. This must be a message that exists in the channel's history,
      *                  or an error will be returned.
      * @param params    Params of a message. Refer to {@link UserMessageUpdateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
@@ -819,7 +819,7 @@ abstract public class BaseMessageListFragment<
      * Delete a message
      *
      * @param message Message to delete.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void deleteMessage(@NonNull BaseMessage message) {
         getViewModel().deleteMessage(message, e -> {
@@ -849,7 +849,7 @@ abstract public class BaseMessageListFragment<
      * After permission is granted, the download will be also called automatically.
      *
      * @param message A file message to download contents.
-     * @since 2.2.3
+     * since 2.2.3
      */
     protected void saveFileMessage(@NonNull FileMessage message) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
@@ -863,7 +863,7 @@ abstract public class BaseMessageListFragment<
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -875,7 +875,7 @@ abstract public class BaseMessageListFragment<
      * Sets the click listener on the item of message list.
      *
      * @param messageClickListener The callback that will run.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setOnMessageClickListener(@Nullable OnItemClickListener<BaseMessage> messageClickListener) {
         this.messageClickListener = messageClickListener;
@@ -885,7 +885,7 @@ abstract public class BaseMessageListFragment<
      * Sets the click listener on the profile of message.
      *
      * @param messageProfileClickListener The callback that will run.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
@@ -895,7 +895,7 @@ abstract public class BaseMessageListFragment<
      * Sets the click listener on the mentioned user of message.
      *
      * @param messageMentionClickListener The callback that will run.
-     * @since 3.5.3
+     * since 3.5.3
      */
     void setOnMessageMentionClickListener(@Nullable OnItemClickListener<User> messageMentionClickListener) {
         this.messageMentionClickListener = messageMentionClickListener;
@@ -905,7 +905,7 @@ abstract public class BaseMessageListFragment<
      * Sets the long click listener on the item of message list.
      *
      * @param messageLongClickListener The callback that will run.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setOnMessageLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageLongClickListener) {
         this.messageLongClickListener = messageLongClickListener;
@@ -915,7 +915,7 @@ abstract public class BaseMessageListFragment<
      * Sets the long click listener on the item of message list.
      *
      * @param messageProfileLongClickListener The callback that will run.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setOnMessageProfileLongClickListener(@Nullable OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
         this.messageProfileLongClickListener = messageProfileLongClickListener;
@@ -925,7 +925,7 @@ abstract public class BaseMessageListFragment<
      * Sets the custom loading dialog handler
      *
      * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
@@ -935,7 +935,7 @@ abstract public class BaseMessageListFragment<
      * Sets the message list adapter.
      *
      * @param adapter the adapter for the message list.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setAdapter(@Nullable LA adapter) {
         this.adapter = adapter;
@@ -945,7 +945,7 @@ abstract public class BaseMessageListFragment<
      * Sets the suggested mention list adapter.
      *
      * @param suggestedMentionListAdapter the adapter for the mentionable user list.
-     * @since 3.3.0
+     * since 3.3.0
      */
     void setSuggestedMentionListAdapter(@Nullable SuggestedMentionListAdapter suggestedMentionListAdapter) {
         this.suggestedMentionListAdapter = suggestedMentionListAdapter;

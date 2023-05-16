@@ -69,7 +69,7 @@ public class TextUIConfig implements Parcelable {
      * Returns a value of background color int.
      *
      * @return A background color int value.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @ColorInt
     public int getTextBackgroundColor() {
@@ -80,7 +80,7 @@ public class TextUIConfig implements Parcelable {
      * Returns a value of text color int.
      *
      * @return A text color int value.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @ColorInt
     public int getTextColor() {
@@ -95,7 +95,7 @@ public class TextUIConfig implements Parcelable {
      * <li>Typeface.BOLD_ITALIC</li>
      *
      * @return A text style of text.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public int getTextStyle() {
         return textStyle;
@@ -105,7 +105,7 @@ public class TextUIConfig implements Parcelable {
      * Returns a value of text size int.
      *
      * @return A text size int value.
-     * @since 3.1.1
+     * since 3.1.1
      */
     public int getTextSize() {
         return textSize;
@@ -115,7 +115,7 @@ public class TextUIConfig implements Parcelable {
      * Returns a value of text typeface family.
      *
      * @return A typeface family name value.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public String getFamilyName() {
@@ -126,7 +126,7 @@ public class TextUIConfig implements Parcelable {
      * Returns a custom font res ID.
      *
      * @return A custom font resource ID.
-     * @since 3.2.1
+     * since 3.2.1
      */
     public int getCustomFontRes() {
         return customFontRes;
@@ -137,7 +137,7 @@ public class TextUIConfig implements Parcelable {
      *
      * @param config A {@link TextUIConfig} to apply.
      * @return This TextUIConfig object that applied with given data.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public TextUIConfig apply(@NonNull TextUIConfig config) {
@@ -167,7 +167,7 @@ public class TextUIConfig implements Parcelable {
      * Apply values into given whole text.
      *
      * @param text A text to apply.
-     * @since 3.2.1
+     * since 3.2.1
      */
     @NonNull
     public SpannableString apply(@NonNull Context context, @NonNull String text) {
@@ -182,7 +182,7 @@ public class TextUIConfig implements Parcelable {
      * @param spannable A spannable text to apply.
      * @param start A starting position to apply value.
      * @param end An end position to apply value.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void bind(@NonNull Context context, @NonNull Spannable spannable, int start, int end) {
         if (this.textBackgroundColor != UNDEFINED_RESOURCE_ID) {
@@ -222,7 +222,7 @@ public class TextUIConfig implements Parcelable {
      *
      * @param context the UI context.
      * @param textAppearance A TextAppearance to apply.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void mergeFromTextAppearance(@NonNull Context context, @StyleRes int textAppearance) {
         mergeFromTextAppearance(context, textAppearance, 0);
@@ -233,7 +233,7 @@ public class TextUIConfig implements Parcelable {
      * @param context the context of view.
      * @param textAppearance A TextAppearance to apply.
      * @param textBackgroundColor A background color to apply.
-     * @since 3.0.0
+     * since 3.0.0
      */
     // A Background attribute of text is not included in TextAppearance.
     public void mergeFromTextAppearance(@NonNull Context context, @StyleRes int textAppearance, @ColorRes int textBackgroundColor) {
@@ -261,7 +261,7 @@ public class TextUIConfig implements Parcelable {
      * Generates typeface from text style.
      *
      * @return The typeface instance
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public Typeface generateTypeface() {
@@ -329,7 +329,7 @@ public class TextUIConfig implements Parcelable {
         /**
          * Constructor
          *
-         * @since 3.1.1
+         * since 3.1.1
          */
         public Builder() {}
 
@@ -338,7 +338,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param context The context for text appearance
          * @param textAppearanceRes The value of text appearance resource
-         * @since 3.1.1
+         * since 3.1.1
          */
         public Builder(@NonNull Context context, @StyleRes int textAppearanceRes) {
             if (textAppearanceRes != 0) {
@@ -355,7 +355,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param textBackgroundColor The value of background color int
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setTextBackgroundColor(@ColorInt int textBackgroundColor) {
@@ -368,7 +368,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param textColor The value of text color int
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setTextColor(@ColorInt int textColor) {
@@ -385,7 +385,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param textStyle The value of text style
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setTextStyle(int textStyle) {
@@ -398,7 +398,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param textSize The value of pixel size
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setTextSize(int textSize) {
@@ -411,7 +411,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param familyName The value of typeface family name
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public Builder setFamilyName(@Nullable String familyName) {
@@ -424,7 +424,7 @@ public class TextUIConfig implements Parcelable {
          *
          * @param customFontRes The value of custom font
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.1
+         * since 3.2.1
          */
         @NonNull
         public Builder setCustomFontRes(int customFontRes) {
@@ -436,7 +436,7 @@ public class TextUIConfig implements Parcelable {
          * Builds an {@link TextUIConfig} with the properties supplied to this builder.
          *
          * @return The {@link TextUIConfig} from this builder instance.
-         * @since 3.1.1
+         * since 3.1.1
          */
         @NonNull
         public TextUIConfig build() {

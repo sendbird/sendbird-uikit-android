@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the open channel list area in Sendbird UIKit.
  *
- * @since 3.2.0
+ * since 3.2.0
  */
 public class OpenChannelListComponent {
     @NonNull
@@ -55,7 +55,7 @@ public class OpenChannelListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Nullable
     public View getRootView() {
@@ -66,7 +66,7 @@ public class OpenChannelListComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public Params getParams() {
@@ -78,7 +78,7 @@ public class OpenChannelListComponent {
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.2.0
+     * since 3.2.0
      */
     public <T extends OpenChannelListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
@@ -118,7 +118,7 @@ public class OpenChannelListComponent {
      * Returns the channel list adapter.
      *
      * @return The adapter applied to this list component
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public OpenChannelListAdapter getAdapter() {
@@ -134,7 +134,7 @@ public class OpenChannelListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -159,7 +159,7 @@ public class OpenChannelListComponent {
      * Register a callback to be invoked when the item of the channel is clicked.
      *
      * @param listener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<OpenChannel> listener) {
         this.itemClickListener = listener;
@@ -169,7 +169,7 @@ public class OpenChannelListComponent {
      * Register a callback to be invoked when the item of the channel is long-clicked.
      *
      * @param listener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<OpenChannel> listener) {
         this.itemLongClickListener = listener;
@@ -179,7 +179,7 @@ public class OpenChannelListComponent {
      * Register a callback to be invoked when a refresh is triggered via the swipe gesture.
      *
      * @param listener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnRefreshListener(@Nullable SwipeRefreshLayout.OnRefreshListener listener) {
         this.refreshListener = listener;
@@ -189,7 +189,7 @@ public class OpenChannelListComponent {
      * Sets the paged data loader for open channel list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<OpenChannel>> pagedDataLoader) {
         if (recyclerview != null) recyclerview.setPager(pagedDataLoader);
@@ -199,7 +199,7 @@ public class OpenChannelListComponent {
      * Called when the channel list is changed.
      *
      * @param channelList The list of channels to be displayed on this component
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void notifyDataSetChanged(@NonNull List<OpenChannel> channelList) {
         Logger.d("++ OpenChannelListComponent::notifyDataSetChanged()");
@@ -209,7 +209,7 @@ public class OpenChannelListComponent {
     /**
      * For stopping the refreshing progressbar, this has to be called when the refresh is finished.
      *
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void notifyRefreshingFinished() {
         Logger.d("++ OpenChannelListComponent::notifyRefreshingFinished()");
@@ -225,7 +225,7 @@ public class OpenChannelListComponent {
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param channel  The channel that the clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull OpenChannel channel) {
         if (itemClickListener != null) itemClickListener.onItemClick(view, position, channel);
@@ -237,7 +237,7 @@ public class OpenChannelListComponent {
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
      * @param channel  The channel that the long-clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull OpenChannel channel) {
         if (itemLongClickListener != null) itemLongClickListener.onItemLongClick(view, position, channel);
@@ -246,7 +246,7 @@ public class OpenChannelListComponent {
     /**
      * Called when the channel list is pulled to refresh.
      *
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onRefresh() {
         if (refreshListener != null) refreshListener.onRefresh();
@@ -258,14 +258,14 @@ public class OpenChannelListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.2.0
+     * since 3.2.0
      */
     public static class Params {
         private boolean useRefreshLayout = true;
         /**
          * Constructor
          *
-         * @since 3.2.0
+         * since 3.2.0
          */
         protected Params() {
         }
@@ -274,7 +274,7 @@ public class OpenChannelListComponent {
          * Sets whether the refresh layout is used.
          *
          * @param useRefreshLayout <code>true</code> if the refresh layout is used, <code>false</code> otherwise
-         * @since 3.2.0
+         * since 3.2.0
          */
         public void setUseRefreshLayout(boolean useRefreshLayout) {
             this.useRefreshLayout = useRefreshLayout;
@@ -284,7 +284,7 @@ public class OpenChannelListComponent {
          * Returns whether the right button of the header is used.
          *
          * @return <code>true</code> if the right button of the header is used, <code>false</code> otherwise
-         * @since 3.2.0
+         * since 3.2.0
          */
         public boolean shouldUseRefreshLayout() {
             return useRefreshLayout;
@@ -297,7 +297,7 @@ public class OpenChannelListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

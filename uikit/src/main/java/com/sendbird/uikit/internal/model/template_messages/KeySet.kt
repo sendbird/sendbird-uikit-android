@@ -75,4 +75,13 @@ internal object KeySet {
     const val notification = "notification"
     const val list = "list"
     const val header = "header"
+
+    // analytics
+    const val noti_stats = "noti:stats"
+    const val tags = "tags"
+    const val message_id = "message_id"
+    const val source = "source"
+    const val clicked = "clicked"
+    const val channel_url = "channel_url"
+    const val message_ts = "message_ts"
 }

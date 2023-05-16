@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * Activity displays message thread from a parent message.
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class MessageThreadActivity extends AppCompatActivity {
     @Override
@@ -49,7 +49,7 @@ public class MessageThreadActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.MessageThreadFragment}
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     protected Fragment createFragment() {
@@ -65,7 +65,7 @@ public class MessageThreadActivity extends AppCompatActivity {
     /**
      * This builder makes {@link Intent} for MessageThreadActivity.
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static class IntentBuilder {
         @NonNull
@@ -84,7 +84,7 @@ public class MessageThreadActivity extends AppCompatActivity {
          * @param context A Context of the application package implementing this class.
          * @param channelUrl The url of the channel will be implemented.
          * @param parentMessage The parent message of thread.
-         * @since 3.3.0
+         * since 3.3.0
          */
         public IntentBuilder(@NonNull Context context, @NonNull String channelUrl, @NonNull BaseMessage parentMessage) {
             this(context, MessageThreadActivity.class, channelUrl, parentMessage);
@@ -97,7 +97,7 @@ public class MessageThreadActivity extends AppCompatActivity {
          * @param customClass The activity class that is to be used for the intent.
          * @param channelUrl The url of the channel will be implemented.
          * @param parentMessage The parent message of thread.
-         * @since 3.3.0
+         * since 3.3.0
          */
         public IntentBuilder(@NonNull Context context, @NonNull Class<? extends MessageThreadActivity> customClass, @NonNull String channelUrl, @NonNull BaseMessage parentMessage) {
             this.context = context;
@@ -111,7 +111,7 @@ public class MessageThreadActivity extends AppCompatActivity {
          *
          * @param startingPoint A timestamp to load initially.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public IntentBuilder setStartingPoint(long startingPoint) {
@@ -123,7 +123,7 @@ public class MessageThreadActivity extends AppCompatActivity {
          * Creates an {@link Intent} with the arguments supplied to this builder.
          *
          * @return The MessageThreadActivity {@link Intent} applied to the {@link Bundle}.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Intent build() {

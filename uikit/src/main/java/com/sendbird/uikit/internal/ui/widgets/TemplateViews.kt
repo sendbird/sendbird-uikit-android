@@ -96,8 +96,8 @@ internal open class TextButton @JvmOverloads constructor(
     init {
         // Even if action doesn't exist click ripple effect should show. (UIKit spec)
         layoutParams = LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT
         )
         isClickable = true
         gravity = Gravity.CENTER
@@ -111,12 +111,12 @@ internal open class TextButton @JvmOverloads constructor(
         textView = AppCompatTextView(context).apply {
             // set default button text appearance
             setAppearance(context, R.style.SendbirdButtonPrimary300)
-
+            ellipsize = TextUtils.TruncateAt.END
+            maxLines = 1
             layoutParams = LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
             )
-            gravity = Gravity.CENTER
         }
         this.addView(textView)
     }

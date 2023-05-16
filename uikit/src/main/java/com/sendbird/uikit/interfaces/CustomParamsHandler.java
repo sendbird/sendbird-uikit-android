@@ -13,7 +13,7 @@ import com.sendbird.android.params.UserMessageUpdateParams;
 /**
  * Interface definition for a callback to be invoked before when each operation called.
  *
- * @since 1.2.2
+ * since 1.2.2
  */
 public interface CustomParamsHandler {
 
@@ -22,7 +22,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link GroupChannelCreateParams}.
-     * @since 1.2.2
+     * since 1.2.2
      */
     default void onBeforeCreateGroupChannel(@NonNull GroupChannelCreateParams params) {}
 
@@ -31,7 +31,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
-     * @since 1.2.2
+     * since 1.2.2
      */
     default void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params) {}
 
@@ -40,7 +40,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of user message. Refer to {@link UserMessageCreateParams}.
-     * @since 1.2.2
+     * since 1.2.2
      */
     default void onBeforeSendUserMessage(@NonNull UserMessageCreateParams params) {}
 
@@ -49,7 +49,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of file message. Refer to {@link FileMessageCreateParams}.
-     * @since 1.2.2
+     * since 1.2.2
      */
     default void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {}
 
@@ -58,7 +58,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of user message. Refer to {@link UserMessageUpdateParams}.
-     * @since 1.2.2
+     * since 1.2.2
      */
     default void onBeforeUpdateUserMessage(@NonNull UserMessageUpdateParams params) {}
 
@@ -67,7 +67,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link OpenChannelUpdateParams}.
-     * @since 2.0.0
+     * since 2.0.0
      */
     default void onBeforeUpdateOpenChannel(@NonNull OpenChannelUpdateParams params) {}
 
@@ -76,7 +76,7 @@ public interface CustomParamsHandler {
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link OpenChannelCreateParams}.
-     * @since 3.2.0
+     * since 3.2.0
      */
     default void onBeforeCreateOpenChannel(@NonNull OpenChannelCreateParams params) {}
 }

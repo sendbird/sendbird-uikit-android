@@ -10,7 +10,7 @@ import com.sendbird.uikit.internal.queries.ParticipantsListQuery;
 /**
  * ViewModel preparing and managing data related with the push setting of a channel
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelRegisterOperatorViewModel extends OpenChannelUserViewModel<User> {
 
@@ -19,7 +19,7 @@ public class OpenChannelRegisterOperatorViewModel extends OpenChannelUserViewMod
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param queryHandler A callback to be invoked when a list of data is loaded.
-     * @since 3.1.0
+     * since 3.1.0
      */
     public OpenChannelRegisterOperatorViewModel(@NonNull String channelUrl, @Nullable PagedQueryHandler<User> queryHandler) {
         super(channelUrl, queryHandler);
@@ -30,7 +30,7 @@ public class OpenChannelRegisterOperatorViewModel extends OpenChannelUserViewMod
      *
      * @param channelUrl The url of {@code OpenChannel} with users to be fetched by the query
      * @return {@code PagedQueryHandler<User>} to retrieve the list of operators
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     @Override

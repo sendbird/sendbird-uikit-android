@@ -3,7 +3,7 @@ package com.sendbird.uikit.consts;
 /**
  * The creatable channel type in the UIKit
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public enum CreatableChannelType {
     /**

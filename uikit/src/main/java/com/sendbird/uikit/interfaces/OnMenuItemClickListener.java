@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 /**
  * Interface definition for a callback to be invoked when a item is clicked.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public interface OnMenuItemClickListener<T, R> {
     /**

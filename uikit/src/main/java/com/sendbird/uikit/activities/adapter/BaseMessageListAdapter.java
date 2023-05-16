@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
@@ -19,7 +20,6 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
@@ -30,6 +30,8 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.log.Logger;
@@ -37,6 +39,8 @@ import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.TextUtils;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,11 +77,14 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @NonNull
     private final ExecutorService differWorker = Executors.newSingleThreadExecutor();
 
+    @NonNull
+    private final SendbirdUIKitWrapper sendbirdUIKit;
+
     /**
      * Constructor
      *
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public BaseMessageListAdapter(boolean useMessageGroupUI) {
         this(null, useMessageGroupUI);
@@ -97,7 +104,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      *
      * @param channel The {@link GroupChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @since 2.2.0
+     * since 2.2.0
      */
     public BaseMessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI) {
         this(channel, useMessageGroupUI, true);
@@ -109,7 +116,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * @param channel The {@link GroupChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
      * @param useReverseLayout  <code>true</code> if the message list is reversed, <code>false</code> otherwise.
-     * @since 3.2.2
+     * since 3.2.2
      */
     public BaseMessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         this(channel, new MessageListUIParams.Builder()
@@ -123,12 +130,18 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      *
      * @param channel The {@link GroupChannel} that contains the data needed for this adapter
      * @param messageListUIParams The {@link MessageListUIParams} that contains drawing parameters
-     * @since 3.3.0
+     * since 3.3.0
      */
     public BaseMessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams) {
+        this(channel, messageListUIParams, new SendbirdUIKitImpl());
+    }
+
+    @VisibleForTesting
+    BaseMessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
         if (channel != null) this.channel = GroupChannel.clone(channel);
         this.messageListUIParams = messageListUIParams;
         setHasStableIds(true);
+        this.sendbirdUIKit = sendbirdUIKit;
     }
 
     /**
@@ -150,10 +163,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
         parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
         final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
         LayoutInflater inflater = LayoutInflater.from(contextWrapper);
-        MessageViewHolder viewHolder = MessageViewHolderFactory.createViewHolder(inflater,
-                parent,
-                MessageType.from(viewType),
-                messageListUIParams);
+        MessageViewHolder viewHolder = createViewHolder(parent, viewType, inflater);
 
         viewHolder.setMessageUIConfig(messageUIConfig);
 
@@ -285,7 +295,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      *
      * @param messageUIConfig the configurations of the message's properties to highlight text.
      * @see com.sendbird.uikit.model.TextUIConfig
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
         this.messageUIConfig = messageUIConfig;
@@ -295,7 +305,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns the configurations of the message's properties to highlight text.
      *
      * @return the configurations of the message's properties to highlight text.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public MessageUIConfig getMessageUIConfig() {
@@ -353,7 +363,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setItems(@NonNull final GroupChannel channel, @NonNull final List<BaseMessage> messageList, @Nullable OnMessageListUpdateHandler callback) {
         final GroupChannel copiedChannel = GroupChannel.clone(channel);
@@ -362,9 +372,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
             final CountDownLatch lock = new CountDownLatch(1);
             final MessageDiffCallback diffCallback = new MessageDiffCallback(BaseMessageListAdapter.this.channel, channel,
                     BaseMessageListAdapter.this.messageList, messageList, messageListUIParams);
-            final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+            final DiffUtil.DiffResult diffResult = calculateDiff(diffCallback);
 
-            SendbirdUIKit.runOnUIThread(() -> {
+            sendbirdUIKit.runOnUIThread(() -> {
                 try {
                     BaseMessageListAdapter.this.messageList = copiedMessage;
                     BaseMessageListAdapter.this.channel = copiedChannel;
@@ -429,7 +439,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setOnListItemClickListener(@Nullable OnIdentifiableItemClickListener<BaseMessage> listener) {
         this.listItemClickListener = listener;
@@ -439,7 +449,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked
      *
      * @return {@code OnIdentifiableItemClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnIdentifiableItemClickListener<BaseMessage> getOnListItemClickListener() {
@@ -450,7 +460,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @param listener The callback that will run
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setOnListItemLongClickListener(@Nullable OnIdentifiableItemLongClickListener<BaseMessage> listener) {
         this.listItemLongClickListener = listener;
@@ -460,7 +470,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @return {@code OnIdentifiableItemLongClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnIdentifiableItemLongClickListener<BaseMessage> getOnListItemLongClickListener() {
@@ -471,7 +481,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the emoji reaction is clicked.
      *
      * @param listener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiReactionClickListener(@Nullable OnEmojiReactionClickListener listener) {
         this.emojiReactionClickListener = listener;
@@ -481,7 +491,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the emoji reaction is clicked.
      *
      * @return {@code OnEmojiReactionClickListener} to be invoked when the emoji reaction is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnEmojiReactionClickListener getEmojiReactionClickListener() {
@@ -492,7 +502,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the emoji reaction is long clicked and held.
      *
      * @param listener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiReactionLongClickListener(@Nullable OnEmojiReactionLongClickListener listener) {
         this.emojiReactionLongClickListener = listener;
@@ -502,7 +512,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the emoji reaction is long clicked and held.
      *
      * @return {@code OnEmojiReactionLongClickListener} to be invoked when the emoji reaction is long clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnEmojiReactionLongClickListener getEmojiReactionLongClickListener() {
@@ -513,7 +523,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the emoji reaction more button is clicked.
      *
      * @param listener The callback that will run
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setEmojiReactionMoreButtonClickListener(@Nullable OnItemClickListener<BaseMessage> listener) {
         this.emojiReactionMoreButtonClickListener = listener;
@@ -523,7 +533,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the emoji reaction more button is clicked.
      *
      * @return {OnItemClickListener<BaseMessage>} to be invoked when the emoji reaction more button is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<BaseMessage> getEmojiReactionMoreButtonClickListener() {
@@ -534,7 +544,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Register a callback to be invoked when the mentioned user is clicked.
      *
      * @param listener The callback that will run
-     * @since 3.5.3
+     * since 3.5.3
      */
     public void setMentionClickListener(@Nullable OnItemClickListener<User> listener) {
         this.mentionClickListener = listener;
@@ -544,7 +554,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * Returns a callback to be invoked when the mentioned user is clicked.
      *
      * @return {OnItemClickListener<User>} to be invoked when the mentioned user is clicked.
-     * @since 3.5.3
+     * since 3.5.3
      */
     @Nullable
     public OnItemClickListener<User> getMentionClickListener() {
@@ -582,5 +592,32 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @Override
     public List<BaseMessage> getItems() {
         return Collections.unmodifiableList(messageList);
+    }
+
+    @TestOnly
+    @NonNull
+    MessageListUIParams getMessageListUIParams() {
+        return messageListUIParams;
+    }
+
+    @TestOnly
+    @NonNull
+    MessageViewHolder createViewHolder(@NonNull ViewGroup parent, int viewType, LayoutInflater inflater) {
+        return MessageViewHolderFactory.createViewHolder(inflater,
+                parent,
+                MessageType.from(viewType),
+                messageListUIParams);
+    }
+
+    @TestOnly
+    @Nullable
+    GroupChannel getChannel() {
+        return channel;
+    }
+
+    @VisibleForTesting
+    @NonNull
+    DiffUtil.DiffResult calculateDiff(MessageDiffCallback diffCallback) {
+        return DiffUtil.calculateDiff(diffCallback);
     }
 }

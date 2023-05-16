@@ -42,7 +42,7 @@ public interface SendbirdUIKitAdapter {
      * Provides the {@link InitResultHandler} to initialize SendBird Chat SDK.
      *
      * @return the handler of SendBird Chat SDK initialization.
-     * @since 2.2.0
+     * since 2.2.0
      */
     @NonNull
     InitResultHandler getInitResultHandler();

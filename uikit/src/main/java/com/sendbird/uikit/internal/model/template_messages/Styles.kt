@@ -2,6 +2,7 @@ package com.sendbird.uikit.internal.model.template_messages
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
@@ -26,7 +27,7 @@ internal data class TextStyle(
     fun apply(view: TextView): TextStyle {
         size?.let { view.setTextSize(TypedValue.COMPLEX_UNIT_SP, it.toFloat()) }
         color?.let { view.setTextColor(it) }
-        weight?.let { view.setTypeface(view.typeface, it.value) }
+        weight?.let { view.typeface = Typeface.create(view.typeface, it.value) }
         return this
     }
 }

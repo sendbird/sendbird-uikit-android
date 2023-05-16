@@ -86,7 +86,7 @@ public class MessageViewHolderFactory {
      * @param viewType The type of message you want to create
      * @param messageListUIParams The {@link MessageListUIParams} that contains drawing parameters
      * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public static MessageViewHolder createOpenChannelViewHolder(@NonNull LayoutInflater inflater,
@@ -154,7 +154,7 @@ public class MessageViewHolderFactory {
      * @param viewType The type of message you want to create
      * @param messageListUIParams The {@link MessageListUIParams} that contains drawing parameters
      * @return Returns {@link MessageViewHolder} that matches {@link MessageType}.
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public static MessageViewHolder createViewHolder(@NonNull LayoutInflater inflater,

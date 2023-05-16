@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the user list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 abstract public class UserTypeListComponent<T extends User> {
     @NonNull
@@ -44,7 +44,7 @@ abstract public class UserTypeListComponent<T extends User> {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public UserTypeListComponent() {
         this.params = new Params();
@@ -54,7 +54,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -66,7 +66,7 @@ abstract public class UserTypeListComponent<T extends User> {
      *
      * @return The data sets of this component.
      * @see MessageListComponent.Params
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public UserTypeListComponent.Params getParams() {
@@ -82,7 +82,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -99,7 +99,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Register a callback to be invoked when the item of the user is clicked.
      *
      * @param itemClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<T> itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -109,7 +109,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Register a callback to be invoked when the item of the user is long-clicked.
      *
      * @param itemLongClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> itemLongClickListener) {
         this.itemLongClickListener = itemLongClickListener;
@@ -119,7 +119,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Register a callback to be invoked when the action button of the item is clicked.
      *
      * @param actionItemClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnActionItemClickListener(@Nullable OnItemClickListener<T> actionItemClickListener) {
         this.actionItemClickListener = actionItemClickListener;
@@ -129,7 +129,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Register a callback to be invoked when the profile view of the item is clicked.
      *
      * @param profileClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnProfileClickListener(@Nullable OnItemClickListener<T> profileClickListener) {
         this.profileClickListener = profileClickListener;
@@ -139,7 +139,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Sets the paged data loader for user list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<T>> pagedDataLoader) {
         if (recyclerView != null) recyclerView.setPager(pagedDataLoader);
@@ -151,7 +151,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param user     The user that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onUserProfileClicked(@NonNull View view, int position, @NonNull T user) {
         if (profileClickListener != null) profileClickListener.onItemClick(view, position, user);
@@ -163,7 +163,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param user     The user that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull T user) {
         if (actionItemClickListener != null)
@@ -176,7 +176,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
      * @param user     The user that the long-clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull T user) {
         if (itemLongClickListener != null)
@@ -189,7 +189,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param user     The user that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull T user) {
         if (itemClickListener != null) itemClickListener.onItemClick(view, position, user);
@@ -199,7 +199,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Sets the user list adapter.
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected <A extends UserTypeListAdapter<T>> void setAdapter(@NonNull A adapter) {
         if (adapter.getOnItemClickListener() == null) {
@@ -224,7 +224,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * Returns the user list adapter.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     abstract protected UserTypeListAdapter<T> getAdapter();
@@ -235,7 +235,7 @@ abstract public class UserTypeListComponent<T extends User> {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useUserProfile = true;
@@ -243,7 +243,7 @@ abstract public class UserTypeListComponent<T extends User> {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -252,7 +252,7 @@ abstract public class UserTypeListComponent<T extends User> {
          * Sets whether the user profile is shown when the profile of the user is clicked.
          *
          * @param useUserProfile <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseUserProfile(boolean useUserProfile) {
             this.useUserProfile = useUserProfile;
@@ -262,7 +262,7 @@ abstract public class UserTypeListComponent<T extends User> {
          * Returns whether the user profile uses when the profile of the user is clicked.
          *
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseUserProfile() {
             return useUserProfile;
@@ -275,7 +275,7 @@ abstract public class UserTypeListComponent<T extends User> {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

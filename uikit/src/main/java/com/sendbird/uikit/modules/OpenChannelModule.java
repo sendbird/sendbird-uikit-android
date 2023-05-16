@@ -35,7 +35,7 @@ import com.sendbird.uikit.widgets.MessageInputView;
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class OpenChannelModule extends BaseModule {
     @NonNull
@@ -55,7 +55,7 @@ public class OpenChannelModule extends BaseModule {
      * Constructor
      *
      * @param context The {@code Context} this module is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelModule(@NonNull Context context) {
         this(context, new Params(context));
@@ -66,7 +66,7 @@ public class OpenChannelModule extends BaseModule {
      *
      * @param context The {@code Context} this module is currently associated with
      * @param params  The Parameter object that can customize a default Fragment.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
@@ -130,7 +130,7 @@ public class OpenChannelModule extends BaseModule {
      * Sets the channel header component for {@code OpenChannel}.
      *
      * @param component The channel header component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends OpenChannelHeaderComponent> void setHeaderComponent(@NonNull T component) {
         this.headerComponent = component;
@@ -140,7 +140,7 @@ public class OpenChannelModule extends BaseModule {
      * Sets the message list component.
      *
      * @param component The message list component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends OpenChannelMessageListComponent> void setMessageListComponent(@NonNull T component) {
         this.messageListComponent = component;
@@ -150,7 +150,7 @@ public class OpenChannelModule extends BaseModule {
      * Sets the message input component.
      *
      * @param component The message input component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends OpenChannelMessageInputComponent> void setInputComponent(@NonNull T component) {
         this.inputComponent = component;
@@ -160,7 +160,7 @@ public class OpenChannelModule extends BaseModule {
      * Sets a custom status component.
      *
      * @param component The status component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends StatusComponent> void setStatusComponent(@NonNull T component) {
         this.statusComponent = component;
@@ -170,7 +170,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns the channel header component for {@code OpenChannel}.
      *
      * @return The header component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public OpenChannelHeaderComponent getHeaderComponent() {
@@ -181,7 +181,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns the message list component.
      *
      * @return The message list component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public OpenChannelMessageListComponent getMessageListComponent() {
@@ -192,7 +192,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns the message input component.
      *
      * @return The message input component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public OpenChannelMessageInputComponent getMessageInputComponent() {
@@ -203,7 +203,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns the status component.
      *
      * @return The status component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public StatusComponent getStatusComponent() {
@@ -214,7 +214,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns a collection of parameters applied to this module.
      *
      * @return {@link Params} applied to this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -225,7 +225,7 @@ public class OpenChannelModule extends BaseModule {
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
@@ -235,7 +235,7 @@ public class OpenChannelModule extends BaseModule {
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public LoadingDialogHandler getLoadingDialogHandler() {
@@ -246,7 +246,7 @@ public class OpenChannelModule extends BaseModule {
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean shouldShowLoadingDialog() {
         if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
@@ -259,7 +259,7 @@ public class OpenChannelModule extends BaseModule {
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void shouldDismissLoadingDialog() {
         if (loadingDialogHandler != null) {
@@ -274,7 +274,7 @@ public class OpenChannelModule extends BaseModule {
          * Constructor
          *
          * @param context The {@code Context} this module is currently associated with
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context) {
             this(context, SendbirdUIKit.getDefaultThemeMode());
@@ -285,7 +285,7 @@ public class OpenChannelModule extends BaseModule {
          *
          * @param context   The {@code Context} this module is currently associated with
          * @param themeMode The theme of Sendbird UIKit to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             super(context, themeMode, R.attr.sb_module_open_channel);
@@ -296,7 +296,7 @@ public class OpenChannelModule extends BaseModule {
          *
          * @param context    The {@code Context} this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
             super(context, themeResId, R.attr.sb_module_open_channel);
@@ -328,7 +328,7 @@ public class OpenChannelModule extends BaseModule {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

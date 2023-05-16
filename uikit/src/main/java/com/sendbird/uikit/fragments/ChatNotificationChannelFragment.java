@@ -106,7 +106,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param channel The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindHeaderComponent(@NonNull ChatNotificationHeaderComponent headerComponent, @NonNull ChatNotificationChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChatNotificationChannelFragment::onChatNotificationHeaderComponent()");
@@ -120,7 +120,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      * @param listComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param channel The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindNotificationListComponent(@NonNull ChatNotificationListComponent listComponent, @NonNull ChatNotificationChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChatNotificationChannelFragment::onBindChatNotificationListComponent()");
@@ -158,7 +158,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void onBindStatusComponent(@NonNull NotificationStatusComponent statusComponent, @NonNull ChatNotificationChannelViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChatNotificationChannelFragment::onBindStatusComponent()");
@@ -187,7 +187,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      *
      * @param action the registered Action data
      * @param message a clicked message
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void handleWebAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> ChatNotificationChannelFragment::handleWebAction() action=%s", action);
@@ -204,7 +204,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      *
      * @param action the registered Action data
      * @param message a clicked message
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void handleCustomAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> ChatNotificationChannelFragment::handleCustomAction() action=%s", action);
@@ -233,7 +233,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected boolean shouldShowLoadingDialog() {
         return getModule().shouldShowLoadingDialog();
@@ -242,7 +242,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.5.0
+     * since 3.5.0
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -256,7 +256,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -278,7 +278,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -289,7 +289,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -300,7 +300,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.5.0
+         * since 3.5.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -313,7 +313,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -327,7 +327,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setOnMessageTemplateActionHandler(@NonNull OnNotificationTemplateActionHandler handler) {
@@ -340,7 +340,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -354,7 +354,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.2
+         * since 3.5.2
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -367,7 +367,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public <T extends ChatNotificationChannelFragment> Builder setCustomFragment(T fragment) {
@@ -381,7 +381,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          *
          * @param params The MessageListParams instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public Builder setNotificationListParams(@NonNull MessageListParams params) {
@@ -394,7 +394,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          * builder.
          *
          * @return The {@link ChatNotificationChannelFragment} applied to the {@link Bundle}.
-         * @since 3.5.0
+         * since 3.5.0
          */
         @NonNull
         public ChatNotificationChannelFragment build() {

@@ -58,31 +58,31 @@ public enum MessageType {
      * Type of a parent message info in thread list.
      * This type is only used in <code>ThreadListAdapter</code>
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     VIEW_TYPE_PARENT_MESSAGE_INFO(12),
     /**
      * Type of chat notification channel's message sent by the administrator.
      *
-     * @since 3.5.0
+     * since 3.5.0
      */
     VIEW_TYPE_CHAT_NOTIFICATION(13),
     /**
      * Type of feed notification channel's message sent by the administrator.
      *
-     * @since 3.5.0
+     * since 3.5.0
      */
     VIEW_TYPE_FEED_NOTIFICATION(14),
     /**
      * Type of voice message sent by the current user.
      *
-     * @since 3.4.0
+     * since 3.4.0
      */
     VIEW_TYPE_VOICE_MESSAGE_ME(15),
     /**
      * Type of voice message sent by users other than the current user.
      * 
-     * @since 3.4.0
+     * since 3.4.0
      */
     VIEW_TYPE_VOICE_MESSAGE_OTHER(16);
 

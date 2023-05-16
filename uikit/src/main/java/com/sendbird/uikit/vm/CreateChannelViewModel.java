@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * ViewModel preparing and managing data related with the list of users when creating a channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class CreateChannelViewModel extends UserViewModel<UserInfo> {
     private final AtomicBoolean isCreatingChannel = new AtomicBoolean();
@@ -46,7 +46,7 @@ public class CreateChannelViewModel extends UserViewModel<UserInfo> {
      * Creates user list query.
      *
      * @return {@code PagedQueryHandler<UserInfo>} to retrieve the list of users to create {@code GroupChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override

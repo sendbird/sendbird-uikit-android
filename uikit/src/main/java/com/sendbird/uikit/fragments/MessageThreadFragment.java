@@ -75,7 +75,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Fragment that provides thread list of the parent message
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAdapter, ThreadListComponent, MessageThreadModule, MessageThreadViewModel> {
     @Nullable
@@ -182,7 +182,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onBindMessageThreadHeaderComponent(@NonNull MessageThreadHeaderComponent headerComponent, @NonNull MessageThreadViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageThreadFragment::onBindMessageThreadHeaderComponent()");
@@ -207,7 +207,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * @param messageListComponent The component to which the event will be bound
      * @param viewModel            A view model that provides the data needed for the fragment
      * @param channel              The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onBindThreadListComponent(@NonNull ThreadListComponent messageListComponent, @NonNull MessageThreadViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageThreadFragment::onBindMessageListComponent()");
@@ -289,7 +289,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * @param inputComponent The component to which the event will be bound
      * @param viewModel      A view model that provides the data needed for the fragment
      * @param channel        The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onBindMessageInputComponent(@NonNull MessageInputComponent inputComponent, @NonNull MessageThreadViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageThreadFragment::onBindMessageInputComponent()");
@@ -348,7 +348,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull MessageThreadViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageThreadFragment::onBindStatusComponent()");
@@ -405,7 +405,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * @param view     The View clicked
      * @param position The position clicked
      * @param message  The parent message clicked
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onParentMessageMenuClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (parentMessageMenuClickListener != null) {
@@ -529,7 +529,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
      * Returns the parent message to use this fragment.
      *
      * @return The parent message this fragment is currently associated with
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     protected BaseMessage getParentMessage() {
@@ -607,7 +607,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param parentMessage the parent message of thread.
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Builder(@NonNull String channelUrl, @NonNull BaseMessage parentMessage) {
             this(channelUrl, parentMessage, SendbirdUIKit.getDefaultThemeMode());
@@ -619,7 +619,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param channelUrl the url of the channel will be implemented.
          * @param parentMessage the parent message of thread.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Builder(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, parentMessage, themeMode.getResId());
@@ -631,7 +631,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param channelUrl       the url of the channel will be implemented.
          * @param parentMessage    the parent message of thread.
          * @param customThemeResId the resource identifier for custom theme. The theme resource id must be `sb_module_message_thread`.
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Builder(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @StyleRes int customThemeResId) {
             this.bundle = new Bundle();
@@ -645,7 +645,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public <T extends MessageThreadFragment> Builder setCustomFragment(T fragment) {
@@ -658,7 +658,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -671,7 +671,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param startTimemillis The timestamp to load initially.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setStartingPoint(long startTimemillis) {
@@ -684,7 +684,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -698,7 +698,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -712,7 +712,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -725,7 +725,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -738,7 +738,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
@@ -751,7 +751,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -765,7 +765,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
@@ -778,7 +778,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -793,7 +793,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param useInputLeftButton <code>true</code> if the left button of the input is used,
          *                           <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseInputLeftButton(boolean useInputLeftButton) {
@@ -806,7 +806,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputLeftButtonIconResId(@DrawableRes int resId) {
@@ -819,7 +819,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -833,7 +833,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputRightButtonIconResId(@DrawableRes int resId) {
@@ -846,7 +846,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -859,7 +859,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * Sets whether showing the right button of the input always.
          *
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder showInputRightButtonAlways() {
@@ -872,7 +872,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param hint text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputHint(@NonNull String hint) {
@@ -885,7 +885,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -898,7 +898,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -911,7 +911,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnHeaderDescriptionClickListener(@NonNull View.OnClickListener listener) {
@@ -924,7 +924,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param adapter the adapter for the thread list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setThreadListAdapter(@Nullable ThreadListAdapter adapter) {
@@ -937,7 +937,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnMessageClickListener(@NonNull OnItemClickListener<BaseMessage> itemClickListener) {
@@ -950,7 +950,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnMessageLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> itemLongClickListener) {
@@ -963,7 +963,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnInputLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -977,7 +977,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param params The ThreadMessageListParams instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setThreadMessageListParams(@NonNull ThreadMessageListParams params) {
@@ -990,7 +990,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param emojiReactionClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEmojiReactionClickListener(@NonNull OnEmojiReactionClickListener emojiReactionClickListener) {
@@ -1003,7 +1003,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param emojiReactionLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEmojiReactionLongClickListener(@NonNull OnEmojiReactionLongClickListener emojiReactionLongClickListener) {
@@ -1016,7 +1016,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param emojiReactionMoreButtonClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEmojiReactionMoreButtonClickListener(@NonNull OnItemClickListener<BaseMessage> emojiReactionMoreButtonClickListener) {
@@ -1029,7 +1029,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseMessageGroupUI(boolean useMessageGroupUI) {
@@ -1042,7 +1042,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param profileClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnMessageProfileClickListener(@NonNull OnItemClickListener<BaseMessage> profileClickListener) {
@@ -1055,7 +1055,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param messageProfileLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnMessageProfileLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> messageProfileLongClickListener) {
@@ -1068,7 +1068,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param parentMessageMenuClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnParentMessageMenuClickListener(@NonNull OnItemClickListener<BaseMessage> parentMessageMenuClickListener) {
@@ -1081,7 +1081,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param useUserProfile <code>true</code> if the user profile is shown when the profile image clicked, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseUserProfile(boolean useUserProfile) {
@@ -1093,7 +1093,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * The message input displays as a dialog type. (Refer to {@link KeyboardDisplayType})
          *
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setKeyboardDisplayType(@NonNull KeyboardDisplayType type) {
@@ -1106,7 +1106,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -1120,7 +1120,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -1134,7 +1134,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -1147,7 +1147,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -1160,7 +1160,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param editModeTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnEditModeTextChangedListener(@NonNull OnInputTextChangedListener editModeTextChangedListener) {
@@ -1173,7 +1173,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param inputText the message text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setInputText(@NonNull String inputText) {
@@ -1186,7 +1186,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param inputTextChangedListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnInputTextChangedListener(@NonNull OnInputTextChangedListener inputTextChangedListener) {
@@ -1199,7 +1199,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param adapter the adapter for the mentionable user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setSuggestedMentionListAdapter(@Nullable SuggestedMentionListAdapter adapter) {
@@ -1213,7 +1213,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param configSentFromMe     the UI configuration of mentioned text in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of mentioned text in the message that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1230,7 +1230,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param configSentFromMe     the UI configuration of edited text mark in the message that was sent from me.
          * @param configSentFromOthers the UI configuration of edited text mark in the message that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1247,7 +1247,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param configSentFromMe       the UI configuration of the message text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message text that was sent from others.\
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1264,7 +1264,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param configSentFromMe       the UI configuration of the message sentAt text that was sent from me.
          * @param configSentFromOthers   the UI configuration of the message sentAt text that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
@@ -1280,7 +1280,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param configSentFromOthers   the UI configuration of the sender nickname text that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setNicknameTextUIConfig(@NonNull TextUIConfig configSentFromOthers) {
@@ -1293,7 +1293,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param textUIConfig the UI configuration of the message input text.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setMessageInputTextUIConfig(@NonNull TextUIConfig textUIConfig) {
@@ -1307,7 +1307,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param drawableResSentFromMe     the UI configuration of the message background that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the message background that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setMessageBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1322,7 +1322,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param drawableResSentFromMe     the UI configuration of the message reaction list background drawable that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the message reaction list background drawable that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setReactionListBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1337,7 +1337,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * @param drawableResSentFromMe     the UI configuration of the ogtag message background drawable that was sent from me.
          * @param drawableResSentFromOthers the UI configuration of the ogtag message background drawable that was sent from others.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOgtagBackground(@DrawableRes int drawableResSentFromMe, @DrawableRes int drawableResSentFromOthers) {
@@ -1351,7 +1351,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param colorRes  the UI configuration of the linked text color.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setLinkedTextColor(@ColorRes int colorRes) {
@@ -1364,7 +1364,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param inputRightButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnInputRightButtonClickListener(@Nullable View.OnClickListener inputRightButtonClickListener) {
@@ -1377,7 +1377,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param editModeCancelButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnEditModeCancelButtonClickListener(@Nullable View.OnClickListener editModeCancelButtonClickListener) {
@@ -1390,7 +1390,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param editModeSaveButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnEditModeSaveButtonClickListener(@Nullable View.OnClickListener editModeSaveButtonClickListener) {
@@ -1403,7 +1403,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param inputModeChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setOnInputModeChangedListener(@Nullable OnInputModeChangedListener inputModeChangedListener) {
@@ -1416,7 +1416,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param useDivider If <code>true</code> the divider will be used at suggested mention list, <code>false</code> other wise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseSuggestedMentionListDivider(boolean useDivider) {
@@ -1429,7 +1429,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param useBanner <code>true</code> if the message list banner is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseMessageListBanner(boolean useBanner) {
@@ -1442,7 +1442,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param voiceRecorderButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.4.0
+         * since 3.4.0
          */
         @NonNull
         public Builder setOnVoiceRecorderButtonClickListener(@Nullable View.OnClickListener voiceRecorderButtonClickListener) {
@@ -1455,7 +1455,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          *
          * @param mentionClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.5.3
+         * since 3.5.3
          */
         @NonNull
         public Builder setOnMessageMentionClickListener(@NonNull OnItemClickListener<User> mentionClickListener) {
@@ -1468,7 +1468,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * builder.
          *
          * @return The {@link MessageThreadFragment} applied to the {@link Bundle}.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public MessageThreadFragment build() {

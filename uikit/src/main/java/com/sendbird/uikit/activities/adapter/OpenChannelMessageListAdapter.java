@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
  * OpenChannelMessageListAdapter provides a binding from a {@link BaseMessage} set to views that are displayed
  * within a {@link RecyclerView}. This adapter is used to be only {@link OpenChannel}.
  *
- * @since 2.0.0
+ * since 2.0.0
  */
 public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessage, MessageViewHolder> {
     @NonNull
@@ -65,7 +65,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Constructor
      *
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelMessageListAdapter(boolean useMessageGroupUI) {
         this(null, useMessageGroupUI);
@@ -85,7 +85,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      *
      * @param channel           The {@link OpenChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
-     * @since 2.2.0
+     * since 2.2.0
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI) {
         this(channel, useMessageGroupUI, true);
@@ -97,7 +97,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * @param channel           The {@link OpenChannel} that contains the data needed for this adapter
      * @param useMessageGroupUI <code>true</code> if the message group UI is used, <code>false</code> otherwise.
      * @param useReverseLayout  <code>true</code> if the message list is reversed, <code>false</code> otherwise.
-     * @since 3.2.2
+     * since 3.2.2
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         if (channel != null) this.channel = OpenChannel.clone(channel);
@@ -251,7 +251,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setItems(@NonNull final OpenChannel channel, @NonNull final List<BaseMessage> messageList, @Nullable OnMessageListUpdateHandler callback) {
         final OpenChannel copiedChannel = OpenChannel.clone(channel);
@@ -310,7 +310,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setOnListItemClickListener(@Nullable OnIdentifiableItemClickListener<BaseMessage> listener) {
         this.listItemClickListener = listener;
@@ -320,7 +320,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is clicked.
      *
      * @return {@code OnIdentifiableItemClickListener<BaseMessage>} to be invoked when the {@link MessageViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnIdentifiableItemClickListener<BaseMessage> getOnListItemClickListener() {
@@ -331,7 +331,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Register a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @param listener The callback that will run
-     * @since 2.2.0
+     * since 2.2.0
      */
     public void setOnListItemLongClickListener(@Nullable OnIdentifiableItemLongClickListener<BaseMessage> listener) {
         this.listItemLongClickListener = listener;
@@ -341,7 +341,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Returns a callback to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
      *
      * @return OnIdentifiableItemLongClickListener<BaseMessage> to be invoked when the {@link MessageViewHolder#itemView} is long clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnIdentifiableItemLongClickListener<BaseMessage> getOnListItemLongClickListener() {
@@ -386,7 +386,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      *
      * @param messageUIConfig the configurations of the message's properties to highlight text.
      * @see com.sendbird.uikit.model.TextUIConfig
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setMessageUIConfig(@Nullable MessageUIConfig messageUIConfig) {
         this.messageUIConfig = messageUIConfig;
@@ -396,7 +396,7 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * Returns the configurations of the message's properties to highlight text.
      *
      * @return the configurations of the message's properties to highlight text.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public MessageUIConfig getMessageUIConfig() {

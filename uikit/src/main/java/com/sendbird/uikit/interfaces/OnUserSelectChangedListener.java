@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Interface definition for a callback to be invoked when a user view holder is clicked.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public interface OnUserSelectChangedListener {
     /**

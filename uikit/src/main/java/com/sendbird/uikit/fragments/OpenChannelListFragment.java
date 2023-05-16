@@ -37,7 +37,7 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
  * Fragment displaying the list of open channels.
- * @since 3.2.0
+ * since 3.2.0
  */
 public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListModule, OpenChannelListViewModel> {
     @Nullable
@@ -113,7 +113,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
      *
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull OpenChannelListViewModel viewModel) {
         Logger.d(">> OpenChannelListFragment::onBindHeaderComponent()");
@@ -126,7 +126,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
      *
      * @param openChannelListComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBindOpenChannelListComponent(@NonNull OpenChannelListComponent openChannelListComponent, @NonNull OpenChannelListViewModel viewModel) {
         Logger.d(">> OpenChannelListFragment::onBindOpenChannelListComponent()");
@@ -144,7 +144,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
      *
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull OpenChannelListViewModel viewModel) {
         Logger.d(">> OpenChannelListFragment::setupStatusComponent()");
@@ -162,7 +162,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
      * @param view     The View clicked.
      * @param position The position clicked.
      * @param channel  The channel that the clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull OpenChannel channel) {
         if (itemClickListener != null) {
@@ -178,7 +178,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
      * @param view     The View long-clicked.
      * @param position The position long-clicked.
      * @param channel  The channel that the long-clicked item displays
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onItemLongClicked(@NonNull View view, int position, @NonNull OpenChannel channel) {
         if (itemLongClickListener != null) {
@@ -189,7 +189,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
     /**
      * Refresh the open channel list.
      *
-     * @since 3.2.0
+     * since 3.2.0
      */
     protected void onRefresh() {
         if (refreshListener != null) {
@@ -256,7 +256,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelListFragment> Builder setCustomFragment(@NonNull T fragment) {
@@ -269,7 +269,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -282,7 +282,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -295,7 +295,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -309,7 +309,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -322,7 +322,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
@@ -335,7 +335,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -349,7 +349,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -362,7 +362,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
@@ -375,7 +375,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -389,7 +389,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -403,7 +403,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -416,7 +416,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param adapter the adapter for the open channel list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelListAdapter> Builder setOpenChannelListAdapter(T adapter) {
@@ -429,7 +429,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<OpenChannel> itemClickListener) {
@@ -442,7 +442,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<OpenChannel> itemLongClickListener) {
@@ -455,7 +455,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param refreshListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setOnRefreshListener(@NonNull SwipeRefreshLayout.OnRefreshListener refreshListener) {
@@ -468,7 +468,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
@@ -481,7 +481,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -495,7 +495,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -508,7 +508,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -521,7 +521,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param useRefreshLayout <code>true</code> if the refresh layout is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setUseRefreshLayout(boolean useRefreshLayout) {
@@ -534,7 +534,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          *
          * @param params The OpenChannelListQueryParams instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public Builder setCustomQueryParams(@NonNull OpenChannelListQueryParams params) {
@@ -547,7 +547,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
          * builder.
          *
          * @return The {@link OpenChannelListFragment} applied to the {@link Bundle}.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public OpenChannelListFragment build() {

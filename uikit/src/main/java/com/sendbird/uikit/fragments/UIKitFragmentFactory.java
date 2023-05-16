@@ -21,7 +21,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ChannelListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newChannelListFragment(@NonNull Bundle args) {
@@ -37,7 +37,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args       the arguments supplied when the fragment was instantiated.
      * @return The {@link ChannelFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -53,7 +53,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ChannelSettingsFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newChannelSettingsFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -69,7 +69,7 @@ public class UIKitFragmentFactory {
      * @param channelType the channel type to be created.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link CreateChannelFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newCreateChannelFragment(@NonNull CreatableChannelType channelType, @NonNull Bundle args) {
@@ -85,7 +85,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link InviteUserFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newInviteUserFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -101,7 +101,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link RegisterOperatorFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newRegisterOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -117,7 +117,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MessageSearchFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newMessageSearchFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -133,7 +133,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ModerationFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newModerationFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -149,7 +149,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MemberListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newMemberListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -166,7 +166,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link BannedUserListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newBannedUserListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -183,7 +183,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OperatorListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newOperatorListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -200,7 +200,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MutedMemberListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newMutedMemberListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -217,7 +217,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link ParticipantListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newParticipantListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -233,7 +233,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelSettingsFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newOpenChannelSettingsFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -249,7 +249,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelSettingsFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Fragment newChannelPushSettingFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -265,7 +265,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelModerationFragment}
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Fragment newOpenChannelModerationFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -280,7 +280,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelRegisterOperatorFragment}
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Fragment newOpenChannelRegisterOperatorFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -295,7 +295,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelOperatorListFragment}
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Fragment newOpenChannelOperatorListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -310,7 +310,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelMutedParticipantListFragment}
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Fragment newOpenChannelMutedParticipantListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -325,7 +325,7 @@ public class UIKitFragmentFactory {
      * @param channelUrl the channel url for the target channel.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelBannedUserListFragment}
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public Fragment newOpenChannelBannedUserListFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -339,7 +339,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link CreateOpenChannelFragment}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public Fragment newCreateOpenChannelFragment(@NonNull Bundle args) {
@@ -355,7 +355,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelListFragment}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public Fragment newOpenChannelListFragment(@NonNull Bundle args) {
@@ -370,7 +370,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link OpenChannelFragment}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public Fragment newOpenChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -387,7 +387,7 @@ public class UIKitFragmentFactory {
      * @param parentMessage the parent message of the message thread fragment.
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link MessageThreadFragment}
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public Fragment newMessageThreadFragment(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @NonNull Bundle args) {
@@ -403,7 +403,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link FeedNotificationChannelFragment}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public Fragment newFeedNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {
@@ -418,7 +418,7 @@ public class UIKitFragmentFactory {
      *
      * @param args the arguments supplied when the fragment was instantiated.
      * @return The {@link FeedNotificationChannelFragment}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public Fragment newChatNotificationChannelFragment(@NonNull String channelUrl, @NonNull Bundle args) {

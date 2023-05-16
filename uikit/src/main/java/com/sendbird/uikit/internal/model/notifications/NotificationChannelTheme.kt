@@ -8,7 +8,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 
-
 @Serializable
 internal data class NotificationChannelSettings(
     @SerialName(KeySet.updated_at)
@@ -91,5 +90,3 @@ internal data class TimelineStyle(
     val backgroundColor: CSVColor,
     val textColor: CSVColor
 )
-
-

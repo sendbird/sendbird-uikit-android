@@ -19,7 +19,7 @@ import com.sendbird.uikit.utils.TextUtils;
 /**
  * Activity displays settings of an open channel.
  *
- * @since 2.0.0
+ * since 2.0.0
  */
 public class OpenChannelSettingsActivity extends AppCompatActivity {
 
@@ -75,7 +75,7 @@ public class OpenChannelSettingsActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.OpenChannelSettingsFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

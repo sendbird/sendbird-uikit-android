@@ -74,7 +74,7 @@ internal class UserPreview @JvmOverloads constructor(
         @JvmStatic
         fun drawUser(preview: UserPreview, user: User, description: String, isMuted: Boolean) {
             val context = preview.context
-            val isMe = user.userId == SendbirdUIKit.getAdapter().userInfo.userId
+            val isMe = user.userId == SendbirdUIKit.getAdapter()?.userInfo?.userId
             val nickname = UserUtils.getDisplayName(context, user)
             preview.setName(nickname)
             preview.setDescription(description)

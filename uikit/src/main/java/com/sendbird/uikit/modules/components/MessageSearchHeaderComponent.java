@@ -19,7 +19,7 @@ import com.sendbird.uikit.utils.SoftInputUtils;
 /**
  * This class creates and performs a view corresponding the message search header area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MessageSearchHeaderComponent {
     @NonNull
@@ -36,7 +36,7 @@ public class MessageSearchHeaderComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MessageSearchHeaderComponent() {
         this.params = new Params();
@@ -46,7 +46,7 @@ public class MessageSearchHeaderComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -57,7 +57,7 @@ public class MessageSearchHeaderComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -73,7 +73,7 @@ public class MessageSearchHeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -96,7 +96,7 @@ public class MessageSearchHeaderComponent {
      * Register a callback to be invoked when the user requests to search messages.
      *
      * @param searchEventListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnSearchEventListener(@Nullable OnSearchEventListener searchEventListener) {
         this.searchEventListener = searchEventListener;
@@ -106,7 +106,7 @@ public class MessageSearchHeaderComponent {
      * Register a callback to be invoked when the input text is changed.
      *
      * @param textChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnInputTextChangedListener(@Nullable OnInputTextChangedListener textChangedListener) {
         this.inputTextChangedListener = textChangedListener;
@@ -116,7 +116,7 @@ public class MessageSearchHeaderComponent {
      * Register a callback to be invoked when the clear button related to the input is clicked.
      *
      * @param clearButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnClearButtonClickListener(@Nullable View.OnClickListener clearButtonClickListener) {
         this.clearButtonClickListener = clearButtonClickListener;
@@ -126,7 +126,7 @@ public class MessageSearchHeaderComponent {
      * Called when the user requests to search messages.
      *
      * @param keyword Keyword to search for messages
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onSearchRequested(@NonNull String keyword) {
         if (this.searchEventListener != null) this.searchEventListener.onSearchRequested(keyword);
@@ -136,7 +136,7 @@ public class MessageSearchHeaderComponent {
      * Called when the clear button related to the input is clicked.
      *
      * @param view The view clicked
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onClearButtonClicked(@NonNull View view) {
         if (this.clearButtonClickListener != null) {
@@ -158,7 +158,7 @@ public class MessageSearchHeaderComponent {
      * this callback.
      * </p>
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onInputTextChanged(@NonNull CharSequence s, int start, int before, int count) {
         if (inputTextChangedListener != null) {
@@ -176,7 +176,7 @@ public class MessageSearchHeaderComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         @Nullable
@@ -185,7 +185,7 @@ public class MessageSearchHeaderComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -194,7 +194,7 @@ public class MessageSearchHeaderComponent {
          * Sets the String of the search button on the search bar.
          *
          * @param searchBarButtonText String to be displayed on the search button
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setSearchBarButtonText(@Nullable String searchBarButtonText) {
             this.searchBarButtonText = searchBarButtonText;
@@ -204,7 +204,7 @@ public class MessageSearchHeaderComponent {
          * Returns the String of the search button on the search bar.
          *
          * @return String displayed on the search button
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getSearchBarButtonText() {
@@ -218,7 +218,7 @@ public class MessageSearchHeaderComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

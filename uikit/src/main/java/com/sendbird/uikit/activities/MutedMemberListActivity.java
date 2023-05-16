@@ -17,7 +17,7 @@ import com.sendbird.uikit.consts.StringSet;
 /**
  * Activity displays a list of muted members from a channel.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class MutedMemberListActivity extends AppCompatActivity {
     /**
@@ -26,7 +26,7 @@ public class MutedMemberListActivity extends AppCompatActivity {
      * @param context A Context of the application package implementing this class.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
@@ -41,7 +41,7 @@ public class MutedMemberListActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl The url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends MutedMemberListActivity> cls, @NonNull String channelUrl) {
@@ -69,7 +69,7 @@ public class MutedMemberListActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.MutedMemberListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

@@ -5,12 +5,15 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.collection.CollectionEventSource;
 import com.sendbird.android.collection.MessageContext;
 import com.sendbird.android.collection.Traceable;
+import com.sendbird.android.handler.GroupChannelCallbackHandler;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.SendingStatus;
@@ -23,12 +26,16 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.LiveDataEx;
 import com.sendbird.uikit.model.MentionSuggestion;
 import com.sendbird.uikit.model.MessageList;
 import com.sendbird.uikit.model.MutableLiveDataEx;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.File;
 import java.util.List;
@@ -38,25 +45,29 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     GroupChannel channel;
     @NonNull
     private final String channelUrl;
-    @NonNull
-    private final MemberFinder memberFinder;
+    @Nullable
+    private MemberFinder memberFinder;
     @NonNull
     final MessageList cachedMessages = new MessageList();
     @NonNull
     final MutableLiveDataEx<ChannelViewModel.ChannelMessageData> messageList = new MutableLiveDataEx<>();
 
     public BaseMessageListViewModel(@NonNull String channelUrl) {
-        super();
+        this(channelUrl, new SendbirdUIKitImpl());
+    }
+
+    @VisibleForTesting
+    BaseMessageListViewModel(@NonNull String channelUrl, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper) {
+        super(sendbirdUIKitWrapper);
         this.channel = null;
         this.channelUrl = channelUrl;
-        this.memberFinder = new MemberFinder(channelUrl, SendbirdUIKit.getUserMentionConfig());
     }
 
     /**
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -67,7 +78,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -78,7 +89,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * Returns LiveData that can be observed for the list of messages.
      *
      * @return LiveData holding the latest {@link ChannelViewModel.ChannelMessageData}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveDataEx<ChannelViewModel.ChannelMessageData> getMessageList() {
@@ -89,10 +100,11 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * Returns LiveData that can be observed for suggested information from mention.
      *
      * @return LiveData holding {@link MentionSuggestion} for this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<MentionSuggestion> getMentionSuggestion() {
+        if (memberFinder == null) return new MutableLiveData<>();
         return memberFinder.getMentionSuggestion();
     }
 
@@ -106,7 +118,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     protected void onCleared() {
         super.onCleared();
         Logger.dev("-- onCleared ChannelViewModel");
-        memberFinder.dispose();
+        if (memberFinder != null) memberFinder.dispose();
     }
 
     /**
@@ -128,7 +140,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * Sends a text message to the channel.
      *
      * @param params Parameters to be applied to the message
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void sendUserMessage(@NonNull UserMessageCreateParams params) {
         Logger.i("++ request send message : %s", params);
@@ -148,7 +160,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      *
      * @param params Parameters to be applied to the message
      * @param fileInfo File information to send to the channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void sendFileMessage(@NonNull FileMessageCreateParams params, @NonNull FileInfo fileInfo) {
         Logger.i("++ request send file message : %s", params);
@@ -171,7 +183,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      *
      * @param message Message to resend
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void resendMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -196,7 +208,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * @param messageId ID of message to be updated
      * @param params Parameters to be applied to the message
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -211,7 +223,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      *
      * @param message Message to be deleted
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void deleteMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -231,7 +243,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * @param message Message to which the reaction will be applieds
      * @param key Key of reaction
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void toggleReaction(@NonNull View view, @NonNull BaseMessage message, @NonNull String key, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -258,17 +270,18 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
         connect((user, e) -> {
             if (user != null) {
-                GroupChannel.getChannel(channelUrl, (channel, e1) -> {
+                getChannel(channelUrl, (channel, e1) -> {
                     this.channel = channel;
-                    if (e1 != null) {
+                    if (e1 != null || channel == null) {
                         handler.onAuthenticationFailed();
                     } else {
+                        this.memberFinder = new MemberFinder(channel, SendbirdUIKit.getUserMentionConfig());
                         handler.onAuthenticated();
                     }
                 });
@@ -278,14 +291,19 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
         });
     }
 
+    @VisibleForTesting
+    void getChannel(@NonNull String channelUrl, @NonNull GroupChannelCallbackHandler handler) {
+        GroupChannel.getChannel(channelUrl, handler);
+    }
+
     /**
      * Loads the list of members whose nickname starts with startWithFilter.
      *
      * @param startWithFilter The filter to be used to load a list of members with nickname that starts with a specific text.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public synchronized void loadMemberList(@Nullable String startWithFilter) {
-        memberFinder.find(startWithFilter);
+        if (memberFinder != null) memberFinder.find(startWithFilter);
     }
 
     void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
@@ -343,5 +361,11 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
 
     @UiThread
     synchronized void notifyDataSetChanged(@NonNull String traceName) {}
+
+    @TestOnly
+    @Nullable
+    MemberFinder getMemberFinder() {
+        return memberFinder;
+    }
 }
 

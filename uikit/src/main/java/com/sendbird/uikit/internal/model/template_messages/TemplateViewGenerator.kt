@@ -1,9 +1,13 @@
 package com.sendbird.uikit.internal.model.template_messages
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.sendbird.android.message.BaseMessage
+import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.ui.widgets.Box
 import com.sendbird.uikit.internal.ui.widgets.Image
 import com.sendbird.uikit.internal.ui.widgets.ImageButton
@@ -122,5 +126,98 @@ internal object TemplateViewGenerator {
                 )
             }
         }
+    }
+
+    @JvmStatic
+    fun createDefaultViewParam(
+        message: BaseMessage,
+        defaultFallbackTitle: String,
+        defaultFallbackDescription: String,
+        themeMode: NotificationThemeMode
+    ): Params {
+        val hasFallbackMessage = message.message.isNotEmpty()
+        val textList = mutableListOf(
+            TextViewParams(
+                type = ViewType.Text,
+                textStyle = TextStyle(
+                    size = 14,
+                    color = getTitleColor(themeMode)
+                ),
+                text = message.message.takeIf { it.isNotEmpty() } ?: defaultFallbackTitle
+            )
+        )
+
+        if (!hasFallbackMessage) {
+            textList.add(
+                TextViewParams(
+                    type = ViewType.Text,
+                    textStyle = TextStyle(
+                        size = 14,
+                        color = getDescTextColor(themeMode)
+                    ),
+                    viewStyle = ViewStyle(
+                        margin = Margin(
+                            top = 10
+                        )
+                    ),
+                    text = defaultFallbackDescription
+                )
+            )
+        }
+        return Params(
+            version = 1,
+            body = Body(
+                items = listOf(
+                    BoxViewParams(
+                        type = ViewType.Box,
+                        orientation = Orientation.Column,
+                        viewStyle = ViewStyle(
+                            backgroundColor = getBackgroundColor(themeMode),
+                            padding = Padding(
+                                12, 12, 12, 12
+                            ),
+                            radius = 8
+                        ),
+                        items = textList
+                    ),
+                )
+            )
+        )
+    }
+
+    private fun getBackgroundColor(themeMode: NotificationThemeMode): Int {
+        val color = when (themeMode) {
+            NotificationThemeMode.Light -> "#EEEEEE"
+            NotificationThemeMode.Dark -> "#2C2C2C"
+            NotificationThemeMode.Default -> if (SendbirdUIKit.getDefaultThemeMode() == SendbirdUIKit.ThemeMode.Light) "#EEEEEE" else "#2C2C2C"
+        }
+        return Color.parseColor(color)
+    }
+
+    private fun getTitleColor(themeMode: NotificationThemeMode): Int {
+        val color = when (themeMode) {
+            NotificationThemeMode.Light -> "#E0000000"
+            NotificationThemeMode.Dark -> "#E0FFFFFF"
+            NotificationThemeMode.Default -> if (SendbirdUIKit.getDefaultThemeMode() == SendbirdUIKit.ThemeMode.Light) "#E0000000" else "#E0FFFFFF"
+        }
+        return Color.parseColor(color)
+    }
+
+    private fun getDescTextColor(themeMode: NotificationThemeMode): Int {
+        val color = when (themeMode) {
+            NotificationThemeMode.Light -> "#70000000"
+            NotificationThemeMode.Dark -> "#70FFFFFF"
+            NotificationThemeMode.Default -> if (SendbirdUIKit.getDefaultThemeMode() == SendbirdUIKit.ThemeMode.Light) "#70000000" else "#70FFFFFF"
+        }
+        return Color.parseColor(color)
+    }
+
+    internal fun getSpinnerColor(themeMode: NotificationThemeMode): Int {
+        val color = when (themeMode) {
+            NotificationThemeMode.Light -> "#70000000"
+            NotificationThemeMode.Dark -> "#70FFFFFF"
+            NotificationThemeMode.Default -> if (SendbirdUIKit.getDefaultThemeMode() == SendbirdUIKit.ThemeMode.Light) "#70000000" else "#70FFFFFF"
+        }
+        return Color.parseColor(color)
     }
 }

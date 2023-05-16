@@ -30,7 +30,7 @@ import com.sendbird.uikit.modules.components.StatusComponent;
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class RegisterOperatorModule extends BaseModule {
     @NonNull
@@ -46,7 +46,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Constructor
      *
      * @param context The {@code Context} this module is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public RegisterOperatorModule(@NonNull Context context) {
         this(context, new Params(context));
@@ -57,7 +57,7 @@ public class RegisterOperatorModule extends BaseModule {
      *
      * @param context The {@code Context} this module is currently associated with
      * @param params The Parameter object that can customize a default Fragment.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public RegisterOperatorModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
@@ -107,7 +107,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Sets a custom header component.
      *
      * @param component The header component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends SelectUserHeaderComponent> void setHeaderComponent(@NonNull T component) {
         this.headerComponent = component;
@@ -117,7 +117,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Sets a custom list component.
      *
      * @param component The list component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends RegisterOperatorListComponent> void setRegisterOperatorListComponent(@NonNull T component) {
         this.registerOperatorListComponent = component;
@@ -127,7 +127,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Sets a custom status component.
      *
      * @param component The status component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends StatusComponent> void setStatusComponent(@NonNull T component) {
         this.statusComponent = component;
@@ -137,7 +137,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Returns the header component.
      *
      * @return The header component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public SelectUserHeaderComponent getHeaderComponent() {
@@ -148,7 +148,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Returns the list component.
      *
      * @return The list component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public RegisterOperatorListComponent getRegisterOperatorListComponent() {
@@ -159,7 +159,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Returns the status component.
      *
      * @return The status component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public StatusComponent getStatusComponent() {
@@ -170,7 +170,7 @@ public class RegisterOperatorModule extends BaseModule {
      * Returns a collection of parameters applied to this module.
      *
      * @return {@link Params} applied to this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -183,7 +183,7 @@ public class RegisterOperatorModule extends BaseModule {
          * Constructor
          *
          * @param context The {@code Context} this module is currently associated with
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context) {
             this(context, SendbirdUIKit.getDefaultThemeMode());
@@ -194,7 +194,7 @@ public class RegisterOperatorModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeMode The theme of Sendbird UIKit to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             super(context, themeMode, R.attr.sb_module_register_operator_list);
@@ -205,7 +205,7 @@ public class RegisterOperatorModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
             super(context, themeResId, R.attr.sb_module_register_operator_list);

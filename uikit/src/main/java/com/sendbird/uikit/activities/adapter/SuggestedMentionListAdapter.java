@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * SuggestedMentionListAdapter provides a binding from a {@link User} type data set to views that are displayed within a RecyclerView.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
 
@@ -47,7 +47,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public SuggestedMentionListAdapter() {
         this(true);
@@ -57,7 +57,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Constructor
      *
      * @param showUserId Whether to show user id information on each item
-     * @since 3.0.0
+     * since 3.0.0
      */
     public SuggestedMentionListAdapter(boolean showUserId) {
         this.showUserId = showUserId;
@@ -74,7 +74,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * @return A new {@link BaseViewHolder<User>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -94,7 +94,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public int getItemCount() {
@@ -106,7 +106,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      *
      * @param position The position of the item within the adapter's data set.
      * @return The {@link User} to retrieve the position of in this adapter.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public User getItem(int position) {
@@ -117,7 +117,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Returns the {@link List<User>} in the data set held by the adapter.
      *
      * @return The {@link List<User>} in this adapter.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public List<User> getItems() {
@@ -129,7 +129,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      *
      * @param position Adapter position to query
      * @return the stable ID of the item at position
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public long getItemId(int position) {
@@ -140,7 +140,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<User> listener) {
         this.listener = listener;
@@ -150,7 +150,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<User> getOnItemClickListener() {
@@ -161,7 +161,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<User> listener) {
         this.longClickListener = listener;
@@ -171,7 +171,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @return {@code OnItemLongClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemLongClickListener<User> getOnItemLongClickListener() {
@@ -182,7 +182,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Register a callback to be invoked when the profile view is clicked.
      *
      * @param profileClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnProfileClickListener(@Nullable OnItemClickListener<User> profileClickListener) {
         this.profileClickListener = profileClickListener;
@@ -192,7 +192,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Returns a callback to be invoked when the profile view is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the profile view is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<User> getOnProfileClickListener() {
@@ -203,7 +203,7 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
      * Sets the {@link List<User>} to be displayed.
      *
      * @param userList list to be displayed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void setItems(@NonNull List<User> userList) {

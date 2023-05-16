@@ -17,7 +17,7 @@ import com.sendbird.uikit.consts.StringSet;
 /**
  * Activity displays moderation menus
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class ModerationActivity extends AppCompatActivity {
 
@@ -28,7 +28,7 @@ public class ModerationActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @return ModerationActivity Intent.
      *
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
@@ -42,7 +42,7 @@ public class ModerationActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.2.0
+     * since 1.2.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ModerationActivity> cls, @NonNull String channelUrl) {
@@ -70,7 +70,7 @@ public class ModerationActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.ModerationFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {

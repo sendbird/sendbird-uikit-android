@@ -118,7 +118,7 @@ internal object NotificationChannelManager {
                 try {
                     Logger.d("NotificationChannelManager::notifyTemplateFetched()")
                     templateRequestHandlers[key]?.forEach { handler ->
-                        handler.onResult(template, e)
+                        handler.onResult(key, template, e)
                     }
                 } finally {
                     templateRequestHandlers.remove(key)
@@ -134,4 +134,3 @@ internal object NotificationChannelManager {
         channelSettingsRepository.clearAll()
     }
 }
-

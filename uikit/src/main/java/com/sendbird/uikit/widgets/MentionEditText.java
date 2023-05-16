@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * EditText with Mention feature. This EditText detects the trigger keyword and show a list of suggested users for mention.
  * Plus, If the suggested user is selected, the selected user will be markup as mentioned-text and created as a mention data.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MentionEditText extends AppCompatEditText {
     final private int FLAG_NO_SPELLING_SUGGESTION = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
@@ -215,7 +215,7 @@ public class MentionEditText extends AppCompatEditText {
      *
      * @param index Offset of mention span to get
      * @return Then markup object with mention information
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public MentionSpan getMentionSpanAtOffset(int index) {
@@ -249,7 +249,7 @@ public class MentionEditText extends AppCompatEditText {
      * Notifies change of a list of suggested user for mention.
      *
      * @param suggestedMentionList The updated suggested user list for mention
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifySuggestedMentionDataChanged(@NonNull List<User> suggestedMentionList) {
         if (suggestedMentionList.isEmpty()) {
@@ -276,7 +276,7 @@ public class MentionEditText extends AppCompatEditText {
      * Sets the adapter to be used to a suggested mention popup dialog when the trigger is detected.
      *
      * @param adapter The adapter for a list of suggested users for mention
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setSuggestedMentionListAdapter(@NonNull MutableBaseAdapter<User> adapter) {
         suggestionDialog.setAdapter(adapter);
@@ -286,7 +286,7 @@ public class MentionEditText extends AppCompatEditText {
      * Sets whether to use divider for a suggested mention popup dialog when the trigger is detected.
      *
      * @param useDivider If <code>true</code> divider will be shown in a dialog, <code>false</code> other wise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setUseSuggestedMentionListDivider(boolean useDivider) {
         suggestionDialog.setUseDivider(useDivider);
@@ -297,7 +297,7 @@ public class MentionEditText extends AppCompatEditText {
      *
      * @param config The configuration for mention to be applied for this class
      * @param handler The callback that will run when a mentioned text is detected
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void bindUserMention(@NonNull UserMentionConfig config, @NonNull TextUIConfig mentionUIConfig, @NonNull OnMentionEventListener handler) {
         this.snackbar.setMaxMentionCount(config.getMaxMentionCount());
@@ -340,7 +340,7 @@ public class MentionEditText extends AppCompatEditText {
      * Returns the mentioned-template text on this EditText.
      *
      * @return The text indicating that mentions are included
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public CharSequence getMentionedTemplate() {
@@ -362,7 +362,7 @@ public class MentionEditText extends AppCompatEditText {
      * Returns the list of mentioned-users on this EditText.
      *
      * @return The list of mentioned users
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public List<User> getMentionedUsers() {

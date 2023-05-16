@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Fragment displaying the participant list to be operator.
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<OpenChannelRegisterOperatorModule, OpenChannelRegisterOperatorViewModel> {
     @Nullable
@@ -111,7 +111,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull OpenChannelRegisterOperatorViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelRegisterOperatorFragment::onBindHeaderComponent()");
@@ -125,7 +125,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
      * @param listComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindRegisterOperatorListComponent(@NonNull OpenChannelRegisterOperatorListComponent listComponent, @NonNull OpenChannelRegisterOperatorViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelRegisterOperatorFragment::onBindRegisterOperatorListComponent()");
@@ -143,7 +143,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
      * @param statusComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull OpenChannelRegisterOperatorViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelRegisterOperatorFragment::onBindStatusComponent()");
@@ -159,7 +159,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
      * Called when the user selection completed.
      *
      * @param selectedUsers selected user's ids.
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
         Logger.d(">> RegisterOperators::onUserSelectComplete()");
@@ -181,7 +181,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -211,7 +211,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -222,7 +222,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -233,7 +233,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -246,7 +246,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelRegisterOperatorFragment> Builder setCustomFragment(T fragment) {
@@ -259,7 +259,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -272,7 +272,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -285,7 +285,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -299,7 +299,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -326,7 +326,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -352,7 +352,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setCustomPagedQueryHandler(@NonNull PagedQueryHandler<User> handler) {
@@ -365,7 +365,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param adapter the adapter for the user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setRegisterOperatorListAdapter(@NonNull OpenChannelRegisterOperatorListAdapter adapter) {
@@ -378,7 +378,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -391,7 +391,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -405,7 +405,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -419,7 +419,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -432,7 +432,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -445,7 +445,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param userSelectChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
@@ -458,7 +458,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          *
          * @param userSelectionCompleteListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
@@ -471,7 +471,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
          * builder.
          *
          * @return The {@link OpenChannelRegisterOperatorFragment} applied to the {@link Bundle}.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public OpenChannelRegisterOperatorFragment build() {

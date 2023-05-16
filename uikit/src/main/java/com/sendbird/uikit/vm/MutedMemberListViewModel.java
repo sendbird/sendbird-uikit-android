@@ -10,7 +10,7 @@ import com.sendbird.uikit.internal.queries.MutedMemberListQuery;
 /**
  * ViewModel preparing and managing data related with the list of muted members
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MutedMemberListViewModel extends UserViewModel<Member> {
     /**
@@ -18,7 +18,7 @@ public class MutedMemberListViewModel extends UserViewModel<Member> {
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param queryHandler A callback to be invoked when a list of data is loaded.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MutedMemberListViewModel(@NonNull String channelUrl, @Nullable PagedQueryHandler<Member> queryHandler) {
         super(channelUrl, queryHandler);
@@ -29,7 +29,7 @@ public class MutedMemberListViewModel extends UserViewModel<Member> {
      *
      * @param channelUrl The url of {@code GroupChannel} with muted members to be fetched by the query
      * @return {@code PagedQueryHandler<UserInfo>} to retrieve the list of members who are muted
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override

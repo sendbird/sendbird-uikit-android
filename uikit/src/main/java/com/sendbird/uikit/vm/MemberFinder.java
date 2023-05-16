@@ -28,8 +28,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 class MemberFinder {
-    @Nullable
-    private GroupChannel channel;
+    @NonNull
+    private final GroupChannel channel;
     private final long debounceTime;
     @NonNull
     private final ClearableScheduledExecutorService executor = new ClearableScheduledExecutorService();
@@ -46,10 +46,10 @@ class MemberFinder {
     @SuppressWarnings("ComparatorCombinators")
     private static final Comparator<Member> ALPHABETICAL_COMPARATOR = (member1, member2) -> member1.getNickname().toLowerCase().compareTo(member2.getNickname().toLowerCase());
 
-    MemberFinder(@NonNull String channelUrl, @NonNull UserMentionConfig mentionConfig) {
+    MemberFinder(@NonNull GroupChannel channel, @NonNull UserMentionConfig mentionConfig) {
         this.debounceTime = mentionConfig.getDebounceTime();
         this.maxSuggestionCount = mentionConfig.getMaxSuggestionCount();
-        GroupChannel.getChannel(channelUrl, (channel, e) -> MemberFinder.this.channel = channel);
+        this.channel = channel;
     }
 
     @NonNull
@@ -65,7 +65,6 @@ class MemberFinder {
     public synchronized void find(@Nullable String nicknameStartWith) {
         Logger.d(">> ChannelMemberFinder::request( nicknameStartWith=%s )", nicknameStartWith);
         if (!isLive) return;
-        if (channel == null) return;
 
         if (TextUtils.isNotEmpty(lastEmptyResultKeyword) && nicknameStartWith != null && nicknameStartWith.startsWith(lastEmptyResultKeyword)) {
             Logger.d("++ skip search because [%s] keyword must be empty.", nicknameStartWith);
@@ -76,7 +75,6 @@ class MemberFinder {
         executor.cancelAllJobs(true);
         executor.schedule(() -> {
             if (!isLive) return;
-            if (channel == null) return;
             if (nicknameStartWith == null) return;
             try {
                 this.lastNicknameStartWith = nicknameStartWith;
@@ -99,14 +97,16 @@ class MemberFinder {
         final List<User> filteredList = new ArrayList<>();
         final List<Member> members = channel.getMembers();
         Collections.sort(members, ALPHABETICAL_COMPARATOR);
-        final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
-        for (Member member : members) {
-            final String nickname = member.getNickname();
-            if (nickname.toLowerCase().startsWith(nicknameStartWith.toLowerCase()) && !myUserId.equalsIgnoreCase(member.getUserId())) {
-                if (filteredList.size() >= maxMemberCount) {
-                    return filteredList;
+        if (SendbirdUIKit.getAdapter() != null) {
+            final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
+            for (Member member : members) {
+                final String nickname = member.getNickname();
+                if (nickname.toLowerCase().startsWith(nicknameStartWith.toLowerCase()) && !myUserId.equalsIgnoreCase(member.getUserId())) {
+                    if (filteredList.size() >= maxMemberCount) {
+                        return filteredList;
+                    }
+                    filteredList.add(member);
                 }
-                filteredList.add(member);
             }
         }
         return filteredList;
@@ -115,7 +115,7 @@ class MemberFinder {
     @NonNull
     private List<User> getFilteredMembers(@NonNull MemberListQuery query) throws Exception {
         Logger.d(">> MemberFinder::requestNext() nicknameStartWith=%s", lastNicknameStartWith);
-        if (channel == null || channel.isBroadcast()) return Collections.emptyList();
+        if (channel.isBroadcast()) return Collections.emptyList();
 
         final CountDownLatch lock = new CountDownLatch(1);
         final AtomicReference<List<Member>> results = new AtomicReference<>();
@@ -132,13 +132,15 @@ class MemberFinder {
         if (error.get() != null) throw new SendbirdException("Error");
 
         final List<User> filteredList = new ArrayList<>();
-        final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
-        for (Member member : results.get()) {
-            if (!myUserId.equalsIgnoreCase(member.getUserId())) {
-                if (filteredList.size() >= maxSuggestionCount) {
-                    return filteredList;
+        if (SendbirdUIKit.getAdapter() != null) {
+            final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
+            for (Member member : results.get()) {
+                if (!myUserId.equalsIgnoreCase(member.getUserId())) {
+                    if (filteredList.size() >= maxSuggestionCount) {
+                        return filteredList;
+                    }
+                    filteredList.add(member);
                 }
-                filteredList.add(member);
             }
         }
         Logger.d("____ result size=%s", results.get().size());

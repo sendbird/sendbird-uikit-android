@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the muted member list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MutedMemberListComponent extends UserTypeListComponent<Member> {
     @NonNull
@@ -22,7 +22,7 @@ public class MutedMemberListComponent extends UserTypeListComponent<Member> {
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends MutedMemberListAdapter> void setAdapter(@NonNull T adapter) {
         this.adapter = adapter;
@@ -33,7 +33,7 @@ public class MutedMemberListComponent extends UserTypeListComponent<Member> {
      * Returns the muted member list adapter.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -46,7 +46,7 @@ public class MutedMemberListComponent extends UserTypeListComponent<Member> {
      *
      * @param userList The list of users to be displayed on this component
      * @param myRole   Role of the current user
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<Member> userList, @NonNull Role myRole) {
         this.adapter.setItems(userList, myRole);

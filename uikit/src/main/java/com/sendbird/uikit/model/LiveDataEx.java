@@ -13,7 +13,7 @@ import com.sendbird.uikit.log.Logger;
  * Extension class for live data.
  *
  * @param <T> The type of data held by this instance
- * @since 3.0.0
+ * since 3.0.0
  */
 public class LiveDataEx<T> extends LiveData<T> {
     public LiveDataEx(T value) {
@@ -29,7 +29,7 @@ public class LiveDataEx<T> extends LiveData<T> {
      *
      * @param owner The LifecycleOwner which controls the observer
      * @param observer The observer that will receive the events
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void observeAlways(@NonNull LifecycleOwner owner, @NonNull Observer<T> observer) {
         Logger.d(">> LiveDataEx::observeAlways()");

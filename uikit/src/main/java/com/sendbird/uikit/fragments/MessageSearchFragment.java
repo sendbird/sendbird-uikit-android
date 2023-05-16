@@ -103,7 +103,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull MessageSearchHeaderComponent headerComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageSearchFragment::onBindHeaderComponent()");
@@ -123,7 +123,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindMessageSearchListComponent(@NonNull MessageSearchListComponent listComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageSearchFragment::onBindMessageSearchListComponent()");
@@ -140,7 +140,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull MessageSearchViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> MessageSearchFragment::onBindStatusComponent()");
@@ -160,7 +160,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 2.1.0
+     * since 2.1.0
      */
     public boolean shouldShowLoadingDialog() {
         if (getContext() != null) {
@@ -172,7 +172,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 2.1.0
+     * since 2.1.0
      */
     public void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -182,7 +182,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * It called when the search request occurs with the written keyword.
      *
      * @param keyword Keyword to search for messages
-     * @since 2.1.0
+     * since 2.1.0
      */
     protected void search(@NonNull String keyword) {
         shouldShowLoadingDialog();
@@ -198,7 +198,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * It called when the search results exists.
      *
      * @param searchResults The search results.
-     * @since 2.1.0
+     * since 2.1.0
      */
     protected void onSearchResultReceived(@NonNull List<BaseMessage> searchResults) {
         final MessageSearchModule module = getModule();
@@ -217,7 +217,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
      * @param message  The user data that was clicked.
-     * @since 2.1.0
+     * since 2.1.0
      */
     protected void onItemClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         Logger.d(">> MessageSearchFragment::onItemClicked(position=%s)", position);
@@ -235,7 +235,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -267,7 +267,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 2.1.0
+         * since 2.1.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -278,7 +278,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 2.1.0
+         * since 2.1.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -289,7 +289,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 2.1.0
+         * since 2.1.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -302,7 +302,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends MessageSearchFragment> Builder setCustomFragment(T fragment) {
@@ -315,7 +315,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -328,7 +328,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param useSearchBar <code>true</code> if the search bar is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setUseSearchBar(boolean useSearchBar) {
@@ -341,7 +341,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param text the text which is shown on the search bar's right side.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setSearchBarButtonText(@NonNull String text) {
@@ -354,7 +354,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId) {
@@ -367,7 +367,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -381,7 +381,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -394,7 +394,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -407,7 +407,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setOnSearchEventListener(@NonNull OnSearchEventListener listener) {
@@ -420,7 +420,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param adapter The adapter for displaying the searched message list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public <T extends MessageSearchAdapter> Builder setMessageSearchAdapter(T adapter) {
@@ -433,7 +433,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<BaseMessage> itemClickListener) {
@@ -446,7 +446,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -460,7 +460,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param query The {@link MessageSearchQuery} instance that you want to use.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setMessageSearchQuery(@NonNull MessageSearchQuery query) {
@@ -473,7 +473,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param textChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnInputTextChangedListener(@Nullable OnInputTextChangedListener textChangedListener) {
@@ -486,7 +486,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
          *
          * @param clearButtonClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnClearButtonClickListener(@Nullable View.OnClickListener clearButtonClickListener) {

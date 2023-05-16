@@ -32,7 +32,7 @@ import com.sendbird.uikit.vm.ViewModelFactory;
  * Fragment displaying the menu list to control the open channel.
  * It will be displayed if the participant is an operator.
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChannelModerationModule, OpenChannelModerationViewModel> {
     @Nullable
@@ -95,7 +95,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
      * @param headerComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull OpenChannelModerationViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelModerationFragment::onBindHeaderComponent()");
@@ -109,7 +109,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
      * @param moderationListComponent The component to which the event will be bound
      * @param viewModel A view model that provides the data needed for the fragment
      * @param openChannel The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onBindModerationListComponent(@NonNull OpenChannelModerationListComponent moderationListComponent, @NonNull OpenChannelModerationViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelModerationFragment::onBindModerationListComponent()");
@@ -141,7 +141,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected boolean shouldShowLoadingDialog() {
         if (getContext() != null) {
@@ -153,7 +153,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -163,7 +163,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -189,7 +189,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -200,7 +200,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -211,7 +211,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 3.1.0
+         * since 3.1.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -224,7 +224,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends OpenChannelModerationFragment> Builder setCustomFragment(T fragment) {
@@ -237,7 +237,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -250,7 +250,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -263,7 +263,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -277,7 +277,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -291,7 +291,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -305,7 +305,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -319,7 +319,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -333,7 +333,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -347,7 +347,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -360,7 +360,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setOnMenuItemClickListener(@NonNull OnMenuItemClickListener<OpenChannelModerationListComponent.ModerationMenu, BaseChannel> listener) {
@@ -373,7 +373,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -386,7 +386,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * builder.
          *
          * @return The {@link OpenChannelModerationFragment} applied to the {@link Bundle}.
-         * @since 3.1.0
+         * since 3.1.0
          */
         @NonNull
         public OpenChannelModerationFragment build() {

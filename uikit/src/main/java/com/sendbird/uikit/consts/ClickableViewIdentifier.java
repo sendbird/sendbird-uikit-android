@@ -19,14 +19,14 @@ public enum ClickableViewIdentifier {
     /**
      * Thread information area
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     ThreadInfo,
     /**
      * Parent message info menu area
      * This is only used in parent message info view
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     ParentMessageMenu
 }

@@ -12,7 +12,7 @@ import com.sendbird.uikit.utils.UserUtils;
 /**
  * OpenChannelRegisterOperatorListAdapter provides a binding from a {@link User} type data set to views that are displayed within a RecyclerView.
  *
- * @since 3.1.0
+ * since 3.1.0
  */
 public class OpenChannelRegisterOperatorListAdapter extends SelectUserListAdapter<User> {
     @Nullable

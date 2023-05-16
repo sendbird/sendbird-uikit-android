@@ -34,7 +34,7 @@ import com.sendbird.uikit.vm.ViewModelFactory;
  * Fragment displaying the menu list to control the channel.
  * It will be displayed if the member is an operator.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class ModerationFragment extends BaseModuleFragment<ModerationModule, ModerationViewModel> {
     @Nullable
@@ -112,7 +112,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ModerationViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ModerationFragment::onBindHeaderComponent()");
@@ -126,7 +126,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
      * @param moderationListComponent The component to which the event will be bound
      * @param viewModel               A view model that provides the data needed for the fragment
      * @param channel                 The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindModerationListComponent(@NonNull ModerationListComponent moderationListComponent, @NonNull ModerationViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ModerationFragment::onBindBannedUserListComponent()");
@@ -174,7 +174,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected boolean shouldShowLoadingDialog() {
         if (getContext() != null) {
@@ -186,7 +186,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     protected void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -196,7 +196,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -222,7 +222,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * Constructor
          *
          * @param channelUrl the url of the channel will be implemented.
-         * @since 1.2.0
+         * since 1.2.0
          */
         public Builder(@NonNull String channelUrl) {
             this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
@@ -233,7 +233,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 1.2.0
+         * since 1.2.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -244,7 +244,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 1.2.0
+         * since 1.2.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -257,7 +257,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ModerationFragment> Builder setCustomFragment(T fragment) {
@@ -270,7 +270,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -283,7 +283,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param title text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setHeaderTitle(@NonNull String title) {
@@ -296,7 +296,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param useHeader <code>true</code> if the header is used, <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setUseHeader(boolean useHeader) {
@@ -310,7 +310,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * @param useHeaderLeftButton <code>true</code> if the left button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setUseHeaderLeftButton(boolean useHeaderLeftButton) {
@@ -323,7 +323,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIconResId(@DrawableRes int resId) {
@@ -336,7 +336,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -350,7 +350,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -364,7 +364,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                            <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -377,7 +377,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param resId the resource identifier of the drawable.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setHeaderRightButtonIconResId(@DrawableRes int resId) {
@@ -390,7 +390,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -404,7 +404,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -417,7 +417,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public Builder setOnMenuItemClickListener(@NonNull OnMenuItemClickListener<ModerationListComponent.ModerationMenu, BaseChannel> listener) {
@@ -430,7 +430,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
@@ -443,7 +443,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
          * builder.
          *
          * @return The {@link ModerationFragment} applied to the {@link Bundle}.
-         * @since 1.2.0
+         * since 1.2.0
          */
         @NonNull
         public ModerationFragment build() {

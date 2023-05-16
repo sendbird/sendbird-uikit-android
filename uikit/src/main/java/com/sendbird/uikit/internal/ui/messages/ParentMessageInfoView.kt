@@ -90,7 +90,8 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
-        ViewUtils.drawTextMessage(binding.tvTextMessage, message, parentMessageInfoUIConfig, null
+        ViewUtils.drawTextMessage(
+            binding.tvTextMessage, message, parentMessageInfoUIConfig, null
         ) { view, position, data -> mentionClickListener?.onItemClick(view, position, data) }
     }
 

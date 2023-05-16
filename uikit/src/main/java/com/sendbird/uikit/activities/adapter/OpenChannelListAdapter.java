@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * OpenChannelListAdapter provides a binding from a {@link OpenChannel} type data set to views that are displayed within a RecyclerView.
- * @since 3.2.0
+ * since 3.2.0
  */
 public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHolder<OpenChannel>> {
     @NonNull
@@ -67,7 +67,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * @return A new {@link BaseViewHolder<OpenChannel>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     @Override
@@ -86,7 +86,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * @param holder   The {@link BaseViewHolder<OpenChannel>} which should be updated to represent
      *                 the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<OpenChannel> holder, int position) {
@@ -114,7 +114,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<OpenChannel> listener) {
         this.listener = listener;
@@ -124,7 +124,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener<OpenChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Nullable
     public OnItemClickListener<OpenChannel> getOnItemClickListener() {
@@ -135,7 +135,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @param listener The callback that will run
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<OpenChannel> listener) {
         this.longClickListener = listener;
@@ -145,7 +145,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @return {@code OnItemLongClickListener<OpenChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Nullable
     public OnItemLongClickListener<OpenChannel> getOnItemLongClickListener() {
@@ -156,7 +156,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Returns the {@link List<OpenChannel>} in the data set held by the adapter.
      *
      * @return The {@link List<OpenChannel>} in this adapter.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @SuppressLint("KotlinPropertyAccess")
     @Override
@@ -170,7 +170,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      *
      * @param position The position of the item within the adapter's data set.
      * @return The {@link OpenChannel} to retrieve the position of in this adapter.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     @Override
@@ -182,7 +182,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public int getItemCount() {
@@ -194,7 +194,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      *
      * @param position Adapter position to query
      * @return the stable ID of the item at position
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public long getItemId(int position) {
@@ -205,7 +205,7 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Sets the {@link List<OpenChannel>} to be displayed.
      *
      * @param openChannelList list to be displayed
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void setItems(@NonNull List<OpenChannel> openChannelList) {
         final List<OpenChannelInfo> newChannelInfo = OpenChannelInfo.toChannelInfo(openChannelList);

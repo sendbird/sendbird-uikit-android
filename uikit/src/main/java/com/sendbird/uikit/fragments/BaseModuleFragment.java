@@ -34,7 +34,7 @@ import com.sendbird.uikit.vm.BaseViewModel;
  * @param <MT> The specific module type that the fragment that inherits this class wants to use
  * @param <VM> The specific view model type that the fragment that inherits this class wants to use
  * @see com.sendbird.uikit.model.ReadyStatus
- * @since 3.0.0
+ * since 3.0.0
  */
 public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseViewModel> extends PermissionFragment {
     private MT module;
@@ -45,7 +45,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      * When authentication is complete, {@link #onBeforeReady(ReadyStatus, BaseModule, BaseViewModel)}, {@link #onReady(ReadyStatus, BaseModule, BaseViewModel)} are called.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      *
      * @param args If the fragment is being re-created from a previous saved state, this is the state.
      * @return The module that the fragment wants to use
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected abstract MT onCreateModule(@NonNull Bundle args);
@@ -97,7 +97,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      *
      * @param module The module to be the target of configuring parameters
      * @param args   If the fragment is being re-created from a previous saved state, this is the state.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected abstract void onConfigureParams(@NonNull MT module, @NonNull Bundle args);
 
@@ -107,7 +107,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      *
      * @return The view model that the fragment wants to use
      * @see BaseViewModel
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected abstract VM onCreateViewModel();
@@ -122,7 +122,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      * @param module    Module to be setup
      * @param viewModel A view model that provides the data needed for the fragment
      * @see ReadyStatus
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected abstract void onBeforeReady(@NonNull ReadyStatus status, @NonNull MT module, @NonNull VM viewModel);
 
@@ -139,7 +139,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      * @param module    Module to be used in fragment
      * @param viewModel A view model that provides the data needed for the fragment
      * @see ReadyStatus
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected abstract void onReady(@NonNull ReadyStatus status, @NonNull MT module, @NonNull VM viewModel);
 
@@ -154,7 +154,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      * Returns the module to be used in fragment.
      *
      * @return Module that has view information in fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected MT getModule() {
@@ -165,7 +165,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      * Returns the view model to be used in fragment.
      *
      * @return The view model that provides the data needed for the fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected VM getViewModel() {
@@ -178,7 +178,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
      *
      * @see #onBeforeReady(ReadyStatus, BaseModule, BaseViewModel)
      * @see #onReady(ReadyStatus, BaseModule, BaseViewModel)
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void shouldAuthenticate() {
         this.viewModel.authenticate(new AuthenticateHandler() {

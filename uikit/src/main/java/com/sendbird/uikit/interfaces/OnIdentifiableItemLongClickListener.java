@@ -19,7 +19,7 @@ public interface OnIdentifiableItemLongClickListener<T> {
      * @param data The data that was long clicked.
      *
      * @see ClickableViewIdentifier
-     * @since 2.2.0
+     * since 2.2.0
      */
     void onIdentifiableItemLongClick(@NonNull View view, @NonNull String identifier, int position, T data);
 }

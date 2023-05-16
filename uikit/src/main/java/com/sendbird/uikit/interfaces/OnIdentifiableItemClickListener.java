@@ -20,7 +20,7 @@ public interface OnIdentifiableItemClickListener<T> {
      * @param data The data that was clicked.
      *
      * @see ClickableViewIdentifier
-     * @since 2.2.0
+     * since 2.2.0
      */
     void onIdentifiableItemClick(@NonNull View view, @NonNull String identifier, int position, @Nullable T data);
 }

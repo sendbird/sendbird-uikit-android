@@ -4,7 +4,7 @@ package com.sendbird.uikit.model;
  * LiveData which publicly exposes setValue(T) and postValue(T) method.
  *
  * @param <T> The type of data hold by this instance
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MutableLiveDataEx<T> extends LiveDataEx<T> {
     public MutableLiveDataEx(T value) {

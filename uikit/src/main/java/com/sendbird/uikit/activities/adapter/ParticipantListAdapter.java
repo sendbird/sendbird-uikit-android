@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * ParticipantsListAdapter provides a binding from a {@link User} type data set to views that are displayed within a RecyclerView.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ParticipantListAdapter extends UserTypeListAdapter<User> {
     @Nullable
@@ -27,7 +27,7 @@ public class ParticipantListAdapter extends UserTypeListAdapter<User> {
      *
      * @param userList list to be displayed
      * @param openChannel The latest open channel
-     * @since 3.1.0
+     * since 3.1.0
      */
     public void setItems(@NonNull List<User> userList, @NonNull OpenChannel openChannel) {
         final UserTypeDiffCallback<User> diffCallback = UserTypeDiffCallback.createFromOpenChannel(getItems(), userList, this.openChannel, openChannel);

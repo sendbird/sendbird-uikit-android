@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
@@ -35,7 +36,7 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 /**
  * Fragment displaying the operators of the channel.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class ParticipantListFragment extends BaseModuleFragment<ParticipantListModule, ParticipantViewModel> {
     @Nullable
@@ -103,6 +104,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
             if (isDeleted) shouldActivityFinish();
         });
         viewModel.getUserBanned().observe(getViewLifecycleOwner(), restrictedUser -> {
+            if (SendbirdUIKit.getAdapter() == null) return;
             if (restrictedUser.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId())) {
                 shouldActivityFinish();
             }
@@ -115,7 +117,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull HeaderComponent headerComponent, @NonNull ParticipantViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> ParticipantListFragment::onBindHeaderComponent()");
@@ -129,7 +131,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindParticipantsListComponent(@NonNull ParticipantListComponent listComponent, @NonNull ParticipantViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> ParticipantListFragment::onBindParticipantsListComponent()");
@@ -152,7 +154,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull ParticipantViewModel viewModel, @Nullable OpenChannel channel) {
         Logger.d(">> ParticipantListFragment::onBindStatusComponent()");
@@ -169,10 +171,12 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
      * @param user     The member data that was clicked.
-     * @since 1.2.2
+     * since 1.2.2
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
-        if (getContext() == null) return;
+        final Bundle args = getArguments();
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        if (getContext() == null || !useUserProfile) return;
         DialogUtils.showUserProfileDialog(getContext(), user, false, null, null);
     }
 
@@ -183,7 +187,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * @param position The position that was clicked.
      * @param participant   The participant data that was clicked.
      * @param channel  The {@code OpenChannel} that contains the data needed for this fragment
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull User participant, @Nullable OpenChannel channel) {
         if (getContext() == null || channel == null) return;
@@ -233,7 +237,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -245,7 +249,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      * This is a Builder that is able to create the fragment of participants list.
      * The builder provides options how the channel is showing and working. Also you can set the event handler what you want to override.
      *
-     * @since 2.0.0
+     * since 2.0.0
      */
     public static class Builder {
         @NonNull
@@ -303,7 +307,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ParticipantListFragment> Builder setCustomFragment(T fragment) {
@@ -316,7 +320,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -378,7 +382,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -417,7 +421,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderRightButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -443,7 +447,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -469,7 +473,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -482,7 +486,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -495,7 +499,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -509,7 +513,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param adapter the adapter for the participant list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public <T extends ParticipantListAdapter> Builder setParticipantListAdapter(T adapter) {
@@ -522,7 +526,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param itemClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemClickListener(@NonNull OnItemClickListener<User> itemClickListener) {
@@ -535,7 +539,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param itemLongClickListener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<User> itemLongClickListener) {
@@ -572,7 +576,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
          *
          * @param actionItemClickListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnActionItemClickListener(@Nullable OnItemClickListener<User> actionItemClickListener) {

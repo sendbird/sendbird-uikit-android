@@ -19,14 +19,14 @@ import com.sendbird.uikit.utils.TextUtils;
 /**
  * This class creates and performs a view corresponding the channel header area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelHeaderComponent extends HeaderComponent {
 
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelHeaderComponent() {
         super(new Params());
@@ -36,7 +36,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -53,7 +53,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -71,7 +71,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         final View rootView = getRootView();
@@ -90,7 +90,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
      * Called when the description of the header is changed.
      *
      * @param description The latest description
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyHeaderDescriptionChanged(@Nullable String description) {
         final View rootView = getRootView();
@@ -112,7 +112,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
      * <p><b>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</b></p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params extends HeaderComponent.Params {
         private boolean useTypingIndicator = true;
@@ -121,7 +121,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
             super();
@@ -131,7 +131,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
          * Sets whether the typing indicator is used.
          *
          * @param useTypingIndicator <code>true</code> if the typing indicator is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseTypingIndicator(boolean useTypingIndicator) {
             this.useTypingIndicator = useTypingIndicator;
@@ -141,7 +141,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
          * Sets whether the profile image placed on the left top is used.
          *
          * @param useProfileImage <code>true</code> if the profile image is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseProfileImage(boolean useProfileImage) {
             this.useProfileImage = useProfileImage;
@@ -173,7 +173,7 @@ public class ChannelHeaderComponent extends HeaderComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

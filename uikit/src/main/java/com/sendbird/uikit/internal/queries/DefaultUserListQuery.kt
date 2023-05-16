@@ -36,7 +36,7 @@ internal class DefaultUserListQuery @JvmOverloads constructor(private val except
         val userInfoList: MutableList<UserInfo> = ArrayList()
         for (user in users) {
             if (exceptMe) {
-                val userId = SendbirdUIKit.getAdapter().userInfo.userId
+                val userId = SendbirdUIKit.getAdapter()?.userInfo?.userId
                 if (userId == user.userId) {
                     continue
                 }

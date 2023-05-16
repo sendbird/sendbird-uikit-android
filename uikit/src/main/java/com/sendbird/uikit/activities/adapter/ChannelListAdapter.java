@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.DiffUtil;
 
@@ -24,6 +25,8 @@ import com.sendbird.uikit.databinding.SbViewChannelPreviewBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.utils.ChannelUtils;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +104,6 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
                 listener.onItemClick(v, channelPosition, getItem(channelPosition));
             }
         });
-
         holder.itemView.setOnLongClickListener(v -> {
             int channelPosition = holder.getBindingAdapterPosition();
             if (channelPosition != NO_POSITION && longClickListener != null) {
@@ -125,7 +127,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener<GroupChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<GroupChannel> getOnItemClickListener() {
@@ -145,7 +147,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @return {@code OnItemLongClickListener<GroupChannel>} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemLongClickListener<GroupChannel> getOnItemLongClickListener() {
@@ -204,12 +206,18 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     public void setItems(@NonNull List<GroupChannel> channelList) {
         final List<ChannelInfo> newChannelInfo = ChannelInfo.toChannelInfoList(channelList);
         final ChannelDiffCallback diffCallback = new ChannelDiffCallback(this.cachedChannelList, newChannelInfo);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+        final DiffUtil.DiffResult diffResult = calculateDiff(diffCallback);
 
         this.channelList.clear();
         this.channelList.addAll(channelList);
         this.cachedChannelList = newChannelInfo;
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    DiffUtil.DiffResult calculateDiff(ChannelDiffCallback diffCallback) {
+        return DiffUtil.calculateDiff(diffCallback);
     }
 
     private static class ChannelPreviewHolder extends BaseViewHolder<GroupChannel> {

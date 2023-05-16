@@ -10,7 +10,7 @@ import com.sendbird.uikit.internal.queries.ChannelMemberListQuery;
 /**
  * ViewModel preparing and managing data related with the list of members who can be operator
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class RegisterOperatorViewModel extends UserViewModel<Member> {
     /**
@@ -18,7 +18,7 @@ public class RegisterOperatorViewModel extends UserViewModel<Member> {
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param queryHandler A callback to be invoked when a list of data is loaded.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public RegisterOperatorViewModel(@NonNull String channelUrl, @Nullable PagedQueryHandler<Member> queryHandler) {
         super(channelUrl, queryHandler);
@@ -29,7 +29,7 @@ public class RegisterOperatorViewModel extends UserViewModel<Member> {
      *
      * @param channelUrl The url of {@code GroupChannel} with members to be fetched by the query
      * @return {@code PagedQueryHandler<Member>} to retrieve the list of members to be operator
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override

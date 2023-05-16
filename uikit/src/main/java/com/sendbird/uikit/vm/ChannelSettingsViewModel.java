@@ -23,7 +23,7 @@ import com.sendbird.uikit.log.Logger;
 /**
  * ViewModel preparing and managing data related with the settings of a channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelSettingsViewModel extends BaseViewModel {
     @NonNull
@@ -41,7 +41,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelSettingsViewModel(@NonNull String channelUrl) {
         this.channelUrl = channelUrl;
@@ -51,7 +51,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -82,7 +82,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -93,7 +93,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -104,7 +104,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code GroupChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<GroupChannel> getChannelUpdated() {
@@ -115,7 +115,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the Activity or Fragment should be finished.
      *
      * @return LiveData holding the event for whether the Activity or Fragment should be finished
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> shouldFinish() {
@@ -207,7 +207,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      *
      * @param params Target GroupChannel
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void updateChannel(@NonNull GroupChannelUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) {
@@ -224,7 +224,7 @@ public class ChannelSettingsViewModel extends BaseViewModel {
      * Leaves current channel.
      *
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void leaveChannel(@Nullable OnCompleteHandler handler) {
         if (channel == null) {

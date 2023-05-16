@@ -31,7 +31,7 @@ public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
      * @param emojiReactionClickListener The callback to be invoked when the emoji reaction is clicked and held.
      * @param emojiReactionLongClickListener The callback to be invoked when the emoji reaction is long clicked and held.
      * @param moreButtonClickListener The callback to be invoked when the emoji reaction more button is clicked and held.
-     * @since 1.1.0
+     * since 1.1.0
      */
     abstract public void setEmojiReaction(@NonNull List<Reaction> reactionList,
                                           @Nullable OnItemClickListener<String> emojiReactionClickListener,

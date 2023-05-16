@@ -27,7 +27,7 @@ public class FeedNotificationChannelActivity extends AppCompatActivity {
      * @param context    A Context of the application package implementing this class.
      * @param channelUrl the url of the channel will be implemented.
      * @return FeedNotificationChannelActivity Intent.
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
@@ -41,7 +41,7 @@ public class FeedNotificationChannelActivity extends AppCompatActivity {
      * @param cls        The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends FeedNotificationChannelActivity> cls, @NonNull String channelUrl) {
@@ -74,7 +74,7 @@ public class FeedNotificationChannelActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.FeedNotificationChannelFragment}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     protected Fragment createFragment() {

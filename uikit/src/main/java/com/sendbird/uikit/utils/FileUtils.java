@@ -68,7 +68,7 @@ public class FileUtils {
 
     @NonNull
     public static Uri fileToUri(@NonNull Context context, @NonNull File file) {
-        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+        return FileProvider.getUriForFile(context, context.getPackageName() + ".sendbird.uikit.provider", file);
     }
 
     @NonNull

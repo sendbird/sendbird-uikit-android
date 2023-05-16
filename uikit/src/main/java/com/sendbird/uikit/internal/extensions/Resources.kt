@@ -1,6 +1,7 @@
 package com.sendbird.uikit.internal.extensions
 
 import android.content.res.Resources
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -18,4 +19,12 @@ fun JSONObject.toStringMap(): Map<String, String> {
         map[key] = this.getString(key)
     }
     return map
+}
+
+inline fun <reified T> JSONArray.toList(): List<T> {
+    val list = mutableListOf<T>()
+    for (i in 0 until length()) {
+        list.add(get(i) as T)
+    }
+    return list
 }

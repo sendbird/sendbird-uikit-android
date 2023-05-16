@@ -21,14 +21,14 @@ import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 /**
  * This class creates and performs a view corresponding the moderation list area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ModerationListComponent {
 
     /**
      * Represents all moderation menus.
      *
-     * @since 1.2.0
+     * since 1.2.0
      */
     public enum ModerationMenu {
         /**
@@ -71,7 +71,7 @@ public class ModerationListComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ModerationListComponent() {
         this.params = new Params();
@@ -81,7 +81,7 @@ public class ModerationListComponent {
      * Returns the nested scroll view used in this component.
      *
      * @return {@link NestedScrollView} that this component creates and performs by default
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     protected NestedScrollView getNestedScrollView() {
@@ -92,7 +92,7 @@ public class ModerationListComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -103,7 +103,7 @@ public class ModerationListComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -119,7 +119,7 @@ public class ModerationListComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -184,7 +184,7 @@ public class ModerationListComponent {
      * Register a callback to be invoked when the item of the menu is clicked.
      *
      * @param menuItemClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnMenuItemClickListener(@Nullable OnMenuItemClickListener<ModerationMenu, Void> menuItemClickListener) {
         this.menuItemClickListener = menuItemClickListener;
@@ -195,7 +195,7 @@ public class ModerationListComponent {
      *
      * @param view The View clicked
      * @param menu The menu that the clicked item displays
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onMenuItemClicked(@NonNull View view, @NonNull ModerationMenu menu) {
         if (menuItemClickListener != null)
@@ -206,7 +206,7 @@ public class ModerationListComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (mutedMembers != null) {
@@ -224,7 +224,7 @@ public class ModerationListComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         protected Params() {
@@ -236,7 +236,7 @@ public class ModerationListComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

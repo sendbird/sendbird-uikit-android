@@ -7,23 +7,16 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewFeedNotificationComponentBinding
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.setAppearance
-import com.sendbird.uikit.internal.interfaces.GetTemplateResultHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
-import com.sendbird.uikit.internal.model.template_messages.Params
-import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator
-import com.sendbird.uikit.internal.singleton.MessageTemplateParser
-import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
-
 
 internal class FeedNotificationView @JvmOverloads internal constructor(
     context: Context,

@@ -13,7 +13,7 @@ public interface OnCompleteHandler {
      * The presence of a value of e delivered to the parameter is a case where the request fails.
      *
      * @param e The object of exception.
-     * @since 3.0.0
+     * since 3.0.0
      */
     void onComplete(@Nullable SendbirdException e);
 }

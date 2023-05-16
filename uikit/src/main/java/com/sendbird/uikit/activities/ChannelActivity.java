@@ -39,7 +39,7 @@ public class ChannelActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @param messageId  The message id of the anchor that redirects message thread.
      * @return ChannelActivity Intent
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public static Intent newRedirectToMessageThreadIntent(@NonNull Context context, @NonNull String channelUrl, long messageId) {
@@ -55,7 +55,7 @@ public class ChannelActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.1.2
+     * since 1.1.2
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelActivity> cls, @NonNull String channelUrl) {
@@ -81,7 +81,7 @@ public class ChannelActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.ChannelFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {
@@ -109,7 +109,7 @@ public class ChannelActivity extends AppCompatActivity {
     /**
      * This builder makes {@link Intent} for ChannelActivity.
      *
-     * @since 2.1.0
+     * since 2.1.0
      */
     public static class IntentBuilder {
         @NonNull
@@ -125,7 +125,7 @@ public class ChannelActivity extends AppCompatActivity {
          *
          * @param context A Context of the application package implementing this class.
          * @param channelUrl The url of the channel will be implemented.
-         * @since 2.1.0
+         * since 2.1.0
          */
         public IntentBuilder(@NonNull Context context, @NonNull String channelUrl) {
             this.context = context;
@@ -138,7 +138,7 @@ public class ChannelActivity extends AppCompatActivity {
          * @param context A Context of the application package implementing this class.
          * @param customClass The activity class that is to be used for the intent.
          * @param channelUrl The url of the channel will be implemented.
-         * @since 2.1.0
+         * since 2.1.0
          */
         public IntentBuilder(@NonNull Context context, @NonNull Class<? extends ChannelActivity> customClass, @NonNull String channelUrl) {
             this.context = context;
@@ -151,7 +151,7 @@ public class ChannelActivity extends AppCompatActivity {
          *
          * @param startingPoint A timestamp to load initially.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public IntentBuilder setStartingPoint(long startingPoint) {
@@ -163,7 +163,7 @@ public class ChannelActivity extends AppCompatActivity {
          * Creates an {@link Intent} with the arguments supplied to this builder.
          *
          * @return The ChannelActivity {@link Intent} applied to the {@link Bundle}.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Intent build() {

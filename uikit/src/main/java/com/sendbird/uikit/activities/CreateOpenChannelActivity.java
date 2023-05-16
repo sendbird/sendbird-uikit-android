@@ -15,7 +15,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 
 /**
  * Activity displays forms to need to create open channel.
- * @since 3.2.0
+ * since 3.2.0
  */
 public class CreateOpenChannelActivity extends AppCompatActivity {
 
@@ -24,7 +24,7 @@ public class CreateOpenChannelActivity extends AppCompatActivity {
      *
      * @param context    A Context of the application package implementing this class.
      * @return CreateOpenChannelActivity Intent.
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context) {
@@ -50,7 +50,7 @@ public class CreateOpenChannelActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.CreateOpenChannelFragment}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     protected Fragment createFragment() {

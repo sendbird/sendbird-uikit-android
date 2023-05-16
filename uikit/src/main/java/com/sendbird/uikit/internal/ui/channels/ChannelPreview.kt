@@ -22,7 +22,9 @@ import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.MessageUtils
 
 internal class ChannelPreview @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyle: Int = R.attr.sb_widget_channel_preview
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = R.attr.sb_widget_channel_preview
 ) : FrameLayout(context, attrs, defStyle) {
     private val coverView: ChannelCoverView
     private val tvTitle: TextView
@@ -194,7 +196,6 @@ internal class ChannelPreview @JvmOverloads constructor(
                 when (it) {
                     is AdminMessage,
                     is UserMessage -> {
-                        if (it is AdminMessage && !channel.isChatNotification) return@let
                         textView.maxLines = 2
                         textView.ellipsize = TextUtils.TruncateAt.END
                         message = it.message

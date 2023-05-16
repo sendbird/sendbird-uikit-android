@@ -67,9 +67,12 @@ internal class NotificationTemplateRepository(context: Context) {
         val latch = CountDownLatch(1)
         var error: SendbirdException? = null
         val result: AtomicReference<NotificationTemplateList> = AtomicReference()
-        SendbirdChat.getNotificationTemplateListByToken(lastCacheToken, NotificationTemplateListParams().apply {
-            limit = 100
-        }) { notificationTemplateList, _, token, e ->
+        SendbirdChat.getNotificationTemplateListByToken(
+            lastCacheToken,
+            NotificationTemplateListParams().apply {
+                limit = 100
+            }
+        ) { notificationTemplateList, _, token, e ->
             error = e
             try {
                 if (!token.isNullOrEmpty()) lastCacheToken = token

@@ -3,6 +3,7 @@ package com.sendbird.uikit.vm;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,7 +13,6 @@ import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.collection.CollectionEventSource;
 import com.sendbird.android.collection.GroupChannelContext;
-import com.sendbird.android.collection.MessageCollection;
 import com.sendbird.android.collection.MessageCollectionInitPolicy;
 import com.sendbird.android.collection.MessageContext;
 import com.sendbird.android.exception.SendbirdException;
@@ -32,10 +32,18 @@ import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
+import com.sendbird.uikit.internal.wrappers.MessageCollectionImpl;
+import com.sendbird.uikit.internal.wrappers.MessageCollectionWrapper;
+import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.widgets.StatusFrameView;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +55,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * ViewModel preparing and managing data related with the list of messages in a channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelViewModel extends BaseMessageListViewModel {
     @NonNull
@@ -71,15 +79,17 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @Nullable
     private MessageListParams messageListParams;
     @Nullable
-    private MessageCollection collection;
+    private MessageCollectionWrapper collection;
     @Nullable
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
+    @NonNull
+    private final SendbirdChatWrapper sendbirdChatWrapper;
 
     /**
      * Class that holds message data in a channel.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class ChannelMessageData {
         final List<BaseMessage> messages;
@@ -94,7 +104,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
          * Returns a list of messages for the current channel.
          *
          * @return A list of the latest messages on the current channel
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public List<BaseMessage> getMessages() {
@@ -105,7 +115,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
          * Returns data indicating how the message list was updated.
          *
          * @return The String that traces the path of the message list
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getTraceName() {
@@ -118,13 +128,19 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param messageListParams Parameters required to retrieve the message list from this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams) {
-        super(channelUrl);
-        this.messageListParams = messageListParams;
+        this(channelUrl, messageListParams, new SendbirdUIKitImpl(), new SendbirdChatImpl());
+    }
 
-        SendbirdChat.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
+    @VisibleForTesting
+    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper, @NonNull SendbirdChatWrapper sendbirdChatWrapper) {
+        super(channelUrl, sendbirdUIKitWrapper);
+        this.messageListParams = messageListParams;
+        this.sendbirdChatWrapper = sendbirdChatWrapper;
+
+        this.sendbirdChatWrapper.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
             @Override
             public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
                 if (ChannelViewModel.this.getChannel() != null && channel.getUrl().equals(channelUrl) && hasNext()) {
@@ -134,7 +150,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             }
         });
 
-        SendbirdChat.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+        this.sendbirdChatWrapper.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
             @Override
             public void onDisconnected(@NonNull String s) {
             }
@@ -163,7 +179,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @param messageId ID of the message you want to check
      * @return {@code true} if the message in in the message list, {@code false} otherwise
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean hasMessageById(long messageId) {
         return cachedMessages.getById(messageId) != null;
@@ -174,7 +190,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @param messageId ID of the message you want to retrieve
      * @return {@code BaseMessage} that matches {@code messageId}
-     * @since 3.3.0
+     * since 3.3.0
      */
     @Nullable
     public BaseMessage getMessageById(long messageId) {
@@ -186,7 +202,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @param createdAt The timestamp messages were created
      * @return The list of messages created at {@code createdAt}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public List<BaseMessage> getMessagesByCreatedAt(long createdAt) {
@@ -205,7 +221,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             this.messageListParams = createMessageListParams();
         }
         this.messageListParams.setReverse(true);
-        this.collection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, this.messageListParams, startingPoint, new MessageCollectionHandler() {
+        this.collection = createMessageCollection(startingPoint, this.messageListParams, channel, new MessageCollectionHandler() {
             @UiThread
             @Override
             public void onMessagesAdded(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
@@ -286,7 +302,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                     ChannelViewModel.this.handler.onChannelUpdated(context, channel);
                 }
             }
-        }));
+        });
         Logger.i(">> ChannelViewModel::initMessageCollection() collection=%s", collection);
         loadLatestMessagesForCache();
     }
@@ -309,7 +325,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         if (!needToLoadMessageCache || (this.collection != null && this.collection.getStartingPoint() == Long.MAX_VALUE)) return;
         final GroupChannel channel = getChannel();
         if (channel == null) return;
-        final MessageCollection syncCollection = SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, new MessageListParams()));
+        final MessageCollectionWrapper syncCollection = createSyncMessageCollection(channel);
         syncCollection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> list, @Nullable SendbirdException e) {}
@@ -336,7 +352,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Registers a handler for the message collection managed by this view model.
      *
      * @param handler {@link MessageCollectionHandler} to be registered in this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setMessageCollectionHandler(@Nullable MessageCollectionHandler handler) {
         this.handler = handler;
@@ -346,7 +362,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code GroupChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<GroupChannel> onChannelUpdated() {
@@ -357,7 +373,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if huge gaps are detected within the collection this view model managed.
      *
      * @return LiveData holding whether huge gaps are detected
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> getHugeGapDetected() {
@@ -368,7 +384,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding the URL of the deleted {@code GroupChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<String> onChannelDeleted() {
@@ -379,7 +395,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the messages has been deleted in the collection this view model managed.
      *
      * @return LiveData holding the list of deleted messages
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<List<BaseMessage>> onMessagesDeleted() {
@@ -390,7 +406,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns parameters required to retrieve the message list from this view model
      *
      * @return {@link MessageListParams} used in this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public MessageListParams getMessageListParams() {
@@ -401,7 +417,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed for members who are typing in the channel associated with this view model.
      *
      * @return LiveData holding members who are typing
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<List<User>> getTypingMembers() {
@@ -412,7 +428,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed for the state of loading messages.
      *
      * @return LiveData holding {@link MessageLoadState} for this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<MessageLoadState> getMessageLoadState() {
@@ -424,7 +440,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * When the message list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
      * @return The Status for the message list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<StatusFrameView.Status> getStatusFrame() {
@@ -445,7 +461,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Returns the timestamp that is the starting point when the message list is fetched initially.
      *
      * @return The timestamp as the starting point
-     * @since 3.0.0
+     * since 3.0.0
      */
     public long getStartingPoint() {
         return collection != null ? collection.getStartingPoint() : Long.MAX_VALUE;
@@ -499,8 +515,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
-            messageList.setValue(new ChannelMessageData(traceName, copiedList));
         }
+        messageList.setValue(new ChannelMessageData(traceName, copiedList));
     }
 
     private void removeThreadMessages(@NonNull List<BaseMessage> src) {
@@ -536,8 +552,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     protected void onCleared() {
         super.onCleared();
         Logger.dev("-- onCleared ChannelViewModel");
-        SendbirdChat.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
-        SendbirdChat.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        this.sendbirdChatWrapper.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
+        this.sendbirdChatWrapper.removeConnectionHandler(CONNECTION_HANDLER_ID);
         disposeMessageCollection();
     }
 
@@ -565,7 +581,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * If the request is succeed, you can observe updated data through {@link #getMessageList()}.
      *
      * @param startingPoint Timestamp that is the starting point when the message list is fetched
-     * @since 3.0.0
+     * since 3.0.0
      */
     @UiThread
     public synchronized boolean loadInitial(final long startingPoint) {
@@ -610,7 +626,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @WorkerThread
     @NonNull
@@ -653,7 +669,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @WorkerThread
     @NonNull
@@ -691,7 +707,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * Creates params for the message list when loading the message list.
      *
      * @return {@link MessageListParams} to be used when loading the message list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public MessageListParams createMessageListParams() {
@@ -705,5 +721,40 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), false, true));
         }
         return messageListParams;
+    }
+
+    @VisibleForTesting
+    @NonNull
+    MessageCollectionWrapper createMessageCollection(long startingPoint, @NonNull MessageListParams params, @NonNull GroupChannel channel, @NonNull MessageCollectionHandler handler) {
+        return new MessageCollectionImpl(SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, params, startingPoint, handler)));
+    }
+
+    @VisibleForTesting
+    @NonNull
+    MessageCollectionWrapper createSyncMessageCollection(GroupChannel channel) {
+        return new MessageCollectionImpl(SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, new MessageListParams())));
+    }
+
+    @TestOnly
+    @NonNull
+    String getChannelHandlerIdentifier() {
+        return ID_CHANNEL_EVENT_HANDLER;
+    }
+
+    @TestOnly
+    @NonNull
+    String getConnectionHandlerIdentifier() {
+        return CONNECTION_HANDLER_ID;
+    }
+
+    @TestOnly
+    boolean isNeedToLoadMessageCache() {
+        return needToLoadMessageCache;
+    }
+
+    @TestOnly
+    @Nullable
+    MessageCollectionWrapper getCollection() {
+        return collection;
     }
 }

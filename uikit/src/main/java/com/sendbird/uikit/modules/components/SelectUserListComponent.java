@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * This class creates and performs a view corresponding the user list area when selecting users in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 abstract public class SelectUserListComponent<T> {
     @NonNull
@@ -37,7 +37,7 @@ abstract public class SelectUserListComponent<T> {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public SelectUserListComponent() {
         this.params = new Params();
@@ -47,7 +47,7 @@ abstract public class SelectUserListComponent<T> {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -58,7 +58,7 @@ abstract public class SelectUserListComponent<T> {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -74,7 +74,7 @@ abstract public class SelectUserListComponent<T> {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -90,7 +90,7 @@ abstract public class SelectUserListComponent<T> {
      * Register a callback to be invoked when the user is selected.
      *
      * @param userSelectChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
         this.userSelectChangedListener = userSelectChangedListener;
@@ -100,7 +100,7 @@ abstract public class SelectUserListComponent<T> {
      * Register a callback to be invoked when selecting users is completed.
      *
      * @param userSelectionCompleteListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {
         this.userSelectionCompleteListener = userSelectionCompleteListener;
@@ -110,7 +110,7 @@ abstract public class SelectUserListComponent<T> {
      * Sets the paged data loader for user list.
      *
      * @param pagedDataLoader The paged data loader to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setPagedDataLoader(@NonNull OnPagedDataLoader<List<T>> pagedDataLoader) {
         if (recyclerView != null) recyclerView.setPager(pagedDataLoader);
@@ -120,7 +120,7 @@ abstract public class SelectUserListComponent<T> {
      * Sets the user list adapter when selecting users.
      *
      * @param adapter The adapter to be applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected <A extends SelectUserListAdapter<T>> void setAdapter(A adapter) {
         if (adapter.getOnUserSelectChangedListener() == null) {
@@ -135,7 +135,7 @@ abstract public class SelectUserListComponent<T> {
      * Returns the user list adapter when selecting users.
      *
      * @return The adapter applied to this list component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     abstract protected SelectUserListAdapter<T> getAdapter();
@@ -154,7 +154,7 @@ abstract public class SelectUserListComponent<T> {
     /**
      * Notifies this component that selecting users has been completed.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifySelectionComplete() {
         if (recyclerView == null) return;
@@ -167,7 +167,7 @@ abstract public class SelectUserListComponent<T> {
      * Notifies this component that the list of users who can be selected is changed.
      *
      * @param data The list of users to be displayed on this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDataSetChanged(@NonNull List<T> data) {
         if (recyclerView == null) return;
@@ -178,7 +178,7 @@ abstract public class SelectUserListComponent<T> {
      * Notifies this component that the list of disabled users is changed.
      *
      * @param disabledUserIds The list of disabled users to be displayed on this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyDisabledUserIds(@NonNull List<String> disabledUserIds) {
         if (recyclerView == null) return;
@@ -192,13 +192,13 @@ abstract public class SelectUserListComponent<T> {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -209,7 +209,7 @@ abstract public class SelectUserListComponent<T> {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

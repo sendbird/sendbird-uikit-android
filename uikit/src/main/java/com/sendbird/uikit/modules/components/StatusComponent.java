@@ -19,7 +19,7 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 /**
  * This class creates and performs a view corresponding the status area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class StatusComponent {
     @NonNull
@@ -33,7 +33,7 @@ public class StatusComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public StatusComponent() {
         this.params = new Params();
@@ -43,7 +43,7 @@ public class StatusComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -54,7 +54,7 @@ public class StatusComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -70,7 +70,7 @@ public class StatusComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -102,7 +102,7 @@ public class StatusComponent {
      * Register a callback to be invoked when the action button is clicked.
      *
      * @param actionButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnActionButtonClickListener(@Nullable View.OnClickListener actionButtonClickListener) {
         this.actionButtonClickListener = actionButtonClickListener;
@@ -112,7 +112,7 @@ public class StatusComponent {
      * Called when the action button is clicked.
      *
      * @param view The View clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onActionButtonClicked(@NonNull View view) {
         if (actionButtonClickListener != null) actionButtonClickListener.onClick(view);
@@ -123,7 +123,7 @@ public class StatusComponent {
      *
      * @param status The status to be displayed on this component
      * @see StatusFrameView.Status
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifyStatusChanged(@NonNull StatusFrameView.Status status) {
         if (this.statusFrameView == null) return;
@@ -136,7 +136,7 @@ public class StatusComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         @Nullable
@@ -151,7 +151,7 @@ public class StatusComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -160,7 +160,7 @@ public class StatusComponent {
          * Sets the icon when the data is not exists.
          *
          * @param emptyIcon The Drawable to be displayed when the status is empty
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setEmptyIcon(@Nullable Drawable emptyIcon) {
             this.emptyIcon = emptyIcon;
@@ -170,7 +170,7 @@ public class StatusComponent {
          * Sets the color of the icon that is shown when the data is not exists.
          *
          * @param emptyIconTint Color state list to be applied to the empty icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setEmptyIconTint(@Nullable ColorStateList emptyIconTint) {
             this.emptyIconTint = emptyIconTint;
@@ -180,7 +180,7 @@ public class StatusComponent {
          * Sets the text when the data is not exists.
          *
          * @param emptyText The String to be displayed when the status is empty
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setEmptyText(@Nullable String emptyText) {
             this.emptyText = emptyText;
@@ -190,7 +190,7 @@ public class StatusComponent {
          * Sets the text when the error occurs.
          *
          * @param errorText The String to be displayed when the status is error
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setErrorText(@Nullable String errorText) {
             this.errorText = errorText;
@@ -200,7 +200,7 @@ public class StatusComponent {
          * Returns the icon when the data is not exists.
          *
          * @return The Drawable displayed when the status is empty
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getEmptyIcon() {
@@ -211,7 +211,7 @@ public class StatusComponent {
          * Returns the color of the icon that is shown when the data is not exists.
          *
          * @return Color state list applied to the empty icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getEmptyIconTint() {
@@ -222,7 +222,7 @@ public class StatusComponent {
          * Returns the text when the data is not exists.
          *
          * @return The String displayed when the status is empty
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getEmptyText() {
@@ -233,7 +233,7 @@ public class StatusComponent {
          * Returns the text when the error occurs.
          *
          * @return The String displayed when the status is error
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getErrorText() {
@@ -250,7 +250,7 @@ public class StatusComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

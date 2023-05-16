@@ -168,7 +168,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull ChannelSettingsHeaderComponent headerComponent, @NonNull ChannelSettingsViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelSettingsFragment::onBindHeaderComponent()");
@@ -182,7 +182,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * @param infoComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindSettingsInfoComponent(@NonNull ChannelSettingsInfoComponent infoComponent, @NonNull ChannelSettingsViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelSettingsFragment::onBindSettingsInfoComponent()");
@@ -195,7 +195,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * @param menuComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindSettingsMenuComponent(@NonNull ChannelSettingsMenuComponent menuComponent, @NonNull ChannelSettingsViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> ChannelSettingsFragment::onBindSettingsMenuComponent()");
@@ -277,7 +277,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     /**
      * Leaves this channel.
      *
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void leaveChannel() {
         shouldShowLoadingDialog();
@@ -292,7 +292,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * If you want add more data, you can override this and set the data.
      *
      * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void onBeforeUpdateGroupChannel(@NonNull GroupChannelUpdateParams params) {
     }
@@ -301,7 +301,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * Update this channel with GroupChannelParams.
      *
      * @param params Params of channel. Refer to {@link GroupChannelUpdateParams}.
-     * @since 1.0.4
+     * since 1.0.4
      */
     protected void updateGroupChannel(@NonNull GroupChannelUpdateParams params) {
         CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
@@ -321,7 +321,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     public boolean shouldShowLoadingDialog() {
         if (!isFragmentAlive()) return false;
@@ -331,7 +331,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     public void shouldDismissLoadingDialog() {
         getModule().shouldDismissLoadingDialog();
@@ -341,7 +341,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -438,7 +438,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends ChannelSettingsFragment> Builder setCustomFragment(T fragment) {
@@ -451,7 +451,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -489,7 +489,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.3
+         * since 1.2.3
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -527,7 +527,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -541,7 +541,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -554,7 +554,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param rightButtonText The String to be displayed on the right button
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setRightButtonText(@Nullable String rightButtonText) {
@@ -567,7 +567,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -580,7 +580,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnMenuClickListener(@NonNull OnItemClickListener<ChannelSettingsMenuComponent.Menu> listener) {
@@ -593,7 +593,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {

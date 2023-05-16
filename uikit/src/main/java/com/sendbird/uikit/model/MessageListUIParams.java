@@ -7,7 +7,7 @@ import com.sendbird.uikit.consts.MessageGroupType;
 /**
  * Describes a configuration of a message item view
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 final public class MessageListUIParams {
     @NonNull
@@ -29,7 +29,7 @@ final public class MessageListUIParams {
      * Returns the type of message group UI.
      *
      * @return The value of {@link MessageGroupType}
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public MessageGroupType getMessageGroupType() {
@@ -40,7 +40,7 @@ final public class MessageListUIParams {
      * Returns whether the quoted view is used.
      *
      * @return <code>true</code> if the quoted view is used, <code>false</code> otherwise
-     * @since 3.3.0
+     * since 3.3.0
      */
     public boolean shouldUseQuotedView() {
         return useQuotedView;
@@ -50,7 +50,7 @@ final public class MessageListUIParams {
      * Returns whether the message grouping is used.
      *
      * @return <code>true</code> if the message grouping is used, <code>false</code> otherwise
-     * @since 3.3.0
+     * since 3.3.0
      */
     public boolean shouldUseMessageGroupUI() {
         return useMessageGroupUI;
@@ -60,7 +60,7 @@ final public class MessageListUIParams {
      * Returns whether the message list is reversed.
      *
      * @return <code>true</code> if the message list is reversed, <code>false</code> otherwise
-     * @since 3.3.0
+     * since 3.3.0
      */
     public boolean shouldUseReverseLayout() {
         return useReverseLayout;
@@ -70,7 +70,7 @@ final public class MessageListUIParams {
      * Returns whether the status (read receipt, delivery receipt) of messages is shown.
      *
      * @return <code>true</code> if the message receipt is shown, <code>false</code> otherwise
-     * @since 3.3.0
+     * since 3.3.0
      */
     public boolean shouldUseMessageReceipt() {
         return useMessageReceipt;
@@ -87,7 +87,7 @@ final public class MessageListUIParams {
         /**
          * Constructor
          *
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Builder() {}
 
@@ -95,7 +95,7 @@ final public class MessageListUIParams {
          * Constructor
          *
          * @param params The message draw parameter to be used as the base
-         * @since 3.3.0
+         * since 3.3.0
          */
         public Builder(@NonNull MessageListUIParams params) {
             this.messageGroupType = params.messageGroupType;
@@ -110,7 +110,7 @@ final public class MessageListUIParams {
          *
          * @param messageGroupType The value of {@link MessageGroupType}
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setMessageGroupType(@NonNull MessageGroupType messageGroupType) {
@@ -123,7 +123,7 @@ final public class MessageListUIParams {
          *
          * @param useQuotedView <code>true</code> if the quoted view is used, <code>false</code> otherwise
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseQuotedView(boolean useQuotedView) {
@@ -136,7 +136,7 @@ final public class MessageListUIParams {
          *
          * @param useMessageGroupUI <code>true</code> if the message grouping is used, <code>false</code> otherwise
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseMessageGroupUI(boolean useMessageGroupUI) {
@@ -149,7 +149,7 @@ final public class MessageListUIParams {
          *
          * @param useReverseLayout <code>true</code> if the message list is reversed, <code>false</code> otherwise
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseReverseLayout(boolean useReverseLayout) {
@@ -162,7 +162,7 @@ final public class MessageListUIParams {
          *
          * @param useMessageReceipt <code>true</code> if the message receipt is shown, <code>false</code> otherwise
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public Builder setUseMessageReceipt(boolean useMessageReceipt) {
@@ -174,7 +174,7 @@ final public class MessageListUIParams {
          * Builds an {@link MessageListUIParams} with the properties supplied to this builder.
          *
          * @return The {@link MessageListUIParams} from this builder instance.
-         * @since 3.3.0
+         * since 3.3.0
          */
         @NonNull
         public MessageListUIParams build() {

@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * ViewModel preparing and managing data related with the list of messages in an open channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLoader<List<BaseMessage>> {
     @NonNull
@@ -88,7 +88,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
      * @param messageListParams Parameters required to retrieve the message list from this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     public OpenChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams) {
         super();
@@ -315,7 +315,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code OpenChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<OpenChannel> onChannelUpdated() {
@@ -326,7 +326,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding whether {@code OpenChannel} has been deleted
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> onChannelDeleted() {
@@ -337,7 +337,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed if the messages has been deleted.
      *
      * @return LiveData holding the list of IDs of deleted messages
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Long> onMessageDeleted() {
@@ -348,7 +348,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed if the current user is muted or not.
      *
      * @return LiveData holding the current user muted information
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     public LiveData<Boolean> getMyMutedInfo() {
@@ -359,7 +359,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns {@code OpenChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code OpenChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OpenChannel getChannel() {
@@ -370,7 +370,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -381,7 +381,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed for the list of messages.
      *
      * @return LiveData holding the latest list of messages
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<List<BaseMessage>> getMessageList() {
@@ -393,7 +393,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * When the message list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
      * @return The Status for the message list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<StatusFrameView.Status> getStatusFrame() {
@@ -404,7 +404,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns LiveData that can be observed for the state of loading messages.
      *
      * @return LiveData holding {@link MessageLoadState} for this view model
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<MessageLoadState> getMessageLoadState() {
@@ -416,7 +416,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * If there is no more pages to be read, an empty <code>List</code> (not <code>null</code>) returns.
      * If the request is succeed, you can observe updated data through {@link #getMessageList()}.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void loadInitial() {
         worker.execute(() -> {
@@ -436,7 +436,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param ts Timestamp to be the starting point for retrieving previous messages.
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     private List<BaseMessage> loadPrevious(long ts) throws Exception {
@@ -474,7 +474,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -505,7 +505,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns the empty list as the message list for {@code OpenChannel} do not support to load for the next by default.
      *
      * @return The empty list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override
@@ -517,7 +517,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Returns {@code false} as the message list for {@code OpenChannel} do not support to load for the next by default.
      *
      * @return Always {@code false}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public boolean hasNext() {
@@ -552,8 +552,8 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             statusFrame.postValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.postValue(StatusFrameView.Status.NONE);
-            messageList.postValue(currentList);
         }
+        messageList.postValue(currentList);
     }
 
     private void requestChangeLogs(@NonNull BaseChannel channel) {
@@ -615,7 +615,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @param params Parameters to be applied to the message
      * @param handler Callback notifying that the message which the current user tried to send is filtered
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void sendUserMessage(@NonNull UserMessageCreateParams params, @Nullable OnFilteringMessageHandler handler) {
         Logger.i("++ request send message : %s", params);
@@ -650,7 +650,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param params Parameters to be applied to the message
      * @param fileInfo File information to send to the channel
      * @param handler Callback notifying that the message which the current user tried to send is filtered
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void sendFileMessage(@NonNull FileMessageCreateParams params, @NonNull FileInfo fileInfo, @Nullable OnFilteringMessageHandler handler) {
         Logger.i("++ request send file message : %s", params);
@@ -691,7 +691,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @param message Message to resend
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void resendMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -745,7 +745,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * @param messageId ID of message to be updated
      * @param params Parameters to be applied to the message
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void updateUserMessage(long messageId, @NonNull UserMessageUpdateParams params, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -767,7 +767,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @param message Message to be deleted
      * @param handler Callback handler called when this method is completed
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void deleteMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
@@ -788,7 +788,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Creates params for the message list when loading the message list.
      *
      * @return {@link MessageListParams} to be used when loading the message list
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public MessageListParams createMessageListParams() {
@@ -806,7 +806,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -835,7 +835,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
      *
      * @param channel the open channel.
      * @param handler the result handler.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void enterChannel(@NonNull OpenChannel channel, @NonNull OnCompleteHandler handler) {
         channel.enter(e -> {

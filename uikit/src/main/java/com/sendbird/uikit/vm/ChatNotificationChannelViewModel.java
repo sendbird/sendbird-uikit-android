@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * ViewModel preparing and managing data related with the notification channel.
  *
- * @since 3.5.0
+ * since 3.5.0
  */
 public class ChatNotificationChannelViewModel extends BaseViewModel implements OnPagedDataLoader<List<BaseMessage>>, LifecycleEventObserver {
     @NonNull
@@ -71,7 +71,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      *
      * @param channelUrl        The URL of a channel this view model is currently associated with
      * @param messageListParams Parameters required to retrieve the message list from this view model
-     * @since 3.5.0
+     * since 3.5.0
      */
     public ChatNotificationChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams) {
         this.channelUrl = channelUrl;
@@ -82,7 +82,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.5.0
+     * since 3.5.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -113,7 +113,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.5.0
+     * since 3.5.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -124,7 +124,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns parameters required to retrieve the message list from this view model
      *
      * @return {@link MessageListParams} used in this view model
-     * @since 3.5.0
+     * since 3.5.0
      */
     @Nullable
     public MessageListParams getMessageListParams() {
@@ -135,7 +135,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -146,7 +146,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns LiveData that can be observed for the list of messages.
      *
      * @return LiveData holding the latest {@link ChannelViewModel.ChannelMessageData}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public LiveDataEx<MessageData> getNotificationList() {
@@ -157,7 +157,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code GroupChannel}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public LiveData<GroupChannel> onChannelUpdated() {
@@ -169,7 +169,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * When the message list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
      * @return The Status for the message list
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public MutableLiveData<StatusFrameView.Status> getStatusFrame() {
@@ -180,7 +180,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding the URL of the deleted {@code GroupChannel}
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public LiveData<String> onChannelDeleted() {
@@ -193,7 +193,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * If the request is succeed, you can observe updated data through {@link #getNotificationList()}.
      *
      * @param startingPoint Timestamp that is the starting point when the message list is fetched
-     * @since 3.5.0
+     * since 3.5.0
      */
     @UiThread
     public synchronized boolean loadInitial(final long startingPoint) {
@@ -232,7 +232,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.5.0
+     * since 3.5.0
      */
     @WorkerThread
     @NonNull
@@ -270,7 +270,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.5.0
+     * since 3.5.0
      */
     @WorkerThread
     @NonNull
@@ -408,7 +408,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      *
      * @param message Message to be deleted
      * @param handler Callback handler called when this method is completed
-     * @since 3.5.0
+     * since 3.5.0
      */
     public void deleteMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
@@ -422,7 +422,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
      * Creates params for the message list when loading the message list.
      *
      * @return {@link MessageListParams} to be used when loading the message list
-     * @since 3.5.0
+     * since 3.5.0
      */
     @NonNull
     public MessageListParams createMessageListParams() {

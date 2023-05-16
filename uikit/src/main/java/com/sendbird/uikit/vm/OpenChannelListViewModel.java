@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * ViewModel preparing and managing data related with the list of open channels
  *
- * @since 3.2.0
+ * since 3.2.0
  */
 public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDataLoader<List<OpenChannel>> {
     @NonNull
@@ -40,7 +40,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Constructor
      *
      * @param params A params to retrieve {@code OpenChannel} list for the current user
-     * @since 3.2.0
+     * since 3.2.0
      */
     public OpenChannelListViewModel(@Nullable OpenChannelListQueryParams params) {
         this.params = params == null ? createOpenChannelListQueryParams() : params;
@@ -50,7 +50,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Live data that can be observed for a list of channels.
      *
      * @return LiveData holding the list of {@code OpenChannel} for the current user
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public LiveData<List<OpenChannel>> getChannelList() {
@@ -61,7 +61,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Returns LiveData that can be observed if the Initial load has ended.
      *
      * @return LiveData holding whether initial loading is finished
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public LiveData<Boolean> getInitialLoaded() {
@@ -82,7 +82,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Returns {@code false} as the channel list do not support to load for the previous by default.
      *
      * @return Always {@code false}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public boolean hasPrevious() {
@@ -93,7 +93,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Returns the empty list as the channel list do not support to load for the previous by default.
      *
      * @return The empty list
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     @Override
@@ -111,7 +111,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * If there is no more pages to be read, an empty <code>List</code> (not <code>null</code>) returns.
      * If the request is succeed, you can observe updated data through {@link #getChannelList()}.
      *
-     * @since 3.2.0
+     * since 3.2.0
      */
     public synchronized void loadInitial() {
         this.repository = new OpenChannelListRepository(params);
@@ -134,7 +134,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      *
      * @return Returns the queried list of <code>OpenChannel</code>s if no error occurs
      * @throws Exception Throws exception if getting the channel list are failed
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     @Override
@@ -150,7 +150,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.2.0
+     * since 3.2.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -167,7 +167,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
      * Creates group channel list query.
      *
      * @return {@code OpenChannelListQuery} to retrieve the list of channels
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     protected OpenChannelListQueryParams createOpenChannelListQueryParams() {

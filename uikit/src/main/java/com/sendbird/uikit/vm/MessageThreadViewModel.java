@@ -47,7 +47,7 @@ import java.util.concurrent.Executors;
 /**
  * ViewModel preparing and managing data related with the list of threads in a parent message
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class MessageThreadViewModel extends BaseMessageListViewModel {
     @NonNull
@@ -88,7 +88,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * @param channelUrl        The URL of a channel this view model is currently associated with
      * @param parentMessage     The parent message required to retrieve the thread list from this view model
      * @param messageListParams Parameters required to retrieve the thread list from this view model
-     * @since 3.3.0
+     * since 3.3.0
      */
     public MessageThreadViewModel(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @Nullable ThreadMessageListParams messageListParams) {
         super(channelUrl);
@@ -170,7 +170,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * If there is no more pages to be read, an empty <code>List</code> (not <code>null</code>) returns.
      *
      * @param startingPoint Timestamp that is the starting point when the thread list is fetched
-     * @since 3.3.0
+     * since 3.3.0
      */
     @UiThread
     public synchronized void loadInitial(final long startingPoint) {
@@ -204,7 +204,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     @Override
@@ -225,7 +225,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      *
      * @return Returns the list of <code>BaseMessage</code>s if no error occurs
      * @throws Exception Throws exception if getting the message list are failed
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     @Override
@@ -243,7 +243,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns the parent message of thread list.
      *
      * @return The parent message
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public BaseMessage getParentMessage() {
@@ -254,7 +254,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns the timestamp that is the starting point when the thread list is fetched initially.
      *
      * @return The timestamp as the starting point
-     * @since 3.3.0
+     * since 3.3.0
      */
     public long getStartingPoint() {
         return this.messageThreadListQuery != null ? this.messageThreadListQuery.getStartingPoint() : 0L;
@@ -264,7 +264,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the parent message has been updated.
      *
      * @return LiveData holding the updated parent message
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<BaseMessage> onParentMessageUpdated() {
@@ -275,7 +275,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code GroupChannel}
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<GroupChannel> onChannelUpdated() {
@@ -286,7 +286,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding whether {@code GroupChannel} has been deleted
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<Boolean> onChannelDeleted() {
@@ -297,7 +297,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the parent message has been deleted.
      *
      * @return LiveData holding whether the parent message has been deleted
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<Boolean> onParentMessageDeleted() {
@@ -308,7 +308,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the thread message has been deleted.
      *
      * @return LiveData holding whether the thread message has been deleted
-     * @since 3.4.0
+     * since 3.4.0
      */
     @NonNull
     public LiveData<Long> onThreadMessageDeleted() {
@@ -320,7 +320,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * When the thread list is fetched successfully, the status is {@link StatusFrameView.Status#NONE}.
      *
      * @return The Status for the thread list
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<StatusFrameView.Status> getStatusFrame() {
@@ -331,7 +331,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Returns LiveData that can be observed if the chat server has been reconnected.
      *
      * @return LiveData holding whether the chat server has been reconnected
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public LiveData<Boolean> onReconnected() {
@@ -373,7 +373,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
      * Creates params for the thread list when loading the thread list.
      *
      * @return {@link ThreadMessageListParams} to be used when loading the thread list
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     public ThreadMessageListParams createMessageListParams() {

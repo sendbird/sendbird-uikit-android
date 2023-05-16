@@ -9,14 +9,14 @@ import com.sendbird.uikit.internal.queries.ChannelMemberListQuery;
 /**
  * ViewModel preparing and managing data related with the list of members
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MemberListViewModel extends UserViewModel<Member> {
     /**
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MemberListViewModel(@NonNull String channelUrl) {
         super(channelUrl);
@@ -27,7 +27,7 @@ public class MemberListViewModel extends UserViewModel<Member> {
      *
      * @param channelUrl The url of {@code GroupChannel} with members to be fetched by the query
      * @return {@code PagedQueryHandler<UserInfo>} to retrieve the list of members
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     @Override

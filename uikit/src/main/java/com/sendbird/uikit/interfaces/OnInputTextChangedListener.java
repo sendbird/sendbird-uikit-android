@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 /**
  * Interface definition for a callback to be invoked when a text of message input is changed.
- * @since 2.0.1
+ * since 2.0.1
  */
 public interface OnInputTextChangedListener {
     /**

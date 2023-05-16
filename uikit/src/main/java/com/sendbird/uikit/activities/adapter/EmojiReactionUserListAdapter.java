@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * EmojiReactionUserListAdapter provides a binding from a {@link User} set to views that are displayed within a RecyclerView.
  *
- * @since 1.1.0
+ * since 1.1.0
  */
 public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHolder<User>> {
     @NonNull
@@ -25,7 +25,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
 
     /**
      * Constructor
-     * @since 1.1.0
+     * since 1.1.0
      */
     public EmojiReactionUserListAdapter() {
         this(new ArrayList<>());
@@ -35,7 +35,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * Constructor
      *
      * @param userList list to be displayed.
-     * @since 1.1.0
+     * since 1.1.0
      */
     public EmojiReactionUserListAdapter(@NonNull List<User> userList) {
         setHasStableIds(true);
@@ -53,7 +53,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @return A new {@link BaseViewHolder<User>} that holds a View of the given view type.
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(BaseViewHolder, int)
-     * @since 1.1.0
+     * since 1.1.0
      */
     @NonNull
     @Override
@@ -69,7 +69,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * @param holder The {@link BaseViewHolder<User>} which should be updated to represent
      *               the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<User> holder, int position) {
@@ -88,7 +88,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      *
      * @param position The position of the item within the adapter's data set.
      * @return The {@link User} to retrieve the position of in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @Nullable
@@ -100,7 +100,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * Returns the {@link List<User>} in the data set held by the adapter.
      *
      * @return The {@link List<User>} in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     @NonNull
@@ -112,7 +112,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public int getItemCount() {
@@ -124,7 +124,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      *
      * @param position Adapter position to query
      * @return the stable ID of the item at position
-     * @since 1.1.0
+     * since 1.1.0
      */
     @Override
     public long getItemId(int position) {
@@ -137,7 +137,7 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * Sets the {@link List<User>} to be displayed.
      *
      * @param userList list to be displayed
-     * @since 1.1.0
+     * since 1.1.0
      */
     public void setItems(@NonNull List<User> userList) {
         final EmojiReactionUserDiffCallback diffCallback = new EmojiReactionUserDiffCallback(this.userList, userList);

@@ -51,7 +51,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * @param cls The activity class that is to be used for the intent.
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
-     * @since 1.1.2
+     * since 1.1.2
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelListActivity> cls, @NonNull String channelUrl) {
@@ -82,7 +82,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      * 
      * @return {@link com.sendbird.uikit.fragments.ChannelListFragment}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected Fragment createFragment() {
@@ -93,7 +93,7 @@ public class ChannelListActivity extends AppCompatActivity {
      * It will be called when it needs to redirect {@link ChannelActivity} from the push notification
      *
      * @return ChannelActivity {@link Intent}
-     * @since 1.0.4
+     * since 1.0.4
      */
     @NonNull
     protected Intent createRedirectChannelActivityIntent(@NonNull String channelUrl) {

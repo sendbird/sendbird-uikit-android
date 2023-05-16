@@ -333,7 +333,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 1.2.5
+     * since 1.2.5
      */
     @Override
     public boolean shouldShowLoadingDialog() {
@@ -344,7 +344,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 1.2.5
+     * since 1.2.5
      */
     @Override
     public void shouldDismissLoadingDialog() {
@@ -377,7 +377,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
          *
          * @param loadingDialogHandler Interface definition for a callback to be invoked before when the loading dialog is called.
          * @see LoadingDialogHandler
-         * @since 1.2.5
+         * since 1.2.5
          */
         @NonNull
         public Builder setLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {

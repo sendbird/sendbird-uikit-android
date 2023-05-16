@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Fragment displaying the user list to be operator.
  *
- * @since 1.2.0
+ * since 1.2.0
  */
 public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperatorModule, RegisterOperatorViewModel> {
 
@@ -109,7 +109,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
      * @param headerComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindHeaderComponent(@NonNull SelectUserHeaderComponent headerComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> RegisterOperatorFragment::onBindHeaderComponent()");
@@ -123,7 +123,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
      * @param listComponent The component to which the event will be bound
      * @param viewModel     A view model that provides the data needed for the fragment
      * @param channel       The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindRegisterOperatorListComponent(@NonNull RegisterOperatorListComponent listComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> RegisterOperatorFragment::onBindRegisterOperatorListComponent()");
@@ -140,7 +140,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
      * @param statusComponent The component to which the event will be bound
      * @param viewModel       A view model that provides the data needed for the fragment
      * @param channel         The {@code GroupChannel} that contains the data needed for this fragment
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onBindStatusComponent(@NonNull StatusComponent statusComponent, @NonNull RegisterOperatorViewModel viewModel, @Nullable GroupChannel channel) {
         Logger.d(">> RegisterOperatorFragment::onBindStatusComponent()");
@@ -156,7 +156,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
      * Called when the user selection completed.
      *
      * @param selectedUsers selected user's ids.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onUserSelectionCompleted(@NonNull List<String> selectedUsers) {
         Logger.d(">> RegisterOperators::onUserSelectComplete()");
@@ -174,7 +174,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     protected String getChannelUrl() {
@@ -209,7 +209,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param channelUrl the url of the channel will be implemented.
          * @param themeMode  {@link SendbirdUIKit.ThemeMode}
-         * @since 1.2.0
+         * since 1.2.0
          */
         public Builder(@NonNull String channelUrl, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             this(channelUrl, themeMode.getResId());
@@ -220,7 +220,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param channelUrl       the url of the channel will be implemented.
          * @param customThemeResId the resource identifier for custom theme.
-         * @since 1.2.0
+         * since 1.2.0
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
@@ -233,7 +233,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param fragment custom fragment.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.2.0
+         * since 3.2.0
          */
         @NonNull
         public <T extends RegisterOperatorFragment> Builder setCustomFragment(T fragment) {
@@ -246,7 +246,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param args the arguments supplied when the fragment was instantiated.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder withArguments(@NonNull Bundle args) {
@@ -284,7 +284,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          * @param useHeaderRightButton <code>true</code> if the right button of the header is used,
          *                             <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 1.2.3
+         * since 1.2.3
          */
         @NonNull
         public Builder setUseHeaderRightButton(boolean useHeaderRightButton) {
@@ -322,7 +322,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.0
+         * since 2.1.0
          */
         @NonNull
         public Builder setHeaderLeftButtonIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -348,7 +348,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setCustomPagedQueryHandler(@NonNull PagedQueryHandler<Member> handler) {
@@ -361,7 +361,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param adapter the adapter for the user list.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setRegisterOperatorListAdapter(@NonNull RegisterOperatorListAdapter adapter) {
@@ -374,7 +374,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderLeftButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -387,7 +387,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param listener The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnHeaderRightButtonClickListener(@NonNull View.OnClickListener listener) {
@@ -401,7 +401,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          * @param resId the resource identifier of the drawable.
          * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
@@ -415,7 +415,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.6
+         * since 2.1.6
          */
         @NonNull
         public Builder setEmptyText(@StringRes int resId) {
@@ -428,7 +428,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param resId the resource identifier of text to be displayed.
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
@@ -441,7 +441,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param userSelectChangedListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
@@ -454,7 +454,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
          *
          * @param userSelectionCompleteListener The callback that will run
          * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         public Builder setOnUserSelectionCompleteListener(@Nullable OnUserSelectionCompleteListener userSelectionCompleteListener) {

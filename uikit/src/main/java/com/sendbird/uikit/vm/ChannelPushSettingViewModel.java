@@ -22,7 +22,7 @@ import com.sendbird.uikit.log.Logger;
 /**
  * ViewModel preparing and managing data related with the push setting of a channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ChannelPushSettingViewModel extends BaseViewModel {
     @NonNull
@@ -40,7 +40,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ChannelPushSettingViewModel(@NonNull String channelUrl) {
         this.channelUrl = channelUrl;
@@ -50,7 +50,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -81,7 +81,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -92,7 +92,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -103,7 +103,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been updated.
      *
      * @return LiveData holding the updated {@code GroupChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<GroupChannel> getChannelUpdated() {
@@ -114,7 +114,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the Activity or Fragment should be finished.
      *
      * @return LiveData holding the event for whether the Activity or Fragment should be finished
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> shouldFinish() {
@@ -197,7 +197,7 @@ public class ChannelPushSettingViewModel extends BaseViewModel {
      *
      * @param option pushTriggerOption `PushTriggerOption`. Refer to {@link com.sendbird.android.channel.GroupChannel.PushTriggerOption}.
      * @param handler Callback handler called when this method is completed.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void requestPushOption(@NonNull GroupChannel.PushTriggerOption option, @Nullable OnCompleteHandler handler) {
         if (channel == null) {

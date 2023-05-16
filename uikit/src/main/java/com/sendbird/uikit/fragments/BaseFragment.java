@@ -97,7 +97,7 @@ public abstract class BaseFragment extends Fragment implements DialogProvider {
      * @return {@code true} if the current fragment is alive, {@code false} otherwise
      */
     protected boolean isFragmentAlive() {
-        boolean isDeactivated = isRemoving() || isDetached() || getContext() == null;
+        boolean isDeactivated = !isAdded() || isRemoving() || isDetached() || getContext() == null;
         return !isDeactivated;
     }
 

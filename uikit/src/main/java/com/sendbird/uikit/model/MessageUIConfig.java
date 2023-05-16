@@ -73,7 +73,7 @@ public class MessageUIConfig {
      * This extra text's UI configurations will be returned.
      *
      * @return the UI configuration of edited message mark.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public TextUIConfig getMyEditedTextMarkUIConfig() {
@@ -86,7 +86,7 @@ public class MessageUIConfig {
      * This extra text's UI configurations will be returned.
      *
      * @return the UI configuration of edited message mark.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public TextUIConfig getOtherEditedTextMarkUIConfig() {
@@ -97,7 +97,7 @@ public class MessageUIConfig {
      * Returns UI configuration of mentioned message that I sent.
      *
      * @return the UI configuration of mentioned message.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public TextUIConfig getMyMentionUIConfig() {
@@ -108,7 +108,7 @@ public class MessageUIConfig {
      * Returns UI configuration of mentioned message that the others sent.
      *
      * @return the UI configuration of mentioned message.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public TextUIConfig getOtherMentionUIConfig() {
@@ -119,7 +119,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message text that I sent.
      *
      * @return the UI configuration of message text.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getMyMessageTextUIConfig() {
@@ -130,7 +130,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message text that the others sent.
      *
      * @return the UI configuration of message text.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getOtherMessageTextUIConfig() {
@@ -141,7 +141,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message sentAt text that the I sent.
      *
      * @return the UI configuration of message sentAt text.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getMySentAtTextUIConfig() {
@@ -152,7 +152,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message sentAt text that the others sent.
      *
      * @return the UI configuration of message sentAt text.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getOtherSentAtTextUIConfig() {
@@ -163,7 +163,7 @@ public class MessageUIConfig {
      * Returns UI configuration of sender nickname that the I sent.
      *
      * @return the UI configuration of sender nickname.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getMyNicknameTextUIConfig() {
@@ -174,7 +174,7 @@ public class MessageUIConfig {
      * Returns UI configuration of sender nickname that the others sent.
      *
      * @return the UI configuration of sender nickname.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getOtherNicknameTextUIConfig() {
@@ -185,7 +185,7 @@ public class MessageUIConfig {
      * Returns UI configuration of sender nickname that the operator sent.
      *
      * @return the UI configuration of sender nickname.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @NonNull
     public TextUIConfig getOperatorNicknameTextUIConfig() {
@@ -196,7 +196,7 @@ public class MessageUIConfig {
      * Returns UI configuration of replied parent message.
      *
      * @return the UI configuration of replied parent message.
-     * @since 3.2.1
+     * since 3.2.1
      */
     @NonNull
     public TextUIConfig getRepliedMessageTextUIConfig() {
@@ -207,7 +207,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message background that the I sent.
      *
      * @return the UI configuration of message background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getMyMessageBackground() {
@@ -217,7 +217,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of message background that the I sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setMyMessageBackground(@NonNull Drawable myMessageBackground) {
         this.myMessageBackground = myMessageBackground;
@@ -227,7 +227,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message background that the others sent.
      *
      * @return the UI configuration of message background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getOtherMessageBackground() {
@@ -237,7 +237,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of message background that the others sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setOtherMessageBackground(@NonNull Drawable otherMessageBackground) {
         this.otherMessageBackground = otherMessageBackground;
@@ -247,7 +247,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message reaction list background that the I sent.
      *
      * @return the UI configuration of message reaction list background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getMyReactionListBackground() {
@@ -257,7 +257,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of message reaction list background that the I sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setMyReactionListBackground(@NonNull Drawable myReactionListBackground) {
         this.myReactionListBackground = myReactionListBackground;
@@ -267,7 +267,7 @@ public class MessageUIConfig {
      * Returns UI configuration of message reaction list background that the others sent.
      *
      * @return the UI configuration of message reaction list background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getOtherReactionListBackground() {
@@ -277,7 +277,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of message reaction list background that the others sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setOtherReactionListBackground(@NonNull Drawable otherReactionListBackground) {
         this.otherReactionListBackground = otherReactionListBackground;
@@ -287,7 +287,7 @@ public class MessageUIConfig {
      * Returns UI configuration of ogtag message background that the I sent.
      *
      * @return the UI configuration of ogtag message background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getMyOgtagBackground() {
@@ -297,7 +297,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of ogtag message background that the I sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setMyOgtagBackground(@NonNull Drawable myOgtagBackground) {
         this.myOgtagBackground = myOgtagBackground;
@@ -307,7 +307,7 @@ public class MessageUIConfig {
      * Returns UI configuration of ogtag message background that the others sent.
      *
      * @return the UI configuration of ogtag message background.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public Drawable getOtherOgtagBackground() {
@@ -317,7 +317,7 @@ public class MessageUIConfig {
     /**
      * Sets UI configuration of ogtag message background that the others sent.
      *
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setOtherOgtagBackground(@NonNull Drawable otherOgtagBackground) {
         this.otherOgtagBackground = otherOgtagBackground;
@@ -327,7 +327,7 @@ public class MessageUIConfig {
      * Returns the UI configuration of the linked text color in the message text.
      *
      * @return  the UI configuration of the linked text color.
-     * @since 3.1.1
+     * since 3.1.1
      */
     @Nullable
     public ColorStateList getLinkedTextColor() {
@@ -338,7 +338,7 @@ public class MessageUIConfig {
      * Sets the UI configuration of the linked text color in the message text.
      *
      * @param linkedTextColor   the UI configuration of the linked text color.
-     * @since 3.1.1
+     * since 3.1.1
      */
     public void setLinkedTextColor(@NonNull ColorStateList linkedTextColor) {
         this.linkedTextColor = linkedTextColor;

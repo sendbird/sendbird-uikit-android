@@ -22,7 +22,7 @@ import com.sendbird.uikit.log.Logger;
 /**
  * ViewModel preparing and managing data related with the moderation for a channel
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class ModerationViewModel extends BaseViewModel {
     private final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_MODERATION" + System.currentTimeMillis();
@@ -39,7 +39,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Constructor
      *
      * @param channelUrl The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public ModerationViewModel(@NonNull String channelUrl) {
         super();
@@ -116,7 +116,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns {@code GroupChannel}. If the authentication failed, {@code null} is returned.
      *
      * @return {@code GroupChannel} this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public GroupChannel getChannel() {
@@ -127,7 +127,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns URL of GroupChannel.
      *
      * @return The URL of a channel this view model is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public String getChannelUrl() {
@@ -144,7 +144,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been frozen.
      *
      * @return LiveData holding the latest {@code BaseChannel}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<BaseChannel> getFrozenStateChanges() {
@@ -155,7 +155,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the state of the current user is changed.
      *
      * @return LiveData holding the latest {@code MemberState}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<MemberState> getMyMemberStateChanges() {
@@ -166,7 +166,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the role of the current user is changed.
      *
      * @return LiveData holding the latest {@code Role}
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Role> getMyRoleChanges() {
@@ -177,7 +177,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the channel has been deleted.
      *
      * @return LiveData holding the URL of the deleted channel
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<String> getIsChannelDeleted() {
@@ -188,7 +188,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed whether the current user is banned.
      *
      * @return LiveData holding the current user banned or not
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> getIsBanned() {
@@ -199,7 +199,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Returns LiveData that can be observed if the loading dialog is showing.
      *
      * @return LiveData holding whether the loading dialog is showing
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LiveData<Boolean> getIsShowLoadingDialog() {
@@ -210,7 +210,7 @@ public class ModerationViewModel extends BaseViewModel {
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *
      * @param handler Callback notifying the result of authentication
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
@@ -233,7 +233,7 @@ public class ModerationViewModel extends BaseViewModel {
     /**
      * Freezes the channel.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     @UiThread
     public void freezeChannel() {
@@ -244,7 +244,7 @@ public class ModerationViewModel extends BaseViewModel {
     /**
      * Unfreezes the channel.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     @UiThread
     public void unfreezeChannel() {

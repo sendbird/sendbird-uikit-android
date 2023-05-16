@@ -1,4 +1,15 @@
 # Changelog
+### v3.5.4 (May 16, 2023) with Chat SDK `v4.8.1`
+* UIKit common
+  * Updated Android Gradle Plugin to version `7.4.2`
+  * Improved FileProvider compatibility
+  * Optimized Proguard rules
+  * Improved stability
+* Channel Notification
+  * Added function for collecting click events
+  * Added loading view while downloading template data
+  * Improved template view stability
+
 ### v3.5.3 (Apr 12, 2023) with Chat SDK `v4.6.1`
 * Added `setOnMessageMentionClickListener(OnItemClickListener<User>)` in `ChannelFragment.Builder`
 * Added `setOnMessageMentionClickListener(OnItemClickListener<User>)` in `MessageThreadFragment.Builder`

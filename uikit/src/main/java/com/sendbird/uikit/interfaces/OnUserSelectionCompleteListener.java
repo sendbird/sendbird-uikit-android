@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Interface definition for a callback that will be invoked when user selections are completed.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public interface OnUserSelectionCompleteListener {
     /**

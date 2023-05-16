@@ -14,7 +14,7 @@ import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 /**
  * This class creates and performs a view corresponding the header area when selecting users in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class SelectUserHeaderComponent extends StateHeaderComponent {
 
@@ -27,7 +27,7 @@ public class SelectUserHeaderComponent extends StateHeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -43,7 +43,7 @@ public class SelectUserHeaderComponent extends StateHeaderComponent {
      * Notifies this component that an user is selected.
      *
      * @param count Number of selected users
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void notifySelectedUserChanged(int count) {
         if (!(getRootView() instanceof StateHeaderView)) return;

@@ -31,7 +31,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
@@ -41,7 +41,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public LoadingDialogHandler getLoadingDialogHandler() {
@@ -52,7 +52,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Sets a custom message list component.
      *
      * @param component The message list component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setMessageListComponent(@NonNull LC component) {
         this.messageListComponent = component;
@@ -62,7 +62,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Sets a custom message input component.
      *
      * @param component The message input component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends MessageInputComponent> void setInputComponent(@NonNull T component) {
         this.inputComponent = component;
@@ -72,7 +72,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Sets a custom status component.
      *
      * @param component The status component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends StatusComponent> void setStatusComponent(@NonNull T component) {
         this.statusComponent = component;
@@ -82,7 +82,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Returns the message list component.
      *
      * @return The message list component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public LC getMessageListComponent() {
@@ -93,7 +93,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Returns the message input component.
      *
      * @return The message input component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public MessageInputComponent getMessageInputComponent() {
@@ -104,7 +104,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Returns the status component.
      *
      * @return The status component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public StatusComponent getStatusComponent() {
@@ -115,7 +115,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean shouldShowLoadingDialog() {
         if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
@@ -128,7 +128,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void shouldDismissLoadingDialog() {
         if (loadingDialogHandler != null) {
@@ -140,7 +140,7 @@ abstract public class BaseMessageListModule<LC extends BaseMessageListComponent<
      * Returns a collection of parameters applied to this module.
      *
      * @return {@link Params} applied to this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     abstract public Params getParams();

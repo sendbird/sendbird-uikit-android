@@ -124,7 +124,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<T> getOnItemClickListener() {
@@ -144,7 +144,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @return {@code OnItemLongClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemLongClickListener<T> getOnItemLongClickListener() {
@@ -164,7 +164,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Returns a callback to be invoked when the action view is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the action view is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<T> getOnActionItemClickListener() {
@@ -175,7 +175,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Register a callback to be invoked when the profile view is clicked.
      *
      * @param profileClickListener The callback that will run
-     * @since 1.2.2
+     * since 1.2.2
      */
     public void setOnProfileClickListener(@Nullable OnItemClickListener<T> profileClickListener) {
         this.profileClickListener = profileClickListener;
@@ -185,7 +185,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Returns a callback to be invoked when the profile view is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the profile view is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<T> getOnProfileClickListener() {
@@ -196,7 +196,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Sets the {@link List<T>} to be displayed.
      *
      * @param userList list to be displayed
-     * @since 3.1.0
+     * since 3.1.0
      */
     protected void setUsers(@NonNull List<T> userList) {
         this.users.clear();
@@ -207,7 +207,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * Returns whether the current user is operator or not.
      *
      * @return {@code true} if the current user is operator, {@code false} otherwise
-     * @since 3.1.0
+     * since 3.1.0
      */
     abstract protected boolean isCurrentUserOperator();
 
@@ -217,7 +217,7 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
      * @param context Context for item view
      * @param user The user to be checked if showing operator badge
      * @return Text to be shown as description in item view
-     * @since 3.1.0
+     * since 3.1.0
      */
     @NonNull
     abstract protected String getItemViewDescription(@NonNull Context context, @NonNull T user);

@@ -19,7 +19,7 @@ import com.sendbird.uikit.internal.ui.components.StateHeaderView;
 /**
  * This class creates and performs a view corresponding the stateful header area in Sendbird UIKit.
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class StateHeaderComponent {
     @NonNull
@@ -35,7 +35,7 @@ public class StateHeaderComponent {
     /**
      * Constructor
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public StateHeaderComponent() {
         this.params = new Params();
@@ -45,7 +45,7 @@ public class StateHeaderComponent {
      * Returns the view created by {@link #onCreateView(Context, LayoutInflater, ViewGroup, Bundle)}.
      *
      * @return the topmost view containing this view
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public View getRootView() {
@@ -56,7 +56,7 @@ public class StateHeaderComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -72,7 +72,7 @@ public class StateHeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
@@ -105,7 +105,7 @@ public class StateHeaderComponent {
      * Register a callback to be invoked when the left button of the header is clicked.
      *
      * @param leftButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnLeftButtonClickListener(@Nullable View.OnClickListener leftButtonClickListener) {
         this.leftButtonClickListener = leftButtonClickListener;
@@ -115,7 +115,7 @@ public class StateHeaderComponent {
      * Register a callback to be invoked when the right button of the header is clicked.
      *
      * @param rightButtonClickListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnRightButtonClickListener(@Nullable View.OnClickListener rightButtonClickListener) {
         this.rightButtonClickListener = rightButtonClickListener;
@@ -125,7 +125,7 @@ public class StateHeaderComponent {
      * Called when the left button of the header is clicked.
      *
      * @param view The view that was clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onLeftButtonClicked(@NonNull View view) {
         if (this.leftButtonClickListener != null) this.leftButtonClickListener.onClick(view);
@@ -135,7 +135,7 @@ public class StateHeaderComponent {
      * Called when the right button of the header is clicked.
      *
      * @param view The view that was clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     protected void onRightButtonClicked(@NonNull View view) {
         if (this.rightButtonClickListener != null) this.rightButtonClickListener.onClick(view);
@@ -145,7 +145,7 @@ public class StateHeaderComponent {
      * Notifies the events to the view when the right button enable state changed.
      *
      * @param enabled the enable state of the view
-     * @since 3.2.0
+     * since 3.2.0
      */
     public void notifyRightButtonEnableStateChanged(boolean enabled) {
         if (headerView != null) {
@@ -159,7 +159,7 @@ public class StateHeaderComponent {
      * <p>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</p>
      *
      * @see #getParams()
-     * @since 3.0.0
+     * since 3.0.0
      */
     public static class Params {
         private boolean useRightButton = true;
@@ -176,7 +176,7 @@ public class StateHeaderComponent {
         /**
          * Constructor
          *
-         * @since 3.0.0
+         * since 3.0.0
          */
         protected Params() {
         }
@@ -185,7 +185,7 @@ public class StateHeaderComponent {
          * Sets the title of the header.
          *
          * @param title The String to be displayed in the title of header
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setTitle(@Nullable String title) {
             this.title = title;
@@ -195,7 +195,7 @@ public class StateHeaderComponent {
          * Sets the icon on the left button of the header.
          *
          * @param leftButtonIcon The Drawable to be displayed on the left button of the header
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIcon(@Nullable Drawable leftButtonIcon) {
             this.leftButtonIcon = leftButtonIcon;
@@ -205,7 +205,7 @@ public class StateHeaderComponent {
          * Sets whether the right button of the header is used.
          *
          * @param useRightButton <code>true</code> if the right button of the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseRightButton(boolean useRightButton) {
             this.useRightButton = useRightButton;
@@ -215,7 +215,7 @@ public class StateHeaderComponent {
          * Sets whether the left button of the header is used.
          *
          * @param useLeftButton <code>true</code> if the left button of the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setUseLeftButton(boolean useLeftButton) {
             this.useLeftButton = useLeftButton;
@@ -225,7 +225,7 @@ public class StateHeaderComponent {
          * Sets the color of the icon on the left button of the header.
          *
          * @param leftButtonIconTint Color state list to be applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setLeftButtonIconTint(@Nullable ColorStateList leftButtonIconTint) {
             this.leftButtonIconTint = leftButtonIconTint;
@@ -235,7 +235,7 @@ public class StateHeaderComponent {
          * Sets the text on the right button of the header.
          *
          * @param rightButtonText The String to be displayed on the right button
-         * @since 3.0.0
+         * since 3.0.0
          */
         public void setRightButtonText(@Nullable String rightButtonText) {
             this.rightButtonText = rightButtonText;
@@ -245,7 +245,7 @@ public class StateHeaderComponent {
          * Returns the title of the header.
          *
          * @return The String displayed in the title of header
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getTitle() {
@@ -256,7 +256,7 @@ public class StateHeaderComponent {
          * Returns the icon on the left button of the header.
          *
          * @return The Drawable displayed on the left button of the header
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public Drawable getLeftButtonIcon() {
@@ -267,7 +267,7 @@ public class StateHeaderComponent {
          * Returns the text on the right button of the header.
          *
          * @return The String displayed on the right button
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public String getRightButtonText() {
@@ -278,7 +278,7 @@ public class StateHeaderComponent {
          * Returns whether the right button of the header is used.
          *
          * @return <code>true</code> if the right button of the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseRightButton() {
             return useRightButton;
@@ -288,7 +288,7 @@ public class StateHeaderComponent {
          * Returns whether the left button of the header is used.
          *
          * @return <code>true</code> if the left button of the header is used, <code>false</code> otherwise
-         * @since 3.0.0
+         * since 3.0.0
          */
         public boolean shouldUseLeftButton() {
             return useLeftButton;
@@ -298,7 +298,7 @@ public class StateHeaderComponent {
          * Returns the color of the icon on the left button of the header.
          *
          * @return Color state list applied to the left button icon
-         * @since 3.0.0
+         * since 3.0.0
          */
         @Nullable
         public ColorStateList getLeftButtonIconTint() {
@@ -318,7 +318,7 @@ public class StateHeaderComponent {
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * @since 3.0.0
+         * since 3.0.0
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {

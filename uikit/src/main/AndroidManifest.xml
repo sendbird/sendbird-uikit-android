@@ -144,8 +144,8 @@
             />
 
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:name=".model.SendbirdUIKitFileProvider"
+            android:authorities="${applicationId}.sendbird.uikit.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

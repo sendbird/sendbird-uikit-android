@@ -365,8 +365,8 @@ class MessageInputView @JvmOverloads constructor(
             binding.ivReplyDivider.setBackgroundColor(ContextCompat.getColor(context, dividerColor))
             binding.etInputText.setOnClickListener { showKeyboard() }
             binding.etInputText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                    if (!TextUtils.isEmpty(s) && Mode.EDIT != inputMode || showSendButtonAlways) {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    if (!TextUtils.isEmpty(s?.trim()) && Mode.EDIT != inputMode || showSendButtonAlways) {
                         setSendButtonVisibility(VISIBLE)
                         if (useVoiceButton) {
                             setVoiceRecorderButtonVisibility(GONE)
@@ -379,16 +379,16 @@ class MessageInputView @JvmOverloads constructor(
                     }
                 }
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (Mode.EDIT == inputMode) {
-                        onEditModeTextChangedListener?.onInputTextChanged(s, start, before, count)
+                        onEditModeTextChangedListener?.onInputTextChanged(s ?: "", start, before, count)
                     } else {
-                        onInputTextChangedListener?.onInputTextChanged(s, start, before, count)
+                        onInputTextChangedListener?.onInputTextChanged(s ?: "", start, before, count)
                     }
                 }
 
-                override fun afterTextChanged(s: Editable) {
-                    if (!TextUtils.isEmpty(s) && Mode.EDIT != inputMode || showSendButtonAlways) {
+                override fun afterTextChanged(s: Editable?) {
+                    if (!TextUtils.isEmpty(s?.trim()) && Mode.EDIT != inputMode || showSendButtonAlways) {
                         setSendButtonVisibility(VISIBLE)
                         if (useVoiceButton) {
                             setVoiceRecorderButtonVisibility(GONE)

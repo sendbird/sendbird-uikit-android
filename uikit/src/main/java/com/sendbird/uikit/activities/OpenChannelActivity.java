@@ -16,7 +16,7 @@ import com.sendbird.uikit.consts.StringSet;
 
 /**
  * Activity displays a list of messages from a open channel.
- * @since 3.2.0
+ * since 3.2.0
  */
 public class OpenChannelActivity extends AppCompatActivity {
     /**
@@ -25,7 +25,7 @@ public class OpenChannelActivity extends AppCompatActivity {
      * @param context A Context of the application package implementing this class.
      * @param channelUrl the url of the channel will be implemented.
      * @return OpenChannelActivity Intent
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull Class<? extends OpenChannelActivity> cls, @NonNull String channelUrl) {
@@ -53,7 +53,7 @@ public class OpenChannelActivity extends AppCompatActivity {
      * The data contained in Intent is delivered to Fragment's Bundle.
      *
      * @return {@link com.sendbird.uikit.fragments.OpenChannelFragment}
-     * @since 3.2.0
+     * since 3.2.0
      */
     @NonNull
     protected Fragment createFragment() {

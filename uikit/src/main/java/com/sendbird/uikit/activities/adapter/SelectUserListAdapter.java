@@ -94,7 +94,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * If this view is not clickable, it becomes clickable.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemClickListener(@Nullable OnItemClickListener<T> listener) {
         this.listener = listener;
@@ -104,7 +104,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnItemClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemClickListener<T> getOnItemClickListener() {
@@ -116,7 +116,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * If this view is not clickable, it becomes clickable.
      *
      * @param listener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnItemLongClickListener(@Nullable OnItemLongClickListener<T> listener) {
         this.longClickListener = listener;
@@ -126,7 +126,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
      *
      * @return {@code OnItemLongClickListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked and held.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnItemLongClickListener<T> getOnItemLongClickListener() {
@@ -138,7 +138,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * If this view is not clickable, it becomes clickable.
      *
      * @param userSelectChangedListener The callback that will run
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnUserSelectChangedListener(@Nullable OnUserSelectChangedListener userSelectChangedListener) {
         this.userSelectChangedListener = userSelectChangedListener;
@@ -148,7 +148,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Returns a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @return {@code OnUserSelectChangedListener} to be invoked when the {@link BaseViewHolder#itemView} is clicked.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public OnUserSelectChangedListener getOnUserSelectChangedListener() {
@@ -159,7 +159,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Sets the user's id which should disable in the list.
      *
      * @param disabledUserList User's ids which should not display.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setDisabledUserIdList(@NonNull List<String> disabledUserList) {
         this.disabledUserList = disabledUserList;
@@ -169,7 +169,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * Returns the list of selected user's id.
      *
      * @return {@code List<String>} to be selected user ids.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public List<String> getSelectedUserIdList() {
@@ -181,7 +181,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      *
      * @param item A specific-item to be determined
      * @return {@code true} if the item is disabled, {@code false} otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     abstract protected boolean isDisabled(@NonNull T item);
     /**
@@ -189,7 +189,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      *
      * @param item A specific-item to be determined
      * @return {@code true} if the use is selected, {@code false} otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     abstract protected boolean isSelected(@NonNull T item);
     /**
@@ -197,7 +197,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      *
      * @param item A specific-item to be converted.
      * @return A converted {@link UserInfo}.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     abstract protected UserInfo toUserInfo(@NonNull T item);

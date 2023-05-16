@@ -33,7 +33,7 @@ import com.sendbird.uikit.modules.components.StatusComponent;
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>
  *
- * @since 3.0.0
+ * since 3.0.0
  */
 public class MemberListModule extends BaseModule {
     @NonNull
@@ -52,7 +52,7 @@ public class MemberListModule extends BaseModule {
      * Constructor
      *
      * @param context The {@code Context} this module is currently associated with
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MemberListModule(@NonNull Context context) {
         this(context, new Params(context));
@@ -63,7 +63,7 @@ public class MemberListModule extends BaseModule {
      *
      * @param context The {@code Context} this module is currently associated with
      * @param params The Parameter object that can customize a default Fragment.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public MemberListModule(@NonNull Context context, @NonNull Params params) {
         this.params = params;
@@ -113,7 +113,7 @@ public class MemberListModule extends BaseModule {
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void setOnLoadingDialogHandler(@Nullable LoadingDialogHandler loadingDialogHandler) {
         this.loadingDialogHandler = loadingDialogHandler;
@@ -123,7 +123,7 @@ public class MemberListModule extends BaseModule {
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @Nullable
     public LoadingDialogHandler getLoadingDialogHandler() {
@@ -134,7 +134,7 @@ public class MemberListModule extends BaseModule {
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * @since 3.0.0
+     * since 3.0.0
      */
     public boolean shouldShowLoadingDialog(@NonNull Context context) {
          if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
@@ -148,7 +148,7 @@ public class MemberListModule extends BaseModule {
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * @since 3.0.0
+     * since 3.0.0
      */
     public void shouldDismissLoadingDialog() {
         if (loadingDialogHandler != null) {
@@ -162,7 +162,7 @@ public class MemberListModule extends BaseModule {
      * Sets a custom header component.
      *
      * @param component The header component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends HeaderComponent> void setHeaderComponent(@NonNull T component) {
         this.headerComponent = component;
@@ -172,7 +172,7 @@ public class MemberListModule extends BaseModule {
      * Sets a custom list component.
      *
      * @param component The list component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends MemberListComponent> void setMemberListComponent(@NonNull T component) {
         this.memberListComponent = component;
@@ -182,7 +182,7 @@ public class MemberListModule extends BaseModule {
      * Sets a custom status component.
      *
      * @param component The status component to be used in this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     public <T extends StatusComponent> void setStatusComponent(@NonNull T component) {
         this.statusComponent = component;
@@ -192,7 +192,7 @@ public class MemberListModule extends BaseModule {
      * Returns the header component.
      *
      * @return The header component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public HeaderComponent getHeaderComponent() {
@@ -203,7 +203,7 @@ public class MemberListModule extends BaseModule {
      * Returns the list component.
      *
      * @return The list component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public MemberListComponent getMemberListComponent() {
@@ -214,7 +214,7 @@ public class MemberListModule extends BaseModule {
      * Returns the status component.
      *
      * @return The status component of this module
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public StatusComponent getStatusComponent() {
@@ -225,7 +225,7 @@ public class MemberListModule extends BaseModule {
      * Returns a collection of parameters applied to this module.
      *
      * @return {@link Params} applied to this module.
-     * @since 3.0.0
+     * since 3.0.0
      */
     @NonNull
     public Params getParams() {
@@ -237,7 +237,7 @@ public class MemberListModule extends BaseModule {
          * Constructor
          *
          * @param context The {@code Context} this module is currently associated with
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context) {
             this(context, SendbirdUIKit.getDefaultThemeMode());
@@ -248,7 +248,7 @@ public class MemberListModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeMode The theme of Sendbird UIKit to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @NonNull SendbirdUIKit.ThemeMode themeMode) {
             super(context, themeMode, R.attr.sb_module_member_list);
@@ -259,7 +259,7 @@ public class MemberListModule extends BaseModule {
          *
          * @param context The {@code Context} this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * @since 3.0.0
+         * since 3.0.0
          */
         public Params(@NonNull Context context, @StyleRes int themeResId) {
             super(context, themeResId, R.attr.sb_module_member_list);

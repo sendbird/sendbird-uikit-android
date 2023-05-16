@@ -17,7 +17,7 @@ import com.sendbird.uikit.utils.ChannelUtils;
 /**
  * This class creates and performs a view corresponding the message thread header area in Sendbird UIKit.
  *
- * @since 3.3.0
+ * since 3.3.0
  */
 public class MessageThreadHeaderComponent extends HeaderComponent {
 
@@ -27,7 +27,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
     /**
      * Constructor
      *
-     * @since 3.3.0
+     * since 3.3.0
      */
     public MessageThreadHeaderComponent() {
         super(new Params());
@@ -37,7 +37,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * Returns a collection of parameters applied to this component.
      *
      * @return {@code Params} applied to this component
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     @Override
@@ -54,7 +54,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * @since 3.3.0
+     * since 3.3.0
      */
     @NonNull
     @Override
@@ -72,7 +72,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * @since 3.3.0
+     * since 3.3.0
      */
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         final View rootView = getRootView();
@@ -87,7 +87,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * Register a callback to be invoked when the description is clicked.
      *
      * @param descriptionClickListener The callback that will run
-     * @since 3.3.0
+     * since 3.3.0
      */
     public void setOnDescriptionClickListener(@Nullable View.OnClickListener descriptionClickListener) {
         this.descriptionClickListener = descriptionClickListener;
@@ -97,7 +97,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * Called when the description is clicked.
      *
      * @param view     The View clicked
-     * @since 3.3.0
+     * since 3.3.0
      */
     protected void onDescriptionClicked(@NonNull View view) {
         if (descriptionClickListener != null)
@@ -110,7 +110,7 @@ public class MessageThreadHeaderComponent extends HeaderComponent {
      * <p><b>Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.</b></p>
      *
      * @see #getParams()
-     * @since 3.3.0
+     * since 3.3.0
      */
     public static class Params extends HeaderComponent.Params {}
 }
