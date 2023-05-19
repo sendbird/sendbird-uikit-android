@@ -1,4 +1,7 @@
 # Changelog
+### v3.5.5 (May 19, 2023) with Chat SDK `v4.8.1`
+* Improved stability
+
 ### v3.5.4 (May 16, 2023) with Chat SDK `v4.8.1`
 * UIKit common
   * Updated Android Gradle Plugin to version `7.4.2`

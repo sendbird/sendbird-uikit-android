@@ -270,11 +270,6 @@ public class SendbirdUIKit {
             @Override
             public void onInitSucceed() {
                 Logger.d(">> onInitSucceed()");
-                FileUtils.removeDeletableDir(context.getApplicationContext());
-                UIKitPrefs.init(context.getApplicationContext());
-                NotificationChannelManager.init(context.getApplicationContext());
-                EmojiManager.getInstance().init();
-
                 try {
                     SendbirdChat.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
                 } catch (Throwable ignored) {
@@ -288,6 +283,10 @@ public class SendbirdUIKit {
         // useCaching=true is required for UIKit
         final InitParams initParams = new InitParams(adapter.getAppId(), context, true, logLevel, isForeground);
         SendbirdChat.init(initParams, initResultHandler);
+        FileUtils.removeDeletableDir(context.getApplicationContext());
+        UIKitPrefs.init(context.getApplicationContext());
+        NotificationChannelManager.init(context.getApplicationContext());
+        EmojiManager.getInstance().init();
     }
 
     /**
