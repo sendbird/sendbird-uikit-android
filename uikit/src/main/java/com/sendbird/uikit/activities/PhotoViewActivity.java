@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -23,6 +24,11 @@ import com.sendbird.uikit.utils.MessageUtils;
 public class PhotoViewActivity extends AppCompatActivity {
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull ChannelType channelType, @NonNull FileMessage message) {
+        return newIntent(context, channelType, message, SendbirdUIKit.getDefaultThemeMode().getResId());
+    }
+
+    @NonNull
+    public static Intent newIntent(@NonNull Context context, @NonNull ChannelType channelType, @NonNull FileMessage message, @StyleRes int themeResId) {
         Intent intent = new Intent(context, PhotoViewActivity.class);
         intent.putExtra(StringSet.KEY_MESSAGE_ID, message.getMessageId());
         intent.putExtra(StringSet.KEY_MESSAGE_FILENAME, message.getName());
@@ -36,13 +42,15 @@ public class PhotoViewActivity extends AppCompatActivity {
         intent.putExtra(StringSet.KEY_MESSAGE_SENDER_NAME, message.getSender().getNickname());
         intent.putExtra(StringSet.KEY_CHANNEL_TYPE, channelType);
         intent.putExtra(StringSet.KEY_DELETABLE_MESSAGE, MessageUtils.isDeletableMessage(message));
+        intent.putExtra(StringSet.KEY_THEME_RES_ID, themeResId);
         return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
+        int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
+        setTheme(themeResId);
         setContentView(R.layout.sb_activity);
 
 

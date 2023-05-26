@@ -28,7 +28,9 @@ import com.sendbird.uikit.utils.DrawableUtils
 import org.json.JSONObject
 
 internal abstract class BaseNotificationView @JvmOverloads internal constructor(
-    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : BaseMessageView(context, attrs, defStyle) {
 
     internal fun makeTemplateView(
@@ -54,7 +56,8 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                                                 getExtendedSubData(message).optJSONArray(KeySet.tags)?.toList()
                                                     ?: listOf()
                                             val result = SendbirdStatistics.appendStat(
-                                                KeySet.noti_stats, mapOf(
+                                                KeySet.noti_stats,
+                                                mapOf(
                                                     KeySet.action to KeySet.clicked,
                                                     KeySet.template_key to templateKey,
                                                     KeySet.channel_url to message.channelUrl,
@@ -141,18 +144,20 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                 LayoutParams.MATCH_PARENT,
                 resources.intToDp(if (isChatNotification) 274 else 294),
             )
-            addView(ProgressBar(context).apply {
-                val size = resources.intToDp(36)
-                layoutParams = LayoutParams(
-                    size, size, Gravity.CENTER
-                )
-                val loading = DrawableUtils.setTintList(
-                    context,
-                    R.drawable.sb_progress,
-                    ColorStateList.valueOf(TemplateViewGenerator.getSpinnerColor(themeMode))
-                )
-                this.indeterminateDrawable = loading
-            })
+            addView(
+                ProgressBar(context).apply {
+                    val size = resources.intToDp(36)
+                    layoutParams = LayoutParams(
+                        size, size, Gravity.CENTER
+                    )
+                    val loading = DrawableUtils.setTintList(
+                        context,
+                        R.drawable.sb_progress,
+                        ColorStateList.valueOf(TemplateViewGenerator.getSpinnerColor(themeMode))
+                    )
+                    this.indeterminateDrawable = loading
+                }
+            )
         }
     }
 }

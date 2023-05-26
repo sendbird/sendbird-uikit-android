@@ -92,6 +92,8 @@ internal open class NotificationListComponent @JvmOverloads constructor(
                 layout.setBackgroundColor(backgroundColor.getColor(themeMode))
                 layout.setTooltipBackgroundColor(tooltip.backgroundColor.getColor(themeMode))
                 layout.setTooltipTextColor(tooltip.textColor.getColor(themeMode))
+                layout.setTooltipTextSize(tooltip.textSize)
+                layout.setTooltipTextStyle(tooltip.fontWeight.value)
             }
         }
         notificationListView = layout

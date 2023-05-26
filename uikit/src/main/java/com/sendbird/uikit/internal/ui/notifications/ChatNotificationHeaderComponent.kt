@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sendbird.android.channel.GroupChannel
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.ui.components.HeaderView
 import com.sendbird.uikit.modules.components.HeaderComponent
@@ -56,6 +57,7 @@ internal class ChatNotificationHeaderComponent(
                     layout.setDividerColor(lineColor.getColor(themeMode))
                     layout.titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
                     layout.titleTextView.setTextColor(textColor.getColor(themeMode))
+                    layout.titleTextView.setTypeface(fontWeight.value)
                     layout.leftButton.imageTintList = ColorStateList.valueOf(buttonIconTintColor.getColor(themeMode))
                 }
             }

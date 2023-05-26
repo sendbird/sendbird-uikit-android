@@ -33,8 +33,6 @@ internal open class Text @JvmOverloads constructor(
             LayoutParams.WRAP_CONTENT
         )
         textView = AppCompatTextView(context).apply {
-            // set default button text appearance
-            setAppearance(context, R.style.SendbirdBody3OnLight01)
             ellipsize = TextUtils.TruncateAt.END
             layoutParams = LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -109,8 +107,6 @@ internal open class TextButton @JvmOverloads constructor(
         addRipple(background)
 
         textView = AppCompatTextView(context).apply {
-            // set default button text appearance
-            setAppearance(context, R.style.SendbirdButtonPrimary300)
             ellipsize = TextUtils.TruncateAt.END
             maxLines = 1
             layoutParams = LayoutParams(

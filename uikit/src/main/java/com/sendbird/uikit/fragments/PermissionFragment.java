@@ -106,6 +106,8 @@ public abstract class PermissionFragment extends BaseFragment {
         int textResId;
         if (Manifest.permission.CAMERA.equals(permission)) {
             textResId = R.string.sb_text_need_to_allow_permission_camera;
+        } else if (Manifest.permission.RECORD_AUDIO.equals(permission)) {
+            textResId = R.string.sb_text_need_to_allow_permission_record_audio;
         } else {
             textResId = R.string.sb_text_need_to_allow_permission_storage;
         }

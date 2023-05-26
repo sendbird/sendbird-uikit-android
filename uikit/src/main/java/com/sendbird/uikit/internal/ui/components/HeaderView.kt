@@ -20,8 +20,7 @@ internal class HeaderView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) :
-    FrameLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
     private val binding: SbViewHeaderBinding
     val titleTextView: TextView
         get() = binding.title

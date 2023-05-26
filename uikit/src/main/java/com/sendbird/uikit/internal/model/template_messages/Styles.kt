@@ -2,7 +2,6 @@ package com.sendbird.uikit.internal.model.template_messages
 
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
@@ -12,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.loadToBackground
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.interfaces.ViewRoundable
 import com.sendbird.uikit.internal.model.serializer.ColorIntAsStringSerializer
 import kotlinx.serialization.Serializable
@@ -27,7 +27,7 @@ internal data class TextStyle(
     fun apply(view: TextView): TextStyle {
         size?.let { view.setTextSize(TypedValue.COMPLEX_UNIT_SP, it.toFloat()) }
         color?.let { view.setTextColor(it) }
-        weight?.let { view.typeface = Typeface.create(view.typeface, it.value) }
+        weight?.let { view.setTypeface(it.value) }
         return this
     }
 }

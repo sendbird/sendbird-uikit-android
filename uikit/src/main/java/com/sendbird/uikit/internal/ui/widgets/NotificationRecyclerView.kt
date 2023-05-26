@@ -3,6 +3,7 @@ package com.sendbird.uikit.internal.ui.widgets
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +15,7 @@ import com.sendbird.uikit.databinding.SbViewChatNotificationRecyclerViewBinding
 import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.utils.SoftInputUtils
 
 internal class NotificationRecyclerView @JvmOverloads constructor(
@@ -47,6 +49,14 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
 
     fun setTooltipBackgroundColor(@ColorInt color: Int) {
         binding.vgTooltipBox.setBackgroundColor(color)
+    }
+
+    fun setTooltipTextSize(textSize: Int) {
+        binding.tooltip.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+    }
+
+    fun setTooltipTextStyle(textStyle: Int) {
+        binding.tooltip.setTypeface(textStyle)
     }
 
     fun setOnTooltipClickListener(onTooltipClickListener: OnClickListener?) {

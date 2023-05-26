@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -32,6 +33,21 @@ public class InviteUserActivity extends AppCompatActivity {
     }
 
     /**
+     * Create an intent for a {@link InviteUserActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @param channelUrl the url of the channel will be implemented.
+     * @param themeResId the resource identifier for custom theme.
+     * @return InviteUserActivity Intent.
+     * since 3.5.6
+     */
+    @NonNull
+    public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl, @StyleRes int themeResId) {
+        return newIntentFromCustomActivity(context, InviteUserActivity.class, channelUrl, themeResId);
+    }
+
+
+    /**
      * Create an intent for a custom activity. The custom activity must inherit {@link InviteUserActivity}.
      *
      * @param context A Context of the application package implementing this class.
@@ -42,15 +58,32 @@ public class InviteUserActivity extends AppCompatActivity {
      */
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends InviteUserActivity> cls, @NonNull String channelUrl) {
+        return newIntentFromCustomActivity(context, cls, channelUrl, SendbirdUIKit.getDefaultThemeMode().getResId());
+    }
+
+    /**
+     * Create an intent for a custom activity. The custom activity must inherit {@link InviteUserActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @param cls        The activity class that is to be used for the intent.
+     * @param channelUrl the url of the channel will be implemented.
+     * @param themeResId the resource identifier for custom theme.
+     * @return Returns a newly created Intent that can be used to launch the activity.
+     * since 3.5.6
+     */
+    @NonNull
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends InviteUserActivity> cls, @NonNull String channelUrl, @StyleRes int themeResId) {
         Intent intent = new Intent(context, cls);
         intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
+        intent.putExtra(StringSet.KEY_THEME_RES_ID, themeResId);
         return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
+        int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
+        setTheme(themeResId);
         setContentView(R.layout.sb_activity);
 
         Fragment fragment = createFragment();

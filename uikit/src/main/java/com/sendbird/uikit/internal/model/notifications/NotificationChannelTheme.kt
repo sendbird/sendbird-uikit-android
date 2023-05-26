@@ -1,8 +1,10 @@
 @file:UseSerializers(CSVColorIntAsStringSerializer::class)
+
 package com.sendbird.uikit.internal.model.notifications
 
 import com.sendbird.uikit.internal.model.serializer.CSVColorIntAsStringSerializer
 import com.sendbird.uikit.internal.model.template_messages.KeySet
+import com.sendbird.uikit.internal.model.template_messages.Weight
 import com.sendbird.uikit.internal.singleton.NotificationParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -70,23 +72,49 @@ internal data class NotificationHeaderTheme(
     val textColor: CSVColor,
     val buttonIconTintColor: CSVColor,
     val backgroundColor: CSVColor,
-    val lineColor: CSVColor
+    val lineColor: CSVColor,
+    /**
+     * Added from version v1.2 of the Notification.
+     * Since the previously saved values did not include this field, a default value needs to be set.
+     * affected field : fontWeight
+     */
+    val fontWeight: Weight = Weight.Normal
 )
 
 @Serializable
 internal data class FontStyle(
     val textSize: Int,
-    val textColor: CSVColor
+    val textColor: CSVColor,
+    /**
+     * Added from version v1.2 of the Notification.
+     * Since the previously saved values did not include this field, a default value needs to be set.
+     * affected field : fontWeight
+     */
+    val fontWeight: Weight = Weight.Normal
 )
 
 @Serializable
 internal data class TooltipStyle(
     val backgroundColor: CSVColor,
-    val textColor: CSVColor
+    val textColor: CSVColor,
+    /**
+     * Added from version v1.2 of the Notification.
+     * Since the previously saved values did not include this field, a default value needs to be set.
+     * affected field : textSize, fontWeight
+     */
+    val textSize: Int = 14,
+    val fontWeight: Weight = Weight.Normal
 )
 
 @Serializable
 internal data class TimelineStyle(
     val backgroundColor: CSVColor,
-    val textColor: CSVColor
+    val textColor: CSVColor,
+    /**
+     * Added from version v1.2 of the Notification.
+     * Since the previously saved values did not include this field, a default value needs to be set.
+     * affected field : textSize, fontWeight
+     */
+    val textSize: Int = 12,
+    val fontWeight: Weight = Weight.Normal
 )

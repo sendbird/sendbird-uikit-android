@@ -13,6 +13,7 @@ import com.sendbird.uikit.databinding.SbViewFeedNotificationComponentBinding
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.utils.DateUtils
@@ -83,10 +84,12 @@ internal class FeedNotificationView @JvmOverloads internal constructor(
                 category.apply {
                     binding.tvCategory.setTextColor(textColor.getColor(themeMode))
                     binding.tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+                    binding.tvCategory.setTypeface(fontWeight.value)
                 }
                 sentAt.apply {
                     binding.tvSentAt.setTextColor(textColor.getColor(themeMode))
                     binding.tvSentAt.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+                    binding.tvSentAt.setTypeface(fontWeight.value)
                 }
                 unreadIndicatorColor.getColor(themeMode).apply {
                     val color = this

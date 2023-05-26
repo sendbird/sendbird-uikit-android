@@ -3,6 +3,7 @@ package com.sendbird.uikit.internal.extensions
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
@@ -111,4 +112,8 @@ private fun createRippleDrawable(pressedColor: Int, backgroundDrawable: Drawable
 
 private fun getPressedState(pressedColor: Int): ColorStateList {
     return ColorStateList(arrayOf(intArrayOf()), intArrayOf(pressedColor))
+}
+
+internal fun TextView.setTypeface(textStyle: Int) {
+    this.typeface = Typeface.create(this.typeface, textStyle)
 }

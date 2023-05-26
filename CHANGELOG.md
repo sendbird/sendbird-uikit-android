@@ -1,4 +1,10 @@
 # Changelog
+### v3.5.6 (May 26, 2023) with Chat SDK `v4.8.3`
+* UIKit common
+  * Improved voice recognition
+* Channel Notification
+  * Added interfaces to set custom theme resource on all Activities
+
 ### v3.5.5 (May 19, 2023) with Chat SDK `v4.8.1`
 * Improved stability
 

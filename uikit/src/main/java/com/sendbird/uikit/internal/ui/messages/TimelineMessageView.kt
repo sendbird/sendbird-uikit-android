@@ -2,13 +2,14 @@ package com.sendbird.uikit.internal.ui.messages
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageComponentBinding
-import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
@@ -55,9 +56,13 @@ internal class TimelineMessageView @JvmOverloads internal constructor(
             uiConfig?.let {
                 val themeMode = it.themeMode
                 it.theme.listTheme.timeline.apply {
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+                    setTypeface(fontWeight.value)
+                    measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+
                     DrawableUtils.createRoundedShapeDrawable(
                         backgroundColor.getColor(themeMode),
-                        resources.intToDp(10).toFloat()
+                        (measuredHeight / 2).toFloat()
                     ).apply { background = this }
                     setTextColor(textColor.getColor(themeMode))
                 }

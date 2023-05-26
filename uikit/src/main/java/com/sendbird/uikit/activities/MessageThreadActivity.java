@@ -9,6 +9,7 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -33,7 +34,8 @@ public class MessageThreadActivity extends AppCompatActivity {
         getWindow().setExitTransition(new Slide(Gravity.START));
 
         super.onCreate(savedInstanceState);
-        setTheme(SendbirdUIKit.isDarkMode() ? R.style.AppTheme_Dark_Sendbird : R.style.AppTheme_Sendbird);
+        int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
+        setTheme(themeResId);
         setContentView(R.layout.sb_activity);
 
         Fragment fragment = createFragment();
@@ -78,6 +80,9 @@ public class MessageThreadActivity extends AppCompatActivity {
         @NonNull
         private final Class<? extends MessageThreadActivity> customClass;
 
+        @StyleRes
+        private final int themeResId;
+
         /**
          * Create an intent for a {@link MessageThreadActivity}.
          *
@@ -100,10 +105,24 @@ public class MessageThreadActivity extends AppCompatActivity {
          * since 3.3.0
          */
         public IntentBuilder(@NonNull Context context, @NonNull Class<? extends MessageThreadActivity> customClass, @NonNull String channelUrl, @NonNull BaseMessage parentMessage) {
+            this(context, customClass, channelUrl, parentMessage, SendbirdUIKit.getDefaultThemeMode().getResId());
+        }
+
+        /**
+         * Create an intent for a {@link ChannelActivity}.
+         *
+         * @param context A Context of the application package implementing this class.
+         * @param customClass The activity class that is to be used for the intent.
+         * @param channelUrl The url of the channel will be implemented.
+         * @param themeResId the resource identifier for custom theme.
+         * since 3.5.6
+         */
+        public IntentBuilder(@NonNull Context context, @NonNull Class<? extends MessageThreadActivity> customClass, @NonNull String channelUrl, @NonNull BaseMessage parentMessage, @StyleRes int themeResId) {
             this.context = context;
             this.channelUrl = channelUrl;
             this.customClass = customClass;
             this.parentMessage = parentMessage;
+            this.themeResId = themeResId;
         }
 
         /**
@@ -131,6 +150,7 @@ public class MessageThreadActivity extends AppCompatActivity {
             intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
             intent.putExtra(StringSet.KEY_PARENT_MESSAGE, this.parentMessage.serialize());
             intent.putExtra(StringSet.KEY_STARTING_POINT, startingPoint);
+            intent.putExtra(StringSet.KEY_THEME_RES_ID, themeResId);
             return intent;
         }
     }
