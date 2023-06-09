@@ -17,7 +17,9 @@ import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewSearchResultPreviewBinding;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,8 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
     private final List<BaseMessage> items = new ArrayList<>();
     @Nullable
     private OnItemClickListener<BaseMessage> listener;
+    @Nullable
+    private MessageDisplayDataProvider messageDisplayDataProvider;
 
     /**
      * Called when RecyclerView needs a new {@code BaseViewHolder<BaseMessage>} of the given type to represent
@@ -120,6 +124,19 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      * since 2.1.0
      */
     public void setItems(@NonNull List<BaseMessage> items) {
+        if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
+            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayData(items, messageDisplayDataProvider);
+            notifyMessageListChanged(items);
+            return;
+        }
+
+        messageDisplayDataProvider.threadPool().submit(() -> {
+            MessageDisplayDataManager.checkAndGenerateDisplayData(items, messageDisplayDataProvider);
+            notifyMessageListChanged(items);
+        });
+    }
+
+    private void notifyMessageListChanged(@NonNull List<BaseMessage> items) {
         final MessageSearchDiffCallback diffCallback = new MessageSearchDiffCallback(this.items, items);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
@@ -147,6 +164,15 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
     @Nullable
     public OnItemClickListener<BaseMessage> getOnItemClickListener() {
         return listener;
+    }
+
+    /**
+     * Sets {@link MessageDisplayDataProvider}, which is used to generate data before they are sent or rendered.
+     * The generated value is primarily used when the view is rendered.
+     * since 3.5.7
+     */
+    public void setMessageDisplayDataProvider(@Nullable MessageDisplayDataProvider messageDisplayDataProvider) {
+        this.messageDisplayDataProvider = messageDisplayDataProvider;
     }
 
     private class SearchResultViewHolder extends BaseViewHolder<BaseMessage> {

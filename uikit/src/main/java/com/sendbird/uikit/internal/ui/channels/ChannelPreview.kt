@@ -15,6 +15,7 @@ import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.UserMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.ChannelUtils
 import com.sendbird.uikit.utils.DateUtils
@@ -182,7 +183,7 @@ internal class ChannelPreview @JvmOverloads constructor(
 
     companion object {
         private fun setLastMessage(textView: TextView, channel: GroupChannel, useTypingIndicator: Boolean) {
-            var message = ""
+            var message: CharSequence = ""
             if (useTypingIndicator) {
                 val typingUsers = channel.typingUsers
                 if (typingUsers.isNotEmpty()) {
@@ -198,8 +199,9 @@ internal class ChannelPreview @JvmOverloads constructor(
                     is UserMessage -> {
                         textView.maxLines = 2
                         textView.ellipsize = TextUtils.TruncateAt.END
-                        message = it.message
+                        message = it.getDisplayMessage()
                     }
+
                     is FileMessage -> {
                         textView.maxLines = 1
                         textView.ellipsize = TextUtils.TruncateAt.MIDDLE

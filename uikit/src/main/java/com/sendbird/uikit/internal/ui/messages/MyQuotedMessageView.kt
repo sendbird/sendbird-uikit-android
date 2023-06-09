@@ -18,6 +18,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewMyQuotedMessageBinding
+import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.TextUIConfig
@@ -94,8 +95,8 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
         when (parentMessage) {
             is UserMessage -> {
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
-                binding.tvQuoteReplyMessage.text =
-                    textUIConfig?.apply(context, parentMessage.message) ?: parentMessage.message
+                val text = parentMessage.getDisplayMessage()
+                binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, text) ?: text
                 binding.tvQuoteReplyMessage.isSingleLine = false
                 binding.tvQuoteReplyMessage.maxLines = 2
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END

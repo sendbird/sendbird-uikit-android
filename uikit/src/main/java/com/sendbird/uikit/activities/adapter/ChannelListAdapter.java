@@ -22,11 +22,11 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewChannelPreviewBinding;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.utils.ChannelUtils;
-
-import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +45,8 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     private OnItemClickListener<GroupChannel> listener;
     @Nullable
     private OnItemLongClickListener<GroupChannel> longClickListener;
+    @Nullable
+    private MessageDisplayDataProvider messageDisplayDataProvider;
 
     /**
      * Constructor
@@ -155,6 +157,16 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     }
 
     /**
+     * Sets {@link MessageDisplayDataProvider}, which is used to generate data before they are sent or rendered.
+     * The generated value is primarily used when the view is rendered.
+     * The generated data will be applied to the last message of a channel in this adapter.
+     * since 3.5.7
+     */
+    public void setMessageDisplayDataProvider(@Nullable MessageDisplayDataProvider messageDisplayDataProvider) {
+        this.messageDisplayDataProvider = messageDisplayDataProvider;
+    }
+
+    /**
      * Returns the {@link List<GroupChannel>} in the data set held by the adapter.
      *
      * @return The {@link List<GroupChannel>} in this adapter.
@@ -204,6 +216,19 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      * @param channelList list to be displayed
      */
     public void setItems(@NonNull List<GroupChannel> channelList) {
+        if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
+            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayDataFromChannelList(channelList, messageDisplayDataProvider);
+            notifyChannelListChanged(channelList);
+            return;
+        }
+
+        messageDisplayDataProvider.threadPool().submit(() -> {
+            MessageDisplayDataManager.checkAndGenerateDisplayDataFromChannelList(channelList, messageDisplayDataProvider);
+            notifyChannelListChanged(channelList);
+        });
+    }
+
+    private void notifyChannelListChanged(@NonNull List<GroupChannel> channelList) {
         final List<ChannelInfo> newChannelInfo = ChannelInfo.toChannelInfoList(channelList);
         final ChannelDiffCallback diffCallback = new ChannelDiffCallback(this.cachedChannelList, newChannelInfo);
         final DiffUtil.DiffResult diffResult = calculateDiff(diffCallback);

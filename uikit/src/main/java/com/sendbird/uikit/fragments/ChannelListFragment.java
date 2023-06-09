@@ -23,6 +23,7 @@ import com.sendbird.uikit.activities.CreateChannelActivity;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
 import com.sendbird.uikit.consts.CreatableChannelType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.internal.ui.widgets.SelectChannelTypeView;
@@ -468,6 +469,22 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         @NonNull
         public Builder setChannelListAdapter(@NonNull ChannelListAdapter adapter) {
             this.adapter = adapter;
+            return this;
+        }
+
+        /**
+         * Sets the channel list adapter and the message display data provider.
+         * The message display data provider is used to generate the data to display the last message in the channel.
+         *
+         * @param adapter the adapter for the channel list.
+         * @param provider the provider for the message display data.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.5.7
+         */
+        @NonNull
+        public Builder setChannelListAdapter(@Nullable ChannelListAdapter adapter, @Nullable MessageDisplayDataProvider provider) {
+            this.adapter = adapter;
+            if (this.adapter != null) this.adapter.setMessageDisplayDataProvider(provider);
             return this;
         }
 

@@ -1,4 +1,12 @@
 # Changelog
+### v3.5.7 (Jun 9, 2023) with Chat SDK `v4.9.0`
+* An interface has been added to modify the data used for the Views displayed in the RecyclerView. Through each Provider, it is possible to change the data of the Views displayed in the RecyclerView.
+  * Added `setMessageListAdapter(MessageListAdapter, MessageDisplayDataProvider)` in `ChannelFragment.Builder`
+  * Added `setThreadListAdapter(ThreadListAdapter, MessageDisplayDataProvider)` in `MessageThreadFragment.Builder`
+  * Added `setMessageSearchAdapter(MessageSearchAdapter, MessageDisplayDataProvider)` in `MessageSearchFragment.Builder`
+  * Added `setChannelListAdapter(ChannelListAdapter, MessageDisplayDataProvider)` in `ChannelListFragment.Builder`
+  * Added `setMessageDisplayDataProvider(MessageDisplayDataProvider)` in `MessageListAdapter`, `ThreadListAdapter`, `MessageSearchAdapter` and `ChannelListAdapter`
+
 ### v3.5.6 (May 26, 2023) with Chat SDK `v4.8.3`
 * UIKit common
   * Improved voice recognition

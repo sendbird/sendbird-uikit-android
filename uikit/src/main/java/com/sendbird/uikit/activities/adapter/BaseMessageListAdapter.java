@@ -24,16 +24,18 @@ import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
@@ -72,13 +74,15 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     private final MessageListUIParams messageListUIParams;
     @Nullable
     private MessageUIConfig messageUIConfig;
+    @Nullable
+    private MessageDisplayDataProvider messageDisplayDataProvider;
 
     // the worker must be a single thread.
     @NonNull
     private final ExecutorService differWorker = Executors.newSingleThreadExecutor();
 
     @NonNull
-    private final SendbirdUIKitWrapper sendbirdUIKit;
+    protected final SendbirdUIKitWrapper sendbirdUIKit;
 
     /**
      * Constructor
@@ -366,6 +370,19 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      * since 2.2.0
      */
     public void setItems(@NonNull final GroupChannel channel, @NonNull final List<BaseMessage> messageList, @Nullable OnMessageListUpdateHandler callback) {
+        if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
+            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
+            notifyMessageListChanged(channel, messageList, callback);
+            return;
+        }
+
+        messageDisplayDataProvider.threadPool().submit(() -> {
+            MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
+            notifyMessageListChanged(channel, messageList, callback);
+        });
+    }
+
+    private void notifyMessageListChanged(@NonNull GroupChannel channel, @NonNull List<BaseMessage> messageList, @Nullable OnMessageListUpdateHandler callback) {
         final GroupChannel copiedChannel = GroupChannel.clone(channel);
         final List<BaseMessage> copiedMessage = Collections.unmodifiableList(messageList);
         differWorker.submit(() -> {
@@ -559,6 +576,15 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @Nullable
     public OnItemClickListener<User> getMentionClickListener() {
         return mentionClickListener;
+    }
+
+    /**
+     * Sets {@link MessageDisplayDataProvider}, which is used to generate data before they are sent or rendered.
+     * The generated value is primarily used when the view is rendered.
+     * since 3.5.7
+     */
+    public void setMessageDisplayDataProvider(@Nullable MessageDisplayDataProvider messageDisplayDataProvider) {
+        this.messageDisplayDataProvider = messageDisplayDataProvider;
     }
 
     /**

@@ -44,6 +44,7 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
+import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
 import com.sendbird.uikit.internal.ui.messages.OgtagView;
 import com.sendbird.uikit.internal.ui.messages.ThreadInfoView;
@@ -54,8 +55,10 @@ import com.sendbird.uikit.internal.ui.widgets.VoiceProgressView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MentionSpan;
+import com.sendbird.uikit.model.MessageDisplayData;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.UserMessageDisplayData;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 
 import java.util.ArrayList;
@@ -122,7 +125,6 @@ public class ViewUtils {
             }
             builder.append(editedString);
         }
-
         textView.setText(builder);
     }
 
@@ -136,7 +138,12 @@ public class ViewUtils {
             @Nullable OnItemClickListener<User> mentionClickListener
     ) {
         final String mentionedText = message.getMentionedMessageTemplate();
-        final SpannableString text = new SpannableString(message.getMessage());
+        String displayedMessage = message.getMessage();
+        final MessageDisplayData viewData = MessageDisplayDataManager.getOrNull(message);
+        if (viewData instanceof UserMessageDisplayData) {
+            displayedMessage = ((UserMessageDisplayData) viewData).getMessage();
+        }
+        final SpannableString text = new SpannableString(displayedMessage);
         if (uiConfig != null) {
             final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
             messageTextUIConfig.bind(context, text, 0, text.length());

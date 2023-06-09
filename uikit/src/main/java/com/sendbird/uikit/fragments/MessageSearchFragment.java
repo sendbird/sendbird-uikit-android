@@ -20,6 +20,7 @@ import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.activities.adapter.MessageSearchAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnSearchEventListener;
@@ -425,6 +426,22 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
         @NonNull
         public <T extends MessageSearchAdapter> Builder setMessageSearchAdapter(T adapter) {
             this.adapter = adapter;
+            return this;
+        }
+
+        /**
+         * Sets the message search adapter and the message display data provider.
+         * The message display data provider is used to generate the data to display the message.
+         *
+         * @param adapter he adapter for displaying the searched message list.
+         * @param provider the provider for the message display data.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.5.7
+         */
+        @NonNull
+        public <T extends MessageSearchAdapter> Builder setMessageSearchAdapter(T adapter, @Nullable MessageDisplayDataProvider provider) {
+            this.adapter = adapter;
+            if (this.adapter != null) this.adapter.setMessageDisplayDataProvider(provider);
             return this;
         }
 

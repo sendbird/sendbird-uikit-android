@@ -42,6 +42,7 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnConsumableClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
@@ -1128,6 +1129,22 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         @NonNull
         public Builder setMessageListAdapter(@Nullable MessageListAdapter adapter) {
             this.adapter = adapter;
+            return this;
+        }
+
+        /**
+         * Sets the message list adapter and the message display data provider.
+         * The message display data provider is used to generate the data to display the message.
+         *
+         * @param adapter the adapter for the message list.
+         * @param provider the provider for the message display data.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.5.7
+         */
+        @NonNull
+        public Builder setMessageListAdapter(@Nullable MessageListAdapter adapter, @Nullable MessageDisplayDataProvider provider) {
+            this.adapter = adapter;
+            if (this.adapter != null) this.adapter.setMessageDisplayDataProvider(provider);
             return this;
         }
 

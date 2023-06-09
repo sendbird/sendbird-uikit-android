@@ -36,6 +36,7 @@ import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
+import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
@@ -929,6 +930,22 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         @NonNull
         public Builder setThreadListAdapter(@Nullable ThreadListAdapter adapter) {
             this.adapter = adapter;
+            return this;
+        }
+
+        /**
+         * Sets the thread list adapter and the message display data provider.
+         * The message display data provider is used to generate the data to display the message.
+         *
+         * @param adapter the adapter for the thread list.
+         * @param provider the provider for the message display data.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.5.7
+         */
+        @NonNull
+        public Builder setThreadListAdapter(@Nullable ThreadListAdapter adapter, @Nullable MessageDisplayDataProvider provider) {
+            this.adapter = adapter;
+            if (this.adapter != null) this.adapter.setMessageDisplayDataProvider(provider);
             return this;
         }
 

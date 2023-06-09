@@ -10,8 +10,6 @@ import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.model.MessageListUIParams;
 
-import org.jetbrains.annotations.TestOnly;
-
 /**
  * MessageListAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
  */

@@ -34,6 +34,7 @@ import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
@@ -226,6 +227,7 @@ public class SendbirdUIKit {
         defaultThemeMode = ThemeMode.Light;
         UIKitPrefs.clearAll();
         NotificationChannelManager.clearAll();
+        MessageDisplayDataManager.clearAll();
     }
 
     /**

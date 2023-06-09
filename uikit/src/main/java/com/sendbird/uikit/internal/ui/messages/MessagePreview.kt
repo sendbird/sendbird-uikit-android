@@ -14,6 +14,7 @@ import com.sendbird.android.message.FileMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewMessagePreviewBinding
+import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
@@ -117,7 +118,7 @@ internal class MessagePreview @JvmOverloads constructor(
                 maxLines = 2
                 ellipsize = TextUtils.TruncateAt.END
                 setAppearance(context, messageTextAppearance)
-                text = message.message
+                text = message.getDisplayMessage()
             }
             binding.ivIcon.visibility = GONE
         }

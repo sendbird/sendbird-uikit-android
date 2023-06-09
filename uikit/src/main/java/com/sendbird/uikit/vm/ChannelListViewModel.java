@@ -16,12 +16,12 @@ import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.tasks.JobTask;
-import com.sendbird.uikit.internal.wrappers.TaskQueueImpl;
-import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
 import com.sendbird.uikit.internal.wrappers.GroupChannelCollectionImpl;
 import com.sendbird.uikit.internal.wrappers.GroupChannelCollectionWrapper;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.wrappers.TaskQueueImpl;
+import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.Available;
 

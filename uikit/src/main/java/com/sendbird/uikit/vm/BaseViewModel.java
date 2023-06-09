@@ -17,7 +17,7 @@ import com.sendbird.uikit.log.Logger;
  */
 public abstract class BaseViewModel extends ViewModel {
     @NonNull
-    private final SendbirdUIKitWrapper sendbirdUIKit;
+    protected final SendbirdUIKitWrapper sendbirdUIKit;
 
     protected BaseViewModel() {
         this(new SendbirdUIKitImpl());

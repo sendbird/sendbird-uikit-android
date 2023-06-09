@@ -473,7 +473,6 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         channelUpdated.setValue(getChannel());
     }
 
-    @UiThread
     @Override
     synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> ChannelViewModel::notifyDataSetChanged(), size = %s, action=%s, hasNext=%s", cachedMessages.size(), traceName, hasNext());
@@ -516,6 +515,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
         }
+
         messageList.setValue(new ChannelMessageData(traceName, copiedList));
     }
 

@@ -163,6 +163,7 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
             }
         }
         Logger.d("____________ onResult newDataList=%s", newDataList.size());
+
         searchResultList.postValue(newDataList);
     }
 
