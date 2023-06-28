@@ -1,6 +1,8 @@
 package com.sendbird.uikit.internal.model.serializer
 
 import android.graphics.Color
+import com.sendbird.uikit.consts.ReplyType
+import com.sendbird.uikit.consts.ThreadReplySelectType
 import com.sendbird.uikit.internal.model.notifications.CSVColor
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -51,5 +53,31 @@ internal object JsonElementToStringSerializer : KSerializer<String> {
 
     override fun deserialize(decoder: Decoder): String {
         return decoder.decodeSerializableValue(JsonElement.serializer()).toString()
+    }
+}
+
+internal object ReplyTypeAsStringSerializer : KSerializer<ReplyType> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ReplyType enum class", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): ReplyType {
+        val decoded = decoder.decodeString()
+        return ReplyType.from(decoded)
+    }
+
+    override fun serialize(encoder: Encoder, value: ReplyType) {
+        encoder.encodeString(value.value)
+    }
+}
+
+internal object ThreadReplySelectTypeAsStringSerializer : KSerializer<ThreadReplySelectType> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Thread reply select type enum class", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): ThreadReplySelectType {
+        val decoded = decoder.decodeString()
+        return ThreadReplySelectType.from(decoded)
+    }
+
+    override fun serialize(encoder: Encoder, value: ThreadReplySelectType) {
+        encoder.encodeString(value.value)
     }
 }

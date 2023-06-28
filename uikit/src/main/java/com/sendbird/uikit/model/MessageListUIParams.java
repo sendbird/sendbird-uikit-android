@@ -3,10 +3,12 @@ package com.sendbird.uikit.model;
 import androidx.annotation.NonNull;
 
 import com.sendbird.uikit.consts.MessageGroupType;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.OpenChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 /**
  * Describes a configuration of a message item view
- *
  * since 3.3.0
  */
 final public class MessageListUIParams {
@@ -16,13 +18,25 @@ final public class MessageListUIParams {
     private final boolean useReverseLayout;
     private final boolean useQuotedView;
     private final boolean useMessageReceipt;
+    @NonNull
+    private final ChannelConfig channelConfig;
+    @NonNull
+    private final OpenChannelConfig openChannelConfig;
 
-    private MessageListUIParams(@NonNull MessageGroupType messageGroupType, boolean useMessageGroupUI, boolean useReverseLayout, boolean useQuotedView, boolean useMessageReceipt) {
+    private MessageListUIParams(@NonNull MessageGroupType messageGroupType,
+                                boolean useMessageGroupUI,
+                                boolean useReverseLayout,
+                                boolean useQuotedView,
+                                boolean useMessageReceipt,
+                                @NonNull ChannelConfig channelConfig,
+                                @NonNull OpenChannelConfig openChannelConfig) {
         this.messageGroupType = messageGroupType;
         this.useMessageGroupUI = useMessageGroupUI;
         this.useReverseLayout = useReverseLayout;
         this.useQuotedView = useQuotedView;
         this.useMessageReceipt = useMessageReceipt;
+        this.channelConfig = channelConfig;
+        this.openChannelConfig = openChannelConfig;
     }
 
     /**
@@ -76,6 +90,30 @@ final public class MessageListUIParams {
         return useMessageReceipt;
     }
 
+    /**
+     * Returns [ChannelConfig] that contains the configuration of the channel.
+     *
+     * @return The value of [ChannelConfig]
+     * since 3.6.0
+     * @see ChannelConfig
+     */
+    @NonNull
+    public ChannelConfig getChannelConfig() {
+        return channelConfig;
+    }
+
+    /**
+     * Returns [OpenChannelConfig] that contains the configuration of the open channel.
+     *
+     * @return The value of [OpenChannelConfig]
+     * since 3.6.0
+     * @see OpenChannelConfig
+     */
+    @NonNull
+    public OpenChannelConfig getOpenChannelConfig() {
+        return openChannelConfig;
+    }
+
     public static class Builder {
         @NonNull
         private MessageGroupType messageGroupType = MessageGroupType.GROUPING_TYPE_SINGLE;
@@ -83,10 +121,13 @@ final public class MessageListUIParams {
         private boolean useReverseLayout = true;
         private boolean useQuotedView = false;
         private boolean useMessageReceipt = true;
+        @NonNull
+        private ChannelConfig channelConfig = UIKitConfig.getGroupChannelConfig();
+        @NonNull
+        private OpenChannelConfig openChannelConfig = UIKitConfig.getOpenChannelConfig();
 
         /**
          * Constructor
-         *
          * since 3.3.0
          */
         public Builder() {}
@@ -103,6 +144,8 @@ final public class MessageListUIParams {
             this.useReverseLayout = params.useReverseLayout;
             this.useQuotedView = params.useQuotedView;
             this.useMessageReceipt = params.useMessageReceipt;
+            this.channelConfig = params.channelConfig;
+            this.openChannelConfig = params.openChannelConfig;
         }
 
         /**
@@ -171,6 +214,34 @@ final public class MessageListUIParams {
         }
 
         /**
+         * Sets [ChannelConfig] that contains the configuration of the channel.
+         *
+         * @param channelConfig The value of [ChannelConfig]
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         * @see ChannelConfig
+         */
+        @NonNull
+        public Builder setChannelConfig(@NonNull ChannelConfig channelConfig) {
+            this.channelConfig = channelConfig;
+            return this;
+        }
+
+        /**
+         * Sets [OpenChannelConfig] that contains the configuration of the open channel.
+         *
+         * @param openChannelConfig The value of [OpenChannelConfig]
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         * @see OpenChannelConfig
+         */
+        @NonNull
+        public Builder setOpenChannelConfig(@NonNull OpenChannelConfig openChannelConfig) {
+            this.openChannelConfig = openChannelConfig;
+            return this;
+        }
+
+        /**
          * Builds an {@link MessageListUIParams} with the properties supplied to this builder.
          *
          * @return The {@link MessageListUIParams} from this builder instance.
@@ -178,14 +249,22 @@ final public class MessageListUIParams {
          */
         @NonNull
         public MessageListUIParams build() {
-            return new MessageListUIParams(this.messageGroupType, this.useMessageGroupUI, this.useReverseLayout, this.useQuotedView, this.useMessageReceipt);
+            return new MessageListUIParams(
+                    this.messageGroupType,
+                    this.useMessageGroupUI,
+                    this.useReverseLayout,
+                    this.useQuotedView,
+                    this.useMessageReceipt,
+                    this.channelConfig,
+                    this.openChannelConfig
+            );
         }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof MessageListUIParams)) return false;
 
         MessageListUIParams that = (MessageListUIParams) o;
 
@@ -193,7 +272,9 @@ final public class MessageListUIParams {
         if (useReverseLayout != that.useReverseLayout) return false;
         if (useQuotedView != that.useQuotedView) return false;
         if (useMessageReceipt != that.useMessageReceipt) return false;
-        return messageGroupType == that.messageGroupType;
+        if (messageGroupType != that.messageGroupType) return false;
+        if (!channelConfig.equals(that.channelConfig)) return false;
+        return openChannelConfig.equals(that.openChannelConfig);
     }
 
     @Override
@@ -203,17 +284,21 @@ final public class MessageListUIParams {
         result = 31 * result + (useReverseLayout ? 1 : 0);
         result = 31 * result + (useQuotedView ? 1 : 0);
         result = 31 * result + (useMessageReceipt ? 1 : 0);
+        result = 31 * result + channelConfig.hashCode();
+        result = 31 * result + openChannelConfig.hashCode();
         return result;
     }
 
     @Override
-    @NonNull
     public String toString() {
-        return "MessageDrawParams{" +
+        return "MessageListUIParams{" +
                 "messageGroupType=" + messageGroupType +
                 ", useMessageGroupUI=" + useMessageGroupUI +
                 ", useReverseLayout=" + useReverseLayout +
                 ", useQuotedView=" + useQuotedView +
+                ", useMessageReceipt=" + useMessageReceipt +
+                ", channelConfig=" + channelConfig +
+                ", openChannelConfig=" + openChannelConfig +
                 '}';
     }
 }

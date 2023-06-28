@@ -44,6 +44,7 @@ internal class BaseSharedPreference(
         preferences.edit().putLong(key, value).apply()
     }
 
-    fun getLong(key: String): Long =
-        preferences.getLong(key, 0L)
+    fun getLong(key: String): Long = preferences.getLong(key, 0L)
+
+    fun contains(key: String): Boolean = preferences.contains(key)
 }

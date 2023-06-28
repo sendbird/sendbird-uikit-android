@@ -40,6 +40,13 @@ internal object NotificationChannelManager {
         callback: GetTemplateResultHandler
     ) {
         Logger.d(">> NotificationChannelManager::makeTemplate(), key=$key, handler=$callback")
+
+        templateRepository.getTemplate(key)?.getTemplateSyntax(variables, themeMode)?.let {
+            Logger.d("++ template[$key]=$it")
+            callback.onResult(key, it, null)
+            return
+        }
+
         synchronized(templateRequestHandlers) {
             templateRequestHandlers[key]?.let {
                 it.add(callback)
@@ -54,26 +61,13 @@ internal object NotificationChannelManager {
         Logger.d("++ templateRequestHandlers size=${templateRequestHandlers.size}, templateRequestHandlers[key].size=${templateRequestHandlers[key]?.size}")
         worker.submit {
             try {
-                val template = getTemplate(key, themeMode, variables)
+                val template = templateRepository.requestTemplateBlocking(key).getTemplateSyntax(variables, themeMode)
                 Logger.d("++ template[$key]=$template")
                 notifyTemplateFetched(key, template)
             } catch (e: Throwable) {
                 notifyTemplateFetched(key, null, SendbirdException(e))
             }
         }
-    }
-
-    @WorkerThread
-    @Throws(Throwable::class)
-    private fun getTemplate(
-        key: String,
-        themeMode: NotificationThemeMode,
-        variables: Map<String, String>
-    ): String {
-        val template = templateRepository.getTemplate(key) ?: run {
-            templateRepository.requestTemplate(key)
-        }
-        return template.getTemplateSyntax(variables, themeMode)
     }
 
     @JvmStatic
@@ -93,7 +87,7 @@ internal object NotificationChannelManager {
         }
 
         // 2. call api
-        templateRepository.requestTemplateList()
+        templateRepository.requestTemplateListBlocking()
     }
 
     @WorkerThread

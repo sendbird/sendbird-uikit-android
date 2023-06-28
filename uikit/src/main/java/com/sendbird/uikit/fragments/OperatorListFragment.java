@@ -25,6 +25,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.OperatorListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OperatorListComponent;
@@ -210,7 +211,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
         final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
         if (getContext() == null || SendbirdUIKit.getAdapter() == null || !useUserProfile) return;
         boolean useChannelCreateButton = !user.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), user, useChannelCreateButton, null, getModule().getLoadingDialogHandler());

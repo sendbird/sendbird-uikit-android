@@ -15,12 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.activities.adapter.ChannelListAdapter;
+import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.ChannelListUIParams;
+import com.sendbird.uikit.model.configurations.ChannelListConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 import java.util.List;
 
@@ -30,8 +34,8 @@ import java.util.List;
  * since 3.0.0
  */
 public class ChannelListComponent {
-    @NonNull
-    private ChannelListAdapter adapter = new ChannelListAdapter();
+    @Nullable
+    private ChannelListAdapter adapter;
 
     @NonNull
     private final Params params;
@@ -78,6 +82,7 @@ public class ChannelListComponent {
      * Sets the channel list  adapter to provide child views on demand. The default is {@code new ChannelListAdapter()}.
      * <p>When adapter is changed, all existing views are recycled back to the pool. If the pool has only one adapter, it will be cleared.</p>
      *
+     *
      * @param adapter The adapter to be applied to this list component
      * since 3.0.0
      */
@@ -121,7 +126,7 @@ public class ChannelListComponent {
      * @return The adapter applied to this list component
      * since 3.0.0
      */
-    @NonNull
+    @Nullable
     public ChannelListAdapter getAdapter() {
         return adapter;
     }
@@ -145,6 +150,13 @@ public class ChannelListComponent {
         this.pagerRecyclerView.setHasFixedSize(true);
         this.pagerRecyclerView.setItemAnimator(new ItemAnimator());
         this.pagerRecyclerView.setThreshold(5);
+        adapter = new ChannelListAdapter(
+                null,
+                new ChannelListUIParams(
+                        params.channelListConfig.getEnableTypingIndicator(),
+                        params.channelListConfig.getEnableMessageReceiptStatus()
+                )
+        );
         setAdapter(adapter);
         return pagerRecyclerView;
     }
@@ -224,11 +236,35 @@ public class ChannelListComponent {
      * since 3.0.0
      */
     public static class Params {
+        @NonNull
+        private ChannelListConfig channelListConfig = UIKitConfig.getGroupChannelListConfig();
+
         protected Params() {
         }
 
         /**
+         * Returns the channel list config.
+         * @param channelListConfig The channel list config to be applied to this list component
+         * since 3.6.0
+         */
+        public void setChannelListConfig(@NonNull ChannelListConfig channelListConfig) {
+            this.channelListConfig = channelListConfig;
+        }
+
+        /**
+         * Returns the channel list config.
+         *
+         * @return The channel list config applied to this list component
+         * since 3.6.0
+         */
+        @NonNull
+        public ChannelListConfig getChannelListConfig() {
+            return channelListConfig;
+        }
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
+         * {@code KEY_CHANNEL_LIST_CONFIG} is mapped to {@link #setChannelListConfig(ChannelListConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -237,6 +273,9 @@ public class ChannelListComponent {
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
+            if (args.containsKey(StringSet.KEY_CHANNEL_LIST_CONFIG)) {
+                setChannelListConfig(args.getParcelable(StringSet.KEY_CHANNEL_LIST_CONFIG));
+            }
             return this;
         }
     }

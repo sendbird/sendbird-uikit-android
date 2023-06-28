@@ -19,13 +19,14 @@ import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewChannelPreviewBinding;
 import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
+import com.sendbird.uikit.model.ChannelListUIParams;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.ChannelUtils;
 
 import java.util.ArrayList;
@@ -47,12 +48,14 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     private OnItemLongClickListener<GroupChannel> longClickListener;
     @Nullable
     private MessageDisplayDataProvider messageDisplayDataProvider;
+    @NonNull
+    private final ChannelListUIParams params;
 
     /**
      * Constructor
      */
     public ChannelListAdapter() {
-        setHasStableIds(true);
+        this(null);
     }
 
     /**
@@ -61,8 +64,14 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      * @param listener The listener performing when the {@link ChannelPreviewHolder} is clicked.
      */
     public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener) {
+         this(listener, new ChannelListUIParams());
+    }
+
+    public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener, @NonNull ChannelListUIParams params) {
         setHasStableIds(true);
         setOnItemClickListener(listener);
+        setOnItemLongClickListener(longClickListener);
+        this.params = params;
     }
 
     /**
@@ -83,7 +92,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         final TypedValue values = new TypedValue();
         parent.getContext().getTheme().resolveAttribute(R.attr.sb_component_list, values, true);
         final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
-        return new ChannelPreviewHolder(SbViewChannelPreviewBinding.inflate(LayoutInflater.from(contextWrapper), parent, false));
+        return new ChannelPreviewHolder(SbViewChannelPreviewBinding.inflate(LayoutInflater.from(contextWrapper), parent, false), params);
     }
 
     /**
@@ -229,7 +238,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     }
 
     private void notifyChannelListChanged(@NonNull List<GroupChannel> channelList) {
-        final List<ChannelInfo> newChannelInfo = ChannelInfo.toChannelInfoList(channelList);
+        final List<ChannelInfo> newChannelInfo = ChannelInfo.toChannelInfoList(channelList, new ChannelListUIParams());
         final ChannelDiffCallback diffCallback = new ChannelDiffCallback(this.cachedChannelList, newChannelInfo);
         final DiffUtil.DiffResult diffResult = calculateDiff(diffCallback);
 
@@ -249,12 +258,12 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         @NonNull
         private final SbViewChannelPreviewBinding binding;
 
-        ChannelPreviewHolder(@NonNull SbViewChannelPreviewBinding binding) {
+        ChannelPreviewHolder(@NonNull SbViewChannelPreviewBinding binding, @NonNull ChannelListUIParams params) {
             super(binding.getRoot());
             this.binding = binding;
-            this.binding.channelPreview.setUseTypingIndicator(SendbirdUIKit.isUsingChannelListTypingIndicators());
-            this.binding.channelPreview.setUseMessageReceiptStatus(SendbirdUIKit.isUsingChannelListMessageReceiptStatus());
-            this.binding.channelPreview.setUseUnreadMentionCount(SendbirdUIKit.isUsingUserMention());
+            this.binding.channelPreview.setUseTypingIndicator(params.getEnableTypingIndicator());
+            this.binding.channelPreview.setUseMessageReceiptStatus(params.getEnableMessageReceiptStatus());
+            this.binding.channelPreview.setUseUnreadMentionCount(UIKitConfig.getGroupChannelConfig().getEnableMention());
         }
 
         @Override
@@ -284,8 +293,10 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         private List<User> typingMembers = new ArrayList<>();
         private int unReadMemberCount;
         private int unDeliveredMemberCount;
+        @NonNull
+        private final ChannelListUIParams params;
 
-        ChannelInfo(@NonNull GroupChannel channel) {
+        ChannelInfo(@NonNull GroupChannel channel, @NonNull ChannelListUIParams params) {
             this.channelUrl = channel.getUrl();
             this.createdAt = channel.getCreatedAt();
             this.memberCount = channel.getMemberCount();
@@ -297,10 +308,11 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             this.unreadMentionCount = channel.getUnreadMentionCount();
             this.coverImageHash = toUrlsHash(channel);
             this.isFrozen = channel.isFrozen();
-            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+            this.params = params;
+            if (params.getEnableTypingIndicator()) {
                 this.typingMembers = channel.getTypingUsers();
             }
-            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+            if (params.getEnableMessageReceiptStatus()) {
                 if (channel.getLastMessage() != null) {
                     this.unReadMemberCount = channel.getUnreadMemberCount(channel.getLastMessage());
                     this.unDeliveredMemberCount = channel.getUndeliveredMemberCount(channel.getLastMessage());
@@ -379,7 +391,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             if (unreadMentionCount != that.unreadMentionCount) return false;
             if (isFrozen != that.isFrozen) return false;
 
-            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+            if (params.getEnableMessageReceiptStatus()) {
                 if (unReadMemberCount != that.unReadMemberCount) return false;
                 if (unDeliveredMemberCount != that.unDeliveredMemberCount) return false;
             }
@@ -402,7 +414,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
                     }
                 }
             }
-            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+            if (params.getEnableTypingIndicator()) {
                 return typingMembers.equals(that.typingMembers);
             }
             return true;
@@ -422,11 +434,11 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
             result = 31 * result + unreadMentionCount;
             result = 31 * result + (isFrozen ? 1 : 0);
 
-            if (SendbirdUIKit.isUsingChannelListTypingIndicators()) {
+            if (params.getEnableTypingIndicator()) {
                 result = 31 * result + typingMembers.hashCode();
             }
 
-            if (SendbirdUIKit.isUsingChannelListMessageReceiptStatus()) {
+            if (params.getEnableMessageReceiptStatus()) {
                 result = 31 * result + unReadMemberCount;
                 result = 31 * result + unDeliveredMemberCount;
             }
@@ -455,10 +467,10 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         }
 
         @NonNull
-        static List<ChannelInfo> toChannelInfoList(@NonNull List<GroupChannel> channelList) {
+        static List<ChannelInfo> toChannelInfoList(@NonNull List<GroupChannel> channelList, @NonNull ChannelListUIParams params) {
             List<ChannelInfo> results = new ArrayList<>();
             for (GroupChannel channel : channelList) {
-                results.add(new ChannelInfo(channel));
+                results.add(new ChannelInfo(channel, params));
             }
             return results;
         }

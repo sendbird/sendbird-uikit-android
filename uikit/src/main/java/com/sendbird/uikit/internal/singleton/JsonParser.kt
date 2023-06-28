@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 
-internal object NotificationParser {
+internal object JsonParser {
     private val json by lazy {
         Json {
             ignoreUnknownKeys = true

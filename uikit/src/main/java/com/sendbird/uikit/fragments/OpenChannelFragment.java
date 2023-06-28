@@ -65,6 +65,8 @@ import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.configurations.OpenChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.OpenChannelModule;
 import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMessageInputComponent;
@@ -173,6 +175,18 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             sendFileMessage(mediaUri);
         }
     });
+
+    @NonNull
+    private OpenChannelConfig openChannelConfig = UIKitConfig.getOpenChannelConfig();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args != null && args.containsKey(StringSet.KEY_OPEN_CHANNEL_CONFIG)) {
+            openChannelConfig = args.getParcelable(StringSet.KEY_OPEN_CHANNEL_CONFIG);
+        }
+    }
 
     @NonNull
     @Override
@@ -415,7 +429,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
 
     private void showUserProfile(@NonNull Sender sender) {
         final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
         if (getContext() == null || !useUserProfile) return;
         hideKeyboard();
         DialogUtils.showUserProfileDialog(getContext(), sender, false, null, null, getModule().getParams().shouldUseOverlayMode());
@@ -550,14 +564,22 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      */
     protected void showMediaSelectDialog() {
         if (getContext() == null) return;
-        DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
-                new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
-        };
+        final List<DialogListItem> items = new ArrayList<>();
+        if (openChannelConfig.getInput().getCamera().getEnablePhoto()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera));
+        }
+        if (openChannelConfig.getInput().getCamera().getEnableVideo()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera));
+        }
+        if (openChannelConfig.getInput().getGallery().getEnablePhoto() || openChannelConfig.getInput().getGallery().getEnableVideo()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo));
+        }
+        if (openChannelConfig.getInput().getEnableDocument()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document));
+        }
+        if (items.isEmpty()) return;
         hideKeyboard();
-        DialogUtils.showListBottomDialog(requireContext(), items, (view, position, item) -> {
+        DialogUtils.showListBottomDialog(requireContext(), items.toArray(new DialogListItem[0]), (view, position, item) -> {
             final int key = item.getKey();
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
@@ -633,11 +655,11 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
         if (permissions.length > 0) {
             requestPermission(permissions, () -> {
-                Intent intent = IntentUtils.getGalleryIntent();
+                Intent intent = openChannelConfig.getInput().getGallery().getGalleryIntent();
                 getContentLauncher.launch(intent);
             });
         } else {
-            Intent intent = IntentUtils.getGalleryIntent();
+            Intent intent = openChannelConfig.getInput().getGallery().getGalleryIntent();
             getContentLauncher.launch(intent);
         }
     }
@@ -1802,6 +1824,19 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
         @NonNull
         public Builder setLinkedTextColor(@ColorRes int colorRes) {
             bundle.putInt(StringSet.KEY_LINKED_TEXT_COLOR, colorRes);
+            return this;
+        }
+
+        /**
+         * Sets open channel configuration for this fragment.
+         *
+         * @param openChannelConfig The open channel config.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         */
+        @NonNull
+        public Builder setOpenChannelConfig(@NonNull OpenChannelConfig openChannelConfig) {
+            this.bundle.putParcelable(StringSet.KEY_OPEN_CHANNEL_CONFIG, openChannelConfig);
             return this;
         }
 

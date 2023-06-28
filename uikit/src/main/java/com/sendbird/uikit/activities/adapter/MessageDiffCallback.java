@@ -12,7 +12,6 @@ import com.sendbird.android.message.CustomizableMessage;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.android.message.ThreadInfo;
 import com.sendbird.android.user.User;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.model.MessageListUIParams;
@@ -129,7 +128,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
             }
         }
 
-        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD) {
+        if (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD) {
             if (!(oldMessage instanceof CustomizableMessage) && !(newMessage instanceof CustomizableMessage)) {
                 final ThreadInfo oldThreadInfo = oldMessage.getThreadInfo();
                 final ThreadInfo newThreadInfo = newMessage.getThreadInfo();

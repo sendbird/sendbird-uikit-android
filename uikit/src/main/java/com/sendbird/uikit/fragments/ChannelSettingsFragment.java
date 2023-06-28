@@ -37,6 +37,7 @@ import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.configurations.ChannelSettingConfig;
 import com.sendbird.uikit.modules.ChannelSettingsModule;
 import com.sendbird.uikit.modules.components.ChannelSettingsHeaderComponent;
 import com.sendbird.uikit.modules.components.ChannelSettingsInfoComponent;
@@ -598,6 +599,19 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         @NonNull
         public Builder setLoadingDialogHandler(@NonNull LoadingDialogHandler loadingDialogHandler) {
             this.loadingDialogHandler = loadingDialogHandler;
+            return this;
+        }
+
+        /**
+         * Sets the channel setting configuration for this fragment.
+         *
+         * @param channelSettingConfig The channel setting config.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         */
+        @NonNull
+        public Builder setChannelSettingConfig(@NonNull ChannelSettingConfig channelSettingConfig) {
+            this.bundle.putParcelable(StringSet.KEY_CHANNEL_SETTING_CONFIG, channelSettingConfig);
             return this;
         }
 

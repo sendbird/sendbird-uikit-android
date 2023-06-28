@@ -19,9 +19,9 @@ import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
+import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.MessageUtils
-import com.sendbird.uikit.utils.ReactionUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
 
@@ -43,8 +43,9 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         ViewUtils.drawParentMessageSentAt(binding.tvSentAt, message, null)
 
         // reaction
-        binding.rvEmojiReactionList.visibility = if (ReactionUtils.useReaction(channel)) VISIBLE else INVISIBLE
-        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
+        binding.rvEmojiReactionList.visibility =
+            if (ChannelConfig.getEnableReactions(params.channelConfig, channel)) VISIBLE else INVISIBLE
+        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
 
         // thread info
         val hasThreadInfo = message.threadInfo.replyCount > 0
@@ -61,7 +62,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
 
         // message content
         when (message) {
-            is UserMessage -> drawUserMessage(message)
+            is UserMessage -> drawUserMessage(message, params)
             is FileMessage -> {
                 val mimeType: String = message.type.lowercase(Locale.getDefault())
                 if (MessageUtils.isVoiceMessage(message)) {
@@ -85,13 +86,14 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.ivMoreIcon.setOnClickListener(onMoreButtonClickListener)
     }
 
-    private fun drawUserMessage(message: UserMessage) {
+    private fun drawUserMessage(message: UserMessage, messageListUIConfig: MessageListUIParams) {
+        val enableOgtag = message.ogMetaData != null && ChannelConfig.getEnableOgTag(messageListUIConfig.channelConfig)
         binding.tvTextMessage.visibility = VISIBLE
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
         ViewUtils.drawTextMessage(
-            binding.tvTextMessage, message, parentMessageInfoUIConfig, null
+            binding.tvTextMessage, message, parentMessageInfoUIConfig, enableOgtag, null
         ) { view, position, data -> mentionClickListener?.onItemClick(view, position, data) }
     }
 

@@ -13,6 +13,7 @@ import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageComponentBinding
 import com.sendbird.uikit.model.MessageListUIParams
+import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -56,11 +57,11 @@ internal class MyVideoFileMessageView @JvmOverloads constructor(
 
     override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
         val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
-        val hasReaction = message.reactions.isNotEmpty()
+        val enableReactions = message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
 
-        binding.emojiReactionListBackground.visibility = if (hasReaction) VISIBLE else GONE
-        binding.rvEmojiReactionList.visibility = if (hasReaction) VISIBLE else GONE
+        binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
+        binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =
             if (isSent && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) VISIBLE else GONE
         binding.tvSentAt.text = DateUtils.formatTime(context, message.createdAt)
@@ -71,7 +72,7 @@ internal class MyVideoFileMessageView @JvmOverloads constructor(
             it.myReactionListBackground?.let { bg -> binding.emojiReactionListBackground.background = bg }
         }
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
-        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
+        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
         ViewUtils.drawThumbnail(binding.ivThumbnail, (message as FileMessage))
         ViewUtils.drawThumbnailIcon(binding.ivThumbnailIcon, message)
         val paddingTop =
@@ -84,11 +85,12 @@ internal class MyVideoFileMessageView @JvmOverloads constructor(
                 binding.quoteReplyPanel,
                 channel,
                 message,
-                messageUIConfig?.repliedMessageTextUIConfig
+                messageUIConfig?.repliedMessageTextUIConfig,
+                params
             )
         } else {
             binding.quoteReplyPanel.visibility = GONE
         }
-        ViewUtils.drawThreadInfo(binding.threadInfo, message)
+        ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
     }
 }

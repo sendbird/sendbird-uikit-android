@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlinx-serialization'
     id 'org.jetbrains.dokka' version "$kotlin_version"
+    id 'kotlin-parcelize'
 }
 
 version = UIKIT_VERSION
@@ -67,7 +68,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Sendbird
-    api 'com.sendbird.sdk:sendbird-chat:4.9.0'
+    api 'com.sendbird.sdk:sendbird-chat:4.9.1'
 
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'

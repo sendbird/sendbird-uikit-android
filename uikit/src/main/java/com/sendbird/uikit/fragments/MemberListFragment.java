@@ -26,6 +26,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.MemberListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.MemberListComponent;
@@ -176,7 +177,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull Member member) {
         final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
         if (getContext() == null || SendbirdUIKit.getAdapter() == null || !useUserProfile) return;
         boolean useChannelCreateButton = !member.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
         DialogUtils.showUserProfileDialog(getContext(), member, useChannelCreateButton, null, getModule().getLoadingDialogHandler());

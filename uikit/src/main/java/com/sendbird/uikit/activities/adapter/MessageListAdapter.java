@@ -23,14 +23,19 @@ public class MessageListAdapter extends BaseMessageListAdapter {
     }
 
     public MessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI) {
-        this(channel, useMessageGroupUI, new SendbirdUIKitImpl());
+        this(channel, new MessageListUIParams.Builder()
+                .setUseMessageGroupUI(useMessageGroupUI)
+                .build());
+    }
+
+    public MessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams) {
+        this(channel, messageListUIParams, new SendbirdUIKitImpl());
     }
 
     @VisibleForTesting
-    MessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
+    MessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
         super(channel,
-                new MessageListUIParams.Builder()
-                        .setUseMessageGroupUI(useMessageGroupUI)
+                new MessageListUIParams.Builder(messageListUIParams)
                         .setUseQuotedView(true)
                         .build(),
                 sendbirdUIKit);

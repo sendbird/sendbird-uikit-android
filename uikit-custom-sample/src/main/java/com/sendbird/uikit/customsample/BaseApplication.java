@@ -37,6 +37,7 @@ import com.sendbird.uikit.interfaces.OnListResultHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.UserMentionConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,10 +114,10 @@ public class BaseApplication extends MultiDexApplication {
                         // set logger
                         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
                         // set whether to use user profile
-                        SendbirdUIKit.setUseDefaultUserProfile(false);
+                        UIKitConfig.getCommon().setEnableUsingDefaultUserProfile(false);
                         // set reply type
-                        SendbirdUIKit.setReplyType(ReplyType.THREAD);
-                        SendbirdUIKit.setThreadReplySelectType(ThreadReplySelectType.THREAD);
+                        UIKitConfig.getGroupChannelConfig().setReplyType(ReplyType.THREAD);
+                        UIKitConfig.getGroupChannelConfig().setThreadReplySelectType(ThreadReplySelectType.THREAD);
                         // set custom user list query
                         SendbirdUIKit.setCustomUserListQueryHandler(getCustomUserListQuery());
                         initState.setValue(InitState.SUCCEED);
@@ -167,9 +168,9 @@ public class BaseApplication extends MultiDexApplication {
         // set custom UIKit fragment factory
         SendbirdUIKit.setUIKitFragmentFactory(new CustomFragmentFactory());
         // set whether to use user mention
-        SendbirdUIKit.setUseUserMention(true);
+        UIKitConfig.getGroupChannelConfig().setEnableMention(true);
         // set the voice message
-        SendbirdUIKit.setUseVoiceMessage(true);
+        UIKitConfig.getGroupChannelConfig().setEnableVoiceMessage(true);
         // set the mention configuration
         SendbirdUIKit.setMentionConfig(new UserMentionConfig.Builder()
                 .setMaxMentionCount(5)

@@ -15,6 +15,7 @@ import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyVoiceMessageComponentBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
+import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ViewUtils
 
@@ -101,11 +102,12 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
     override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
         val fileMessage = message as FileMessage
         val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
-        val hasReaction = message.reactions.isNotEmpty()
+        val enableReactions =
+            message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
 
-        binding.emojiReactionListBackground.visibility = if (hasReaction) VISIBLE else GONE
-        binding.rvEmojiReactionList.visibility = if (hasReaction) VISIBLE else GONE
+        binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
+        binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =
             if (isSent && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) VISIBLE else GONE
         binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
@@ -119,7 +121,7 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
         }
 
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
-        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
+        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
 
         val paddingTop =
             resources.getDimensionPixelSize(if (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) R.dimen.sb_size_1 else R.dimen.sb_size_8)
@@ -131,12 +133,13 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
                 binding.quoteReplyPanel,
                 channel,
                 message,
-                messageUIConfig?.repliedMessageTextUIConfig
+                messageUIConfig?.repliedMessageTextUIConfig,
+                params
             )
         } else {
             binding.quoteReplyPanel.visibility = GONE
         }
-        ViewUtils.drawThreadInfo(binding.threadInfo, message)
+        ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
         ViewUtils.drawVoiceMessage(binding.voiceMessage, fileMessage)
     }
 }

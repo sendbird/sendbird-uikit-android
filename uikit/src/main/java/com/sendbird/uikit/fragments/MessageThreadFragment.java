@@ -49,6 +49,7 @@ import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.modules.MessageThreadModule;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.modules.components.MessageThreadHeaderComponent;
@@ -57,7 +58,6 @@ import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.modules.components.ThreadListComponent;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
-import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
@@ -335,7 +335,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         inputComponent.setOnInputModeChangedListener(inputModeChangedListener != null ? inputModeChangedListener : this::onInputModeChanged);
         inputComponent.setOnVoiceRecorderButtonClickListener((voiceRecorderButtonClickListener != null) ? voiceRecorderButtonClickListener : v -> takeVoiceRecorder());
 
-        if (SendbirdUIKit.isUsingUserMention()) {
+        if (channelConfig.getEnableMention()) {
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
 
             // observe suggestion list
@@ -374,7 +374,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             UserMessageCreateParams params = new UserMessageCreateParams(editableText.toString());
             params.setParentMessageId(getViewModel().getParentMessage().getMessageId());
             params.setReplyToChannel(true);
-            if (SendbirdUIKit.isUsingUserMention()) {
+            if (channelConfig.getEnableMention()) {
                 if (inputText instanceof MentionEditText) {
                     final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
                     final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
@@ -511,7 +511,9 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
         int size = items.size();
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
-        if (!ReactionUtils.canSendReaction(getViewModel().getChannel()) || MessageUtils.isUnknownType(message)) {
+        if (!(getViewModel().getChannel() != null &&
+                ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel())) ||
+                MessageUtils.isUnknownType(message)) {
             if (getContext() == null || size <= 0) return;
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
@@ -1477,6 +1479,19 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         @NonNull
         public Builder setOnMessageMentionClickListener(@NonNull OnItemClickListener<User> mentionClickListener) {
             this.messageMentionClickListener = mentionClickListener;
+            return this;
+        }
+
+        /**
+         * Sets channel configuration for this fragment.
+         *
+         * @param channelConfig The channel config.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         */
+        @NonNull
+        public Builder setChannelConfig(@NonNull ChannelConfig channelConfig) {
+            this.bundle.putParcelable(StringSet.KEY_CHANNEL_CONFIG, channelConfig);
             return this;
         }
 

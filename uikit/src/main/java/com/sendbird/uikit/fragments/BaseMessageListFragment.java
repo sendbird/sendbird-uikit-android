@@ -63,6 +63,8 @@ import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.VoiceMessageInfo;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.BaseMessageListModule;
 import com.sendbird.uikit.modules.components.BaseMessageListComponent;
 import com.sendbird.uikit.utils.ContextUtils;
@@ -102,6 +104,8 @@ abstract public class BaseMessageListFragment<
     private LA adapter;
     @Nullable
     private SuggestedMentionListAdapter suggestedMentionListAdapter;
+    @NonNull
+    protected ChannelConfig channelConfig = UIKitConfig.getGroupChannelConfig();
 
     @Nullable
     BaseMessage targetMessage;
@@ -139,6 +143,15 @@ abstract public class BaseMessageListFragment<
             sendFileMessage(mediaUri);
         }
     });
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args != null && args.containsKey(StringSet.KEY_CHANNEL_CONFIG)) {
+            channelConfig = args.getParcelable(StringSet.KEY_CHANNEL_CONFIG);
+        }
+    }
 
     @Override
     protected void onConfigureParams(@NonNull MT module, @NonNull Bundle args) {
@@ -405,7 +418,7 @@ abstract public class BaseMessageListFragment<
 
     private void showUserProfile(@NonNull User sender) {
         final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
         if (getContext() == null || !useUserProfile) return;
         hideKeyboard();
         DialogUtils.showUserProfileDialog(getContext(), sender, true, null, null);
@@ -485,7 +498,7 @@ abstract public class BaseMessageListFragment<
     }
 
     void sendFileMessageInternal(@NonNull FileInfo fileInfo, @NonNull FileMessageCreateParams params) {
-        if (targetMessage != null && SendbirdUIKit.getReplyType() != ReplyType.NONE) {
+        if (targetMessage != null && channelConfig.getReplyType() != ReplyType.NONE) {
             params.setParentMessageId(targetMessage.getMessageId());
             params.setReplyToChannel(true);
         }
@@ -525,14 +538,22 @@ abstract public class BaseMessageListFragment<
      */
     protected void showMediaSelectDialog() {
         if (getContext() == null) return;
-        DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
-                new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
-        };
+        final List<DialogListItem> items = new ArrayList<>();
+        if (channelConfig.getInput().getCamera().getEnablePhoto()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera));
+        }
+        if (channelConfig.getInput().getCamera().getEnableVideo()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_take_video, R.drawable.icon_camera));
+        }
+        if (channelConfig.getInput().getGallery().getEnablePhoto() || channelConfig.getInput().getGallery().getEnableVideo()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo));
+        }
+        if (channelConfig.getInput().getEnableDocument()) {
+            items.add(new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document));
+        }
+        if (items.isEmpty()) return;
         hideKeyboard();
-        DialogUtils.showListBottomDialog(requireContext(), items, (view, position, item) -> {
+        DialogUtils.showListBottomDialog(requireContext(), items.toArray(new DialogListItem[0]), (view, position, item) -> {
             final int key = item.getKey();
             try {
                 if (key == R.string.sb_text_channel_input_camera) {
@@ -607,11 +628,11 @@ abstract public class BaseMessageListFragment<
         final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
         if (permissions.length > 0) {
             requestPermission(permissions, () -> {
-                Intent intent = IntentUtils.getGalleryIntent();
+                Intent intent = channelConfig.getInput().getGallery().getGalleryIntent();
                 getContentLauncher.launch(intent);
             });
         } else {
-            Intent intent = IntentUtils.getGalleryIntent();
+            Intent intent = channelConfig.getInput().getGallery().getGalleryIntent();
             getContentLauncher.launch(intent);
         }
     }

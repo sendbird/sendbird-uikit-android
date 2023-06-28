@@ -55,6 +55,7 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.modules.ChannelModule;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
@@ -63,7 +64,6 @@ import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
-import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
@@ -93,6 +93,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     private OnItemClickListener<BaseMessage> threadInfoClickListener;
     @Nullable
     private View.OnClickListener replyModeCloseButtonClickListener;
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Nullable
     @Deprecated
     private View.OnClickListener scrollBottomButtonClickListener;
@@ -151,7 +152,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     @NonNull
     @Override
     protected ChannelViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), params)).get(getChannelUrl(), ChannelViewModel.class);
+        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), params, channelConfig)).get(getChannelUrl(), ChannelViewModel.class);
     }
 
     @Override
@@ -218,13 +219,15 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             startActivity(intent);
         });
 
-        viewModel.getTypingMembers().observe(getViewLifecycleOwner(), typingMembers -> {
-            String description = null;
-            if (typingMembers != null && getContext() != null) {
-                description = ChannelUtils.makeTypingText(getContext(), typingMembers);
-            }
-            headerComponent.notifyHeaderDescriptionChanged(description);
-        });
+        if (channelConfig.getEnableTypingIndicator()) {
+            viewModel.getTypingMembers().observe(getViewLifecycleOwner(), typingMembers -> {
+                String description = null;
+                if (typingMembers != null && getContext() != null) {
+                    description = ChannelUtils.makeTypingText(getContext(), typingMembers);
+                }
+                headerComponent.notifyHeaderDescriptionChanged(description);
+            });
+        }
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), headerComponent::notifyChannelChanged);
     }
 
@@ -402,7 +405,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         inputComponent.setOnQuoteReplyModeCloseButtonClickListener(replyModeCloseButtonClickListener != null ? replyModeCloseButtonClickListener : v -> inputComponent.requestInputMode(MessageInputView.Mode.DEFAULT));
         inputComponent.setOnVoiceRecorderButtonClickListener((onVoiceRecorderButtonClickListener != null) ? onVoiceRecorderButtonClickListener : v -> takeVoiceRecorder());
 
-        if (SendbirdUIKit.isUsingUserMention()) {
+        if (channelConfig.getEnableMention()) {
             inputComponent.bindUserMention(SendbirdUIKit.getUserMentionConfig(), text -> viewModel.loadMemberList(text != null ? text.toString() : null));
 
             // observe suggestion list
@@ -457,8 +460,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             quoteReplyMessageClickListener.onItemClick(view, position, message);
             return;
         }
-        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD &&
-                SendbirdUIKit.getThreadReplySelectType() == ThreadReplySelectType.THREAD) {
+        if (channelConfig.getReplyType() == ReplyType.THREAD &&
+                channelConfig.getThreadReplySelectType() == ThreadReplySelectType.THREAD) {
             startMessageThreadActivity(message);
         } else {
             jumpToParentMessage(message);
@@ -504,11 +507,11 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         if (inputText != null && !TextUtils.isEmpty(inputText.getText())) {
             final Editable editableText = inputText.getText();
             UserMessageCreateParams params = new UserMessageCreateParams(editableText.toString());
-            if (targetMessage != null && SendbirdUIKit.getReplyType() != ReplyType.NONE) {
+            if (targetMessage != null && channelConfig.getReplyType() != ReplyType.NONE) {
                 params.setParentMessageId(targetMessage.getMessageId());
                 params.setReplyToChannel(true);
             }
-            if (SendbirdUIKit.isUsingUserMention()) {
+            if (channelConfig.getEnableMention()) {
                 if (inputText instanceof MentionEditText) {
                     final List<User> mentionedUsers = ((MentionEditText) inputText).getMentionedUsers();
                     final CharSequence mentionedTemplate = ((MentionEditText) inputText).getMentionedTemplate();
@@ -557,14 +560,14 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         DialogListItem edit = new DialogListItem(R.string.sb_text_channel_anchor_edit, R.drawable.icon_edit);
         DialogListItem save = new DialogListItem(R.string.sb_text_channel_anchor_save, R.drawable.icon_download);
         DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, MessageUtils.hasThread(message));
-        int replyStringRes = SendbirdUIKit.getReplyType() == ReplyType.THREAD ? R.string.sb_text_channel_anchor_reply_in_thread : R.string.sb_text_channel_anchor_reply;
-        int replyDrawableRes = SendbirdUIKit.getReplyType() == ReplyType.THREAD ? R.drawable.icon_thread : R.drawable.icon_reply;
+        int replyStringRes = channelConfig.getReplyType() == ReplyType.THREAD ? R.string.sb_text_channel_anchor_reply_in_thread : R.string.sb_text_channel_anchor_reply;
+        int replyDrawableRes = channelConfig.getReplyType() == ReplyType.THREAD ? R.drawable.icon_thread : R.drawable.icon_reply;
         DialogListItem reply = new DialogListItem(replyStringRes, replyDrawableRes, false, MessageUtils.hasParentMessage(message));
         DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
         DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
 
         DialogListItem[] actions = null;
-        final ReplyType replyType = SendbirdUIKit.getReplyType();
+        final ReplyType replyType = channelConfig.getReplyType();
         switch (type) {
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == SendingStatus.SUCCEEDED) {
@@ -676,7 +679,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
         int size = items.size();
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
-        if (!ReactionUtils.canSendReaction(getViewModel().getChannel())) {
+        if (getViewModel().getChannel() != null && !(ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel()))) {
             final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
             if (getContext() == null || messageListView == null || size <= 0) return;
             MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
@@ -750,7 +753,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     }
 
     private void redirectMessageThreadIfNeeded(@Nullable Bundle args) {
-        if (args == null || SendbirdUIKit.getReplyType() != ReplyType.THREAD) return;
+        if (args == null || channelConfig.getReplyType() != ReplyType.THREAD) return;
 
         if (args.containsKey(StringSet.KEY_ANCHOR_MESSAGE_ID)) {
             long messageId = args.getLong(StringSet.KEY_ANCHOR_MESSAGE_ID);
@@ -932,8 +935,12 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param useTypingIndicator <code>true</code> if the typing indicator is used,
          *                           <code>false</code> otherwise.
          * @return This Builder object to allow for chaining of calls to set methods.
+         * @deprecated 3.6.0
+         * <p> Use {@link #setChannelConfig(ChannelConfig)} instead.</p>
+         * @see ChannelConfig#setEnableTypingIndicator(boolean)
          */
         @NonNull
+        @Deprecated
         public Builder setUseTypingIndicator(boolean useTypingIndicator) {
             bundle.putBoolean(StringSet.KEY_USE_TYPING_INDICATOR, useTypingIndicator);
             return this;
@@ -1809,6 +1816,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         @NonNull
         public Builder setOnMessageMentionClickListener(@NonNull OnItemClickListener<User> mentionClickListener) {
             this.messageMentionClickListener = mentionClickListener;
+            return this;
+        }
+
+        /**
+         * Sets channel configuration for this fragment.
+         *
+         * @param channelConfig The channel config.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         */
+        @NonNull
+        public Builder setChannelConfig(@NonNull ChannelConfig channelConfig) {
+            this.bundle.putParcelable(StringSet.KEY_CHANNEL_CONFIG, channelConfig);
             return this;
         }
 

@@ -1,4 +1,23 @@
 # Changelog
+### v3.6.0 (Jun 23, 2023) with Chat SDK `v4.9.1`
+* Support feature configuration 
+  * Added `UIKitConfig` object
+  * Added `setChannelConfig(ChannelConfig)` in `ChannelFragment.Builder`, `MessageThreadFragment.Builder`
+  * Added `setChanneListConfig(ChannelListConfig)` in `ChannelListFragment.Builder`
+  * Added `setChannelSettingConfig(ChannelSettingConfig)` in `ChannelSettingsFragment.Builder`
+  * Added `setOpenChannelConfig(OpenChannelConfig)` in `OpenChannelFragment.Builder`
+  * Deprecated `setUseDefaultUserProfile(boolean)`, `shouldUseDefaultUserProfile()` in `SendbirdUIKit`
+  * Deprecated `setUseChannelListTypingIndicators(boolean)`, `isUsingChannelListTypingIndicators()` in `SendbirdUIKit`
+  * Deprecated `setUseChannelListMessageReceiptStatus(boolean)`, `isUsingChannelListMessageReceiptStatus` in `SendbirdUIKit`
+  * Deprecated `setUseUserMention(boolean)`, `isUsingUserMention()` in `SendbirdUIKit`
+  * Deprecated `setUseVoiceMessage(boolean)`, `isUsingVoiceMessage()` in `SendbirdUIKit`
+  * Deprecated `setReplyType(ReplyType)`, `getReplyType()` in `SendbirdUIKit`
+  * Deprecated `setThreadReplySelectType(ThreadReplySelectType)`, `getThreadReplySelectType()` in `SendbirdUIKit`
+  * Deprecated `setUseTypingIndicator(boolean)` in `ChannelFragment.Builder`
+  * Deprecated `ReactionUtils`
+* Improved voice recorder
+* Improved stability
+
 ### v3.5.7 (Jun 9, 2023) with Chat SDK `v4.9.0`
 * An interface has been added to modify the data used for the Views displayed in the RecyclerView. Through each Provider, it is possible to change the data of the Views displayed in the RecyclerView.
   * Added `setMessageListAdapter(MessageListAdapter, MessageDisplayDataProvider)` in `ChannelFragment.Builder`

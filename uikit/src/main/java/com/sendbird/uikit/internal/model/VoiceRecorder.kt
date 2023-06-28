@@ -70,8 +70,8 @@ internal class VoiceRecorder(
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setAudioChannels(1)
-            setAudioSamplingRate(12000)
-            setAudioEncodingBitRate(96)
+            setAudioSamplingRate(11025)
+            setAudioEncodingBitRate(12000)
             setOutputFile(recordFilePath)
             setMaxDuration(maxDurationMillis)
             SendbirdChat.appInfo?.let {

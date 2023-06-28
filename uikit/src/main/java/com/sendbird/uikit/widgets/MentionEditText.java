@@ -80,6 +80,16 @@ public class MentionEditText extends AppCompatEditText {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (suggestionDialog.isShowing()) {
+            suggestionDialog.dismiss();
+        }
+
+        snackbar.dismiss();
+    }
+    
+    @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
         if (this.mentionConfig != null) {

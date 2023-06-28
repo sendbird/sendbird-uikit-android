@@ -21,6 +21,7 @@ import com.sendbird.uikit.databinding.SbViewMyQuotedMessageBinding
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.MessageUtils
@@ -77,7 +78,12 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
         }
     }
 
-    override fun drawQuotedMessage(channel: GroupChannel, message: BaseMessage, textUIConfig: TextUIConfig?) {
+    override fun drawQuotedMessage(
+        channel: GroupChannel,
+        message: BaseMessage,
+        textUIConfig: TextUIConfig?,
+        messageListUIParams: MessageListUIParams
+    ) {
         binding.quoteReplyPanel.visibility = GONE
         if (!message.hasParentMessage()) return
 

@@ -32,6 +32,25 @@ public class LoginActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        if (com.sendbird.uikit_messaging_android.BuildConfig.DEBUG) {
+            binding.applicationId.setVisibility(View.VISIBLE);
+            binding.btSave.setVisibility(View.VISIBLE);
+            if (SendbirdUIKit.getAdapter() != null) {
+                binding.applicationId.setText(SendbirdUIKit.getAdapter().getAppId());
+            }
+            binding.btSave.setOnClickListener(v -> {
+                final Editable appId = binding.applicationId.getText();
+                if (!TextUtils.isEmpty(appId)) {
+                    PreferenceUtils.setAppId(appId.toString());
+                    finish();
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
+            });
+        } else {
+            binding.applicationId.setVisibility(View.GONE);
+            binding.btSave.setVisibility(View.GONE);
+        }
+
         binding.etUserId.setSelectAllOnFocus(true);
         binding.etNickname.setSelectAllOnFocus(true);
 

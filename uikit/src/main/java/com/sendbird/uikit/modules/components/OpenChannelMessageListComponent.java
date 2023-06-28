@@ -18,7 +18,6 @@ import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.OpenChannelMessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;
@@ -30,8 +29,11 @@ import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
+import com.sendbird.uikit.model.configurations.OpenChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
@@ -193,7 +195,13 @@ public class OpenChannelMessageListComponent {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
-        if (adapter == null) adapter = new OpenChannelMessageListAdapter(null, params.useGroupUI);
+        if (adapter == null) adapter = new OpenChannelMessageListAdapter(
+                null,
+                new MessageListUIParams.Builder()
+                        .setUseMessageGroupUI(params.useGroupUI)
+                        .setOpenChannelConfig(params.getOpenChannelConfig())
+                        .build()
+        );
         setAdapter(adapter);
         return this.messageRecyclerView;
     }
@@ -500,9 +508,11 @@ public class OpenChannelMessageListComponent {
      */
     public static class Params {
         private boolean useGroupUI = true;
-        private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
+        private boolean useUserProfile = UIKitConfig.getCommon().getEnableUsingDefaultUserProfile();
         @NonNull
         private final MessageUIConfig messageUIConfig;
+        @NonNull
+        private OpenChannelConfig openChannelConfig = UIKitConfig.getOpenChannelConfig();
 
         /**
          * Constructor
@@ -618,6 +628,16 @@ public class OpenChannelMessageListComponent {
         }
 
         /**
+         * Sets {@link OpenChannelConfig} that will be used in this component.
+         *
+         * @param openChannelConfig Channel config to be used in this component.
+         * since 3.6.0
+         */
+        public void setOpenChannelConfig(@NonNull OpenChannelConfig openChannelConfig) {
+            this.openChannelConfig = openChannelConfig;
+        }
+
+        /**
          * Returns whether the user profile uses when the profile of message is clicked.
          *
          * @return <code>true</code> if the user profile is shown, <code>false</code> otherwise
@@ -638,6 +658,17 @@ public class OpenChannelMessageListComponent {
         }
 
         /**
+         * Returns {@link OpenChannelConfig} that will be used in this component.
+         *
+         * @return OpenChannel config to be used in this component.
+         * since 3.6.0
+         */
+        @NonNull
+        public OpenChannelConfig getOpenChannelConfig() {
+            return openChannelConfig;
+        }
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_USE_USER_PROFILE} is mapped to {@link #setUseUserProfile(boolean)}
          * {@code KEY_USE_MESSAGE_GROUP_UI} is mapped to {@link #setUseMessageGroupUI(boolean)}
@@ -648,6 +679,7 @@ public class OpenChannelMessageListComponent {
          * {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_ME} and {@code KEY_MESSAGE_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setMessageBackground(Drawable, Drawable)}
          * {@code KEY_OGTAG_BACKGROUND_SENT_FROM_ME} and {@code KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setOgtagBackground(Drawable, Drawable)}
          * {@code KEY_LINKED_TEXT_COLOR} is mapped to {@link #setLinkedTextColor(ColorStateList)}
+         * {@code KEY_OPEN_CHANNEL_CONFIG} is mapped to {@link #setOpenChannelConfig(OpenChannelConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -691,6 +723,10 @@ public class OpenChannelMessageListComponent {
             if (args.containsKey(StringSet.KEY_LINKED_TEXT_COLOR)) {
                 final ColorStateList linkedTextColor = AppCompatResources.getColorStateList(context, args.getInt(StringSet.KEY_LINKED_TEXT_COLOR));
                 if (linkedTextColor != null) setLinkedTextColor(linkedTextColor);
+            }
+
+            if (args.containsKey(StringSet.KEY_OPEN_CHANNEL_CONFIG)) {
+                setOpenChannelConfig(args.getParcelable(StringSet.KEY_OPEN_CHANNEL_CONFIG));
             }
             return this;
         }

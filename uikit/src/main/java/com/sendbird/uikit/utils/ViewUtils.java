@@ -56,9 +56,11 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MentionSpan;
 import com.sendbird.uikit.model.MessageDisplayData;
+import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.UserMessageDisplayData;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 
 import java.util.ArrayList;
@@ -92,14 +94,15 @@ public class ViewUtils {
         view.setText(spannable);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
-        drawTextMessage(textView, message, uiConfig, null, null);
+    public static void drawTextMessage(@NonNull TextView textView, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig, boolean enableMention) {
+        drawTextMessage(textView, message, uiConfig, enableMention, null, null);
     }
 
     public static void drawTextMessage(
             @NonNull TextView textView,
             @Nullable BaseMessage message,
             @Nullable MessageUIConfig uiConfig,
+            boolean enableMention,
             @Nullable TextUIConfig mentionedCurrentUserUIConfig,
             @Nullable OnItemClickListener<User> mentionClickListener
     ) {
@@ -114,7 +117,15 @@ public class ViewUtils {
 
         final boolean isMine = MessageUtils.isMine(message);
         final Context context = textView.getContext();
-        final CharSequence text = getDisplayableText(context, message, uiConfig, mentionedCurrentUserUIConfig, true, mentionClickListener);
+        final CharSequence text = getDisplayableText(
+                context,
+                message,
+                uiConfig,
+                mentionedCurrentUserUIConfig,
+                true,
+                mentionClickListener,
+                enableMention
+        );
         final SpannableStringBuilder builder = new SpannableStringBuilder(text);
         if (message.getUpdatedAt() > 0L) {
             final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
@@ -135,7 +146,8 @@ public class ViewUtils {
             @Nullable MessageUIConfig uiConfig,
             @Nullable TextUIConfig mentionedCurrentUserUIConfig,
             boolean mentionClickable,
-            @Nullable OnItemClickListener<User> mentionClickListener
+            @Nullable OnItemClickListener<User> mentionClickListener,
+            boolean enabledMention
     ) {
         final String mentionedText = message.getMentionedMessageTemplate();
         String displayedMessage = message.getMessage();
@@ -150,7 +162,7 @@ public class ViewUtils {
         }
 
         CharSequence displayText = text;
-        if (SendbirdUIKit.isUsingUserMention() && !message.getMentionedUsers().isEmpty() && !TextUtils.isEmpty(mentionedText)) {
+        if (enabledMention && !message.getMentionedUsers().isEmpty() && !TextUtils.isEmpty(mentionedText)) {
             final SpannableString mentionedSpannableString = new SpannableString(mentionedText);
             if (uiConfig != null) {
                 final TextUIConfig messageTextUIConfig = MessageUtils.isMine(message) ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
@@ -239,8 +251,8 @@ public class ViewUtils {
         });
     }
 
-    public static void drawReactionEnabled(@NonNull EmojiReactionListView view, @NonNull BaseChannel channel) {
-        boolean canSendReaction = ReactionUtils.canSendReaction(channel);
+    public static void drawReactionEnabled(@NonNull EmojiReactionListView view, @NonNull BaseChannel channel, @NonNull ChannelConfig channelConfig) {
+        boolean canSendReaction = ChannelConfig.canSendReactions(channelConfig, channel);
         view.setClickable(canSendReaction);
         if (view.useMoreButton() != canSendReaction) {
             view.setUseMoreButton(canSendReaction);
@@ -440,11 +452,11 @@ public class ViewUtils {
             @NonNull BaseQuotedMessageView replyPanel,
             @NonNull GroupChannel channel,
             @NonNull BaseMessage message,
-            @Nullable TextUIConfig uiConfig
-    ) {
+            @Nullable TextUIConfig uiConfig,
+            @NonNull MessageListUIParams params) {
         final boolean hasParentMessage = MessageUtils.hasParentMessage(message);
         replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
-        replyPanel.drawQuotedMessage(channel, message, uiConfig);
+        replyPanel.drawQuotedMessage(channel, message, uiConfig, params);
     }
 
     public static void drawSentAt(@NonNull TextView tvSentAt, @Nullable BaseMessage message, @Nullable MessageUIConfig uiConfig) {
@@ -494,9 +506,9 @@ public class ViewUtils {
         tvFilename.setText(filename);
     }
 
-    public static void drawThreadInfo(@NonNull ThreadInfoView threadInfoView, @NonNull BaseMessage message) {
+    public static void drawThreadInfo(@NonNull ThreadInfoView threadInfoView, @NonNull BaseMessage message, @NonNull MessageListUIParams messageListUIParams) {
         if (message instanceof CustomizableMessage) return;
-        if (SendbirdUIKit.getReplyType() != ReplyType.THREAD) {
+        if (messageListUIParams.getChannelConfig().getReplyType() != ReplyType.THREAD) {
             threadInfoView.setVisibility(View.GONE);
             return;
         }

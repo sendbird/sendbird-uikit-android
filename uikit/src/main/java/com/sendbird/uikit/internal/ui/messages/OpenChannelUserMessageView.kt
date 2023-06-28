@@ -16,6 +16,7 @@ import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageComponentBindi
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.MessageListUIParams
+import com.sendbird.uikit.model.configurations.OpenChannelConfig
 import com.sendbird.uikit.utils.IntentUtils
 import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ViewUtils
@@ -89,6 +90,10 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
 
     override fun drawMessage(channel: OpenChannel, message: BaseMessage, params: MessageListUIParams) {
         val messageGroupType = params.messageGroupType
+        val enableOgTag = message.ogMetaData != null && OpenChannelConfig.getEnableOgTag(params.openChannelConfig)
+
+        binding.ogTag.visibility = if (enableOgTag) VISIBLE else GONE
+
         messageUIConfig?.let {
             it.myEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
             it.otherEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
@@ -110,9 +115,9 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
                 binding.tvMessage.clickedLinkTextColor = linkedTextColor.defaultColor
             }
         }
-        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig)
+        ViewUtils.drawTextMessage(binding.tvMessage, message, messageUIConfig, false)
 
-        binding.ogTag.drawOgtag(message.ogMetaData)
+        if (enableOgTag) binding.ogTag.drawOgtag(message.ogMetaData)
         binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
 
         if (messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD) {
@@ -134,13 +139,15 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
             binding.tvMessage.layoutParams = layoutParams
         }
 
-        binding.ogTag.setOnClickListener {
-            message.ogMetaData?.url?.let {
-                val intent = IntentUtils.getWebViewerIntent(it)
-                try {
-                    context.startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    Logger.e(e)
+        if (enableOgTag) {
+            binding.ogTag.setOnClickListener {
+                message.ogMetaData?.url?.let {
+                    val intent = IntentUtils.getWebViewerIntent(it)
+                    try {
+                        context.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Logger.e(e)
+                    }
                 }
             }
         }

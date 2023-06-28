@@ -62,7 +62,7 @@ internal class NotificationTemplateRepository(context: Context) {
 
     @WorkerThread
     @Throws(SendbirdException::class)
-    fun requestTemplateList(): NotificationTemplateList {
+    fun requestTemplateListBlocking(): NotificationTemplateList {
         Logger.d(">> NotificationTemplateRepository::requestTemplateList()")
         val latch = CountDownLatch(1)
         var error: SendbirdException? = null
@@ -98,7 +98,7 @@ internal class NotificationTemplateRepository(context: Context) {
 
     @WorkerThread
     @Throws(SendbirdException::class)
-    fun requestTemplate(key: String): NotificationTemplate {
+    fun requestTemplateBlocking(key: String): NotificationTemplate {
         Logger.d(">> NotificationTemplateRepository::requestTemplate() key=$key")
         val latch = CountDownLatch(1)
         var error: SendbirdException? = null

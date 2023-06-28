@@ -14,6 +14,7 @@ import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyFileMessageComponentBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
+import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ViewUtils
 
@@ -62,11 +63,12 @@ internal class MyFileMessageView @JvmOverloads internal constructor(
     override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
         val fileMessage = message as FileMessage
         val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
-        val hasReaction = message.reactions.isNotEmpty()
+        val enableReactions =
+            message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
 
-        binding.emojiReactionListBackground.visibility = if (hasReaction) VISIBLE else GONE
-        binding.rvEmojiReactionList.visibility = if (hasReaction) VISIBLE else GONE
+        binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
+        binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =
             if (isSent && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)) VISIBLE else GONE
         binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
@@ -82,7 +84,7 @@ internal class MyFileMessageView @JvmOverloads internal constructor(
 
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
         ViewUtils.drawFilename(binding.tvFileName, fileMessage, messageUIConfig)
-        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
+        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
         ViewUtils.drawFileIcon(binding.ivIcon, fileMessage)
 
         val paddingTop =
@@ -95,11 +97,12 @@ internal class MyFileMessageView @JvmOverloads internal constructor(
                 binding.quoteReplyPanel,
                 channel,
                 message,
-                messageUIConfig?.repliedMessageTextUIConfig
+                messageUIConfig?.repliedMessageTextUIConfig,
+                params
             )
         } else {
             binding.quoteReplyPanel.visibility = GONE
         }
-        ViewUtils.drawThreadInfo(binding.threadInfo, message)
+        ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
     }
 }

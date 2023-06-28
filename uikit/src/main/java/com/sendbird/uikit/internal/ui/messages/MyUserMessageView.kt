@@ -17,6 +17,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
+import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.ViewUtils
 
@@ -110,13 +111,15 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
     override fun drawMessage(channel: GroupChannel, message: BaseMessage, params: MessageListUIParams) {
         val messageGroupType = params.messageGroupType
         val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
-        val hasOgTag = message.ogMetaData != null
-        val hasReaction = message.reactions.isNotEmpty()
+        val enableOgTag = message.ogMetaData != null && ChannelConfig.getEnableOgTag(params.channelConfig)
+        val enableMention = params.channelConfig.enableMention
+        val enableReactions =
+            message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
 
-        binding.emojiReactionListBackground.visibility = if (hasReaction) VISIBLE else GONE
-        binding.rvEmojiReactionList.visibility = if (hasReaction) VISIBLE else GONE
-        binding.ogtagBackground.visibility = if (hasOgTag) VISIBLE else GONE
-        binding.ovOgtag.visibility = if (hasOgTag) VISIBLE else GONE
+        binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
+        binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
+        binding.ogtagBackground.visibility = if (enableOgTag) VISIBLE else GONE
+        binding.ovOgtag.visibility = if (enableOgTag) VISIBLE else GONE
         binding.tvSentAt.visibility =
             if (isSent && (messageGroupType === MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType === MessageGroupType.GROUPING_TYPE_SINGLE)) VISIBLE else GONE
         binding.ivStatus.drawStatus(message, channel, params.shouldUseMessageReceipt())
@@ -141,12 +144,13 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
             binding.tvMessage,
             message,
             messageUIConfig,
-            mentionedCurrentUserUIConfig
+            enableMention,
+            mentionedCurrentUserUIConfig,
         ) { view, position, user ->
             mentionClickListener?.onItemClick(view, position, user)
         }
-        ViewUtils.drawOgtag(binding.ovOgtag, message.ogMetaData)
-        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel)
+        if (enableOgTag) ViewUtils.drawOgtag(binding.ovOgtag, message.ogMetaData)
+        ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
 
         val paddingTop =
@@ -159,11 +163,12 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
                 binding.quoteReplyPanel,
                 channel,
                 message,
-                messageUIConfig?.repliedMessageTextUIConfig
+                messageUIConfig?.repliedMessageTextUIConfig,
+                params
             )
         } else {
             binding.quoteReplyPanel.visibility = GONE
         }
-        ViewUtils.drawThreadInfo(binding.threadInfo, message)
+        ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
     }
 }

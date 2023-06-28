@@ -100,11 +100,22 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      * since 3.2.2
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
-        if (channel != null) this.channel = OpenChannel.clone(channel);
-        this.messageListUIParams = new MessageListUIParams.Builder()
+        this(channel, new MessageListUIParams.Builder()
                 .setUseMessageGroupUI(useMessageGroupUI)
                 .setUseReverseLayout(useReverseLayout)
-                .build();
+                .build());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param channel               The {@link OpenChannel} that contains the data needed for this adapter
+     * @param messageListUIParams   The {@link MessageListUIParams} that contains the data needed for this adapter
+     * since 3.6.0
+     */
+    public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, @NonNull MessageListUIParams messageListUIParams) {
+        if (channel != null) this.channel = OpenChannel.clone(channel);
+        this.messageListUIParams = messageListUIParams;
         setHasStableIds(true);
     }
 

@@ -16,6 +16,8 @@ import com.sendbird.android.user.Member;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.interfaces.PagedQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 import java.util.Objects;
 
@@ -36,7 +38,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ChannelViewModel.class)) {
-            return (T) new ChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null);
+            return (T) new ChannelViewModel((String) Objects.requireNonNull(params)[0], params.length > 1 ? (MessageListParams) params[1] : null, params.length > 2 ? (ChannelConfig) params[2] : UIKitConfig.getGroupChannelConfig());
         } else if (modelClass.isAssignableFrom(ChannelListViewModel.class)) {
             return (T) new ChannelListViewModel(params != null && params.length > 0 ? (GroupChannelListQuery) params[0] : null);
         } else if (modelClass.isAssignableFrom(OpenChannelViewModel.class)) {

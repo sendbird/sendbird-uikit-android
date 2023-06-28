@@ -15,9 +15,11 @@ import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
-import com.sendbird.uikit.utils.Available;
+import com.sendbird.uikit.model.configurations.ChannelSettingConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.ChannelUtils;
 
 /**
@@ -132,7 +134,8 @@ public class ChannelSettingsMenuComponent {
         messageSearchItemView.setName(context.getString(R.string.sb_text_channel_settings_message_search));
         messageSearchItemView.setMenuType(SingleMenuItemView.Type.NONE);
         messageSearchItemView.setIcon(R.drawable.icon_search);
-        messageSearchItemView.setVisibility(Available.isSupportMessageSearch() ? View.VISIBLE : View.GONE);
+        messageSearchItemView.setVisibility(
+                ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
 
         final SingleMenuItemView leaveItemView = view.findViewById(R.id.leave);
         leaveItemView.setName(context.getString(R.string.sb_text_channel_settings_leave_channel));
@@ -169,7 +172,8 @@ public class ChannelSettingsMenuComponent {
         final SingleMenuItemView moderationsItemView = menuView.findViewById(R.id.moderations);
         moderationsItemView.setVisibility(channel.getMyRole() == Role.OPERATOR ? View.VISIBLE : View.GONE);
         final SingleMenuItemView messageSearchItemView = menuView.findViewById(R.id.messageSearch);
-        messageSearchItemView.setVisibility(Available.isSupportMessageSearch() ? View.VISIBLE : View.GONE);
+        messageSearchItemView.setVisibility(
+                ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -204,6 +208,9 @@ public class ChannelSettingsMenuComponent {
      * since 3.0.0
      */
     public static class Params {
+        @NonNull
+        private ChannelSettingConfig channelSettingConfig = UIKitConfig.getGroupChannelSettingConfig();
+
         /**
          * Constructor
          *
@@ -213,7 +220,33 @@ public class ChannelSettingsMenuComponent {
         }
 
         /**
+         * Sets the {@link ChannelSettingConfig} for the channel settings menu.
+         *
+         * @param channelSettingConfig The ChannelSettingConfig for the channel settings menu.
+         * @see ChannelSettingConfig
+         * since 3.6.0
+         */
+        public void setChannelSettingConfig(@NonNull ChannelSettingConfig channelSettingConfig) {
+            this.channelSettingConfig = channelSettingConfig;
+        }
+
+        /**
+         * Returns the {@link ChannelSettingConfig} for the channel settings menu.
+         *
+         * @return The ChannelSettingConfig for the channel settings menu.
+         * @see ChannelSettingConfig
+         * since 3.6.0
+         */
+        @NonNull
+        public ChannelSettingConfig getChannelSettingConfig() {
+            return channelSettingConfig;
+        }
+
+
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
+         * {@code KEY_CHANNEL_SETTING_CONFIG} is mapped to {@link #setChannelSettingConfig(ChannelSettingConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -222,6 +255,9 @@ public class ChannelSettingsMenuComponent {
          */
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
+            if (args.containsKey(StringSet.KEY_CHANNEL_SETTING_CONFIG)) {
+                setChannelSettingConfig(args.getParcelable(StringSet.KEY_CHANNEL_SETTING_CONFIG));
+            }
             return this;
         }
     }

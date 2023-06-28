@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
  */
 public class PreferenceUtils {
 
+    private static final String PREFERENCE_KEY_APP_ID = "PREFERENCE_KEY_APP_ID";
     private static final String PREFERENCE_KEY_USER_ID = "PREFERENCE_KEY_USER_ID";
     private static final String PREFERENCE_KEY_NICKNAME = "PREFERENCE_KEY_NICKNAME";
     private static final String PREFERENCE_KEY_PROFILE_URL = "PREFERENCE_KEY_PROFILE_URL";
@@ -30,6 +31,16 @@ public class PreferenceUtils {
 
     private static SharedPreferences getSharedPreferences() {
         return context.getSharedPreferences("sendbird", Context.MODE_PRIVATE);
+    }
+
+    public static void setAppId(@NonNull String appId) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(PREFERENCE_KEY_APP_ID, appId).commit();
+    }
+
+    @NonNull
+    public static String getAppId() {
+        return getSharedPreferences().getString(PREFERENCE_KEY_APP_ID, "");
     }
 
     public static void setUserId(@NonNull String userId) {

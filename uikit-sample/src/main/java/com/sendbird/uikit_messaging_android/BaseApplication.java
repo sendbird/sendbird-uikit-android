@@ -14,6 +14,8 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.ThreadReplySelectType;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit_messaging_android.consts.InitState;
 import com.sendbird.uikit_messaging_android.consts.StringSet;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
@@ -40,7 +42,17 @@ public class BaseApplication extends MultiDexApplication {
             @Override
             @NonNull
             public String getAppId() {
-                return APP_ID;
+                String appId;
+                if (com.sendbird.uikit_messaging_android.BuildConfig.DEBUG) {
+                    appId = PreferenceUtils.getAppId();
+                    if (appId.isEmpty()) {
+                        appId = APP_ID;
+                    }
+                } else {
+                    appId = APP_ID;
+                }
+                Logger.d("++ app id : %s", appId);
+                return appId;
             }
 
             @Override
@@ -102,18 +114,18 @@ public class BaseApplication extends MultiDexApplication {
         // set logger
         SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL);
         // set whether to use user profile
-        SendbirdUIKit.setUseDefaultUserProfile(true);
+        UIKitConfig.getCommon().setEnableUsingDefaultUserProfile(true);
         // set whether to use typing indicators in channel list
-        SendbirdUIKit.setUseChannelListTypingIndicators(true);
+        UIKitConfig.getGroupChannelListConfig().setEnableTypingIndicator(true);
         // set whether to use read/delivery receipt in channel list
-        SendbirdUIKit.setUseChannelListMessageReceiptStatus(true);
+        UIKitConfig.getGroupChannelListConfig().setEnableMessageReceiptStatus(true);
         // set whether to use user mention
-        SendbirdUIKit.setUseUserMention(true);
+        UIKitConfig.getGroupChannelConfig().setEnableMention(true);
         // set reply type
-        SendbirdUIKit.setReplyType(ReplyType.THREAD);
-        SendbirdUIKit.setThreadReplySelectType(ThreadReplySelectType.THREAD);
+        UIKitConfig.getGroupChannelConfig().setReplyType(ReplyType.THREAD);
+        UIKitConfig.getGroupChannelConfig().setThreadReplySelectType(ThreadReplySelectType.THREAD);
         // set whether to use voice message
-        SendbirdUIKit.setUseVoiceMessage(true);
+        UIKitConfig.getGroupChannelConfig().setEnableVoiceMessage(true);
 
         // set custom params
         SendbirdUIKit.setCustomParamsHandler(new CustomParamsHandler() {

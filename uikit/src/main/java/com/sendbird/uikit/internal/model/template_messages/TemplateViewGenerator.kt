@@ -155,11 +155,6 @@ internal object TemplateViewGenerator {
                         size = 14,
                         color = getDescTextColor(themeMode)
                     ),
-                    viewStyle = ViewStyle(
-                        margin = Margin(
-                            top = 10
-                        )
-                    ),
                     text = defaultFallbackDescription
                 )
             )

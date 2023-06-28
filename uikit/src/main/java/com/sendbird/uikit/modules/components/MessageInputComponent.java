@@ -21,7 +21,6 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.user.MutedState;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.StringSet;
@@ -33,6 +32,8 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.UserMentionConfig;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.ViewUtils;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
@@ -133,7 +134,9 @@ public class MessageInputComponent {
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
-        if (args != null) params.apply(context, args);
+        if (args != null) {
+            params.apply(context, args);
+        }
         this.messageInputView = createMessageInputView(context);
         if (params.leftButtonIcon != null) {
             this.messageInputView.setAddImageDrawable(params.leftButtonIcon);
@@ -170,7 +173,7 @@ public class MessageInputComponent {
         this.messageInputView.setOnReplyCloseClickListener(this::onQuoteReplyModeCloseButtonClicked);
         this.messageInputView.setOnInputModeChangedListener(this::onInputModeChanged);
         this.messageInputView.setOnVoiceRecorderButtonClickListener(this::onVoiceRecorderButtonClicked);
-        this.messageInputView.setUseVoiceButton(SendbirdUIKit.isUsingVoiceMessage());
+        this.messageInputView.setUseVoiceButton(params.getChannelConfig().getEnableVoiceMessage());
         this.setUseSuggestedMentionListDivider(params.useSuggestedMentionListDivider);
         if (params.keyboardDisplayType == KeyboardDisplayType.Dialog) {
             final MessageInputDialogWrapper messageInputDialogWrapper = new MessageInputDialogWrapper(context);
@@ -457,14 +460,26 @@ public class MessageInputComponent {
      * @param defaultText Text set as initial value for input
      * since 3.0.0
      */
-    public void notifyDataChanged(@Nullable BaseMessage message, @NonNull GroupChannel channel, @NonNull String defaultText) {
+    public void notifyDataChanged(
+            @Nullable BaseMessage message,
+            @NonNull GroupChannel channel,
+            @NonNull String defaultText
+    ) {
         if (messageInputView == null) return;
         final MessageInputView inputView = this.messageInputView;
 
         final MessageInputView.Mode mode = inputView.getInputMode();
         if (MessageInputView.Mode.EDIT == mode) {
             if (message != null) {
-                final CharSequence text = ViewUtils.getDisplayableText(inputView.getContext(), message, params.messageUIConfig, null, true, null);
+                final CharSequence text = ViewUtils.getDisplayableText(
+                        inputView.getContext(),
+                        message,
+                        params.messageUIConfig,
+                        null,
+                        true,
+                        null,
+                        params.getChannelConfig().getEnableMention()
+                );
                 inputView.setInputText(text);
             }
             inputView.showKeyboard();
@@ -563,6 +578,8 @@ public class MessageInputComponent {
 
         @Nullable
         private TextUIConfig textUIConfig;
+        @NonNull
+        private ChannelConfig channelConfig = UIKitConfig.getGroupChannelConfig();
 
         /**
          * Constructor
@@ -672,6 +689,16 @@ public class MessageInputComponent {
          */
         public void setUseSuggestedMentionListDivider(boolean useDivider) {
             this.useSuggestedMentionListDivider = useDivider;
+        }
+
+        /**
+         * Sets {@link ChannelConfig} that will be used in this component.
+         *
+         * @param channelConfig Channel config to be used in this component.
+         * since 3.6.0
+         */
+        public void setChannelConfig(@NonNull ChannelConfig channelConfig) {
+            this.channelConfig = channelConfig;
         }
 
         /**
@@ -815,6 +842,17 @@ public class MessageInputComponent {
         }
 
         /**
+         * Returns {@link ChannelConfig} that will be used in this component.
+         *
+         * @return Channel config to be used in this component.
+         * since 3.6.0
+         */
+        @NonNull
+        public ChannelConfig getChannelConfig() {
+            return channelConfig;
+        }
+
+        /**
          * Apply data that matches keys mapped to Params' properties.
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_RES_ID} is mapped to {@link #setLeftButtonIcon(Drawable)}
          * {@code KEY_INPUT_LEFT_BUTTON_ICON_TINT} is mapped to {@link #setLeftButtonIconTint(ColorStateList)}
@@ -828,6 +866,7 @@ public class MessageInputComponent {
          * {@code KEY_MENTION_UI_CONFIG_SENT_FROM_ME} and {@code KEY_MENTION_UI_CONFIG_SENT_FROM_OTHERS} are mapped to {@link #setMentionUIConfig(TextUIConfig, TextUIConfig)}
          * {@code KEY_MESSAGE_INPUT_TEXT_UI_CONFIG} and {@code KEY_MESSAGE_INPUT_TEXT_UI_CONFIG} are mapped to {@link #setMessageInputTextUIConfig(TextUIConfig)}
          * {@code KEY_USE_SUGGESTED_MENTION_LIST_DIVIDER} is mapped to {@link #setUseSuggestedMentionListDivider(boolean)}
+         * {@code KEY_CHANNEL_CONFIG} is mapped to {@link #setChannelConfig(ChannelConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -874,6 +913,9 @@ public class MessageInputComponent {
             }
             if (args.containsKey(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG)) {
                 setMessageInputTextUIConfig(args.getParcelable(StringSet.KEY_MESSAGE_INPUT_TEXT_UI_CONFIG));
+            }
+            if (args.containsKey(StringSet.KEY_CHANNEL_CONFIG)) {
+                setChannelConfig(args.getParcelable(StringSet.KEY_CHANNEL_CONFIG));
             }
             return this;
         }

@@ -12,6 +12,7 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.AppInfo;
@@ -36,14 +37,22 @@ import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
+import com.sendbird.uikit.internal.singleton.UIKitConfigRepository;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
-import com.sendbird.uikit.internal.tasks.TaskQueue;
+import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
+import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
+import com.sendbird.uikit.internal.wrappers.TaskQueueImpl;
+import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.UserMentionConfig;
+import com.sendbird.uikit.model.configurations.Common;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.UIKitPrefs;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
@@ -86,15 +95,15 @@ public class SendbirdUIKit {
         Dark(R.style.AppTheme_Dark_Sendbird, R.color.primary_200, R.color.secondary_200, R.color.ondark_03, R.color.error_200);
 
         @StyleRes
-        int resId;
+        final int resId;
         @ColorRes
-        int primaryTintColorResId;
+        final int primaryTintColorResId;
         @ColorRes
-        int secondaryTintColorResId;
+        final int secondaryTintColorResId;
         @ColorRes
-        int monoTintColorResId;
+        final int monoTintColorResId;
         @ColorRes
-        int errorColorResId;
+        final int errorColorResId;
 
         ThemeMode(@StyleRes int resId, @ColorRes int primaryTintColorResId, @ColorRes int secondaryTintColorResId, @ColorRes int monoTintColorResId, @ColorRes int errorColorResId) {
             this.resId = resId;
@@ -198,9 +207,11 @@ public class SendbirdUIKit {
     private static final int DEFAULT_RESIZING_WIDTH_SIZE = 1080;
     private static final int DEFAULT_RESIZING_HEIGHT_SIZE = 1920;
 
+    @Nullable
+    private static UIKitConfigRepository uikitConfigRepo;
     @NonNull
     private static volatile ThemeMode defaultThemeMode = ThemeMode.Light;
-    private static volatile boolean useDefaultUserProfile = false;
+    private static volatile boolean useUserIdForNickname = false;
     private static volatile boolean useCompression = true;
     @Nullable
     private static CustomUserListQueryHandler customUserListQueryHandler;
@@ -210,17 +221,8 @@ public class SendbirdUIKit {
     @NonNull
     private static Pair<Integer, Integer> resizingSize = new Pair<>(DEFAULT_RESIZING_WIDTH_SIZE, DEFAULT_RESIZING_HEIGHT_SIZE);
     @NonNull
-    private static ReplyType replyType = ReplyType.QUOTE_REPLY;
-    @NonNull
-    private static ThreadReplySelectType threadReplySelectType = ThreadReplySelectType.THREAD;
-    @NonNull
     private static UIKitFragmentFactory fragmentFactory = new UIKitFragmentFactory();
-    private static volatile boolean useChannelListTypingIndicators = false;
-    private static volatile boolean useChannelListMessageReceiptStatus = false;
-    private static volatile boolean useMention = false;
-    private static volatile boolean useUserIdForNickname = true;
     private static UserMentionConfig userMentionConfig = new UserMentionConfig.Builder().build();
-    private static volatile boolean useVoiceMessage = false;
 
     static void clearAll() {
         SendbirdUIKit.customUserListQueryHandler = null;
@@ -237,7 +239,7 @@ public class SendbirdUIKit {
      * @param context <code>Context</code> of <code>Application</code>.
      */
     public synchronized static void init(@NonNull SendbirdUIKitAdapter adapter, @NonNull Context context) {
-        init(adapter, context, false);
+        init(new SendbirdChatImpl(), adapter, new UIKitConfigRepository(context, adapter.getAppId()), context, false);
     }
 
     /**
@@ -248,11 +250,19 @@ public class SendbirdUIKit {
      * since 2.1.8
      */
     public synchronized static void initFromForeground(@NonNull SendbirdUIKitAdapter adapter, @NonNull Context context) {
-        init(adapter, context, true);
+        init(new SendbirdChatImpl(), adapter, new UIKitConfigRepository(context, adapter.getAppId()), context, true);
     }
 
-    private synchronized static void init(@NonNull SendbirdUIKitAdapter adapter, @NonNull Context context, boolean isForeground) {
+    @VisibleForTesting
+    synchronized static void init(
+            @NonNull SendbirdChatWrapper sendbirdChatWrapper,
+            @NonNull SendbirdUIKitAdapter adapter,
+            @NonNull UIKitConfigRepository uikitConfigRepo,
+            @NonNull Context context,
+            boolean isForeground)
+    {
         SendbirdUIKit.adapter = adapter;
+        SendbirdUIKit.uikitConfigRepo = uikitConfigRepo;
 
         final InitResultHandler handler = adapter.getInitResultHandler();
         final InitResultHandler initResultHandler = new InitResultHandler() {
@@ -273,7 +283,7 @@ public class SendbirdUIKit {
             public void onInitSucceed() {
                 Logger.d(">> onInitSucceed()");
                 try {
-                    SendbirdChat.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
+                    sendbirdChatWrapper.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
                 } catch (Throwable ignored) {
                 }
 
@@ -284,7 +294,7 @@ public class SendbirdUIKit {
         final com.sendbird.android.LogLevel logLevel = BuildConfig.DEBUG ? com.sendbird.android.LogLevel.VERBOSE : com.sendbird.android.LogLevel.WARN;
         // useCaching=true is required for UIKit
         final InitParams initParams = new InitParams(adapter.getAppId(), context, true, logLevel, isForeground);
-        SendbirdChat.init(initParams, initResultHandler);
+        sendbirdChatWrapper.init(initParams, initResultHandler);
         FileUtils.removeDeletableDir(context.getApplicationContext());
         UIKitPrefs.init(context.getApplicationContext());
         NotificationChannelManager.init(context.getApplicationContext());
@@ -292,218 +302,216 @@ public class SendbirdUIKit {
     }
 
     /**
-     * @param level set the displaying log level. {@link LogLevel}
-     *
-     * since 1.0.2
-     */
-    public static void setLogLevel(@NonNull LogLevel level) {
-        Logger.setLogLevel(level.getLevel());
-    }
-
-    /**
-     * Returns the default theme mode.
-     *
-     * @see #setDefaultThemeMode(ThemeMode)
-     */
-    @NonNull
-    public static ThemeMode getDefaultThemeMode() {
-        return defaultThemeMode;
-    }
-
-    /**
-     * Sets the default theme mode. This is the default value used for all components, but can
-     * be overridden locally via the builder of a fragment.
-     *
-     * <p>Defaults to {@link ThemeMode#Light}.</p>
-     *
-     * @see #getDefaultThemeMode() ()
-     */
-    public static void setDefaultThemeMode(@NonNull ThemeMode themeMode) {
-        defaultThemeMode = themeMode;
-    }
-
-    /**
-     * Determines whether the theme mode is {@link ThemeMode#Dark}.
-     *
-     * @return True if the theme mode is the dark, false otherwise.
-     */
-    public static boolean isDarkMode() {
-        return defaultThemeMode == ThemeMode.Dark;
-    }
-
-    /**
-     * Returns the adapter of SendBirdUIKit.
-     *
-     * @see #init(SendbirdUIKitAdapter, Context)
-     */
-    @Nullable
-    public static SendbirdUIKitAdapter getAdapter() {
-        return adapter;
-    }
-
-    /**
-     * Returns the custom user list query handler.
-     *
-     * @return The callback handler.
-     */
-    @Nullable
-    public static CustomUserListQueryHandler getCustomUserListQueryHandler() {
-        return customUserListQueryHandler;
-    }
-
-    /**
-     * Returns the custom params handler.
-     *
-     * @return The callback handler.
-     * since 1.2.2
-     */
-    @Nullable
-    public static CustomParamsHandler getCustomParamsHandler() {
-        return customParamsHandler;
-    }
-
-    /**
      * Returns set value whether the user profile uses.
+     * since 1.2.2
      *
      * @return the value whether the user profile uses.
-     * since 1.2.2
+     * @deprecated 3.6.0
+     * <p> Use {@link Common#getEnableUsingDefaultUserProfile()} instead.</p>
      */
+    @Deprecated
     public static boolean shouldUseDefaultUserProfile() {
-        return useDefaultUserProfile;
+        return UIKitConfig.getCommon().getEnableUsingDefaultUserProfile();
     }
 
     /**
      * Sets whether the user profile uses.
+     * since 1.2.2
      *
      * @param useDefaultUserProfile If <code>true</code> the default user profile included the UIKit will be shown, <code>false</code> other wise.
-     * since 1.2.2
+     * @deprecated 3.6.0
+     * <p> Use {@link Common#setEnableUsingDefaultUserProfile(Boolean)} instead.</p>
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public static void setUseDefaultUserProfile(boolean useDefaultUserProfile) {
-        SendbirdUIKit.useDefaultUserProfile = useDefaultUserProfile;
+        UIKitConfig.getCommon().setEnableUsingDefaultUserProfile(useDefaultUserProfile);
     }
 
     /**
      * Sets whether the typing indicator is used on the channel list screen.
+     * since 3.0.0
      *
      * @param useChannelListTypingIndicators If <code>true</code> the typing indicator will be shown at the channel list item, <code>false</code> other wise.
-     * since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelListConfig#setEnableTypingIndicator(Boolean)}   instead.</p>
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public static void setUseChannelListTypingIndicators(boolean useChannelListTypingIndicators) {
-        SendbirdUIKit.useChannelListTypingIndicators = useChannelListTypingIndicators;
+        UIKitConfig.getGroupChannelListConfig().setEnableTypingIndicator(useChannelListTypingIndicators);
     }
 
     /**
      * Returns set value whether the typing indicator is used on the channel list screen.
+     * since 3.0.0
      *
      * @return the value whether the typing indicator is used on the channel list screen.
-     * since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelListConfig#getEnableTypingIndicator()}   instead.</p>
      */
+    @Deprecated
     public static boolean isUsingChannelListTypingIndicators() {
-        return useChannelListTypingIndicators;
+        return UIKitConfig.getGroupChannelListConfig().getEnableTypingIndicator();
     }
 
     /**
      * Sets whether the states read-receipt and delivery-receipt are used on the channel list screen.
+     * since 3.0.0
      *
      * @param useChannelListMessageReceiptStatus If <code>true</code> the states read-receipt and delivery-receipt will be shown at the channel list item, <code>false</code> other wise.
-     * since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelListConfig#setEnableMessageReceiptStatus(Boolean)} instead.</p>
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public static void setUseChannelListMessageReceiptStatus(boolean useChannelListMessageReceiptStatus) {
-        SendbirdUIKit.useChannelListMessageReceiptStatus = useChannelListMessageReceiptStatus;
+        UIKitConfig.getGroupChannelListConfig().setEnableMessageReceiptStatus(useChannelListMessageReceiptStatus);
     }
 
     /**
      * Returns set value whether the states read-receipt and delivery-receipt are used on the channel list screen.
+     * since 3.0.0
      *
      * @return the value whether the states read-receipt and delivery-receipt are used on the channel list screen.
-     * since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelListConfig#getEnableMessageReceiptStatus()} (Boolean)} instead.</p>
      */
+    @Deprecated
     public static boolean isUsingChannelListMessageReceiptStatus() {
-        return useChannelListMessageReceiptStatus;
+        return UIKitConfig.getGroupChannelListConfig().getEnableMessageReceiptStatus();
     }
 
     /**
      * Sets whether the user mention is used on the channel screen.
+     * since 3.0.0
      *
      * @param useMention If <code>true</code> the mention will be used at the channel, <code>false</code> other wise.
-     * since 3.0.0
+     * @since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#setEnableMention(Boolean)} instead.</p>
      */
+    @Deprecated
     public static void setUseUserMention(boolean useMention) {
-        SendbirdUIKit.useMention = useMention;
-    }
-
-    /**
-     * Sets the user mention configuration.
-     *
-     * @param config The configuration to be applied for the mention
-     * @see UserMentionConfig
-     * since 3.0.0
-     */
-    public static void setMentionConfig(@NonNull UserMentionConfig config) {
-        SendbirdUIKit.userMentionConfig = config;
+        UIKitConfig.getGroupChannelConfig().setEnableMention(useMention);
     }
 
     /**
      * Sets whether a nickname uses a user ID when there is no user nickname based on the user ID.
+     * since 3.3.0
      *
      * @param useUserIdForNickname If <code>true</code> the user's nickname uses user ID when the nickname is empty, <code>false</code> other wise.
-     * since 3.3.0
      */
     public static void setUseUserIdForNickname(boolean useUserIdForNickname) {
         SendbirdUIKit.useUserIdForNickname = useUserIdForNickname;
     }
 
     /**
-     * Returns the user mention configuration.
-     *
-     * @return The configuration applied for the user mention
-     * since 3.0.0
-     */
-    @NonNull
-    public static UserMentionConfig getUserMentionConfig() {
-        return userMentionConfig;
-    }
-
-    /**
      * Returns set value whether the user mention is used on the channel screen.
+     * since 3.0.0
      *
      * @return The value whether the user mention is used on the channel screen.
-     * since 3.0.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#setEnableMention(Boolean)} instead.</p>
      */
+    @Deprecated
     public static boolean isUsingUserMention() {
-        return SendbirdUIKit.useMention;
+        return UIKitConfig.getGroupChannelConfig().getEnableMention();
     }
 
     /**
      * Returns set value whether a nickname uses a user ID when there is no user nickname based on the user ID.
+     * since 3.3.0
      *
      * @return The value whether a nickname uses a user ID when there is no user nickname based on the user ID.
-     * since 3.3.0
      */
     public static boolean isUsingUserIdForNickname() {
-        return useUserIdForNickname;
+        return SendbirdUIKit.useUserIdForNickname;
     }
 
     /**
      * Sets whether the voice message is used on the channel screen and message thread screen.
      * The voice message is only active in group channels.
+     * since 3.4.0
      *
      * @param useVoiceMessage If <code>true</code> the voice message will be used, <code>false</code> other wise.
-     * since 3.4.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#setEnableVoiceMessage(Boolean)}   instead.</p>
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
     public static void setUseVoiceMessage(boolean useVoiceMessage) {
-        SendbirdUIKit.useVoiceMessage = useVoiceMessage;
+        UIKitConfig.getGroupChannelConfig().setEnableVoiceMessage(useVoiceMessage);
     }
 
     /**
      * Returns set value whether the voice message is used on the channel screen and message thread screen.
      * The voice message is only active in group channels.
+     * since 3.4.0
      *
      * @return The value whether the voice message is used on the channel screen, message thread screen.
-     * since 3.4.0
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#getEnableVoiceMessage()}.</p>
      */
+    @Deprecated
     public static boolean isUsingVoiceMessage() {
-        return SendbirdUIKit.useVoiceMessage;
+        return UIKitConfig.getGroupChannelConfig().getEnableVoiceMessage();
+    }
+
+    /**
+     * Sets <code>ReplyType</code>, which is how replies are displayed in the message list.
+     * since 2.2.0
+     *
+     * @param replyType A type that represents how to display replies in message list
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#setReplyType(ReplyType)} instead.</p>
+     */
+    @Deprecated
+    public static void setReplyType(@NonNull ReplyType replyType) {
+        UIKitConfig.getGroupChannelConfig().setReplyType(replyType);
+    }
+
+    /**
+     * Sets <code>ThreadReplySelectType</code>, which is how replies are displayed in the message list.
+     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
+     * since 3.3.0
+     *
+     * @param threadReplySelectType A type that represents where to go when selecting a reply
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#setThreadReplySelectType(ThreadReplySelectType)} instead.</p>
+     */
+    @Deprecated
+    public static void setThreadReplySelectType(@NonNull ThreadReplySelectType threadReplySelectType) {
+        UIKitConfig.getGroupChannelConfig().setThreadReplySelectType(threadReplySelectType);
+    }
+
+    /**
+     * Returns <code>ReplyType</code>, which is how replies are displayed in the message list.
+     * since 2.2.0
+     *
+     * @return The value of <code>ReplyType</code>.
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#getReplyType()} instead.</p>
+     */
+    @Deprecated
+    @NonNull
+    public static ReplyType getReplyType() {
+        return UIKitConfig.getGroupChannelConfig().getReplyType();
+    }
+
+    /**
+     * Returns <code>ThreadReplySelectType</code>, which determines where to go when reply is selected.
+     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
+     * since 3.3.0
+     *
+     * @return The value of <code>ThreadReplySelectType</code>.
+     * @deprecated 3.6.0
+     * <p> Use {@link UIKitConfig#getGroupChannelConfig#getThreadReplySelectType()} instead.</p>
+     */
+    @Deprecated
+    @NonNull
+    public static ThreadReplySelectType getThreadReplySelectType() {
+        return UIKitConfig.getGroupChannelConfig().getThreadReplySelectType();
     }
 
     /**
@@ -512,13 +520,20 @@ public class SendbirdUIKit {
      * @param handler Callback handler.
      */
     public static void connect(@Nullable ConnectHandler handler) {
-        TaskQueue.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
+        connect(new SendbirdChatImpl(), new TaskQueueImpl(), handler);
+    }
+
+    @VisibleForTesting
+    static void connect(@NonNull SendbirdChatWrapper sendbirdChat,
+                        @NonNull TaskQueueWrapper taskQueueWrapper,
+                        @Nullable ConnectHandler handler) {
+        taskQueueWrapper.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
             @Override
             public Pair<User, SendbirdException> call() throws Exception {
-                final Pair<User, SendbirdException> data = connect();
+                final Pair<User, SendbirdException> data = connect(sendbirdChat);
                 final User user = data.first;
                 final SendbirdException error = data.second;
-                if (SendbirdChat.getConnectionState() == ConnectionState.OPEN && user != null) {
+                if (sendbirdChat.getConnectionState() == ConnectionState.OPEN && user != null) {
                     UserInfo userInfo = adapter.getUserInfo();
                     String userId = userInfo.getUserId();
                     String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
@@ -528,12 +543,12 @@ public class SendbirdUIKit {
                         final UserUpdateParams params = new UserUpdateParams();
                         params.setNickname(nickname);
                         params.setProfileImageUrl(profileUrl);
-                        updateUserInfoBlocking(params);
+                        updateUserInfoBlocking(sendbirdChat, params);
                     }
 
                     Logger.dev("++ user nickname = %s, profileUrl = %s", user.getNickname(), user.getProfileUrl());
 
-                    final AppInfo appInfo = SendbirdChat.getAppInfo();
+                    final AppInfo appInfo = sendbirdChat.getAppInfo();
                     if (appInfo != null) {
                         if (appInfo.getUseReaction() &&
                                 appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
@@ -556,6 +571,14 @@ public class SendbirdUIKit {
                             } catch (Exception ignore) {
                             }
                         }
+
+                        if (SendbirdUIKit.uikitConfigRepo != null) {
+                            try {
+                                SendbirdUIKit.uikitConfigRepo.requestConfigurationsBlocking(sendbirdChat, appInfo.getUiKitConfigInfo());
+                            } catch (Exception e) {
+                                Logger.w(e);
+                            }
+                        }
                     }
                 }
 
@@ -575,7 +598,7 @@ public class SendbirdUIKit {
     }
 
     @NonNull
-    private static Pair<User, SendbirdException> connect() throws InterruptedException {
+    private static Pair<User, SendbirdException> connect(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
         AtomicReference<User> result = new AtomicReference<>();
         AtomicReference<SendbirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
@@ -583,7 +606,7 @@ public class SendbirdUIKit {
         String userId = userInfo.getUserId();
         String accessToken = adapter.getAccessToken();
 
-        SendbirdChat.connect(userId, accessToken, (user, e) -> {
+        sendbirdChat.connect(userId, accessToken, (user, e) -> {
             result.set(user);
             if (e != null) {
                 error.set(e);
@@ -619,10 +642,10 @@ public class SendbirdUIKit {
         SendbirdChat.updateCurrentUserInfo(params, handler);
     }
 
-    private static void updateUserInfoBlocking(@NonNull UserUpdateParams params) throws SendbirdException, InterruptedException {
+    private static void updateUserInfoBlocking(@NonNull SendbirdChatWrapper sendbirdChatWrapper, @NonNull UserUpdateParams params) throws SendbirdException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<SendbirdException> error = new AtomicReference<>();
-        SendbirdChat.updateCurrentUserInfo(params, e -> {
+        sendbirdChatWrapper.updateCurrentUserInfo(params, e -> {
             if (e != null) error.set(e);
             latch.countDown();
         });
@@ -752,50 +775,111 @@ public class SendbirdUIKit {
     }
 
     /**
-     * Sets <code>ReplyType</code>, which is how replies are displayed in the message list.
+     * Returns the user mention configuration.
      *
-     * @param replyType A type that represents how to display replies in message list
-     * since 2.2.0
-     */
-    public static void setReplyType(@NonNull ReplyType replyType) {
-        SendbirdUIKit.replyType = replyType;
-    }
-
-    /**
-     * Sets <code>ThreadReplySelectType</code>, which is how replies are displayed in the message list.
-     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
-     *
-     * @param threadReplySelectType A type that represents where to go when selecting a reply
-     * since 3.3.0
-     */
-    public static void setThreadReplySelectType(@NonNull ThreadReplySelectType threadReplySelectType) {
-        SendbirdUIKit.threadReplySelectType = threadReplySelectType;
-    }
-
-    /**
-     * Returns <code>ReplyType</code>, which is how replies are displayed in the message list.
-     *
-     * @return The value of <code>ReplyType</code>.
-     * since 2.2.0
+     * @return The configuration applied for the user mention
+     * since 3.0.0
      */
     @NonNull
-    public static ReplyType getReplyType() {
-        return SendbirdUIKit.replyType;
+    public static UserMentionConfig getUserMentionConfig() {
+        return userMentionConfig;
     }
 
     /**
-     * Returns <code>ThreadReplySelectType</code>, which determines where to go when reply is selected.
-     * <code>ThreadReplySelectType</code> can be applied when the reply type is <code>ReplyType.THREAD</code>.
+     * Sets the user mention configuration.
      *
-     * @return The value of <code>ThreadReplySelectType</code>.
-     * since 3.3.0
+     * @param config The configuration to be applied for the mention
+     * @see UserMentionConfig
+     * since 3.0.0
      */
-    @NonNull
-    public static ThreadReplySelectType getThreadReplySelectType() {
-        return SendbirdUIKit.threadReplySelectType;
+    public static void setMentionConfig(@NonNull UserMentionConfig config) {
+        SendbirdUIKit.userMentionConfig = config;
     }
 
+    /**
+     * @param level set the displaying log level. {@link LogLevel}
+     *
+     * since 1.0.2
+     */
+    public static void setLogLevel(@NonNull LogLevel level) {
+        Logger.setLogLevel(level.getLevel());
+    }
+
+    /**
+     * Returns the default theme mode.
+     *
+     * @see #setDefaultThemeMode(ThemeMode)
+     */
+    @NonNull
+    public static ThemeMode getDefaultThemeMode() {
+        return defaultThemeMode;
+    }
+
+    /**
+     * Sets the default theme mode. This is the default value used for all components, but can
+     * be overridden locally via the builder of a fragment.
+     *
+     * <p>Defaults to {@link ThemeMode#Light}.</p>
+     *
+     * @see #getDefaultThemeMode() ()
+     */
+    public static void setDefaultThemeMode(@NonNull ThemeMode themeMode) {
+        defaultThemeMode = themeMode;
+    }
+
+    /**
+     * Determines whether the theme mode is {@link ThemeMode#Dark}.
+     *
+     * @return True if the theme mode is the dark, false otherwise.
+     */
+    public static boolean isDarkMode() {
+        return defaultThemeMode == ThemeMode.Dark;
+    }
+
+    /**
+     * Returns the adapter of SendBirdUIKit.
+     *
+     * @see #init(SendbirdUIKitAdapter, Context)
+     */
+    @Nullable
+    public static SendbirdUIKitAdapter getAdapter() {
+        return adapter;
+    }
+
+    /**
+     * Returns the custom user list query handler.
+     *
+     * @return The callback handler.
+     */
+    @Nullable
+    public static CustomUserListQueryHandler getCustomUserListQueryHandler() {
+        return customUserListQueryHandler;
+    }
+
+    /**
+     * Returns the custom params handler.
+     *
+     * @return The callback handler.
+     * since 1.2.2
+     */
+    @Nullable
+    public static CustomParamsHandler getCustomParamsHandler() {
+        return customParamsHandler;
+    }
+
+    /**
+     * Context switching is performed to the main thread.
+     *
+     * @param runnable The Runnable that will be executed.
+     * since 3.6.0
+     */
     public static void runOnUIThread(@NonNull Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
+    }
+
+    @TestOnly
+    @Nullable
+    static UIKitConfigRepository getUikitConfigRepo() {
+        return uikitConfigRepo;
     }
 }

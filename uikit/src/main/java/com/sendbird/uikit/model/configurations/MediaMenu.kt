@@ -1,0 +1,96 @@
+package com.sendbird.uikit.model.configurations
+
+import android.content.Intent
+import android.os.Parcelable
+import com.sendbird.uikit.internal.model.template_messages.KeySet
+import com.sendbird.uikit.utils.IntentUtils
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import org.jetbrains.annotations.TestOnly
+
+/**
+ * This class is used to determine whether to show the menu for selecting media files in the channel.
+ *
+ * @since 3.6.0
+ */
+@Serializable
+@Parcelize
+data class MediaMenu internal constructor(
+    @SerialName(KeySet.enable_photo)
+    private var _enablePhoto: Boolean = true,
+    @SerialName(KeySet.enable_video)
+    private var _enableVideo: Boolean = true,
+
+    @Transient
+    private var enablePhotoMutable: Boolean? = null,
+    @Transient
+    private var enableVideoMutable: Boolean? = null
+) : Parcelable {
+    var enablePhoto: Boolean
+        /**
+         * Returns whether the menu for selecting photos is shown in the channel.
+         *
+         * @return `true` if the menu for selecting photos is shown in the channel, `false` otherwise.
+         * @since 3.6.0
+         */
+        get() = enablePhotoMutable ?: _enablePhoto
+        /**
+         * Sets whether the menu for selecting photos is shown in the channel.
+         *
+         * @param value `true` if the menu for selecting photos is shown in the channel, `false` otherwise.
+         * @since 3.6.0
+         */
+        set(value) {
+            this.enablePhotoMutable = value
+        }
+
+    var enableVideo: Boolean
+        /**
+         * Returns whether the menu for selecting videos is shown in the channel.
+         *
+         * @return `true` if the menu for selecting videos is shown in the channel, `false` otherwise.
+         * @since 3.6.0
+         */
+        get() = enableVideoMutable ?: _enableVideo
+        /**
+         * Sets whether the menu for selecting videos is shown in the channel.
+         *
+         * @param value `true` if the menu for selecting videos is shown in the channel, `false` otherwise.
+         * @since 3.6.0
+         */
+        set(value) {
+            this.enableVideoMutable = value
+        }
+
+    /**
+     * Returns the intent for selecting media files.
+     *
+     * @return the intent for selecting media files.
+     * @since 3.6.0
+     */
+    fun getGalleryIntent(): Intent {
+        return if (enablePhoto && !enableVideo) {
+            IntentUtils.getImageGalleryIntent()
+        } else if (!enablePhoto && enableVideo) {
+            IntentUtils.getVideoGalleryIntent()
+        } else {
+            IntentUtils.getGalleryIntent()
+        }
+    }
+
+    @JvmSynthetic
+    internal fun merge(config: MediaMenu): MediaMenu {
+        this._enablePhoto = config._enablePhoto
+        this._enableVideo = config._enableVideo
+        return this
+    }
+
+    @TestOnly
+    @JvmSynthetic
+    internal fun clear() {
+        this.enablePhotoMutable = null
+        this.enableVideoMutable = null
+    }
+}

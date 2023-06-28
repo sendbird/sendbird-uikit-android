@@ -22,6 +22,7 @@ import com.sendbird.uikit.databinding.SbViewOtherQuotedMessageBinding
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.utils.MessageUtils
@@ -80,7 +81,12 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         }
     }
 
-    override fun drawQuotedMessage(channel: GroupChannel, message: BaseMessage, textUIConfig: TextUIConfig?) {
+    override fun drawQuotedMessage(
+        channel: GroupChannel,
+        message: BaseMessage,
+        textUIConfig: TextUIConfig?,
+        messageListUIParams: MessageListUIParams
+    ) {
         binding.quoteReplyPanel.visibility = GONE
         if (!message.hasParentMessage()) return
 
@@ -92,7 +98,8 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         binding.ivQuoteReplyThumbnailOveray.visibility = GONE
 
         parentMessage?.let {
-            if (SendbirdUIKit.getReplyType() == ReplyType.THREAD && it.createdAt < channel.joinedAt * 1000) {
+            val replyType = messageListUIParams.channelConfig.replyType
+            if (replyType == ReplyType.THREAD && it.createdAt < channel.joinedAt * 1000) {
                 val messageUnavailable = context.getString(R.string.sb_text_channel_message_unavailable)
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
                 binding.tvQuoteReplyMessage.text =

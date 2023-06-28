@@ -1,11 +1,10 @@
 @file:UseSerializers(CSVColorIntAsStringSerializer::class)
-
 package com.sendbird.uikit.internal.model.notifications
 
 import com.sendbird.uikit.internal.model.serializer.CSVColorIntAsStringSerializer
 import com.sendbird.uikit.internal.model.template_messages.KeySet
 import com.sendbird.uikit.internal.model.template_messages.Weight
-import com.sendbird.uikit.internal.singleton.NotificationParser
+import com.sendbird.uikit.internal.singleton.JsonParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -21,12 +20,12 @@ internal data class NotificationChannelSettings(
     companion object {
         @JvmStatic
         fun fromJson(jsonStr: String): NotificationChannelSettings {
-            return NotificationParser.fromJson(jsonStr)
+            return JsonParser.fromJson(jsonStr)
         }
     }
 
     override fun toString(): String {
-        return NotificationParser.toJsonString(this)
+        return JsonParser.toJsonString(this)
     }
 
     fun getThemeOrNull(): NotificationChannelTheme? {

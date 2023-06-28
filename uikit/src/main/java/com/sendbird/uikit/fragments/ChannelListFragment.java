@@ -30,6 +30,7 @@ import com.sendbird.uikit.internal.ui.widgets.SelectChannelTypeView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.configurations.ChannelListConfig;
 import com.sendbird.uikit.modules.ChannelListModule;
 import com.sendbird.uikit.modules.components.ChannelListComponent;
 import com.sendbird.uikit.modules.components.HeaderComponent;
@@ -577,6 +578,19 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         @NonNull
         public Builder setErrorText(@StringRes int resId) {
             bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Sets the channel list configuration for this fragment.
+         *
+         * @param channelListConfig The channel list config.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.6.0
+         */
+        @NonNull
+        public Builder setChannelListConfig(@NonNull ChannelListConfig channelListConfig) {
+            this.bundle.putParcelable(StringSet.KEY_CHANNEL_LIST_CONFIG, channelListConfig);
             return this;
         }
 

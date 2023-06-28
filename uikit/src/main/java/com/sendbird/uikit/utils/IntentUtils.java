@@ -52,6 +52,11 @@ public class IntentUtils {
     }
 
     @NonNull
+    public static Intent getVideoGalleryIntent() {
+        return getGalleryIntent(new String[]{"video/*"});
+    }
+
+    @NonNull
     public static Intent getGalleryIntent() {
         return getGalleryIntent(new String[]{"image/*", "video/*"});
     }

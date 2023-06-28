@@ -39,7 +39,7 @@ import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
-import com.sendbird.uikit.utils.ReactionUtils;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.utils.TextUtils;
 
 import org.jetbrains.annotations.TestOnly;
@@ -234,7 +234,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
             next = getItem(position - 1);
         }
 
-        if (ReactionUtils.useReaction(channel) && holder instanceof GroupChannelMessageViewHolder) {
+        if (ChannelConfig.getEnableReactions(messageListUIParams.getChannelConfig(), channel) && holder instanceof GroupChannelMessageViewHolder) {
             GroupChannelMessageViewHolder groupChannelHolder = (GroupChannelMessageViewHolder) holder;
             List<Reaction> reactionList = current.getReactions();
             groupChannelHolder.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {

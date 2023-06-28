@@ -24,6 +24,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.OpenChannelMutedParticipantListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMutedParticipantListComponent;
@@ -220,7 +221,7 @@ public class OpenChannelMutedParticipantListFragment extends BaseModuleFragment<
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
         final Bundle args = getArguments();
-        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, SendbirdUIKit.shouldUseDefaultUserProfile());
+        final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
         if (getContext() == null || !useUserProfile) return;
         DialogUtils.showUserProfileDialog(getContext(), user, false, null, getModule().getLoadingDialogHandler());
     }

@@ -49,7 +49,8 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                             val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
                             TemplateViewGenerator.inflateViews(context, viewParams) { view, params ->
                                 params.action?.register(
-                                    view, { v, action, message ->
+                                    view,
+                                    { v, action, message ->
                                         try {
                                             // if `tags` key doesn't exist, empty value has to delivery.(spec)
                                             val tags: List<String> =

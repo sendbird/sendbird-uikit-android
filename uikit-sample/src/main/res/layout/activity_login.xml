@@ -43,6 +43,40 @@
                 android:text="@string/text_title_login_activity"
                 />
 
+            <LinearLayout
+                android:layout_marginTop="@dimen/sb_size_20"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="0dp"
+                    android:id="@+id/applicationId"
+                    android:layout_height="@dimen/sb_size_56"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/sb_size_16"
+                    android:paddingRight="@dimen/sb_size_16"
+                    app:boxStrokeColor="@color/primary_300"
+                    android:background="@drawable/selector_edittext_background_with_focusable"
+                    app:hintTextColor="@color/primary_300"
+                    app:boxBackgroundMode="outline"
+                    />
+                <Button
+                    android:text="SAVE"
+                    android:id="@+id/btSave"
+                    android:layout_marginLeft="@dimen/sb_size_10"
+                    android:background="@drawable/selector_button_primary_300"
+                    android:textSize="@dimen/sb_text_size_14"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:textColor="@color/ondark_01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sb_size_56"

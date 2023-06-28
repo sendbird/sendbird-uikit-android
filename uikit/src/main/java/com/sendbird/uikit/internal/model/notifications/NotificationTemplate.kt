@@ -2,7 +2,7 @@ package com.sendbird.uikit.internal.model.notifications
 
 import com.sendbird.uikit.internal.model.serializer.JsonElementToStringSerializer
 import com.sendbird.uikit.internal.model.template_messages.KeySet
-import com.sendbird.uikit.internal.singleton.NotificationParser
+import com.sendbird.uikit.internal.singleton.JsonParser
 import com.sendbird.uikit.log.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -14,7 +14,7 @@ internal data class NotificationTemplateList constructor(
     companion object {
         @JvmStatic
         fun fromJson(value: String): NotificationTemplateList {
-            return NotificationParser.fromJson(value)
+            return JsonParser.fromJson(value)
         }
     }
 }
@@ -38,7 +38,7 @@ internal data class NotificationTemplate constructor(
     companion object {
         @JvmStatic
         fun fromJson(value: String): NotificationTemplate {
-            return NotificationParser.fromJson(value)
+            return JsonParser.fromJson(value)
         }
     }
 
@@ -68,6 +68,6 @@ internal data class NotificationTemplate constructor(
     }
 
     override fun toString(): String {
-        return NotificationParser.toJsonString(this)
+        return JsonParser.toJsonString(this)
     }
 }

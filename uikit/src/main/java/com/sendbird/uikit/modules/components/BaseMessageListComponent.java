@@ -22,7 +22,6 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.adapter.BaseMessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.fragments.ItemAnimator;
@@ -40,6 +39,8 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.TimelineMessage;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 import org.jetbrains.annotations.TestOnly;
 
@@ -185,7 +186,9 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      */
     @NonNull
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
-        if (args != null) params.apply(context, args);
+        if (args != null) {
+            params.apply(context, args);
+        }
 
         this.messageRecyclerView = createMessageRecyclerView(context);
         final PagerRecyclerView recyclerView = this.messageRecyclerView.getRecyclerView();
@@ -776,12 +779,14 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      */
     public static class Params {
         private boolean useGroupUI = true;
-        private boolean useUserProfile = SendbirdUIKit.shouldUseDefaultUserProfile();
+        private boolean useUserProfile = UIKitConfig.getCommon().getEnableUsingDefaultUserProfile();
         private long initialStartingPoint = Long.MAX_VALUE;
         private boolean useBanner = true;
 
         @NonNull
         private final MessageUIConfig messageUIConfig;
+        @NonNull
+        private ChannelConfig channelConfig = UIKitConfig.getGroupChannelConfig();
 
         /**
          * Constructor
@@ -820,6 +825,27 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setUseBanner(boolean useBanner) {
             this.useBanner = useBanner;
+        }
+
+        /**
+         * Sets {@link ChannelConfig} that will be used in this component.
+         *
+         * @param channelConfig Channel config to be used in this component.
+         * since 3.6.0
+         */
+        public void setChannelConfig(@NonNull ChannelConfig channelConfig) {
+            this.channelConfig = channelConfig;
+        }
+
+        /**
+         * Returns {@link ChannelConfig} that will be used in this component.
+         *
+         * @return Channel config to be used in this component.
+         * since 3.6.0
+         */
+        @NonNull
+        public ChannelConfig getChannelConfig() {
+            return channelConfig;
         }
 
         /**
@@ -1001,6 +1027,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          * {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_ME} and {@code KEY_REACTION_LIST_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setReactionListBackground(Drawable, Drawable)}
          * {@code KEY_OGTAG_BACKGROUND_SENT_FROM_ME} and {@code KEY_OGTAG_BACKGROUND_SENT_FROM_OTHERS} are mapped to {@link #setOgtagBackground(Drawable, Drawable)}
          * {@code KEY_LINKED_TEXT_COLOR} is mapped to {@link #setLinkedTextColor(ColorStateList)}
+         * {@code KEY_CHANNEL_CONFIG} is mapped to {@link #setChannelConfig(ChannelConfig)}
          *
          * @param context The {@code Context} this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
@@ -1066,6 +1093,10 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
             if (args.containsKey(StringSet.KEY_USE_MESSAGE_LIST_BANNER)) {
                 setUseBanner(args.getBoolean(StringSet.KEY_USE_MESSAGE_LIST_BANNER));
             }
+            if (args.containsKey(StringSet.KEY_CHANNEL_CONFIG)) {
+                setChannelConfig(args.getParcelable(StringSet.KEY_CHANNEL_CONFIG));
+            }
+
             return this;
         }
 

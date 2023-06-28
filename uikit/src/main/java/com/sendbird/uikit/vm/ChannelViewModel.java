@@ -27,7 +27,6 @@ import com.sendbird.android.params.MessageCollectionCreateParams;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.common.MessagePayloadFilter;
 import com.sendbird.android.user.User;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
@@ -39,6 +38,8 @@ import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.widgets.StatusFrameView;
@@ -85,6 +86,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     private boolean needToLoadMessageCache = true;
     @NonNull
     private final SendbirdChatWrapper sendbirdChatWrapper;
+    @NonNull
+    private final ChannelConfig channelConfig;
 
     /**
      * Class that holds message data in a channel.
@@ -131,14 +134,19 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * since 3.0.0
      */
     public ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams) {
-        this(channelUrl, messageListParams, new SendbirdUIKitImpl(), new SendbirdChatImpl());
+        this(channelUrl, messageListParams, UIKitConfig.getGroupChannelConfig());
+    }
+
+    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull ChannelConfig channelConfig) {
+        this(channelUrl, messageListParams, new SendbirdUIKitImpl(), new SendbirdChatImpl(), channelConfig);
     }
 
     @VisibleForTesting
-    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper, @NonNull SendbirdChatWrapper sendbirdChatWrapper) {
+    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper, @NonNull SendbirdChatWrapper sendbirdChatWrapper, @NonNull ChannelConfig channelConfig) {
         super(channelUrl, sendbirdUIKitWrapper);
         this.messageListParams = messageListParams;
         this.sendbirdChatWrapper = sendbirdChatWrapper;
+        this.channelConfig = channelConfig;
 
         this.sendbirdChatWrapper.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
             @Override
@@ -481,7 +489,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         // even though a pending message is added, if the message is sent from the Thread page it shouldn't scroll to the first.
         final List<BaseMessage> pendingMessages = new ArrayList<>(collection.getPendingMessages());
         final List<BaseMessage> failedMessages = new ArrayList<>(collection.getFailedMessages());
-        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD) {
+        if (channelConfig.getReplyType() == ReplyType.THREAD) {
             boolean shouldCheckEvents = traceName.equals(StringSet.ACTION_FAILED_MESSAGE_ADDED)
                     || traceName.equals(StringSet.ACTION_PENDING_MESSAGE_ADDED);
 
@@ -713,7 +721,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     public MessageListParams createMessageListParams() {
         final MessageListParams messageListParams = new MessageListParams();
         messageListParams.setReverse(true);
-        if (SendbirdUIKit.getReplyType() != ReplyType.NONE) {
+        if (channelConfig.getReplyType() != ReplyType.NONE) {
             messageListParams.setReplyType(com.sendbird.android.message.ReplyType.ONLY_REPLY_TO_CHANNEL);
             messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
         } else {

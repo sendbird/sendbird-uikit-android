@@ -80,6 +80,10 @@ public class StringSet {
     public final static String KEY_USE_REFRESH_LAYOUT = "KEY_USE_REFRESH_LAYOUT";
     public final static String KEY_VOICE_MESSAGE_DURATION = "KEY_VOICE_MESSAGE_DURATION";
     public final static String KEY_INTERNAL_MESSAGE_TYPE = "KEY_INTERNAL_MESSAGE_TYPE";
+    public final static String KEY_CHANNEL_CONFIG = "KEY_CHANNEL_CONFIG";
+    public final static String KEY_CHANNEL_LIST_CONFIG = "KEY_CHANNEL_LIST_CONFIG";
+    public final static String KEY_CHANNEL_SETTING_CONFIG = "KEY_CHANNEL_SETTING_CONFIG";
+    public final static String KEY_OPEN_CHANNEL_CONFIG = "KEY_OPEN_CHANNEL_CONFIG";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String sbu_type = "sbu_type";
@@ -140,4 +144,10 @@ public class StringSet {
     public final static String custom = "custom";
     public final static String uikit = "uikit";
     public final static String delete = "delete";
+
+    // Config
+    public final static String none = "none";
+    public final static String quote_reply = "quote_reply";
+    public final static String thread = "thread";
+    public final static String parent = "parent";
 }

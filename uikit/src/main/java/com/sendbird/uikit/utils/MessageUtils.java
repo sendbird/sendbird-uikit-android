@@ -12,7 +12,6 @@ import com.sendbird.android.message.MessageMetaArray;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.android.user.User;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.MessageGroupType;
@@ -73,7 +72,7 @@ public class MessageUtils {
                 !frontMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
                 !frontMessage.getSender().equals(backMessage.getSender()) ||
                 !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt()) ||
-                (SendbirdUIKit.getReplyType() == ReplyType.THREAD && (
+                (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD && (
                         (!(frontMessage instanceof CustomizableMessage) && frontMessage.getThreadInfo().getReplyCount() > 0) ||
                         (!(backMessage instanceof CustomizableMessage) && backMessage.getThreadInfo().getReplyCount() > 0)
                 ));
@@ -96,7 +95,7 @@ public class MessageUtils {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
 
-        if (SendbirdUIKit.getReplyType() == ReplyType.THREAD &&
+        if (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD &&
                 !(message instanceof CustomizableMessage) &&
                 message.getThreadInfo().getReplyCount() > 0) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
