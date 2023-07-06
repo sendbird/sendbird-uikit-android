@@ -210,6 +210,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getViewModel().setIsChatScreenVisible(true);
+        getViewModel().markAsRead();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getViewModel().setIsChatScreenVisible(false);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         VoicePlayerManager.disposeAll();
