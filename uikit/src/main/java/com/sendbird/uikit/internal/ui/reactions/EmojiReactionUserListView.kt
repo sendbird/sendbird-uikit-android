@@ -16,6 +16,7 @@ import com.sendbird.android.message.Reaction
 import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.activities.adapter.EmojiReactionUserListAdapter
+import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbFragmentUserListBinding
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserListBinding
 import com.sendbird.uikit.model.EmojiManager
@@ -83,21 +84,25 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
         init {
             itemCount = reactionUserInfo.size
             reactionList.forEach {
-                val userList = reactionUserInfo[it]
-                fragmentList.add(UserListFragment(userList ?: emptyList()))
-            }
-            for (reaction in reactionList) {
-                val userList = reactionUserInfo[reaction]
-                fragmentList.add(UserListFragment(userList ?: emptyList()))
+                val userListFragment = UserListFragment()
+                reactionUserInfo[it]?.let { userList ->
+                    val bundle = Bundle()
+                    bundle.putInt(StringSet.KEY_EMOJI_REACTION_USER_LIST_SIZE, userList.size)
+                    userList.forEachIndexed { index, user ->
+                        bundle.putByteArray(StringSet.KEY_EMOJI_REACTION_USER_ + index.toString(), user?.serialize())
+                    }
+                    userListFragment.arguments = bundle
+                }
+                fragmentList.add(userListFragment)
             }
         }
     }
 
     // A class that inherits the Fragment must be public static.
     // If user who was already reacted has been banned or was deactivated, the reacted user may be empty.
-    internal class UserListFragment(userList: List<User?>) : Fragment() {
+    internal class UserListFragment : Fragment() {
         private lateinit var binding: SbFragmentUserListBinding
-        private val userList: List<User?>
+
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
             val themeInflater = inflater.cloneInContext(context)
             binding = SbFragmentUserListBinding.inflate(themeInflater)
@@ -107,13 +112,18 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+            val userList = mutableListOf<User?>()
+            arguments?.let {
+                val userListSize = it.getInt(StringSet.KEY_EMOJI_REACTION_USER_LIST_SIZE)
+                for (i in 0 until userListSize) {
+                    val user =
+                        User.buildFromSerializedData(it.getByteArray(StringSet.KEY_EMOJI_REACTION_USER_ + i.toString()))
+                    userList.add(user)
+                }
+            }
             val userListAdapter = EmojiReactionUserListAdapter(userList)
             binding.rvUserList.adapter = userListAdapter
             binding.rvUserList.setHasFixedSize(true)
-        }
-
-        init {
-            this.userList = ArrayList(userList)
         }
     }
 }

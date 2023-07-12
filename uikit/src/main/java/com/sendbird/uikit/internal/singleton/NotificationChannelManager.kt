@@ -6,6 +6,7 @@ import com.sendbird.android.exception.SendbirdException
 import com.sendbird.uikit.internal.extensions.runOnUiThread
 import com.sendbird.uikit.internal.interfaces.GetTemplateResultHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationChannelSettings
+import com.sendbird.uikit.internal.model.notifications.NotificationTemplate
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.log.Logger
 import java.util.concurrent.ConcurrentHashMap
@@ -13,9 +14,16 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 internal object NotificationChannelManager {
+    private data class TemplateRequestData(
+        val key: String,
+        val variables: Map<String, String>,
+        val themeMode: NotificationThemeMode,
+        val handler: GetTemplateResultHandler
+    )
+
     private val worker = Executors.newFixedThreadPool(10)
     private val isInitialized: AtomicBoolean = AtomicBoolean()
-    private val templateRequestHandlers: MutableMap<String, MutableSet<GetTemplateResultHandler>> = ConcurrentHashMap()
+    private val templateRequestDatas: MutableMap<String, MutableSet<TemplateRequestData>> = ConcurrentHashMap()
 
     private lateinit var templateRepository: NotificationTemplateRepository
     private lateinit var channelSettingsRepository: NotificationChannelRepository
@@ -47,25 +55,57 @@ internal object NotificationChannelManager {
             return
         }
 
-        synchronized(templateRequestHandlers) {
-            templateRequestHandlers[key]?.let {
-                it.add(callback)
-                Logger.i("-- return (fetching template request already exists), key=$key, handler count=${templateRequestHandlers.size}")
+        synchronized(templateRequestDatas) {
+            val request = TemplateRequestData(key, variables, themeMode, callback)
+            templateRequestDatas[key]?.let {
+                it.add(request)
+                Logger.i("-- return (fetching template request already exists), key=$key, handler count=${templateRequestDatas.size}")
                 return
             } ?: run {
-                templateRequestHandlers[key] = mutableSetOf<GetTemplateResultHandler>().apply {
-                    add(callback)
+                templateRequestDatas[key] = mutableSetOf<TemplateRequestData>().apply {
+                    add(request)
                 }
             }
         }
-        Logger.d("++ templateRequestHandlers size=${templateRequestHandlers.size}, templateRequestHandlers[key].size=${templateRequestHandlers[key]?.size}")
+        Logger.d("++ templateRequestHandlers size=${templateRequestDatas.size}, templateRequestHandlers[key].size=${templateRequestDatas[key]?.size}")
         worker.submit {
             try {
-                val template = templateRepository.requestTemplateBlocking(key).getTemplateSyntax(variables, themeMode)
-                Logger.d("++ template[$key]=$template")
-                notifyTemplateFetched(key, template)
+                val rawTemplate = templateRepository.requestTemplateBlocking(key)
+                makeAndNotifyTemplate(key, rawTemplate)
             } catch (e: Throwable) {
-                notifyTemplateFetched(key, null, SendbirdException(e))
+                notifyError(key, SendbirdException(e))
+            }
+        }
+    }
+
+    private fun makeAndNotifyTemplate(key: String, rawTemplate: NotificationTemplate) {
+        runOnUiThread {
+            synchronized(templateRequestDatas) {
+                try {
+                    Logger.d("NotificationChannelManager::makeAndNotifyTemplate()")
+                    templateRequestDatas[key]?.forEach { requestData ->
+                        // The template may be the same but variable may be a different message.(NOTI-1027)
+                        val template = rawTemplate.getTemplateSyntax(requestData.variables, requestData.themeMode)
+                        requestData.handler.onResult(key, template, null)
+                    }
+                } finally {
+                    templateRequestDatas.remove(key)
+                }
+            }
+        }
+    }
+
+    private fun notifyError(key: String, e: SendbirdException) {
+        runOnUiThread {
+            synchronized(templateRequestDatas) {
+                try {
+                    Logger.d("NotificationChannelManager::notifyError()")
+                    templateRequestDatas[key]?.forEach { requestData ->
+                        requestData.handler.onResult(key, null, e)
+                    }
+                } finally {
+                    templateRequestDatas.remove(key)
+                }
             }
         }
     }
@@ -104,21 +144,6 @@ internal object NotificationChannelManager {
         }
         // 1. call api
         return channelSettingsRepository.requestSettings()
-    }
-
-    private fun notifyTemplateFetched(key: String, template: String?, e: SendbirdException? = null) {
-        runOnUiThread {
-            synchronized(templateRequestHandlers) {
-                try {
-                    Logger.d("NotificationChannelManager::notifyTemplateFetched()")
-                    templateRequestHandlers[key]?.forEach { handler ->
-                        handler.onResult(key, template, e)
-                    }
-                } finally {
-                    templateRequestHandlers.remove(key)
-                }
-            }
-        }
     }
 
     @JvmStatic

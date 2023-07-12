@@ -24,6 +24,9 @@ import com.sendbird.android.handler.CompletionHandler;
 import com.sendbird.android.handler.ConnectHandler;
 import com.sendbird.android.handler.DisconnectHandler;
 import com.sendbird.android.handler.InitResultHandler;
+import com.sendbird.android.internal.sb.SendbirdPlatform;
+import com.sendbird.android.internal.sb.SendbirdProduct;
+import com.sendbird.android.internal.sb.SendbirdSdkInfo;
 import com.sendbird.android.params.InitParams;
 import com.sendbird.android.params.UserUpdateParams;
 import com.sendbird.android.user.User;
@@ -55,6 +58,8 @@ import com.sendbird.uikit.utils.UIKitPrefs;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -284,6 +289,15 @@ public class SendbirdUIKit {
                 Logger.d(">> onInitSucceed()");
                 try {
                     sendbirdChatWrapper.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
+                } catch (Throwable ignored) {
+                }
+                try {
+                    SendbirdSdkInfo o = new SendbirdSdkInfo(
+                        SendbirdProduct.UIKIT_CHAT,
+                        SendbirdPlatform.ANDROID,
+                        BuildConfig.VERSION_NAME
+                    );
+                    sendbirdChatWrapper.addSendbirdExtensions(Collections.singletonList(o), null);
                 } catch (Throwable ignored) {
                 }
 

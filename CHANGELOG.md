@@ -1,4 +1,7 @@
 # Changelog
+### v3.6.1 (Jul 12, 2023) with Chat SDK `v4.9.4`
+* Improved stability
+
 ### v3.6.0 (Jun 23, 2023) with Chat SDK `v4.9.1`
 * Support feature configuration 
   * Added `UIKitConfig` object

@@ -84,6 +84,8 @@ public class StringSet {
     public final static String KEY_CHANNEL_LIST_CONFIG = "KEY_CHANNEL_LIST_CONFIG";
     public final static String KEY_CHANNEL_SETTING_CONFIG = "KEY_CHANNEL_SETTING_CONFIG";
     public final static String KEY_OPEN_CHANNEL_CONFIG = "KEY_OPEN_CHANNEL_CONFIG";
+    public final static String KEY_EMOJI_REACTION_USER_LIST_SIZE = "KEY_EMOJI_REACTION_USER_LIST_SIZE";
+    public final static String KEY_EMOJI_REACTION_USER_ = "KEY_EMOJI_REACTION_USER_";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String sbu_type = "sbu_type";
