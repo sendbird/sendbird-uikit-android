@@ -9,6 +9,7 @@ import com.sendbird.android.handler.ConnectHandler
 import com.sendbird.android.handler.ConnectionHandler
 import com.sendbird.android.handler.InitResultHandler
 import com.sendbird.android.handler.UIKitConfigurationHandler
+import com.sendbird.android.internal.sb.SendbirdSdkInfo
 import com.sendbird.android.params.InitParams
 import com.sendbird.android.params.UserUpdateParams
 
@@ -41,6 +42,13 @@ internal class SendbirdChatImpl : SendbirdChatWrapper {
 
     override fun addExtension(key: String, version: String) {
         SendbirdChat.addExtension(key, version)
+    }
+
+    override fun addSendbirdExtensions(
+        extensions: List<SendbirdSdkInfo>,
+        customData: Map<String, String>?
+    ) {
+        SendbirdChat.addSendbirdExtensions(extensions, customData)
     }
 
     override fun getAppInfo(): AppInfo? = SendbirdChat.appInfo
