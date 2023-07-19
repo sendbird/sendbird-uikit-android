@@ -84,6 +84,7 @@ public class ViewUtils {
     private final static int MINIMUM_THUMBNAIL_WIDTH = 100;
     private final static int MINIMUM_THUMBNAIL_HEIGHT = 100;
     public static final Pattern MENTION = Pattern.compile("[" + SendbirdUIKit.getUserMentionConfig().getTrigger() + "][{](.*?)([}])");
+    public static final Pattern AEROBIE_URL_ONLY = Pattern.compile("^(http|https):\\/\\/aerobie-api([a-zA-Z0-9-]+)?\\.pivot\\.co\\/og(\\S)+$");
 
     public static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
         int unknownHintAppearance;
@@ -127,6 +128,12 @@ public class ViewUtils {
     ) {
         if (message == null) {
             return;
+        }
+
+        if (AEROBIE_URL_ONLY.matcher(message.getMessage().trim()).matches()) {
+            textView.setVisibility(View.GONE);
+        } else {
+            textView.setVisibility(View.VISIBLE);
         }
 
         if (MessageUtils.isUnknownType(message)) {
