@@ -728,9 +728,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{copy, edit, delete};
+                        actions = new DialogListItem[]{copy, edit};
                     } else {
-                        actions = new DialogListItem[]{copy, edit, delete, reply};
+                        actions = new DialogListItem[]{copy, edit, reply};
                     }
                 } else if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
