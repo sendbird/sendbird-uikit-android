@@ -1,4 +1,9 @@
 # Changelog
+### v3.7.0 (Jul 17 2023) with Chat SDK `v4.11.0`
+* Change the default authentication method for FeedChannel from WebSocket connection to API.
+* Added `authenticatedFeed(AuthenticationHandler)` in `SendbirdUIKit`
+* Added `moveToMessage(long, boolean)` in `ChannelFragment`
+
 ### v3.6.1 (Jul 12, 2023) with Chat SDK `v4.9.4`
 * Improved stability
 

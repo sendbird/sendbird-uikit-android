@@ -21,6 +21,7 @@ import com.sendbird.android.handler.MessageCollectionInitHandler;
 import com.sendbird.android.handler.NotificationCollectionHandler;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.params.MessageListParams;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
@@ -81,7 +82,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
-        connect((user, e) -> {
+        SendbirdUIKit.authenticateFeed((user, e) -> {
             if (user != null) {
                 FeedChannel.getChannel(channelUrl, (channel, e1) -> {
                     FeedNotificationChannelViewModel.this.channel = channel;

@@ -16,10 +16,10 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.AppInfo;
-import com.sendbird.android.ConnectionState;
 import com.sendbird.android.NotificationInfo;
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.handler.AuthenticationHandler;
 import com.sendbird.android.handler.CompletionHandler;
 import com.sendbird.android.handler.ConnectHandler;
 import com.sendbird.android.handler.DisconnectHandler;
@@ -58,7 +58,6 @@ import com.sendbird.uikit.utils.UIKitPrefs;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -264,8 +263,7 @@ public class SendbirdUIKit {
             @NonNull SendbirdUIKitAdapter adapter,
             @NonNull UIKitConfigRepository uikitConfigRepo,
             @NonNull Context context,
-            boolean isForeground)
-    {
+            boolean isForeground) {
         SendbirdUIKit.adapter = adapter;
         SendbirdUIKit.uikitConfigRepo = uikitConfigRepo;
 
@@ -293,9 +291,9 @@ public class SendbirdUIKit {
                 }
                 try {
                     SendbirdSdkInfo o = new SendbirdSdkInfo(
-                        SendbirdProduct.UIKIT_CHAT,
-                        SendbirdPlatform.ANDROID,
-                        BuildConfig.VERSION_NAME
+                            SendbirdProduct.UIKIT_CHAT,
+                            SendbirdPlatform.ANDROID,
+                            BuildConfig.VERSION_NAME
                     );
                     sendbirdChatWrapper.addSendbirdExtensions(Collections.singletonList(o), null);
                 } catch (Throwable ignored) {
@@ -534,20 +532,53 @@ public class SendbirdUIKit {
      * @param handler Callback handler.
      */
     public static void connect(@Nullable ConnectHandler handler) {
-        connect(new SendbirdChatImpl(), new TaskQueueImpl(), handler);
+        connectInternal(new SendbirdChatImpl(), new TaskQueueImpl(), handler);
+    }
+
+    /**
+     * Authenticate to Sendbird with given <code>UserInfo</code>.
+     * Unlike {@link #connect(ConnectHandler)}, it is used to issue the necessary credentials when using the API required for FeedNotification.
+     *
+     * @param handler Callback handler.
+     * since 3.7.0
+     */
+    public static void authenticateFeed(@Nullable AuthenticationHandler handler) {
+        connectInternal(ConnectType.AUTHENTICATE_FEED, new SendbirdChatImpl(), new TaskQueueImpl(), (user, e1) -> {
+            if (handler != null) handler.onAuthenticated(user, e1);
+        });
+    }
+
+    private enum ConnectType {
+        CONNECT,
+        AUTHENTICATE_FEED
     }
 
     @VisibleForTesting
-    static void connect(@NonNull SendbirdChatWrapper sendbirdChat,
-                        @NonNull TaskQueueWrapper taskQueueWrapper,
-                        @Nullable ConnectHandler handler) {
+    static void connectInternal(@NonNull SendbirdChatWrapper sendbirdChat,
+                                @NonNull TaskQueueWrapper taskQueueWrapper,
+                                @Nullable ConnectHandler handler) {
+        connectInternal(ConnectType.CONNECT, sendbirdChat, taskQueueWrapper, handler);
+    }
+
+    private static void connectInternal(
+            @NonNull ConnectType connectType,
+            @NonNull SendbirdChatWrapper sendbirdChat,
+            @NonNull TaskQueueWrapper taskQueueWrapper,
+            @Nullable ConnectHandler handler) {
         taskQueueWrapper.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
             @Override
             public Pair<User, SendbirdException> call() throws Exception {
-                final Pair<User, SendbirdException> data = connect(sendbirdChat);
+                final Pair<User, SendbirdException> data;
+                if (connectType == ConnectType.AUTHENTICATE_FEED) {
+                    data = authenticateFeedBlocking(sendbirdChat);
+                } else {
+                    data = connectBlocking(sendbirdChat);
+                }
+
                 final User user = data.first;
                 final SendbirdException error = data.second;
-                if (sendbirdChat.getConnectionState() == ConnectionState.OPEN && user != null) {
+                Logger.d("++ user=%s, error=%s", user, error);
+                if (error == null && user != null) {
                     UserInfo userInfo = adapter.getUserInfo();
                     String userId = userInfo.getUserId();
                     String nickname = TextUtils.isEmpty(userInfo.getNickname()) ? user.getNickname() : userInfo.getNickname();
@@ -564,8 +595,9 @@ public class SendbirdUIKit {
 
                     final AppInfo appInfo = sendbirdChat.getAppInfo();
                     if (appInfo != null) {
-                        if (appInfo.getUseReaction() &&
-                                appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())) {
+                        if (appInfo.getUseReaction()
+                                && appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())
+                                && connectType == ConnectType.CONNECT) {
                             updateEmojiList();
                         }
 
@@ -612,7 +644,7 @@ public class SendbirdUIKit {
     }
 
     @NonNull
-    private static Pair<User, SendbirdException> connect(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
+    private static Pair<User, SendbirdException> connectBlocking(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
         AtomicReference<User> result = new AtomicReference<>();
         AtomicReference<SendbirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
@@ -621,6 +653,27 @@ public class SendbirdUIKit {
         String accessToken = adapter.getAccessToken();
 
         sendbirdChat.connect(userId, accessToken, (user, e) -> {
+            result.set(user);
+            if (e != null) {
+                error.set(e);
+            }
+
+            latch.countDown();
+        });
+        latch.await();
+        return new Pair<>(result.get(), error.get());
+    }
+
+    @NonNull
+    private static Pair<User, SendbirdException> authenticateFeedBlocking(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
+        AtomicReference<User> result = new AtomicReference<>();
+        AtomicReference<SendbirdException> error = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        UserInfo userInfo = adapter.getUserInfo();
+        String userId = userInfo.getUserId();
+        String accessToken = adapter.getAccessToken();
+
+        sendbirdChat.authenticateFeed(userId, accessToken, null, (user, e) -> {
             result.set(user);
             if (e != null) {
                 error.set(e);
@@ -649,8 +702,8 @@ public class SendbirdUIKit {
     /**
      * Updates current <code>UserInfo</code>.
      *
-     * @param params   Params for update current users.
-     * @param handler    Callback handler.
+     * @param params  Params for update current users.
+     * @param handler Callback handler.
      */
     public static void updateUserInfo(@NonNull UserUpdateParams params, @Nullable CompletionHandler handler) {
         SendbirdChat.updateCurrentUserInfo(params, handler);
@@ -688,7 +741,7 @@ public class SendbirdUIKit {
 
     /**
      * Sets the factory that creates fragments generated by UIKit's basic activities.
-     *
+     * <p>
      * since 3.0.0
      */
     public static void setUIKitFragmentFactory(@NonNull UIKitFragmentFactory factory) {
@@ -812,7 +865,6 @@ public class SendbirdUIKit {
 
     /**
      * @param level set the displaying log level. {@link LogLevel}
-     *
      * since 1.0.2
      */
     public static void setLogLevel(@NonNull LogLevel level) {

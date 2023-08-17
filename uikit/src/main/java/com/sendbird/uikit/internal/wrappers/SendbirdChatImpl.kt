@@ -3,6 +3,7 @@ package com.sendbird.uikit.internal.wrappers
 import com.sendbird.android.AppInfo
 import com.sendbird.android.ConnectionState
 import com.sendbird.android.SendbirdChat
+import com.sendbird.android.handler.AuthenticationHandler
 import com.sendbird.android.handler.BaseChannelHandler
 import com.sendbird.android.handler.CompletionHandler
 import com.sendbird.android.handler.ConnectHandler
@@ -57,5 +58,14 @@ internal class SendbirdChatImpl : SendbirdChatWrapper {
 
     override fun getUIKitConfiguration(handler: UIKitConfigurationHandler?) {
         SendbirdChat.getUIKitConfiguration(handler)
+    }
+
+    override fun authenticateFeed(
+        userId: String,
+        accessToken: String?,
+        apiHost: String?,
+        handler: AuthenticationHandler?
+    ) {
+        SendbirdChat.authenticateFeed(userId, accessToken, apiHost, handler)
     }
 }
