@@ -2,6 +2,7 @@ package com.sendbird.uikit.internal.wrappers
 
 import com.sendbird.android.AppInfo
 import com.sendbird.android.ConnectionState
+import com.sendbird.android.handler.AuthenticationHandler
 import com.sendbird.android.handler.BaseChannelHandler
 import com.sendbird.android.handler.CompletionHandler
 import com.sendbird.android.handler.ConnectHandler
@@ -26,4 +27,6 @@ internal interface SendbirdChatWrapper {
     fun getAppInfo(): AppInfo?
     fun getConnectionState(): ConnectionState
     fun getUIKitConfiguration(handler: UIKitConfigurationHandler?)
+
+    fun authenticateFeed(userId: String, accessToken: String?, apiHost: String?, handler: AuthenticationHandler?)
 }

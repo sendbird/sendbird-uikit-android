@@ -95,6 +95,9 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
             parentView.tag = message.messageId
             val json = getExtendedSubData(message)
             templateKey = json.getString(KeySet.template_key)
+            if (templateKey.isNullOrEmpty()) {
+                throw IllegalArgumentException("this message must have template key.")
+            }
             var templateVariables: Map<String, String> = mapOf()
             if (json.has(KeySet.template_variables)) {
                 templateVariables = json.getJSONObject(KeySet.template_variables).toStringMap()

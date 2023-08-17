@@ -497,6 +497,28 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         startMessageThreadActivity(message);
     }
 
+    /**
+     * Find the same message as the message ID and move it to the matching message.
+     *
+     * @param messageId the message id to move
+     * @param withAnimation {@code true} animate the message after focusing on it
+     * @return {@code true} if there is a message to move, {@code false} otherwise
+     * since 3.7.0
+     */
+    public boolean moveToMessage(long messageId, boolean withAnimation) {
+        Logger.d(">> ChannelFragment::moveToMessage(%s), withAnimation=%s", messageId, withAnimation);
+        final MessageListComponent messageListComponent = getModule().getMessageListComponent();
+        final BaseMessage message = getViewModel().getMessageById(messageId);
+        if (message != null) {
+            final BaseMessage animateMessage = withAnimation ? message : null;
+            messageListComponent.moveToFocusedMessage(message.getCreatedAt(), animateMessage);
+            Logger.d("-- jumpToMessage return (true)");
+            return true;
+        }
+        Logger.d("-- return (couldn't find the message)");
+        return false;
+    }
+
     private void onMessageTooltipClicked(@NonNull View view) {
         scrollToFirst();
     }
