@@ -188,7 +188,7 @@ class MessageInputView @JvmOverloads constructor(
 
         message.sender?.let {
             binding.tvQuoteReplyTitle.text =
-                String.format(context.getString(R.string.sb_text_reply_to), it.nickname)
+                String.format(context.getString(R.string.sb_text_reply_to))
         }
         binding.tvQuoteReplyMessage.text = displayMessage
     }
