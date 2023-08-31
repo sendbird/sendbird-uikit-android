@@ -26,6 +26,7 @@ import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
+import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
@@ -275,6 +276,12 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
      */
     public void toggleReaction(@NonNull View view, @NonNull BaseMessage message, @NonNull String key, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
+
+        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeToggleReaction(!view.isSelected());
+        }
+
         if (!view.isSelected()) {
             Logger.i("__ add reaction : %s", key);
             channel.addReaction(message, key, (reactionEvent, e) -> {

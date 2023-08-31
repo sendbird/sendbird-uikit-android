@@ -54,6 +54,8 @@ public interface CustomParamsHandler {
      */
     default void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {}
 
+    default void onBeforeToggleReaction(@NonNull Boolean isAdded) {}
+
     /**
      * It will be called before sending multiple files message.
      * If you want add more data, you can override this and set the data.
