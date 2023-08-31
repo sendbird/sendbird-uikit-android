@@ -117,7 +117,6 @@
             android:layout_marginTop="-12dp"
             android:layout_marginLeft="@dimen/sb_size_8"
             android:layout_marginRight="@dimen/sb_size_8"
-            android:layout_marginBottom="@dimen/sb_size_20"
             android:background="@drawable/selector_home_channel_type_button">
 
             <TextView
@@ -169,6 +168,46 @@
                 app:layout_constraintStart_toEndOf="@id/tvOpenChannelDesc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/customSampleButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-12dp"
+            android:layout_marginLeft="@dimen/sb_size_8"
+            android:layout_marginRight="@dimen/sb_size_8"
+            android:layout_marginBottom="@dimen/sb_size_20"
+            android:background="@drawable/selector_home_channel_type_button">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_24"
+                android:layout_marginBottom="@dimen/sb_size_24"
+                android:layout_marginLeft="@dimen/sb_size_24"
+                android:layout_marginRight="@dimen/sb_size_24"
+                android:textSize="@dimen/sb_text_size_20"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+                android:textColor="@color/onlight_01"
+                android:lineSpacingExtra="@dimen/sb_text_size_4"
+                android:text="@string/text_custom_sample"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivCustomSampleImage"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivCustomSampleImage"
+                android:layout_width="@dimen/sb_size_24"
+                android:layout_height="@dimen/sb_size_24"
+                android:layout_marginEnd="@dimen/sb_size_24"
+                android:src="@drawable/icon_edit"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatButton

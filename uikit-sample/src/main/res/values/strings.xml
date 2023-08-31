@@ -24,6 +24,7 @@
     <string name="text_home">Home</string>
     <string name="text_group_channel">Group channel</string>
     <string name="text_open_channel">Open channel</string>
+    <string name="text_custom_sample">Custom sample</string>
     <string name="text_group_channel_description">1 on 1, Group chat with members</string>
     <string name="text_open_channel_description">Live streams, Open community chat</string>
     <string name="text_create_community">Create community</string>
