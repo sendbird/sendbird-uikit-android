@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.NotificationData;
 import com.sendbird.android.message.AdminMessage;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.CustomizableMessage;
@@ -177,5 +178,19 @@ public class MessageUtils {
             Logger.w(e);
         }
         return 0;
+    }
+
+    /**
+     * Get notification label from message.
+     * If the sub_type is 0, get the label from sub_data.
+     * If the sub_data doesn't include label data, get the label from custom_type.
+     */
+    @NonNull
+    public static String getNotificationLabel(@NonNull BaseMessage message) {
+        final NotificationData notificationData = message.getNotificationData();
+        if (notificationData != null) {
+            return notificationData.getLabel();
+        }
+        return message.getCustomType();
     }
 }

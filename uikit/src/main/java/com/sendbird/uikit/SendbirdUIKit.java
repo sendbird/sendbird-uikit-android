@@ -1,6 +1,7 @@
 package com.sendbird.uikit;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -18,7 +19,10 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.sendbird.android.AppInfo;
 import com.sendbird.android.NotificationInfo;
 import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.channel.GroupChannel;
+import com.sendbird.android.exception.SendbirdConnectionRequiredException;
 import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.exception.SendbirdInvalidArgumentsException;
 import com.sendbird.android.handler.AuthenticationHandler;
 import com.sendbird.android.handler.CompletionHandler;
 import com.sendbird.android.handler.ConnectHandler;
@@ -27,9 +31,13 @@ import com.sendbird.android.handler.InitResultHandler;
 import com.sendbird.android.internal.sb.SendbirdPlatform;
 import com.sendbird.android.internal.sb.SendbirdProduct;
 import com.sendbird.android.internal.sb.SendbirdSdkInfo;
+import com.sendbird.android.params.ApplicationUserListQueryParams;
+import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.android.params.InitParams;
 import com.sendbird.android.params.UserUpdateParams;
 import com.sendbird.android.user.User;
+import com.sendbird.android.user.query.ApplicationUserListQuery;
+import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
@@ -58,6 +66,7 @@ import com.sendbird.uikit.utils.UIKitPrefs;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -931,6 +940,39 @@ public class SendbirdUIKit {
     @Nullable
     public static CustomParamsHandler getCustomParamsHandler() {
         return customParamsHandler;
+    }
+
+    /**
+     * Initiates a group channel with the provided bot ID.
+     *
+     * @param botId The bot ID that is created in dashboard.
+     * @param isDistinct Determines whether to reuse an existing channel or create a new channel.
+     * @param handler The callback handler that lets you know if the request was successful or not.
+     * @since 3.8.0
+     */
+    public static void startChatWithAiBot(@NonNull Context context, @NonNull String botId, boolean isDistinct, @Nullable CompletionHandler handler) {
+        User currentUser = SendbirdChat.getCurrentUser();
+        if (currentUser == null) {
+            if (handler != null) {
+                handler.onResult(new SendbirdConnectionRequiredException("Current user is null", null));
+            }
+            return;
+        }
+
+        GroupChannelCreateParams groupChannelCreateParams = new GroupChannelCreateParams();
+        groupChannelCreateParams.setDistinct(isDistinct);
+        groupChannelCreateParams.setUserIds(Arrays.asList(botId, currentUser.getUserId()));
+        GroupChannel.createChannel(groupChannelCreateParams, (groupChannel, e1) -> {
+            if (e1 != null) {
+                if (handler != null) {
+                    handler.onResult(e1);
+                }
+                return;
+            }
+
+            Intent intent = ChannelActivity.newIntent(context, groupChannel.getUrl());
+            context.startActivity(intent);
+        });
     }
 
     /**

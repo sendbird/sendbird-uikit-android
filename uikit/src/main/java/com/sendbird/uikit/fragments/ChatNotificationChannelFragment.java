@@ -219,7 +219,9 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
                 boolean hasIntent = IntentUtils.hasIntent(requireContext(), intent);
                 if (!hasIntent) {
                     final String alterData = action.getAlterData();
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
+                    if (alterData != null) {
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
+                    }
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

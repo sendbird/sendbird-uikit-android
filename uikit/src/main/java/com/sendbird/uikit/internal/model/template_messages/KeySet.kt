@@ -105,6 +105,7 @@ internal object KeySet {
     const val enable_document = "enable_document"
     const val camera = "camera"
     const val gallery = "gallery"
+    const val label = "label"
 
     // analytics
     const val noti_stats = "noti:stats"

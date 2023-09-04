@@ -101,17 +101,6 @@ abstract public class UserTypeListAdapter<T extends User> extends BaseAdapter<T,
     }
 
     /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     */
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).hashCode();
-    }
-
-    /**
      * Register a callback to be invoked when the {@link BaseViewHolder#itemView} is clicked.
      *
      * @param listener The callback that will run

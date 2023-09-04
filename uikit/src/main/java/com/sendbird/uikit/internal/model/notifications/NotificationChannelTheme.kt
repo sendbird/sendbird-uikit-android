@@ -53,16 +53,29 @@ internal data class NotificationTheme(
     val radius: Int = 0,
     val backgroundColor: CSVColor,
     val unreadIndicatorColor: CSVColor,
+
+    /**
+     * This value is deprecated from version v1.2 of the Notification.
+     * Replaced by [label].
+     */
+    @Deprecated("This value is deprecated from version v1.2 of the Notification. Replaced by label.")
     val category: FontStyle,
     val sentAt: FontStyle,
-    val pressedColor: CSVColor
+    val pressedColor: CSVColor,
+    val label: FontStyle? = null,
 )
 
 @Serializable
 internal data class NotificationListTheme(
     val backgroundColor: CSVColor,
     val tooltip: TooltipStyle,
-    val timeline: TimelineStyle
+    val timeline: TimelineStyle,
+    /**
+     * Added from uikit version `3.8.0` of the Notification.
+     * Since the previously saved values did not include this field, a default value needs to be set.
+     * affected field : category
+     */
+    val category: CategoryFilterStyle? = null
 )
 
 @Serializable
@@ -116,4 +129,15 @@ internal data class TimelineStyle(
      */
     val textSize: Int = 12,
     val fontWeight: Weight = Weight.Normal
+)
+
+@Serializable
+internal data class CategoryFilterStyle(
+    val backgroundColor: CSVColor,
+    val fontWeight: Weight = Weight.Normal,
+    val radius: Int = 15,
+    val selectedBackgroundColor: CSVColor,
+    val selectedTextColor: CSVColor,
+    val textColor: CSVColor,
+    val textSize: Int,
 )

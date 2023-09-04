@@ -97,17 +97,6 @@ internal class ChatNotificationListAdapter(
     }
 
     /**
-     * Return ID for the message at `position`.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     * since 3.5.0
-     */
-    override fun getItemId(position: Int): Long {
-        return getItem(position).messageId
-    }
-
-    /**
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed

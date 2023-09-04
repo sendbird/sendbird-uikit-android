@@ -56,7 +56,7 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
             )
 
             binding.contentPanel.setBackgroundResource(messageBackground)
-            binding.tvCategory.setAppearance(context, leftCaptionAppearance)
+            binding.tvLabel.setAppearance(context, leftCaptionAppearance)
             binding.tvSentAt.setAppearance(context, rightCaptionAppearance)
             binding.contentPanel.radius = bubbleRadius.toFloat()
         } finally {
@@ -65,7 +65,7 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
     }
 
     fun drawMessage(channel: BaseChannel, message: BaseMessage, config: NotificationConfig? = null) {
-        binding.tvCategory.text = message.customType
+        binding.tvLabel.text = message.customType
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
         binding.ivProfileView.loadCircle(channel.coverUrl)
 
@@ -73,10 +73,11 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
         config?.let {
             it.theme.notificationTheme.apply {
                 val themeMode = config.themeMode
-                category.apply {
-                    binding.tvCategory.setTextColor(textColor.getColor(themeMode))
-                    binding.tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
-                    binding.tvCategory.setTypeface(fontWeight.value)
+                val fontStyle = label ?: category
+                fontStyle.apply {
+                    binding.tvLabel.setTextColor(textColor.getColor(themeMode))
+                    binding.tvLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+                    binding.tvLabel.setTypeface(fontWeight.value)
                 }
                 sentAt.apply {
                     binding.tvSentAt.setTextColor(textColor.getColor(themeMode))

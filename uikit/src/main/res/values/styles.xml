@@ -724,6 +724,9 @@
         <item name="sb_notification_recyclerview_background">@color/background_50</item>
         <item name="sb_notification_recyclerview_tooltip_background">@color/primary_300</item>
         <item name="sb_notification_recyclerview_tooltip_text_appearance">@style/SendbirdBody2OnDark01</item>
+        <item name="sb_category_filter_background">@drawable/selector_category_filter_menu_light</item>
+        <item name="sb_category_filter_text_color">@drawable/selector_category_filter_menu_text_color_light</item>
+        <item name="sb_category_filter_text_appearance">@style/SendbirdCaption2OnLight01</item>
     </style>
     <style name="Component.Status.FeedNotificationChannel">
         <item name="sb_status_frame_empty_icon">@drawable/icon_message</item>

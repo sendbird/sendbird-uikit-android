@@ -116,7 +116,6 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, @NonNull MessageListUIParams messageListUIParams) {
         if (channel != null) this.channel = OpenChannel.clone(channel);
         this.messageListUIParams = messageListUIParams;
-        setHasStableIds(true);
     }
 
     /**
@@ -227,26 +226,6 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
     public int getItemViewType(int position) {
         BaseMessage message = getItem(position);
         return MessageViewHolderFactory.getViewType(message);
-    }
-
-    /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     */
-    @Override
-    public long getItemId(int position) {
-        BaseMessage item = getItem(position);
-        if (TextUtils.isEmpty(item.getRequestId())) {
-            return item.getMessageId();
-        } else {
-            try {
-                return Long.parseLong(item.getRequestId());
-            } catch (Exception e) {
-                return item.getMessageId();
-            }
-        }
     }
 
     /**

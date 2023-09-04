@@ -60,9 +60,10 @@ class HomeActivity : AppCompatActivity() {
         binding.groupChannelButton.setOnClickListener { clickGroupChannel() }
         binding.openChannelButton.setOnClickListener { clickOpenChannel() }
         binding.customSampleButton.setOnClickListener { moveToCustomSample() }
+        binding.aiBotButton.setOnClickListener { clickAiBot() }
         binding.btSignOut.setOnClickListener { signOut() }
-        TextViewCompat.setTextAppearance(binding.tvUnreadCount, R.style.SendbirdCaption3OnDark01)
-        binding.tvUnreadCount.setBackgroundResource(R.drawable.shape_badge_background)
+        TextViewCompat.setTextAppearance(binding.tvGroupChannelUnreadCount, R.style.SendbirdCaption3OnDark01)
+        binding.tvGroupChannelUnreadCount.setBackgroundResource(R.drawable.shape_badge_background)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (ContextCompat.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED) {
@@ -86,11 +87,11 @@ class HomeActivity : AppCompatActivity() {
                     return@UnreadMessageCountHandler
                 }
                 if (totalCount > 0) {
-                    binding.tvUnreadCount.visibility = View.VISIBLE
-                    binding.tvUnreadCount.text =
+                    binding.tvGroupChannelUnreadCount.visibility = View.VISIBLE
+                    binding.tvGroupChannelUnreadCount.text =
                         if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString()
                 } else {
-                    binding.tvUnreadCount.visibility = View.GONE
+                    binding.tvGroupChannelUnreadCount.visibility = View.GONE
                 }
             })
         // register total unread count event
@@ -99,11 +100,11 @@ class HomeActivity : AppCompatActivity() {
             override fun onTotalUnreadMessageCountChanged(unreadMessageCount: UnreadMessageCount) {
                 val totalCount = unreadMessageCount.groupChannelCount
                 if (totalCount > 0) {
-                    binding.tvUnreadCount.visibility = View.VISIBLE
-                    binding.tvUnreadCount.text =
+                    binding.tvGroupChannelUnreadCount.visibility = View.VISIBLE
+                    binding.tvGroupChannelUnreadCount.text =
                         if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString()
                 } else {
-                    binding.tvUnreadCount.visibility = View.GONE
+                    binding.tvGroupChannelUnreadCount.visibility = View.GONE
                 }
             }
         })
@@ -128,6 +129,15 @@ class HomeActivity : AppCompatActivity() {
         val url = "https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-custom-sample"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(browserIntent)
+    }
+
+    private fun clickAiBot() {
+        val botId = "client_bot_____"
+        SendbirdUIKit.startChatWithAiBot(this, botId, true) { e ->
+            if (e != null) {
+                ContextUtils.toastError(this, "Failed to start chat with ai bot. ${e.message}")
+            }
+        }
     }
 
     private fun signOut() {

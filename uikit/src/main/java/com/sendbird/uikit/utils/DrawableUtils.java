@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
 import androidx.annotation.ColorInt;
@@ -143,5 +144,44 @@ public class DrawableUtils {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    @NonNull
+    public static StateListDrawable createRoundedSelector(int selectedColor, int defaultColor, int radius) {
+        final GradientDrawable selected = new GradientDrawable();
+        selected.setShape(GradientDrawable.RECTANGLE);
+        selected.setCornerRadius(radius);
+        selected.setColor(selectedColor);
+
+        final GradientDrawable normal = new GradientDrawable();
+        normal.setShape(GradientDrawable.RECTANGLE);
+        normal.setCornerRadius(radius);
+        normal.setColor(defaultColor);
+
+        final StateListDrawable stateListDrawable = new StateListDrawable();
+        stateListDrawable.addState(new int[]{android.R.attr.state_checked}, selected.mutate());
+        stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, selected.mutate());
+        stateListDrawable.addState(new int[]{-android.R.attr.state_checked}, normal.mutate());
+        stateListDrawable.addState(new int[]{-android.R.attr.state_pressed}, normal.mutate());
+        return stateListDrawable;
+    }
+
+    @NonNull
+    public static ColorStateList createTextColorSelector(int selectedColor, int defaultColor) {
+        final int[][] states = new int[][]{
+                new int[]{android.R.attr.state_checked},
+                new int[]{android.R.attr.state_pressed},
+                new int[]{-android.R.attr.state_checked},
+                new int[]{-android.R.attr.state_pressed}
+        };
+
+        final int[] colors = new int[]{
+                selectedColor,
+                selectedColor,
+                defaultColor,
+                defaultColor
+        };
+
+        return new ColorStateList(states, colors);
     }
 }

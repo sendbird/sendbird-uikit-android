@@ -68,7 +68,6 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     }
 
     public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener, @NonNull ChannelListUIParams params) {
-        setHasStableIds(true);
         setOnItemClickListener(listener);
         setOnItemLongClickListener(longClickListener);
         this.params = params;
@@ -206,17 +205,6 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
     @Override
     public int getItemCount() {
         return channelList.size();
-    }
-
-    /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     */
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).hashCode();
     }
 
     /**

@@ -38,11 +38,17 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/groupChannelButton"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:layout_marginTop="-10dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/sb_size_8"
             android:layout_marginRight="@dimen/sb_size_8"
             android:background="@drawable/selector_home_channel_type_button">
+            
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/groupChannelButtonGuildLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
 
             <TextView
                 android:id="@+id/tvGroupChannelTitle"
@@ -50,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sb_size_24"
                 android:layout_marginLeft="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_24"
                 android:text="@string/text_group_channel"
                 android:textSize="@dimen/sb_text_size_20"
                 android:fontFamily="sans-serif"
@@ -59,10 +64,10 @@
                 android:lineSpacingExtra="@dimen/sb_text_size_4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintBottom_toTopOf="@id/groupChannelButtonGuildLine" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvUnreadCount"
+                android:id="@+id/tvGroupChannelUnreadCount"
                 android:layout_gravity="center_horizontal"
                 android:translationX="@dimen/sb_size_4"
                 android:layout_width="wrap_content"
@@ -72,18 +77,19 @@
                 android:paddingLeft="@dimen/sb_size_6"
                 android:paddingRight="@dimen/sb_size_6"
                 android:includeFontPadding="false"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/tvGroupChannelTitle"
-                app:layout_constraintBottom_toBottomOf="@id/tvGroupChannelTitle"
-                app:layout_constraintStart_toEndOf="@id/tvGroupChannelTitle"/>
+                android:visibility="visible"
+                android:layout_marginEnd="@dimen/sb_size_4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivGroupChannelChevronRight"/>
 
             <TextView
                 android:id="@+id/tvGroupChannelDesc"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="@dimen/sb_size_0"
                 android:layout_marginTop="@dimen/sb_size_8"
-                android:layout_marginLeft="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_24"
+                android:layout_marginStart="@dimen/sb_size_24"
+                android:layout_marginBottom="@dimen/sb_size_24"
                 android:textSize="@dimen/sb_text_size_14"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
@@ -91,21 +97,18 @@
                 android:letterSpacing="-0.01"
                 android:lineSpacingExtra="@dimen/sb_text_size_2"
                 android:text="@string/text_group_channel_description"
-                app:layout_constraintTop_toBottomOf="@id/tvGroupChannelTitle"
+                app:layout_constraintTop_toBottomOf="@id/groupChannelButtonGuildLine"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivGroupChannelImage"
                 app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintEnd_toStartOf="@id/tvGroupChannelUnreadCount"/>
 
-            <ImageView
-                android:id="@+id/ivGroupChannelImage"
-                android:layout_width="@dimen/sb_size_78"
-                android:layout_height="@dimen/sb_size_56"
-                android:layout_marginEnd="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_24"
-                android:layout_marginBottom="@dimen/sb_size_24"
-                android:src="@drawable/img_groupchannel"
-                app:layout_constraintStart_toEndOf="@id/tvGroupChannelDesc"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivGroupChannelChevronRight"
+                android:layout_width="@dimen/sb_size_20"
+                android:layout_height="@dimen/sb_size_20"
+                android:src="@drawable/icon_chevron_right"
+                android:layout_marginEnd="@dimen/sb_size_16"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -113,11 +116,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/openChannelButton"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="-12dp"
             android:layout_marginLeft="@dimen/sb_size_8"
             android:layout_marginRight="@dimen/sb_size_8"
             android:background="@drawable/selector_home_channel_type_button">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/openChannelButtonGuildLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
 
             <TextView
                 android:id="@+id/tvOpenChannelTitle"
@@ -125,7 +135,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sb_size_24"
                 android:layout_marginLeft="@dimen/sb_size_24"
-                android:layout_marginRight="@dimen/sb_size_24"
                 android:text="@string/text_open_channel"
                 android:textSize="@dimen/sb_text_size_20"
                 android:fontFamily="sans-serif"
@@ -134,7 +143,7 @@
                 android:lineSpacingExtra="@dimen/sb_text_size_4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/openChannelButtonGuildLine"
                 />
 
             <TextView
@@ -151,21 +160,82 @@
                 android:letterSpacing="-0.01"
                 android:lineSpacingExtra="@dimen/sb_text_size_2"
                 android:text="@string/text_open_channel_description"
-                app:layout_constraintTop_toBottomOf="@id/tvOpenChannelTitle"
+                app:layout_constraintTop_toBottomOf="@id/openChannelButtonGuildLine"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivOpenChannelImage"
+                app:layout_constraintEnd_toStartOf="@id/ivOpenChannelChevronRight"
                 app:layout_constraintStart_toStartOf="parent"
                 />
 
-            <ImageView
-                android:id="@+id/ivOpenChannelImage"
-                android:layout_width="@dimen/sb_size_78"
-                android:layout_height="@dimen/sb_size_56"
-                android:layout_marginEnd="@dimen/sb_size_24"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivOpenChannelChevronRight"
+                android:layout_width="@dimen/sb_size_20"
+                android:layout_height="@dimen/sb_size_20"
+                android:src="@drawable/icon_chevron_right"
+                android:layout_marginEnd="@dimen/sb_size_16"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/aiBotButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-12dp"
+            android:layout_marginLeft="@dimen/sb_size_8"
+            android:layout_marginRight="@dimen/sb_size_8"
+            android:background="@drawable/selector_home_channel_type_button">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/aiBotButtonGuildLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <TextView
+                android:id="@+id/tvAiBotTitle"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_24"
+                android:layout_marginLeft="@dimen/sb_size_24"
+                android:text="@string/text_ai_chatbot"
+                android:textSize="@dimen/sb_text_size_20"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+                android:textColor="@color/onlight_01"
+                android:lineSpacingExtra="@dimen/sb_text_size_4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/aiBotButtonGuildLine"
+                />
+
+            <TextView
+                android:id="@+id/tvAiBotDesc"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="@dimen/sb_size_0"
+                android:layout_marginTop="@dimen/sb_size_8"
+                android:layout_marginLeft="@dimen/sb_size_24"
                 android:layout_marginRight="@dimen/sb_size_24"
-                android:layout_marginBottom="@dimen/sb_size_24"
-                android:src="@drawable/img_openchannel"
-                app:layout_constraintStart_toEndOf="@id/tvOpenChannelDesc"
+                android:textSize="@dimen/sb_text_size_14"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="normal"
+                android:textColor="@color/onlight_02"
+                android:letterSpacing="-0.01"
+                android:lineSpacingExtra="@dimen/sb_text_size_2"
+                android:text="@string/text_ai_chatbot_description"
+                app:layout_constraintTop_toBottomOf="@id/aiBotButtonGuildLine"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ivAiBotChevronRight"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivAiBotChevronRight"
+                android:layout_width="@dimen/sb_size_20"
+                android:layout_height="@dimen/sb_size_20"
+                android:src="@drawable/icon_chevron_right"
+                android:layout_marginEnd="@dimen/sb_size_16"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

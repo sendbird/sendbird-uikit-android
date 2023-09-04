@@ -74,6 +74,15 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
+        // In the case of Bot message stream mode, the `message` is updated, but `updated_at` is not updated.
+        boolean isBotOld = oldMessage.getSender() != null && oldMessage.getSender().isBot();
+        boolean isBotNew = newMessage.getSender() != null && newMessage.getSender().isBot();
+        if (isBotOld && isBotNew) {
+            if (!oldMessage.getMessage().equals(newMessage.getMessage())) {
+                return false;
+            }
+        }
+
         if (messageListUIParams.shouldUseMessageReceipt()) {
             if (oldChannel.getUnreadMemberCount(newMessage) != newChannel.getUnreadMemberCount(newMessage)) {
                 return false;
