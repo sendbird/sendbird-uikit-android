@@ -1,4 +1,9 @@
 # Changelog
+
+### v3.8.0 (Sep 4 2023) with Chat SDK `v4.12.0`
+* Support category filtering in feed notification channel. Categories by which messages can be filtered can be created and edited in the dashboard.
+* Added `startChatWithAiBot(Context, String, Boolean, CompletionHandler)` that initiates a group channel with AI Bot which is created in Sendbird dashboard and launches `ChannelActivity`. `SendbirdUIKit.init()` and `SendbirdUIKit.connect()` must precede.
+
 ### v3.7.0 (Jul 17 2023) with Chat SDK `v4.11.0`
 * Change the default authentication method for FeedChannel from WebSocket connection to API.
 * Added `authenticatedFeed(AuthenticationHandler)` in `SendbirdUIKit`

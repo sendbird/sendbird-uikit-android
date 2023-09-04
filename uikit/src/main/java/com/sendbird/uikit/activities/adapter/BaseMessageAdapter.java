@@ -25,11 +25,4 @@ abstract class BaseMessageAdapter<T, VH extends RecyclerView.ViewHolder> extends
      * @return A whole items that bound a RecyclerView.
      */
     abstract public List<T> getItems();
-
-    /**
-     * Return the ID for the item at position.
-     *
-     * @return The ID of the item at position
-     */
-    abstract public long getItemId(int position);
 }

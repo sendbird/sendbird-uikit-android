@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import com.sendbird.android.channel.FeedChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewFeedNotificationComponentBinding
@@ -18,6 +19,7 @@ import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.MessageUtils
 
 internal class FeedNotificationView @JvmOverloads internal constructor(
     context: Context,
@@ -61,7 +63,7 @@ internal class FeedNotificationView @JvmOverloads internal constructor(
             )
 
             binding.contentPanel.setBackgroundResource(messageBackground)
-            binding.tvCategory.setAppearance(context, leftCaptionAppearance)
+            binding.tvLabel.setAppearance(context, leftCaptionAppearance)
             binding.tvSentAt.setAppearance(context, rightCaptionAppearance)
             binding.contentPanel.radius = bubbleRadius.toFloat()
             binding.ivUnreadIndicator.background = DrawableUtils.createOvalIcon(context, unreadIndicatorColor)
@@ -71,20 +73,39 @@ internal class FeedNotificationView @JvmOverloads internal constructor(
     }
 
     @JvmOverloads
-    fun drawMessage(message: BaseMessage, lastSeen: Long, config: NotificationConfig? = null) {
-        binding.tvCategory.text = message.customType
+    fun drawMessage(message: BaseMessage, channel: FeedChannel, lastSeen: Long, config: NotificationConfig? = null) {
+        binding.tvLabel.text = MessageUtils.getNotificationLabel(message)
+        binding.tvLabel.visibility = if (channel.isTemplateLabelEnabled) View.VISIBLE else View.INVISIBLE
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
         binding.ivUnreadIndicator.visibility =
             if (message.createdAt > lastSeen) View.VISIBLE else View.GONE
+
+        // UI padding is different when category filter is enabled
+        if (channel.isCategoryFilterEnabled && channel.notificationCategories.isNotEmpty()) {
+            binding.root.setPadding(
+                binding.root.paddingLeft,
+                0,
+                binding.root.paddingRight,
+                context.resources.getDimensionPixelSize(R.dimen.sb_size_16)
+            )
+        } else {
+            binding.root.setPadding(
+                binding.root.paddingLeft,
+                context.resources.getDimensionPixelSize(R.dimen.sb_size_8),
+                binding.root.paddingRight,
+                context.resources.getDimensionPixelSize(R.dimen.sb_size_8)
+            )
+        }
 
         // apply config
         config?.let {
             it.theme.notificationTheme.apply {
                 val themeMode = config.themeMode
-                category.apply {
-                    binding.tvCategory.setTextColor(textColor.getColor(themeMode))
-                    binding.tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
-                    binding.tvCategory.setTypeface(fontWeight.value)
+                val fontStyle = label ?: category
+                fontStyle.apply {
+                    binding.tvLabel.setTextColor(textColor.getColor(themeMode))
+                    binding.tvLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
+                    binding.tvLabel.setTypeface(fontWeight.value)
                 }
                 sentAt.apply {
                     binding.tvSentAt.setTextColor(textColor.getColor(themeMode))

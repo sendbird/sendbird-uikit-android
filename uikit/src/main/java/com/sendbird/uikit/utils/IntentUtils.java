@@ -112,7 +112,7 @@ public class IntentUtils {
     @NonNull
     public static Intent getWebViewerIntent(@NonNull String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url = "http://" + url;
+            url = "https://" + url;
         }
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);

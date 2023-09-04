@@ -386,6 +386,9 @@
         <attr name="sb_notification_recyclerview_background" format="reference"/>
         <attr name="sb_notification_recyclerview_tooltip_background" format="reference"/>
         <attr name="sb_notification_recyclerview_tooltip_text_appearance" format="reference"/>
+        <attr name="sb_category_filter_background" format="reference"/>
+        <attr name="sb_category_filter_text_color" format="reference"/>
+        <attr name="sb_category_filter_text_appearance" format="reference"/>
     </declare-styleable>
 
     <!-- Message Input -->

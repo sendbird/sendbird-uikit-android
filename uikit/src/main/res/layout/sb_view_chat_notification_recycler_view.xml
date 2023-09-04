@@ -4,6 +4,27 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <HorizontalScrollView
+        android:id="@+id/svCategoryBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/sb_size_16"
+        android:paddingRight="@dimen/sb_size_16"
+        android:paddingTop="@dimen/sb_size_8"
+        android:paddingBottom="@dimen/sb_size_8"
+        android:scrollbarSize="@dimen/sb_size_0"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <RadioGroup
+            android:id="@+id/categoryMenuBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+        </RadioGroup>
+    </HorizontalScrollView>
 
     <com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView
         android:id="@+id/rvMessageList"
@@ -14,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/svCategoryBox"
         app:reverseLayout="true" />
 
     <com.sendbird.uikit.internal.ui.widgets.RoundCornerLayout

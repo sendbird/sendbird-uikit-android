@@ -1,5 +1,6 @@
 package com.sendbird.uikit.internal.ui.notifications
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -31,7 +32,7 @@ internal class FeedNotificationListAdapter(
     private var currentLastSeenAt: Long = 0
 
     // the worker must be a single thread.
-    private val differWorker by lazy { Executors.newSingleThreadExecutor() }
+    private val dataWorker by lazy { Executors.newSingleThreadExecutor() }
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
         set(value) {
             field = value
@@ -90,17 +91,6 @@ internal class FeedNotificationListAdapter(
     }
 
     /**
-     * Return ID for the message at `position`.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     * since 3.5.0
-     */
-    override fun getItemId(position: Int): Long {
-        return getItem(position).messageId
-    }
-
-    /**
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed
@@ -109,7 +99,7 @@ internal class FeedNotificationListAdapter(
     fun setItems(channel: FeedChannel, messageList: List<BaseMessage>, callback: OnMessageListUpdateHandler?) {
         val copiedChannel = FeedChannel.clone(channel)
         val copiedMessage = Collections.unmodifiableList(messageList)
-        differWorker.submit<Boolean> {
+        dataWorker.submit {
             val lock = CountDownLatch(1)
             val diffCallback = NotificationDiffCallback(
                 this@FeedNotificationListAdapter.messageList,
@@ -129,7 +119,22 @@ internal class FeedNotificationListAdapter(
                 }
             }
             lock.await()
-            true
+        }
+    }
+
+    /**
+     * Clear all data in the adapter.
+     *
+     * @since 3.8.0
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    fun clear() {
+        // use dataWorker to prevent the data synchronization problem.
+        dataWorker.submit {
+            SendbirdUIKit.runOnUIThread {
+                this.messageList = Collections.emptyList()
+                notifyDataSetChanged()
+            }
         }
     }
 

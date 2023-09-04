@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvCategory"
+        android:id="@+id/tvLabel"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/sb_size_4"
@@ -31,7 +31,7 @@
         android:layout_height="@dimen/sb_size_6"
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginBottom="@dimen/sb_size_4"
-        app:layout_constraintStart_toEndOf="@id/tvCategory"
+        app:layout_constraintStart_toEndOf="@id/tvLabel"
         app:layout_constraintEnd_toStartOf="@id/tvSentAt"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/contentTopBarrier"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sb_size_4"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvCategory, tvSentAt, ivUnreadIndicator" />
+        app:constraint_referenced_ids="tvLabel, tvSentAt, ivUnreadIndicator" />
 
     <com.sendbird.uikit.internal.ui.widgets.RoundCornerLayout
         android:id="@+id/contentPanel"

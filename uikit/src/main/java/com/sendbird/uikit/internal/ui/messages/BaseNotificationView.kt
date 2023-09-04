@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import com.sendbird.android.channel.NotificationData
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.internal.SendbirdStatistics
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
-import com.sendbird.uikit.internal.extensions.toList
-import com.sendbird.uikit.internal.extensions.toStringMap
 import com.sendbird.uikit.internal.interfaces.GetTemplateResultHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.template_messages.KeySet
@@ -25,7 +24,6 @@ import com.sendbird.uikit.internal.singleton.MessageTemplateParser
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.DrawableUtils
-import org.json.JSONObject
 
 internal abstract class BaseNotificationView @JvmOverloads internal constructor(
     context: Context,
@@ -53,9 +51,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                                     { v, action, message ->
                                         try {
                                             // if `tags` key doesn't exist, empty value has to delivery.(spec)
-                                            val tags: List<String> =
-                                                getExtendedSubData(message).optJSONArray(KeySet.tags)?.toList()
-                                                    ?: listOf()
+                                            val tags: List<String> = message.notificationData?.tags ?: listOf()
                                             val result = SendbirdStatistics.appendStat(
                                                 KeySet.noti_stats,
                                                 mapOf(
@@ -89,18 +85,15 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
             }
         }
 
-        var templateKey = ""
+        val notificationData: NotificationData? = message.notificationData
+        val templateKey: String = notificationData?.templateKey ?: ""
+        val templateVariables = notificationData?.templateVariables ?: mapOf()
+        Logger.d("++ message notificationData=$notificationData")
         try {
             parentView.removeAllViews()
             parentView.tag = message.messageId
-            val json = getExtendedSubData(message)
-            templateKey = json.getString(KeySet.template_key)
-            if (templateKey.isNullOrEmpty()) {
+            if (templateKey.isEmpty()) {
                 throw IllegalArgumentException("this message must have template key.")
-            }
-            var templateVariables: Map<String, String> = mapOf()
-            if (json.has(KeySet.template_variables)) {
-                templateVariables = json.getJSONObject(KeySet.template_variables).toStringMap()
             }
             if (!NotificationChannelManager.hasTemplate(templateKey)) {
                 val layout = createLoadingView(!message.isFeedChannel, themeMode)
@@ -113,13 +106,6 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
         } catch (e: Throwable) {
             handler.onResult(templateKey, null, SendbirdException(e))
         }
-    }
-
-    @Throws(Exception::class)
-    private fun getExtendedSubData(message: BaseMessage): JSONObject {
-        val subData: String = message.extendedMessage[KeySet.sub_data]
-            ?: throw IllegalArgumentException("this message must have sub data.")
-        return JSONObject(subData)
     }
 
     internal fun createFallbackNotification(

@@ -10,8 +10,14 @@ internal class FeedNotificationViewHolder internal constructor(
     val binding: SbViewFeedNotificationBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(channel: FeedChannel, message: BaseMessage, lastSeenAt: Long, config: NotificationConfig?) {
-        binding.feedNotification.onNotificationTemplateActionHandler = config?.onMessageTemplateActionHandler
-        binding.feedNotification.drawMessage(message, lastSeenAt, config)
+    fun bind(
+        channel: FeedChannel,
+        message: BaseMessage,
+        lastSeenAt: Long,
+        config: NotificationConfig?
+    ) {
+        binding.feedNotification.onNotificationTemplateActionHandler =
+            config?.onMessageTemplateActionHandler
+        binding.feedNotification.drawMessage(message, channel, lastSeenAt, config)
     }
 }

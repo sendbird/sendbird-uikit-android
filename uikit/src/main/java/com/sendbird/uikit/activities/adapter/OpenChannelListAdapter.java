@@ -44,7 +44,6 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * Constructor
      */
     public OpenChannelListAdapter() {
-        setHasStableIds(true);
     }
 
     /**
@@ -53,7 +52,6 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
      * @param listener The listener performing when the {@link OpenChannelPreviewHolder} is clicked.
      */
     public OpenChannelListAdapter(@Nullable OnItemClickListener<OpenChannel> listener) {
-        setHasStableIds(true);
         setOnItemClickListener(listener);
     }
 
@@ -187,18 +185,6 @@ public class OpenChannelListAdapter extends BaseAdapter<OpenChannel, BaseViewHol
     @Override
     public int getItemCount() {
         return openChannelList.size();
-    }
-
-    /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     * since 3.2.0
-     */
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).hashCode();
     }
 
     /**

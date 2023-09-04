@@ -144,7 +144,6 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     BaseMessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
         if (channel != null) this.channel = GroupChannel.clone(channel);
         this.messageListUIParams = messageListUIParams;
-        setHasStableIds(true);
         this.sendbirdUIKit = sendbirdUIKit;
     }
 
@@ -328,30 +327,6 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     public int getItemViewType(int position) {
         BaseMessage message = getItem(position);
         return MessageViewHolderFactory.getViewType(message);
-    }
-
-    /**
-     * Return ID for the message at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     */
-    @Override
-    public long getItemId(int position) {
-        BaseMessage item = getItem(position);
-
-        // When itemId of the pending message and the sent message are the same,
-        // there is no flickering.
-        // (The hashcode of the message is different from pending and sent)
-        if (TextUtils.isEmpty(item.getRequestId())) {
-            return item.getMessageId();
-        } else {
-            try {
-                return Long.parseLong(item.getRequestId());
-            } catch (Exception e) {
-                return item.getMessageId();
-            }
-        }
     }
 
     /**

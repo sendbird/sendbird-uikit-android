@@ -176,6 +176,9 @@
         <item name="sb_component_header">@style/Component.Dark.Header.FeedNotificationChannel</item>
         <item name="sb_component_list">@style/Component.Dark.List.FeedNotificationChannel</item>
         <item name="sb_component_status">@style/Component.Dark.Status.FeedNotificationChannel</item>
+        <item name="sb_category_filter_background">@drawable/selector_category_filter_menu_dark</item>
+        <item name="sb_category_filter_text_color">@drawable/selector_category_filter_menu_text_color_dark</item>
+        <item name="sb_category_filter_text_appearance">@style/SendbirdCaption2OnDark01</item>
     </style>
     <style name="Module.Dark.ChatNotificationChannel">
         <item name="sb_component_header">@style/Component.Dark.Header.ChatNotificationChannel</item>

@@ -34,6 +34,9 @@ import com.sendbird.uikit.vm.FeedNotificationChannelViewModel;
 import com.sendbird.uikit.vm.NotificationViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
+import java.util.Collections;
+import java.util.List;
+
 public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNotificationChannelModule, FeedNotificationChannelViewModel> {
 
     @Nullable
@@ -94,6 +97,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
 
         module.getHeaderComponent().notifyChannelChanged(channel);
         module.getNotificationListComponent().notifyChannelChanged(channel);
+        module.getStatusComponent().notifyChannelChanged(channel);
         viewModel.onChannelDeleted().observe(getViewLifecycleOwner(), channelUrl -> shouldActivityFinish());
         loadInitial();
     }
@@ -124,6 +128,11 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
         Logger.d(">> FeedNotificationChannelFragment::onBindFeedNotificationListComponent()");
         listComponent.setOnMessageTemplateActionHandler(actionHandler != null ? actionHandler : this::handleAction);
         listComponent.setOnTooltipClickListener(v -> listComponent.scrollToFirst());
+        listComponent.setOnNotificationCategorySelectListener(category -> {
+            Logger.d("++ selected category = %s", category);
+            listComponent.clearData();
+            loadInitial(Long.MAX_VALUE, Collections.singletonList(category.getCustomType()));
+        });
 
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), listComponent::notifyChannelChanged);
         viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), messageData -> {
@@ -217,7 +226,9 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
                 boolean hasIntent = IntentUtils.hasIntent(requireContext(), intent);
                 if (!hasIntent) {
                     final String alterData = action.getAlterData();
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
+                    if (alterData != null) {
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
+                    }
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -263,7 +274,11 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
     }
 
     private synchronized void loadInitial() {
-        getViewModel().loadInitial(Long.MAX_VALUE);
+        loadInitial(Long.MAX_VALUE, Collections.emptyList());
+    }
+
+    private synchronized void loadInitial(long startingPoint, @Nullable List<String> customTypes) {
+        getViewModel().loadInitial(startingPoint, customTypes);
     }
 
     /**

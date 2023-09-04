@@ -193,8 +193,12 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
      */
     @UiThread
     public synchronized boolean loadInitial(final long startingPoint) {
+        return loadInitial(startingPoint, Collections.emptyList());
+    }
+
+    public synchronized boolean loadInitial(final long startingPoint, @Nullable List<String> customTypes) {
         Logger.d(">> FeedNotificationChannelViewModel::loadInitial() startingPoint=%s", startingPoint);
-        initNotificationCollection(startingPoint);
+        initNotificationCollection(startingPoint, customTypes);
         if (collection == null) {
             Logger.d("-- channel instance is null. an authenticate process must be proceed first");
             return false;
@@ -204,6 +208,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendbirdException e) {
                 if (e == null && cachedList != null && cachedList.size() > 0) {
+                    Logger.d("++ loadInitial from cache cachedList.size=%s", cachedList.size());
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
                 }
             }
@@ -211,6 +216,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendbirdException e) {
                 if (e == null && apiResultList != null) {
+                    Logger.d("++ loadInitial from remote apiResultList.size=%s", apiResultList.size());
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
                     if (apiResultList.size() > 0) {
                         if (isVisible) markAsRead();
@@ -319,7 +325,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
         channelDeleted.setValue(channelUrl);
     }
 
-    private synchronized void initNotificationCollection(final long startingPoint) {
+    private synchronized void initNotificationCollection(final long startingPoint, @Nullable List<String> customTypes) {
         Logger.i(">> FeedNotificationChannelViewModel::initMessageCollection()");
         final FeedChannel channel = getChannel();
         if (channel == null) return;
@@ -329,8 +335,13 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
         if (this.messageListParams == null) {
             this.messageListParams = createMessageListParams();
         }
-        this.messageListParams.setReverse(true);
-        this.collection = channel.createNotificationCollection(this.messageListParams, startingPoint, new NotificationCollectionHandler() {
+
+        final MessageListParams params = this.messageListParams.clone();
+        params.setReverse(true);
+        if (customTypes != null) {
+            params.setCustomTypes(customTypes);
+        }
+        this.collection = channel.createNotificationCollection(params, startingPoint, new NotificationCollectionHandler() {
             @UiThread
             @Override
             public void onMessagesAdded(@NonNull NotificationContext context, @NonNull FeedChannel channel, @NonNull List<BaseMessage> messages) {

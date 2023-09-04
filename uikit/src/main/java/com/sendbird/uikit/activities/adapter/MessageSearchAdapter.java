@@ -97,17 +97,6 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
     }
 
     /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     */
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).getMessageId();
-    }
-
-    /**
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.

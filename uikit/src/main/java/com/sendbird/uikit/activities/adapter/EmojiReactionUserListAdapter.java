@@ -38,7 +38,6 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
      * since 1.1.0
      */
     public EmojiReactionUserListAdapter(@NonNull List<User> userList) {
-        setHasStableIds(true);
         this.userList = userList;
     }
 
@@ -117,20 +116,6 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     @Override
     public int getItemCount() {
         return userList.size();
-    }
-
-    /**
-     * Return hashcode for the item at <code>position</code>.
-     *
-     * @param position Adapter position to query
-     * @return the stable ID of the item at position
-     * since 1.1.0
-     */
-    @Override
-    public long getItemId(int position) {
-        final User user = getItem(position);
-        if (user == null) return super.getItemId(position);
-        return user.hashCode();
     }
 
     /**

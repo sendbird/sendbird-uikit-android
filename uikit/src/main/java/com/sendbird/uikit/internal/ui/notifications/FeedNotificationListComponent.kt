@@ -3,16 +3,23 @@ package com.sendbird.uikit.internal.ui.notifications
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sendbird.android.channel.FeedChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
+import com.sendbird.uikit.interfaces.OnNotificationCategorySelectListener
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
+import com.sendbird.uikit.internal.extensions.intToDp
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager
+import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.Action
+import com.sendbird.uikit.utils.DrawableUtils
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * This class creates and performs a view corresponding the notification message list area in Sendbird UIKit.
@@ -48,7 +55,21 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
             }
         }
 
-    override fun onCreateView(context: Context, inflater: LayoutInflater, parent: ViewGroup, args: Bundle?): View {
+    /**
+     * Sets or Gets the listener to be called when the notification category is selected.
+     *
+     * @since 3.8.0
+     */
+    var onNotificationCategorySelectListener: OnNotificationCategorySelectListener? = null
+
+    private val isSetCategoryFilter = AtomicBoolean()
+
+    override fun onCreateView(
+        context: Context,
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        args: Bundle?
+    ): View {
         val layout = super.onCreateView(context, inflater, parent, args)
         val layoutManager = InnerLinearLayoutManager(context).apply { reverseLayout = false }
         notificationListView?.recyclerView?.layoutManager = layoutManager
@@ -80,6 +101,51 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
         if (adapter == null) {
             adapter = FeedNotificationListAdapter(channel, uiConfig)
         }
+
+        // if the category filter view is already set it shouldn't be set it again (spec)
+        if (isSetCategoryFilter.get()) return
+        notificationListView?.let { recyclerView ->
+            recyclerView.enableCategoryFilterView(channel.isCategoryFilterEnabled && channel.notificationCategories.isNotEmpty())
+            Logger.i("++ channel.categories size: ${channel.notificationCategories.size}")
+            channel.notificationCategories.forEach { category ->
+                Logger.i("++ category: $category")
+                recyclerView.categoryFilterBox.addView(
+                    recyclerView.createCategoryFilterItemView().apply {
+                        text = category.name
+                        id = category.id.hashCode()
+                        isChecked = category.isDefault
+
+                        if (uiConfig == null) return@apply
+                        val themeMode = uiConfig.themeMode
+                        uiConfig.theme.listTheme.category?.let {
+                            setTextColor(
+                                DrawableUtils.createTextColorSelector(
+                                    it.selectedTextColor.getColor(themeMode),
+                                    it.textColor.getColor(themeMode)
+                                )
+                            )
+                            setTextSize(TypedValue.COMPLEX_UNIT_SP, it.textSize.toFloat())
+                            setTypeface(it.fontWeight.value)
+                            background = DrawableUtils.createRoundedSelector(
+                                it.selectedBackgroundColor.getColor(themeMode),
+                                it.backgroundColor.getColor(themeMode),
+                                resources.intToDp(it.radius),
+                            )
+                        }
+                    }
+                )
+            }
+
+            // Setting checked changes listener must be here after setup the category filter view.
+            // if not, the callback of listener is always called whenever the view is created.
+            recyclerView.categoryFilterBox.setOnCheckedChangeListener { _, checkedId ->
+                channel.notificationCategories.find { it.id.hashCode() == checkedId }
+                    ?.let { category ->
+                        onNotificationCategorySelectListener?.onNotificationCategorySelected(category)
+                    }
+            }
+            isSetCategoryFilter.set(true)
+        }
     }
 
     /**
@@ -98,6 +164,15 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
         notificationListView?.let {
             adapter?.setItems(channel, notificationList, callback)
         }
+    }
+
+    /**
+     * Clear all notification data.
+     *
+     * @since 3.8.0
+     */
+    fun clearData() {
+        adapter?.clear()
     }
 
     /**
