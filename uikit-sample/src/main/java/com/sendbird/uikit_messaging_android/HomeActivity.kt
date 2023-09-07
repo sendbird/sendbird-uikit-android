@@ -132,7 +132,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun clickAiBot() {
-        val botId = "client_bot_____"
+        val botId = "client_bot"
         SendbirdUIKit.startChatWithAiBot(this, botId, true) { e ->
             if (e != null) {
                 ContextUtils.toastError(this, "Failed to start chat with ai bot. ${e.message}")
