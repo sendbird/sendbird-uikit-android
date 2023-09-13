@@ -192,6 +192,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         shouldDismissLoadingDialog();
         final GroupChannel channel = viewModel.getChannel();
         if (status == ReadyStatus.ERROR || channel == null || channel.isChatNotification()) {
+            Logger.e("status: " + status + ", channel is null: " + (channel == null) + ", isChatNotification: " + (channel != null ? channel.isChatNotification() : "channel null"));
             if (isFragmentAlive()) {
                 toastError(R.string.sb_text_error_get_channel);
                 shouldActivityFinish();

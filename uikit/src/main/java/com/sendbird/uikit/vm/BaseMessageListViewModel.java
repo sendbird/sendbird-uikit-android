@@ -314,6 +314,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                 getChannel(channelUrl, (channel, e1) -> {
                     this.channel = channel;
                     if (e1 != null || channel == null) {
+                        Logger.e("Channel authenticate failed: " + (e1 != null ? e1.getMessage() : "channel null"));
                         handler.onAuthenticationFailed();
                     } else {
                         this.memberFinder = new MemberFinder(channel, SendbirdUIKit.getUserMentionConfig());
@@ -321,6 +322,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                     }
                 });
             } else {
+                Logger.e("Channel authenticate failed - null user: " + (e != null ? e.getMessage() : "no exception"));
                 handler.onAuthenticationFailed();
             }
         });

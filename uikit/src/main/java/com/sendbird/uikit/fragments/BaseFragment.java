@@ -105,8 +105,9 @@ public abstract class BaseFragment extends Fragment implements DialogProvider {
      * Finishes the activity that has the current fragment.
      */
     protected void shouldActivityFinish() {
-        if (getActivity() != null) {
-            getActivity().finish();
-        }
+        // We don't want Sendbird chat to close our MainActivity
+//        if (getActivity() != null) {
+//            getActivity().finish();
+//        }
     }
 }
