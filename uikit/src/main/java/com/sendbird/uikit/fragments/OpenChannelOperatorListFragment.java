@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
@@ -30,9 +29,10 @@ import com.sendbird.uikit.modules.OpenChannelOperatorListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelOperatorListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.OpenChannelOperatorListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -61,7 +61,7 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
     @NonNull
     @Override
     protected OpenChannelOperatorListModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelOperatorListModule(requireContext());
+        return ModuleProviders.getOpenChannelOperatorList().provide(requireContext(), args);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
     @NonNull
     @Override
     protected OpenChannelOperatorListViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelOperatorListViewModel.class);
+        return ViewModelProviders.getOpenChannelOperatorList().provide(this, getChannelUrl(), null);
     }
 
     @Override
@@ -199,16 +199,16 @@ public class OpenChannelOperatorListFragment extends BaseModuleFragment<OpenChan
         DialogListItem removeOperator = new DialogListItem(R.string.sb_text_unregister_operator);
         items = new DialogListItem[]{removeOperator};
         DialogUtils.showListDialog(getContext(), user.getNickname(),
-                items,
-                (v, p, key) -> {
-                    shouldShowLoadingDialog();
-                    getViewModel().removeOperator(user.getUserId(), e -> {
-                        shouldDismissLoadingDialog();
-                        if (e != null) {
-                            toastError(R.string.sb_text_error_unregister_operator);
-                        }
-                    });
-                }
+            items,
+            (v, p, key) -> {
+                shouldShowLoadingDialog();
+                getViewModel().removeOperator(user.getUserId(), e -> {
+                    shouldDismissLoadingDialog();
+                    if (e != null) {
+                        toastError(R.string.sb_text_error_unregister_operator);
+                    }
+                });
+            }
         );
     }
 

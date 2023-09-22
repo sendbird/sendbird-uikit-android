@@ -93,7 +93,7 @@ public class MessageSearchViewModel extends BaseViewModel implements LifecycleOb
             params.setOrder(query.getOrder());
             params.setMessageTimestampFrom(query.getMessageTimestampFrom());
         } else {
-            final long timestampFrom = channel == null ? 0 : Math.max(channel.getJoinedAt(), channel.getInvitedAt());
+            final long timestampFrom = channel == null ? 0 : channel.getMessageOffsetTimestamp();
             params.setMessageTimestampFrom(timestampFrom);
             params.setOrder(MessageSearchQuery.Order.TIMESTAMP);
         }

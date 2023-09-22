@@ -18,6 +18,7 @@ public interface PagedQueryHandler<T> {
      * since 3.0.0
      */
     void loadInitial(@NonNull OnListResultHandler<T> handler);
+
     /**
      * Called when a list of user has been loaded.
      *

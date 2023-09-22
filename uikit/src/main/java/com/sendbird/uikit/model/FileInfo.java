@@ -9,13 +9,19 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.annotation.WorkerThread;
 
 import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.MessageMetaArray;
 import com.sendbird.android.message.ThumbnailSize;
+import com.sendbird.android.message.UploadableFileInfo;
 import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MultipleFilesMessageCreateParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnResultHandler;
+import com.sendbird.uikit.internal.model.VoiceMetaInfo;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
@@ -50,6 +56,8 @@ final public class FileInfo {
     private final File file;
     @Nullable
     private final File cacheDir;
+    @Nullable
+    private final VoiceMetaInfo voiceMetaInfo;
 
     public FileInfo(@NonNull String path,
                     int size,
@@ -59,7 +67,8 @@ final public class FileInfo {
                     int thumbnailWidth,
                     int thumbnailHeight,
                     @Nullable String thumbnailPath,
-                    @Nullable File cacheDir) {
+                    @Nullable File cacheDir,
+                    @Nullable VoiceMetaInfo voiceMetaInfo) {
         this.path = path;
         this.size = size;
         this.mimeType = mimeType;
@@ -70,6 +79,7 @@ final public class FileInfo {
         this.thumbnailPath = thumbnailPath;
         this.file = new File(path);
         this.cacheDir = cacheDir;
+        this.voiceMetaInfo = voiceMetaInfo;
     }
 
     @NonNull
@@ -115,6 +125,11 @@ final public class FileInfo {
     }
 
     @Nullable
+    public VoiceMetaInfo getVoiceMetaInfo() {
+        return voiceMetaInfo;
+    }
+
+    @Nullable
     public File getThumbnailFile() {
         File file = null;
         if (!TextUtils.isEmpty(thumbnailPath)) {
@@ -149,28 +164,70 @@ final public class FileInfo {
             params.setThumbnailSizes(thumbnailSizes);
         }
 
+        final VoiceMetaInfo voiceMetaInfo = getVoiceMetaInfo();
+        if (voiceMetaInfo != null) {
+            final List<MessageMetaArray> metaArrays = new ArrayList<>();
+            final List<String> duration = new ArrayList<>();
+            duration.add(String.valueOf(voiceMetaInfo.getDuration()));
+            metaArrays.add(new MessageMetaArray(StringSet.KEY_VOICE_MESSAGE_DURATION, duration));
+            final List<String> type = new ArrayList<>();
+            type.add(voiceMetaInfo.getType());
+            metaArrays.add(new MessageMetaArray(StringSet.KEY_INTERNAL_MESSAGE_TYPE, type));
+            params.setMetaArrays(metaArrays);
+        }
         return params;
+    }
+
+    @NonNull
+    private UploadableFileInfo toUploadableFileInfo() {
+        int thumbWidth = getThumbnailWidth();
+        int thumbHeight = getThumbnailHeight();
+        List<ThumbnailSize> thumbnailSizes = new ArrayList<>();
+        if (thumbWidth > 0 && thumbHeight > 0) {
+            Logger.dev("++ image width : %s, image height : %s", thumbWidth, thumbHeight);
+            thumbnailSizes.add(new ThumbnailSize(thumbWidth, thumbHeight));
+            thumbnailSizes.add(new ThumbnailSize(thumbWidth / 2, thumbHeight / 2));
+        }
+        return new UploadableFileInfo(
+            getFile(),
+            getFileName(),
+            getMimeType(),
+            getSize(),
+            thumbnailSizes
+        );
+    }
+
+    @NonNull
+    public static MultipleFilesMessageCreateParams toMultipleFilesParams(@NonNull List<FileInfo> fileInfos) {
+        List<UploadableFileInfo> uploadableFileInfoList = new ArrayList<>();
+        for (FileInfo fileInfo : fileInfos) {
+            uploadableFileInfoList.add(fileInfo.toUploadableFileInfo());
+        }
+        return new MultipleFilesMessageCreateParams(uploadableFileInfoList);
     }
 
     private static boolean isCompressible(@NonNull String mimeType) {
         return mimeType.startsWith(StringSet.image)
-                && (mimeType.endsWith(StringSet.jpeg) || mimeType.endsWith(StringSet.jpg) || mimeType.endsWith(StringSet.png));
+            && (mimeType.endsWith(StringSet.jpeg) || mimeType.endsWith(StringSet.jpg) || mimeType.endsWith(StringSet.png));
     }
 
     @NonNull
     public static FileInfo fromVoiceFileInfo(@NonNull VoiceMessageInfo voiceMessageInfo, @NonNull File cacheDir) {
         File file = new File(voiceMessageInfo.getPath());
-        int fileSize = Integer.parseInt(String.valueOf(file.length()/1024));
+        int fileSize = Integer.parseInt(String.valueOf(file.length() / 1024));
+        final VoiceMetaInfo voiceMetaInfo = new VoiceMetaInfo(StringSet.voice + "/" + StringSet.m4a, voiceMessageInfo.getDuration());
         return new FileInfo(
-                voiceMessageInfo.getPath(),
-                fileSize,
-                voiceMessageInfo.getMimeType(),
-                "Voice message",
-                Uri.parse(voiceMessageInfo.getPath()),
-                0,
-                0,
-                null,
-                cacheDir);
+            voiceMessageInfo.getPath(),
+            fileSize,
+            voiceMessageInfo.getMimeType(),
+            StringSet.Voice_message + "." + StringSet.m4a,
+            Uri.parse(voiceMessageInfo.getPath()),
+            0,
+            0,
+            null,
+            cacheDir,
+            voiceMetaInfo
+        );
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -184,63 +241,7 @@ final public class FileInfo {
             @Override
             @Nullable
             public FileInfo call() throws IOException {
-                FileInfo fileInfo = null;
-                try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
-                    String mimeType = context.getContentResolver().getType(uri);
-                    String path = FileUtils.uriToPath(context, uri);
-                    String originPath = path;
-
-                    Pair<Integer, Integer> resizingSize = SendbirdUIKit.getResizingSize();
-                    if (cursor != null) {
-                        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                        String thumbnailPath = path;
-                        int thumbnailWidth = resizingSize.first / 2, thumbnailHeight = resizingSize.second / 2;
-
-                        if (cursor.moveToFirst()) {
-                            String name = cursor.getString(nameIndex);
-                            int size = (int) cursor.getLong(sizeIndex);
-
-                            if (useImageCompression && (mimeType != null && isCompressible(mimeType))) {
-                                int quality = SendbirdUIKit.getCompressQuality();
-                                if (quality < 0 || quality > MAX_COMPRESS_QUALITY) {
-                                    throw new IllegalArgumentException("quality must be 0..100");
-                                }
-
-                                Logger.d("++ file size=%s, size from db=%s", new File(path).length(), size);
-                                int originSize = size;
-                                path = resizeImage(context, originPath, mimeType, quality, resizingSize.first, resizingSize.second);
-                                size = (int) new File(path).length();
-                                Logger.d("++ originFile size=%s, resized file size=%s", originSize, size);
-                                Logger.d("\n++ originFile path=%s, \n resized file path=%s\n", originPath, path);
-
-                                if (!originPath.equals(path) && size != originSize) {
-                                    Logger.d("++ file has been resized. the original file will remove.");
-                                    new File(originPath).delete();
-                                }
-                            }
-
-                            if (mimeType != null) {
-                                Pair<Integer, Integer> dimension = ImageUtils.getDimensions(path, mimeType);
-                                thumbnailPath = path;
-                                thumbnailWidth = dimension.first;
-                                thumbnailHeight = dimension.second;
-                            }
-
-                            Logger.d("==============================================================================");
-                            Logger.d("++ FILE PATH : %s", path);
-                            Logger.d("++ SIZE : %s", size);
-                            Logger.d("++ MIMETYPE : %s", mimeType);
-                            Logger.d("++ NAME : %s", name);
-                            Logger.d("++ THUMBNAIL PATH : %s", thumbnailPath);
-                            Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailWidth);
-                            Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailHeight);
-                            Logger.d("==============================================================================");
-                            fileInfo = new FileInfo(path, size, mimeType, name, uri, thumbnailWidth, thumbnailHeight, thumbnailPath, null);
-                        }
-                    }
-                }
-                return fileInfo;
+                return uriToFileInfo(context, uri, useImageCompression);
             }
 
             @Override
@@ -255,6 +256,101 @@ final public class FileInfo {
                 handler.onResult(info);
             }
         });
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    @NonNull
+    public static Future<List<FileInfo>> fromUris(@NonNull final Context context,
+                                                  @NonNull final List<Uri> uri,
+                                                  boolean useImageCompression,
+                                                  @Nullable OnResultHandler<List<FileInfo>> handler) {
+        return TaskQueue.addTask(new JobResultTask<List<FileInfo>>() {
+            @SuppressWarnings("ResultOfMethodCallIgnored")
+            @Override
+            @Nullable
+            public List<FileInfo> call() throws IOException {
+                final List<FileInfo> fileInfos = new ArrayList<>();
+                for (Uri uri : uri) {
+                    fileInfos.add(uriToFileInfo(context, uri, useImageCompression));
+                }
+                return fileInfos.isEmpty() ? null : fileInfos;
+            }
+
+            @Override
+            public void onResultForUiThread(@Nullable List<FileInfo> info, @Nullable SendbirdException e) {
+                if (handler == null) return;
+                if (e != null || info == null) {
+                    Logger.w(e);
+                    handler.onError(e);
+                    return;
+                }
+
+                handler.onResult(info);
+            }
+        });
+    }
+
+    @VisibleForTesting
+    @Nullable
+    @WorkerThread
+    public static FileInfo uriToFileInfo(@NonNull Context context, @NonNull Uri uri, boolean useImageCompression) throws IOException {
+        FileInfo fileInfo = null;
+        try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+            String mimeType = context.getContentResolver().getType(uri);
+            String path = FileUtils.uriToPath(context, uri);
+            String originPath = path;
+
+            Pair<Integer, Integer> resizingSize = SendbirdUIKit.getResizingSize();
+            if (cursor != null) {
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                String thumbnailPath = path;
+                int thumbnailWidth = resizingSize.first / 2, thumbnailHeight = resizingSize.second / 2;
+
+                if (cursor.moveToFirst()) {
+                    String name = cursor.getString(nameIndex);
+                    int size = (int) cursor.getLong(sizeIndex);
+
+                    if (useImageCompression && (mimeType != null && isCompressible(mimeType))) {
+                        int quality = SendbirdUIKit.getCompressQuality();
+                        if (quality < 0 || quality > MAX_COMPRESS_QUALITY) {
+                            throw new IllegalArgumentException("quality must be 0..100");
+                        }
+
+                        Logger.d("++ file size=%s, size from db=%s", new File(path).length(), size);
+                        int originSize = size;
+                        path = resizeImage(context, originPath, mimeType, quality, resizingSize.first, resizingSize.second);
+                        size = (int) new File(path).length();
+                        Logger.d("++ originFile size=%s, resized file size=%s", originSize, size);
+                        Logger.d("\n++ originFile path=%s, \n resized file path=%s\n", originPath, path);
+
+                        if (!originPath.equals(path) && size != originSize) {
+                            Logger.d("++ file has been resized. the original file will remove.");
+                            new File(originPath).delete();
+                        }
+                    }
+
+                    if (mimeType != null) {
+                        Pair<Integer, Integer> dimension = ImageUtils.getDimensions(path, mimeType);
+                        thumbnailPath = path;
+                        thumbnailWidth = dimension.first;
+                        thumbnailHeight = dimension.second;
+                    }
+
+                    Logger.d("==============================================================================");
+                    Logger.d("++ FILE PATH : %s", path);
+                    Logger.d("++ SIZE : %s", size);
+                    Logger.d("++ MIMETYPE : %s", mimeType);
+                    Logger.d("++ NAME : %s", name);
+                    Logger.d("++ THUMBNAIL PATH : %s", thumbnailPath);
+                    Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailWidth);
+                    Logger.d("++ THUMBNAIL HEIGHT : %s", thumbnailHeight);
+                    Logger.d("==============================================================================");
+                    fileInfo = new FileInfo(path, size, mimeType, name, uri, thumbnailWidth, thumbnailHeight, thumbnailPath, null, null);
+                }
+            }
+        }
+        return fileInfo;
     }
 
     @NonNull
@@ -306,13 +402,13 @@ final public class FileInfo {
     @Override
     public String toString() {
         return "FileInfo{" +
-                "path='" + path + '\'' +
-                ", size=" + size +
-                ", mimeType='" + mimeType + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", uri=" + uri +
-                ", thumbnailWidth=" + thumbnailWidth +
-                ", thumbnailHeight=" + thumbnailHeight +
-                '}';
+            "path='" + path + '\'' +
+            ", size=" + size +
+            ", mimeType='" + mimeType + '\'' +
+            ", fileName='" + fileName + '\'' +
+            ", uri=" + uri +
+            ", thumbnailWidth=" + thumbnailWidth +
+            ", thumbnailHeight=" + thumbnailHeight +
+            '}';
     }
 }

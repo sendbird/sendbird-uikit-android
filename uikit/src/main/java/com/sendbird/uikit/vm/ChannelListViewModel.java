@@ -218,11 +218,11 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
      */
     public void setPushNotification(@NonNull GroupChannel channel, boolean enable, @Nullable OnCompleteHandler handler) {
         channel.setMyPushTriggerOption(enable ? GroupChannel.PushTriggerOption.ALL :
-                        GroupChannel.PushTriggerOption.OFF,
-                e -> {
-                    if (handler != null) handler.onComplete(e);
-                    Logger.i("++ setPushNotification enable : %s result : %s", enable, e == null ? "success" : "error");
-                });
+                GroupChannel.PushTriggerOption.OFF,
+            e -> {
+                if (handler != null) handler.onComplete(e);
+                Logger.i("++ setPushNotification enable : %s result : %s", enable, e == null ? "success" : "error");
+            });
     }
 
     /**

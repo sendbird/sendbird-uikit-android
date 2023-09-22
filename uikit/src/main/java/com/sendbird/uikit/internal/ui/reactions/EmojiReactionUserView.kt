@@ -21,27 +21,18 @@ import com.sendbird.uikit.utils.UserUtils
 internal class EmojiReactionUserView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = R.attr.sb_widget_emoji_message
+    defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle) {
-    val binding: SbViewEmojiReactionUserComponentBinding
+    val binding: SbViewEmojiReactionUserComponentBinding = SbViewEmojiReactionUserComponentBinding.inflate(LayoutInflater.from(getContext()))
     val layout: View
         get() = this
 
     init {
-        val a = context.theme.obtainStyledAttributes(attrs, R.styleable.EmojiReactionUser, defStyle, 0)
-        try {
-            binding = SbViewEmojiReactionUserComponentBinding.inflate(LayoutInflater.from(getContext()))
-            addView(binding.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            val nicknameAppearance = a.getResourceId(
-                R.styleable.EmojiReactionUser_sb_emoji_reaction_user_nickname_appearance,
-                R.style.SendbirdSubtitle2OnLight01
-            )
-            binding.tvNickname.setAppearance(context, nicknameAppearance)
-            binding.tvNickname.ellipsize = TextUtils.TruncateAt.END
-            binding.tvNickname.maxLines = 1
-        } finally {
-            a.recycle()
-        }
+        addView(binding.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val nicknameAppearance = if (SendbirdUIKit.isDarkMode()) R.style.SendbirdSubtitle2OnDark01 else R.style.SendbirdSubtitle2OnLight01
+        binding.tvNickname.setAppearance(context, nicknameAppearance)
+        binding.tvNickname.ellipsize = TextUtils.TruncateAt.END
+        binding.tvNickname.maxLines = 1
     }
 
     fun drawUser(user: User?) {

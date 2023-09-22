@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.sendbird.android.channel.ChannelType
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
+import com.sendbird.android.message.MultipleFilesMessage
+import com.sendbird.android.message.SendingStatus
 import com.sendbird.android.message.UserMessage
 import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.activities.PhotoViewActivity
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.toContextThemeWrapper
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.MessageUIConfig
 import com.sendbird.uikit.model.configurations.ChannelConfig
@@ -63,6 +68,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         // message content
         when (message) {
             is UserMessage -> drawUserMessage(message, params)
+
             is FileMessage -> {
                 val mimeType: String = message.type.lowercase(Locale.getDefault())
                 if (MessageUtils.isVoiceMessage(message)) {
@@ -79,11 +85,24 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
                     drawFileMessage(message)
                 }
             }
+
+            is MultipleFilesMessage -> drawMultipleFilesMessage(message)
+
+            else -> drawUnknownMessage()
         }
     }
 
     fun setOnMoreButtonClickListener(onMoreButtonClickListener: OnClickListener) {
         binding.ivMoreIcon.setOnClickListener(onMoreButtonClickListener)
+    }
+
+    private fun drawUnknownMessage() {
+        binding.tvTextMessage.visibility = VISIBLE
+        binding.fileGroup.visibility = GONE
+        binding.imageGroup.visibility = GONE
+        binding.voiceMessage.visibility = GONE
+        binding.multipleFilesMessage.visibility = GONE
+        ViewUtils.drawUnknownMessage(binding.tvTextMessage, false)
     }
 
     private fun drawUserMessage(message: UserMessage, messageListUIConfig: MessageListUIParams) {
@@ -92,6 +111,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
+        binding.multipleFilesMessage.visibility = GONE
         ViewUtils.drawTextMessage(
             binding.tvTextMessage, message, parentMessageInfoUIConfig, enableOgtag, null
         ) { view, position, data -> mentionClickListener?.onItemClick(view, position, data) }
@@ -102,6 +122,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = VISIBLE
+        binding.multipleFilesMessage.visibility = GONE
         binding.voiceMessage.setOnClickListener {
             binding.voiceMessage.callOnPlayerButtonClick()
         }
@@ -113,6 +134,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = VISIBLE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
+        binding.multipleFilesMessage.visibility = GONE
         ViewUtils.drawFilename(binding.tvFileName, message, parentMessageInfoUIConfig)
         ViewUtils.drawFileIcon(binding.ivFileIcon, message)
     }
@@ -122,14 +144,37 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = VISIBLE
         binding.voiceMessage.visibility = GONE
+        binding.multipleFilesMessage.visibility = GONE
         ViewUtils.drawThumbnail(binding.ivThumbnail, message)
         ViewUtils.drawThumbnailIcon(binding.ivThumbnailIcon, message)
+    }
+
+    private fun drawMultipleFilesMessage(message: MultipleFilesMessage) {
+        binding.tvTextMessage.visibility = GONE
+        binding.fileGroup.visibility = GONE
+        binding.imageGroup.visibility = GONE
+        binding.voiceMessage.visibility = GONE
+        binding.multipleFilesMessage.visibility = VISIBLE
+        binding.multipleFilesMessage.bind(message)
+        binding.multipleFilesMessage.onItemClickListener = OnItemClickListener { _, index, _ ->
+            if (message.sendingStatus == SendingStatus.SUCCEEDED) {
+                val intent =
+                    PhotoViewActivity.newIntent(context, ChannelType.GROUP, message, index)
+                context.startActivity(intent)
+            } else {
+                binding.multipleFilesMessage.performClick()
+            }
+        }
     }
 
     init {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.ParentMessageInfoView, defStyle, 0)
         try {
-            binding = SbViewParentMessageInfoBinding.inflate(LayoutInflater.from(getContext()), this, true)
+            binding = SbViewParentMessageInfoBinding.inflate(
+                LayoutInflater.from(context.toContextThemeWrapper(defStyle)),
+                this,
+                true
+            )
             val nicknameAppearance = a.getResourceId(
                 R.styleable.ParentMessageInfoView_sb_parent_message_info_nickname_appearance,
                 R.style.SendbirdH2OnLight01

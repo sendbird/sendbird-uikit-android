@@ -330,7 +330,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     // If the collection starts with a starting point value, not MAX_VALUE,
     // the message should be requested the newest messages at once because there may be no new messages in the cache
     private void loadLatestMessagesForCache() {
-        if (!needToLoadMessageCache || (this.collection != null && this.collection.getStartingPoint() == Long.MAX_VALUE)) return;
+        if (!needToLoadMessageCache || (this.collection != null && this.collection.getStartingPoint() == Long.MAX_VALUE))
+            return;
         final GroupChannel channel = getChannel();
         if (channel == null) return;
         final MessageCollectionWrapper syncCollection = createSyncMessageCollection(channel);
@@ -491,7 +492,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         final List<BaseMessage> failedMessages = new ArrayList<>(collection.getFailedMessages());
         if (channelConfig.getReplyType() == ReplyType.THREAD) {
             boolean shouldCheckEvents = traceName.equals(StringSet.ACTION_FAILED_MESSAGE_ADDED)
-                    || traceName.equals(StringSet.ACTION_PENDING_MESSAGE_ADDED);
+                || traceName.equals(StringSet.ACTION_PENDING_MESSAGE_ADDED);
 
             final BaseMessage lastPendingMessage = !pendingMessages.isEmpty() ? pendingMessages.get(0) : null;
             final BaseMessage lastFailedMessage = !failedMessages.isEmpty() ? failedMessages.get(0) : null;
@@ -517,7 +518,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             copiedList.addAll(0, pendingMessages);
             copiedList.addAll(0, failedMessages);
         }
-        
+
         if (copiedList.size() == 0) {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
@@ -529,8 +530,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
     private void removeThreadMessages(@NonNull List<BaseMessage> src) {
         final ListIterator<BaseMessage> iterator = src.listIterator();
-        while(iterator.hasNext()){
-            if(MessageUtils.hasParentMessage(iterator.next())){
+        while (iterator.hasNext()) {
+            if (MessageUtils.hasParentMessage(iterator.next())) {
                 iterator.remove();
             }
         }

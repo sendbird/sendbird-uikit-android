@@ -1,4 +1,5 @@
 @file:UseSerializers(CSVColorIntAsStringSerializer::class)
+
 package com.sendbird.uikit.internal.model.notifications
 
 import com.sendbird.uikit.internal.model.serializer.CSVColorIntAsStringSerializer

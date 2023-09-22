@@ -80,9 +80,9 @@ public final class Action {
     @Override
     public String toString() {
         return "Action{" +
-                "type='" + type + '\'' +
-                ", data='" + data + '\'' +
-                ", alterData='" + alterData + '\'' +
-                '}';
+            "type='" + type + '\'' +
+            ", data='" + data + '\'' +
+            ", alterData='" + alterData + '\'' +
+            '}';
     }
 }

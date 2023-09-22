@@ -184,6 +184,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * since 3.0.0
      */
     abstract protected boolean isDisabled(@NonNull T item);
+
     /**
      * Determines whether the item is selected or not.
      *
@@ -192,6 +193,7 @@ public abstract class SelectUserListAdapter<T> extends BaseAdapter<T, BaseViewHo
      * since 3.0.0
      */
     abstract protected boolean isSelected(@NonNull T item);
+
     /**
      * Converts the given item to {@link UserInfo}.
      *

@@ -15,20 +15,22 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
+import com.sendbird.android.message.MultipleFilesMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewMessageInputBinding
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener
+import com.sendbird.uikit.internal.extensions.getCacheKey
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setCursorDrawable
+import com.sendbird.uikit.internal.extensions.toDisplayText
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.SoftInputUtils
 import com.sendbird.uikit.utils.TextUtils
 import com.sendbird.uikit.utils.ViewUtils
-import java.util.Locale
 
 class MessageInputView @JvmOverloads constructor(
     context: Context,
@@ -146,32 +148,42 @@ class MessageInputView @JvmOverloads constructor(
 
     fun drawMessageToReply(message: BaseMessage) {
         var displayMessage = message.message
-        if (message is FileMessage) {
-            if (MessageUtils.isVoiceMessage(message)) {
-                binding.ivQuoteReplyMessageIcon.visibility = GONE
-                binding.ivQuoteReplyMessageImage.visibility = GONE
-            } else {
-                ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, message)
-                ViewUtils.drawThumbnail(binding.ivQuoteReplyMessageImage, message)
+        when (message) {
+            is MultipleFilesMessage -> {
+                val file = message.files.firstOrNull() ?: return
+                ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, file.fileType)
+                ViewUtils.drawThumbnail(
+                    binding.ivQuoteReplyMessageImage,
+                    message.getCacheKey(0),
+                    file.url,
+                    file.plainUrl,
+                    file.fileType,
+                    file.thumbnails,
+                    null,
+                    R.dimen.sb_size_1
+                )
                 binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                 binding.ivQuoteReplyMessageImage.visibility = VISIBLE
+                displayMessage = "${message.files.size} ${StringSet.photos}"
             }
-            displayMessage = if (MessageUtils.isVoiceMessage(message)) {
-                context.getString(R.string.sb_text_voice_message)
-            } else if (message.type.contains(StringSet.gif)) {
-                StringSet.gif.uppercase(Locale.getDefault())
-            } else if (message.type.startsWith(StringSet.image)) {
-                TextUtils.capitalize(StringSet.photo)
-            } else if (message.type.startsWith(StringSet.video)) {
-                TextUtils.capitalize(StringSet.video)
-            } else if (message.type.startsWith(StringSet.audio)) {
-                TextUtils.capitalize(StringSet.audio)
-            } else {
-                message.name
+
+            is FileMessage -> {
+                if (MessageUtils.isVoiceMessage(message)) {
+                    binding.ivQuoteReplyMessageIcon.visibility = GONE
+                    binding.ivQuoteReplyMessageImage.visibility = GONE
+                } else {
+                    ViewUtils.drawFileMessageIconToReply(binding.ivQuoteReplyMessageIcon, message)
+                    ViewUtils.drawThumbnail(binding.ivQuoteReplyMessageImage, message)
+                    binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
+                    binding.ivQuoteReplyMessageImage.visibility = VISIBLE
+                }
+                displayMessage = message.toDisplayText(context)
             }
-        } else {
-            binding.ivQuoteReplyMessageIcon.visibility = GONE
-            binding.ivQuoteReplyMessageImage.visibility = GONE
+
+            else -> {
+                binding.ivQuoteReplyMessageIcon.visibility = GONE
+                binding.ivQuoteReplyMessageImage.visibility = GONE
+            }
         }
 
         message.sender?.let {

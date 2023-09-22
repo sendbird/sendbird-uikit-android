@@ -14,7 +14,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
@@ -39,12 +38,13 @@ import com.sendbird.uikit.modules.OpenChannelSettingsModule;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsInfoComponent;
 import com.sendbird.uikit.modules.components.OpenChannelSettingsMenuComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.vm.OpenChannelSettingsViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 import java.io.File;
 
@@ -89,7 +89,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @NonNull
     @Override
     protected OpenChannelSettingsModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelSettingsModule(requireContext());
+        return ModuleProviders.getOpenChannelSettings().provide(requireContext(), args);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
     @NonNull
     @Override
     protected OpenChannelSettingsViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelSettingsViewModel.class);
+        return ViewModelProviders.getOpenChannelSettings().provide(this, getChannelUrl());
     }
 
     private void processPickedImage(@NonNull Uri uri) {
@@ -223,8 +223,8 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
 
     private void showChannelInfoEditDialog() {
         DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
         };
 
         if (getContext() == null) return;
@@ -243,11 +243,11 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
                 DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
                 DialogUtils.showInputDialog(
-                        requireContext(),
-                        getString(R.string.sb_text_channel_settings_change_channel_name),
-                        params, listener,
-                        getString(R.string.sb_text_button_save), null,
-                        getString(R.string.sb_text_button_cancel), null);
+                    requireContext(),
+                    getString(R.string.sb_text_channel_settings_change_channel_name),
+                    params, listener,
+                    getString(R.string.sb_text_button_save), null,
+                    getString(R.string.sb_text_button_cancel), null);
             } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
                 Logger.dev("change channel image");
                 String[] permissions = PermissionUtils.CAMERA_PERMISSION;
@@ -260,40 +260,40 @@ public class OpenChannelSettingsFragment extends BaseModuleFragment<OpenChannelS
         if (getContext() == null) return;
 
         DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_camera),
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_gallery)};
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_camera),
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_gallery)};
 
         DialogUtils.showListDialog(getContext(),
-                getString(R.string.sb_text_channel_settings_change_channel_image),
-                items, (v, p, item) -> {
-                    try {
-                        final int key = item.getKey();
-                        SendbirdChat.setAutoBackgroundDetection(false);
-                        if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
-                            takeCamera();
-                        } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
-                            takePhoto();
-                        }
-                    } catch (Exception e) {
-                        Logger.e(e);
-                        toastError(R.string.sb_text_error_open_camera);
+            getString(R.string.sb_text_channel_settings_change_channel_image),
+            items, (v, p, item) -> {
+                try {
+                    final int key = item.getKey();
+                    SendbirdChat.setAutoBackgroundDetection(false);
+                    if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
+                        takeCamera();
+                    } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
+                        takePhoto();
                     }
-                });
+                } catch (Exception e) {
+                    Logger.e(e);
+                    toastError(R.string.sb_text_error_open_camera);
+                }
+            });
     }
 
     private void showDeleteChannelDialog() {
         if (getContext() == null) return;
         DialogUtils.showWarningDialog(
-                requireContext(),
-                getString(R.string.sb_text_dialog_delete_channel),
-                getString(R.string.sb_text_dialog_delete_channel_message),
-                getString(R.string.sb_text_button_delete),
-                delete -> {
-                    Logger.dev("delete");
-                    deleteChannel();
-                },
-                getString(R.string.sb_text_button_cancel),
-                cancel -> Logger.dev("cancel"));
+            requireContext(),
+            getString(R.string.sb_text_dialog_delete_channel),
+            getString(R.string.sb_text_dialog_delete_channel_message),
+            getString(R.string.sb_text_button_delete),
+            delete -> {
+                Logger.dev("delete");
+                deleteChannel();
+            },
+            getString(R.string.sb_text_button_cancel),
+            cancel -> Logger.dev("cancel"));
     }
 
     private void takeCamera() {

@@ -6,6 +6,8 @@ import androidx.lifecycle.Observer;
 
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.MultipleFilesMessage;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.tasks.JobTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.model.FileInfo;
@@ -50,8 +52,20 @@ public class PendingMessageRepository {
     }
 
     @Nullable
+    public FileInfo getFileInfo(@NonNull String requestId) {
+        return cachedFileInfos.get(requestId);
+    }
+
+    @Nullable
     public FileInfo getFileInfo(@NonNull BaseMessage message) {
-        return cachedFileInfos.get(message.getRequestId());
+        return getFileInfo(message.getRequestId());
+    }
+
+    public void addFileInfos(@NonNull MultipleFilesMessage message, @NonNull List<FileInfo> fileInfos) {
+        int index = 0;
+        for (FileInfo fileInfo : fileInfos) {
+            cachedFileInfos.put(MessageExtensionsKt.getCacheKey(message, index++), fileInfo);
+        }
     }
 
     public void addFileInfo(@NonNull FileMessage message, @NonNull FileInfo fileInfo) {

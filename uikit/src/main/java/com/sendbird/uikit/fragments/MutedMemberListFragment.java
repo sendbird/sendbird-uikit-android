@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
@@ -29,9 +28,10 @@ import com.sendbird.uikit.modules.MutedMemberListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.MutedMemberListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.MutedMemberListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -61,7 +61,7 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
     @NonNull
     @Override
     protected MutedMemberListModule onCreateModule(@NonNull Bundle args) {
-        return new MutedMemberListModule(requireContext());
+        return ModuleProviders.getMutedMemberList().provide(requireContext(), args);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
     @NonNull
     @Override
     public MutedMemberListViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), MutedMemberListViewModel.class);
+        return ViewModelProviders.getMutedMemberList().provide(this, getChannelUrl());
     }
 
     @Override
@@ -183,16 +183,16 @@ public class MutedMemberListFragment extends BaseModuleFragment<MutedMemberListM
         DialogListItem unMute = new DialogListItem(R.string.sb_text_unmute_member);
         items = new DialogListItem[]{unMute};
         DialogUtils.showListDialog(getContext(), user.getNickname(),
-                items,
-                (v, p, key) -> {
-                    shouldShowLoadingDialog();
-                    getViewModel().unmuteUser(user.getUserId(), e -> {
-                        shouldDismissLoadingDialog();
-                        if (e != null) {
-                            toastError(R.string.sb_text_error_unmute_member);
-                        }
-                    });
-                }
+            items,
+            (v, p, key) -> {
+                shouldShowLoadingDialog();
+                getViewModel().unmuteUser(user.getUserId(), e -> {
+                    shouldDismissLoadingDialog();
+                    if (e != null) {
+                        toastError(R.string.sb_text_error_unmute_member);
+                    }
+                });
+            }
         );
     }
 

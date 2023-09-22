@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.OpenChannelBannedUserListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class OpenChannelBannedUserListComponent extends UserTypeListComponent<User> {
     @NonNull
-    private OpenChannelBannedUserListAdapter adapter = new OpenChannelBannedUserListAdapter();
+    private OpenChannelBannedUserListAdapter adapter = AdapterProviders.getOpenChannelBannedUserList().provide();
 
     /**
      * Constructor

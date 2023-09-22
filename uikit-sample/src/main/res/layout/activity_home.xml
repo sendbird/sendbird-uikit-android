@@ -42,7 +42,7 @@
             android:layout_marginLeft="@dimen/sb_size_8"
             android:layout_marginRight="@dimen/sb_size_8"
             android:background="@drawable/selector_home_channel_type_button">
-            
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/groupChannelButtonGuildLine"
                 android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                 android:paddingLeft="@dimen/sb_size_6"
                 android:paddingRight="@dimen/sb_size_6"
                 android:includeFontPadding="false"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginEnd="@dimen/sb_size_4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

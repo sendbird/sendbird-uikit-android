@@ -161,6 +161,7 @@
 
     <dimen name="sb_message_max_height">400dp</dimen>
     <dimen name="sb_message_max_width">240dp</dimen>
+    <dimen name="sb_message_half_width">120dp</dimen>
     <dimen name="sb_reply_thumbnail_width">120dp</dimen>
     <dimen name="sb_reply_thumbnail_height">80dp</dimen>
     <dimen name="sb_default_thumbnail_width">240dp</dimen>

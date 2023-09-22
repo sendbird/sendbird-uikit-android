@@ -124,7 +124,7 @@ public class DrawableUtils {
 
     @NonNull
     public static Drawable createRoundedShapeDrawable(@ColorInt int color, float radius) {
-        final GradientDrawable shape =  new GradientDrawable();
+        final GradientDrawable shape = new GradientDrawable();
         shape.setCornerRadius(radius);
         shape.setColor(color);
         return shape;
@@ -169,17 +169,17 @@ public class DrawableUtils {
     @NonNull
     public static ColorStateList createTextColorSelector(int selectedColor, int defaultColor) {
         final int[][] states = new int[][]{
-                new int[]{android.R.attr.state_checked},
-                new int[]{android.R.attr.state_pressed},
-                new int[]{-android.R.attr.state_checked},
-                new int[]{-android.R.attr.state_pressed}
+            new int[]{android.R.attr.state_checked},
+            new int[]{android.R.attr.state_pressed},
+            new int[]{-android.R.attr.state_checked},
+            new int[]{-android.R.attr.state_pressed}
         };
 
         final int[] colors = new int[]{
-                selectedColor,
-                selectedColor,
-                defaultColor,
-                defaultColor
+            selectedColor,
+            selectedColor,
+            defaultColor,
+            defaultColor
         };
 
         return new ColorStateList(states, colors);

@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.ParticipantListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class ParticipantListComponent extends UserTypeListComponent<User> {
     @NonNull
-    private ParticipantListAdapter adapter = new ParticipantListAdapter();
+    private ParticipantListAdapter adapter = AdapterProviders.getParticipantList().provide();
 
     /**
      * Returns the participant list adapter.

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.sendbird.android.channel.OpenChannel;
@@ -31,8 +30,9 @@ import com.sendbird.uikit.modules.OpenChannelListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.OpenChannelListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -67,7 +67,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
     @NonNull
     @Override
     protected OpenChannelListModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelListModule(requireContext());
+        return ModuleProviders.getOpenChannelList().provide(requireContext(), args);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class OpenChannelListFragment extends BaseModuleFragment<OpenChannelListM
     @NonNull
     @Override
     protected OpenChannelListViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(params)).get(OpenChannelListViewModel.class);
+        return ViewModelProviders.getOpenChannelList().provide(this, params);
     }
 
     @Override

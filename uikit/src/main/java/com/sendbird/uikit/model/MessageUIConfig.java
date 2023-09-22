@@ -326,7 +326,7 @@ public class MessageUIConfig {
     /**
      * Returns the UI configuration of the linked text color in the message text.
      *
-     * @return  the UI configuration of the linked text color.
+     * @return the UI configuration of the linked text color.
      * since 3.1.1
      */
     @Nullable

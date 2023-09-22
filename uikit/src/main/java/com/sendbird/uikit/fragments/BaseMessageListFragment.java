@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 
 import com.sendbird.android.SendbirdChat;
@@ -23,14 +25,17 @@ import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.exception.SendbirdException;
+import com.sendbird.android.message.BaseFileMessage;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Emoji;
 import com.sendbird.android.message.FileMessage;
-import com.sendbird.android.message.MessageMetaArray;
+import com.sendbird.android.message.MultipleFilesMessage;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.android.message.SendingStatus;
+import com.sendbird.android.message.UploadableFileInfo;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MultipleFilesMessageCreateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.android.user.Member;
@@ -79,15 +84,17 @@ import com.sendbird.uikit.vm.FileDownloader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 abstract public class BaseMessageListFragment<
-        LA extends BaseMessageListAdapter,
-        LC extends BaseMessageListComponent<LA>,
-        MT extends BaseMessageListModule<LC>,
-        VM extends BaseMessageListViewModel> extends BaseModuleFragment<MT, VM> {
+    LA extends BaseMessageListAdapter,
+    LC extends BaseMessageListComponent<LA>,
+    MT extends BaseMessageListModule<LC>,
+    VM extends BaseMessageListViewModel> extends BaseModuleFragment<MT, VM> {
+    private static final int MULTIPLE_FILES_COUNT_LIMIT = 10;
     @Nullable
     private OnItemClickListener<BaseMessage> messageClickListener;
     @Nullable
@@ -143,6 +150,13 @@ abstract public class BaseMessageListFragment<
             sendFileMessage(mediaUri);
         }
     });
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
+        registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(
+            getMultipleFilesMessageFileCountLimit()), this::onMultipleMediaResult);
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickSingleMedia =
+        registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::onSingleMediaResult);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -249,7 +263,9 @@ abstract public class BaseMessageListFragment<
                 default:
             }
         } else {
-            if (MessageUtils.isMine(message) && (message instanceof UserMessage || message instanceof FileMessage)) {
+            if (MessageUtils.isMine(message) &&
+                (message instanceof UserMessage ||
+                    message instanceof BaseFileMessage)) {
                 resendMessage(message);
             }
         }
@@ -338,7 +354,7 @@ abstract public class BaseMessageListFragment<
             public Boolean call() throws Exception {
                 if (getContext() == null) return false;
                 FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
-                        fileMessage.getType(), fileMessage.getName());
+                    fileMessage.getType(), fileMessage.getName());
                 return true;
             }
 
@@ -368,16 +384,36 @@ abstract public class BaseMessageListFragment<
 
     void showWarningDialog(@NonNull BaseMessage message) {
         if (getContext() == null) return;
+        String title;
+        if (message instanceof MultipleFilesMessage) {
+            title = String.format(
+                getString(R.string.sb_text_dialog_delete_multiple_files_message),
+                ((MultipleFilesMessage) message).getFiles().size()
+            );
+        } else {
+            title = getString(R.string.sb_text_dialog_delete_message);
+        }
         DialogUtils.showWarningDialog(
-                requireContext(),
-                getString(R.string.sb_text_dialog_delete_message),
-                getString(R.string.sb_text_button_delete),
-                delete -> {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                },
-                getString(R.string.sb_text_button_cancel),
-                cancel -> Logger.dev("cancel"));
+            requireContext(),
+            title,
+            getString(R.string.sb_text_button_delete),
+            delete -> {
+                Logger.dev("delete");
+                deleteMessage(message);
+            },
+            getString(R.string.sb_text_button_cancel),
+            cancel -> Logger.dev("cancel"));
+    }
+
+    @VisibleForTesting
+    void showConfirmDialog(@NonNull String message) {
+        if (getContext() == null) return;
+        DialogUtils.showConfirmDialog(
+            requireContext(),
+            message,
+            getString(R.string.sb_text_button_ok),
+            null,
+            false);
     }
 
     void showEmojiActionsDialog(@NonNull BaseMessage message, @NonNull DialogListItem[] actions) {
@@ -470,9 +506,9 @@ abstract public class BaseMessageListFragment<
         final GroupChannel channel = getViewModel().getChannel();
         if (channel != null) {
             emojiReactionUserListView.setEmojiReactionUserData(this,
-                    position,
-                    message.getReactions(),
-                    getReactionUserInfo(channel, message.getReactions()));
+                position,
+                message.getReactions(),
+                getReactionUserInfo(channel, message.getReactions()));
         }
         hideKeyboard();
         DialogUtils.showContentDialog(requireContext(), emojiReactionUserListView);
@@ -503,6 +539,14 @@ abstract public class BaseMessageListFragment<
             params.setReplyToChannel(true);
         }
         getViewModel().sendFileMessage(params, fileInfo);
+    }
+
+    void sendMultipleFilesMessageInternal(@NonNull List<FileInfo> fileInfos, @NonNull MultipleFilesMessageCreateParams params) {
+        if (targetMessage != null && channelConfig.getReplyType() != ReplyType.NONE) {
+            params.setParentMessageId(targetMessage.getMessageId());
+            params.setReplyToChannel(true);
+        }
+        getViewModel().sendMultipleFilesMessage(fileInfos, params);
     }
 
     private void showFile(@NonNull File file, @NonNull String mimeType) {
@@ -623,18 +667,191 @@ abstract public class BaseMessageListFragment<
      * since 2.0.1
      */
     public void takePhoto() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        Logger.d("++ build sdk int=%s", Build.VERSION.SDK_INT);
-        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
-        if (permissions.length > 0) {
-            requestPermission(permissions, () -> {
-                Intent intent = channelConfig.getInput().getGallery().getGalleryIntent();
-                getContentLauncher.launch(intent);
-            });
-        } else {
-            Intent intent = channelConfig.getInput().getGallery().getGalleryIntent();
-            getContentLauncher.launch(intent);
+        takeMedia(isMultipleMediaEnabled() ? pickMultipleMedia : pickSingleMedia);
+    }
+
+    @VisibleForTesting
+    void takeMedia(@NonNull ActivityResultLauncher<PickVisualMediaRequest> picker) {
+        ActivityResultContracts.PickVisualMedia.VisualMediaType mediaType =
+            channelConfig.getInput().getGallery().getPickVisualMediaType();
+        if (mediaType != null) {
+            SendbirdChat.setAutoBackgroundDetection(false);
+            picker.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(mediaType)
+                .build());
         }
+    }
+
+    /**
+     * Returns whether the multiple media is enabled or not.
+     *
+     * @return true if the multiple media is enabled, false otherwise.
+     * since 3.9.0
+     */
+    public boolean isMultipleMediaEnabled() {
+        GroupChannel channel = getViewModel().getChannel();
+        if (channel == null) return false;
+        return channelConfig.getEnableMultipleFilesMessage() &&
+            !channel.isBroadcast() && !channel.isSuper();
+    }
+
+    /**
+     * This method will be invoked when PickMultipleVisualMediaRequest is finished.
+     * @param uris the list of uris of the picked media.
+     * since 3.9.0
+     */
+    @VisibleForTesting
+    void onMultipleMediaResult(@NonNull List<Uri> uris) {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        if (uris.isEmpty()) return;
+        if (uris.size() > getMultipleFilesMessageFileCountLimit()) {
+            showConfirmDialog(getString(R.string.sb_text_error_multiple_files_count_limit, getMultipleFilesMessageFileCountLimit()));
+            return;
+        }
+
+        if (uris.size() == 1) {
+            sendSingleMedia(uris.get(0));
+        } else {
+            sendMultipleMedia(uris);
+        }
+    }
+
+    /**
+     * This method will be invoked when PickVisualMediaRequest is finished.
+     * @param uri the uri of the picked media.
+     * since 3.9.0
+     */
+    @VisibleForTesting
+    void onSingleMediaResult(@Nullable Uri uri) {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        if (uri != null && isFragmentAlive()) {
+            sendSingleMedia(uri);
+        }
+    }
+
+    @VisibleForTesting
+    void sendSingleMedia(@NonNull Uri uri) {
+        sendFileMessage(uri);
+    }
+
+    @VisibleForTesting
+    void sendMultipleMedia(@NonNull List<Uri> uris) {
+        if (getContext() != null) {
+            FileInfo.fromUris(getContext(), uris, SendbirdUIKit.shouldUseImageCompression(), new OnResultHandler<List<FileInfo>>() {
+                @Override
+                public void onResult(@NonNull List<FileInfo> result) {
+                    sendMultipleMediaFileInfo(result);
+                }
+
+                @Override
+                public void onError(@Nullable SendbirdException e) {
+                    Logger.w(e);
+                    toastError(R.string.sb_text_error_send_message);
+                }
+            });
+        }
+    }
+
+    @VisibleForTesting
+    void sendMultipleMediaFileInfo(@NonNull List<FileInfo> fileInfos) {
+        List<FileInfo> images = new ArrayList<>();
+        List<FileInfo> videos = new ArrayList<>();
+        for (FileInfo fileInfo : fileInfos) {
+            String mimeType = fileInfo.getMimeType();
+            if (mimeType == null) continue;
+            if (mimeType.startsWith(StringSet.image)) {
+                images.add(fileInfo);
+            } else if (mimeType.startsWith(StringSet.video)) {
+                videos.add(fileInfo);
+            }
+        }
+
+        final List<Integer> fileSizes = new ArrayList<>();
+        FileMessageCreateParams imageParams = null;
+        MultipleFilesMessageCreateParams multipleFilesParams = null;
+        final List<FileMessageCreateParams> videosParams = new ArrayList<>();
+
+        if (images.size() == 1) {
+            final FileInfo image = images.get(0);
+            imageParams = getFileMessageCreateParams(image);
+            fileSizes.add(imageParams.getFileSize());
+        } else if (images.size() > 1) {
+            multipleFilesParams = getMultipleFilesMessageCreateParams(images);
+            for (UploadableFileInfo uploadableFileInfo : multipleFilesParams.getUploadableFileInfoList()) {
+                fileSizes.add(uploadableFileInfo.getFileSize());
+            }
+        }
+
+        for (FileInfo video : videos) {
+            final FileMessageCreateParams videoParams = getFileMessageCreateParams(video);
+            videosParams.add(videoParams);
+            fileSizes.add(videoParams.getFileSize());
+        }
+
+        if (isUploadFileSizeLimitExceeded(fileSizes)) {
+            showConfirmDialog(getString(
+                    R.string.sb_text_error_file_upload_size_limit,
+                    FileUtils.getReadableFileSize(
+                            SendbirdChat.getAppInfo() == null ?
+                                    0 :
+                                    SendbirdChat.getAppInfo().getUploadSizeLimit()
+                    )
+            ));
+            return;
+        }
+
+        if (imageParams != null) {
+            sendFileMessageInternal(images.get(0), imageParams);
+        } else if (multipleFilesParams != null) {
+            sendMultipleFilesMessageInternal(images, multipleFilesParams);
+        }
+
+        for (int i = 0 ; i < videos.size() ; i++) {
+            sendFileMessageInternal(videos.get(i), videosParams.get(i));
+        }
+    }
+
+    @NonNull
+    private MultipleFilesMessageCreateParams getMultipleFilesMessageCreateParams(List<FileInfo> images) {
+        MultipleFilesMessageCreateParams multipleFilesParams;
+        multipleFilesParams = FileInfo.toMultipleFilesParams(images);
+        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeSendMultipleFilesMessage(multipleFilesParams);
+        }
+        onBeforeSendMultipleFilesMessage(multipleFilesParams);
+        return multipleFilesParams;
+    }
+
+    @NonNull
+    private FileMessageCreateParams getFileMessageCreateParams(@NonNull FileInfo fileInfo) {
+        final FileMessageCreateParams imageParams = fileInfo.toFileParams();
+        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
+        if (customHandler != null) {
+            customHandler.onBeforeSendFileMessage(imageParams);
+        }
+        onBeforeSendFileMessage(imageParams);
+        return imageParams;
+    }
+
+    private boolean isUploadFileSizeLimitExceeded(@NonNull List<Integer> fileSizes) {
+        if (getContext() == null || SendbirdChat.getAppInfo() == null) return false;
+        final long uploadSizeLimit = SendbirdChat.getAppInfo().getUploadSizeLimit();
+        for (int fileSize : fileSizes) {
+            if (fileSize > uploadSizeLimit) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int getMultipleFilesMessageFileCountLimit() {
+        return Math.min(
+            MULTIPLE_FILES_COUNT_LIMIT,
+            SendbirdChat.getAppInfo() == null ?
+                MULTIPLE_FILES_COUNT_LIMIT :
+                SendbirdChat.getAppInfo().getMultipleFilesMessageFileCountLimit()
+        );
     }
 
     /**
@@ -719,6 +936,16 @@ abstract public class BaseMessageListFragment<
     }
 
     /**
+     * It will be called before sending multiple files message.
+     * If you want add more data, you can override this and set the data.
+     *
+     * @param params Params of multiple files message. Refer to {@link MultipleFilesMessageCreateParams}.
+     * since 3.9.0
+     */
+    protected void onBeforeSendMultipleFilesMessage(@NonNull MultipleFilesMessageCreateParams params) {
+    }
+
+    /**
      * It will be called before updating message.
      * If you want add more data, you can override this and set the data.
      *
@@ -755,7 +982,7 @@ abstract public class BaseMessageListFragment<
                 @Override
                 public void onResult(@NonNull FileInfo info) {
                     BaseMessageListFragment.this.mediaUri = null;
-                    sendFileMessage(info, info.toFileParams());
+                    sendFileMessage(info);
                 }
 
                 @Override
@@ -793,27 +1020,25 @@ abstract public class BaseMessageListFragment<
 
         if (getContext() != null) {
             final FileInfo fileInfo = FileInfo.fromVoiceFileInfo(info,
-                    FileUtils.getChannelFileCacheDir(getContext(), getViewModel().getChannelUrl()));
-            final FileMessageCreateParams params = fileInfo.toFileParams();
-            final List<MessageMetaArray> metaArrays =  new ArrayList<>();
-            final List<String> duration = new ArrayList<>();
-            duration.add(String.valueOf(info.getDuration()));
-            metaArrays.add(new MessageMetaArray(StringSet.KEY_VOICE_MESSAGE_DURATION, duration));
-            final List<String> type = new ArrayList<>();
-            type.add(StringSet.voice + "/" + StringSet.m4a);
-            metaArrays.add(new MessageMetaArray(StringSet.KEY_INTERNAL_MESSAGE_TYPE, type));
-            params.setMetaArrays(metaArrays);
-            params.setFileName(StringSet.Voice_message + "." + StringSet.m4a);
-            sendFileMessage(fileInfo, params);
+                FileUtils.getChannelFileCacheDir(getContext(), getViewModel().getChannelUrl()));
+            sendFileMessage(fileInfo);
         }
     }
 
-    private void sendFileMessage(@NonNull FileInfo info, @NonNull FileMessageCreateParams params) {
-        final CustomParamsHandler customHandler = SendbirdUIKit.getCustomParamsHandler();
-        if (customHandler != null) {
-            customHandler.onBeforeSendFileMessage(params);
+    @VisibleForTesting
+    void sendFileMessage(@NonNull FileInfo info) {
+        final FileMessageCreateParams params = getFileMessageCreateParams(info);
+        if (isUploadFileSizeLimitExceeded(Collections.singletonList(params.getFileSize()))) {
+            showConfirmDialog(getString(
+                R.string.sb_text_error_file_upload_size_limit,
+                FileUtils.getReadableFileSize(
+                    SendbirdChat.getAppInfo() == null ?
+                        0 :
+                        SendbirdChat.getAppInfo().getUploadSizeLimit()
+                )
+            ));
+            return;
         }
-        onBeforeSendFileMessage(params);
         sendFileMessageInternal(info, params);
     }
 
@@ -970,5 +1195,17 @@ abstract public class BaseMessageListFragment<
      */
     void setSuggestedMentionListAdapter(@Nullable SuggestedMentionListAdapter suggestedMentionListAdapter) {
         this.suggestedMentionListAdapter = suggestedMentionListAdapter;
+    }
+
+    @NonNull
+    @VisibleForTesting
+    ActivityResultLauncher<PickVisualMediaRequest> getPickMultipleMedia() {
+        return pickMultipleMedia;
+    }
+
+    @NonNull
+    @VisibleForTesting
+    ActivityResultLauncher<PickVisualMediaRequest> getPickSingleMedia() {
+        return pickSingleMedia;
     }
 }

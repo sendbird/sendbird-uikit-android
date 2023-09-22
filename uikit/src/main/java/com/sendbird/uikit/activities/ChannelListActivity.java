@@ -119,8 +119,8 @@ public class ChannelListActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.popBackStack();
         manager.beginTransaction()
-                .replace(R.id.sb_fragment_container, fragment)
-                .commit();
+            .replace(R.id.sb_fragment_container, fragment)
+            .commit();
 
         redirectChannelIfNeeded(getIntent());
     }
@@ -128,7 +128,7 @@ public class ChannelListActivity extends AppCompatActivity {
     /**
      * It will be called when the {@link ChannelListActivity} is being created.
      * The data contained in Intent is delivered to Fragment's Bundle.
-     * 
+     *
      * @return {@link com.sendbird.uikit.fragments.ChannelListFragment}
      * since 3.0.0
      */

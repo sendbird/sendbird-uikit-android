@@ -222,6 +222,8 @@
         <item name="sb_widget_parent_message_info">@style/Widget.Sendbird.Dark.ParentMessageInfo</item>
         <item name="sb_widget_my_voice_message">@style/Widget.Sendbird.Dark.Message.Me.VoiceMessage</item>
         <item name="sb_widget_other_voice_message">@style/Widget.Sendbird.Dark.Message.Other.VoiceMessage</item>
+        <item name="sb_widget_my_multiple_files_message">@style/Widget.Sendbird.Dark.Message.Me.MultipleFilesMessage</item>
+        <item name="sb_widget_other_multiple_files_message">@style/Widget.Sendbird.Dark.Message.Other.MultipleFilesMessage</item>
     </style>
     <style name="Component.Dark.MessageThreadInput">
         <item name="sb_message_input_background">@color/background_600</item>
@@ -387,6 +389,8 @@
         <item name="sb_widget_thread_info">@style/Widget.Sendbird.Dark.ThreadInfoView</item>
         <item name="sb_widget_my_voice_message">@style/Widget.Sendbird.Dark.Message.Me.VoiceMessage</item>
         <item name="sb_widget_other_voice_message">@style/Widget.Sendbird.Dark.Message.Other.VoiceMessage</item>
+        <item name="sb_widget_my_multiple_files_message">@style/Widget.Sendbird.Dark.Message.Me.MultipleFilesMessage</item>
+        <item name="sb_widget_other_multiple_files_message">@style/Widget.Sendbird.Dark.Message.Other.MultipleFilesMessage</item>
     </style>
     <style name="Component.Dark.ChannelMessageInput">
         <item name="sb_message_input_background">@color/background_600</item>
@@ -902,7 +906,6 @@
         <item name="sb_emoji_reaction_count_text_appearance">@style/SendbirdButtonOnDark03</item>
         <item name="sb_emoji_reaction_count_tab_layout_background">@drawable/sb_tab_layout_border_background_dark</item>
         <item name="sb_emoji_reaction_count_tab_indicator_color">@color/primary_200</item>
-        <item name="sb_emoji_reaction_user_nickname_appearance">@style/SendbirdSubtitle2OnDark01</item>
         <item name="sb_emoji_failed_src">@drawable/icon_question</item>
         <item name="sb_emoji_failed_src_tint">@color/ondark_03</item>
     </style>
@@ -1035,6 +1038,7 @@
         <item name="sb_parent_message_info_voice_message_progress_track_color">@color/sb_message_other_tint_dark</item>
         <item name="sb_parent_message_info_voice_message_timeline_text_appearance">@style/SendbirdBody3OnDark01</item>
         <item name="sb_widget_emoji_message">@style/Widget.Sendbird.Dark.Emoji</item>
+        <item name="sb_multiple_files_message_item_background_color">@color/background_500</item>
     </style>
 
     <style name="Widget.Sendbird.Dark.Message.Me.VoiceMessage">
@@ -1083,5 +1087,19 @@
         <item name="sb_voice_message_input_cancel_button_text_appearance">@style/SendbirdButtonPrimary200</item>
         <item name="sb_voice_message_input_cancel_button_text_color">@color/sb_button_uncontained_text_color_dark</item>
         <item name="sb_voice_message_input_cancel_button_background">@drawable/sb_button_uncontained_background_dark</item>
+    </style>
+
+    <style name="Widget.Sendbird.Dark.Message.Me.MultipleFilesMessage">
+        <item name="sb_message_me_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_message_me_background_tint">@color/sb_message_me_tint_dark</item>
+        <item name="sb_multiple_files_message_background_color">@color/background_400</item>
+        <item name="sb_multiple_files_message_item_background_color">@color/background_500</item>
+    </style>
+
+    <style name="Widget.Sendbird.Dark.Message.Other.MultipleFilesMessage">
+        <item name="sb_message_other_background">@drawable/sb_shape_chat_bubble</item>
+        <item name="sb_message_other_background_tint">@color/sb_message_other_tint_dark</item>
+        <item name="sb_multiple_files_message_background_color">@color/background_400</item>
+        <item name="sb_multiple_files_message_item_background_color">@color/background_500</item>
     </style>
 </resources>

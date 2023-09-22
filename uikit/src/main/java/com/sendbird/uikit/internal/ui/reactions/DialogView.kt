@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.uikit.R
@@ -148,8 +149,19 @@ internal class DialogView @JvmOverloads constructor(
         }
     }
 
+    fun setTitleEmpty() {
+        binding.tvDialogTitle.visibility = GONE
+        binding.sbTopEmpty.visibility = VISIBLE
+    }
+
+    fun setMessageTextAppearance(@StyleRes resId: Int) {
+        binding.tvDialogMessage.setAppearance(context, resId)
+    }
+
     fun setMessage(message: CharSequence?) {
-        message?.isNotEmpty()?.let {
+        if (message.isNullOrEmpty()) {
+            binding.tvDialogMessage.visibility = GONE
+        } else {
             binding.tvDialogMessage.text = message
             binding.tvDialogMessage.visibility = VISIBLE
         }

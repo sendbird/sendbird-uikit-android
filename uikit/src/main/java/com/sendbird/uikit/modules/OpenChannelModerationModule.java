@@ -67,7 +67,7 @@ public class OpenChannelModerationModule extends BaseModule {
     public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @Nullable Bundle args) {
         if (args != null) params.apply(context, args);
         final Context moduleContext = new ContextThemeWrapper(context, params.getTheme());
-        
+
         final LinearLayout parent = new LinearLayout(context);
         parent.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         parent.setOrientation(LinearLayout.VERTICAL);

@@ -124,9 +124,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      */
     public BaseMessageListAdapter(@Nullable GroupChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         this(channel, new MessageListUIParams.Builder()
-                .setUseMessageGroupUI(useMessageGroupUI)
-                .setUseReverseLayout(useReverseLayout)
-                .build());
+            .setUseMessageGroupUI(useMessageGroupUI)
+            .setUseReverseLayout(useReverseLayout)
+            .build());
     }
 
     /**
@@ -240,29 +240,29 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
                 int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
                     emojiReactionClickListener.onEmojiReactionClick(
-                            view,
-                            reactionPosition,
-                            getItem(messagePosition),
-                            reactionKey
+                        view,
+                        reactionPosition,
+                        getItem(messagePosition),
+                        reactionKey
                     );
                 }
             }, (view, reactionPosition, reactionKey) -> {
                 int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionLongClickListener != null) {
                     emojiReactionLongClickListener.onEmojiReactionLongClick(
-                            view,
-                            reactionPosition,
-                            getItem(messagePosition),
-                            reactionKey
+                        view,
+                        reactionPosition,
+                        getItem(messagePosition),
+                        reactionKey
                     );
                 }
             }, v -> {
                 int messagePosition = groupChannelHolder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionMoreButtonClickListener != null) {
                     emojiReactionMoreButtonClickListener.onItemClick(
-                            v,
-                            messagePosition,
-                            getItem(messagePosition)
+                        v,
+                        messagePosition,
+                        getItem(messagePosition)
                     );
                 }
             });
@@ -346,7 +346,8 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      */
     public void setItems(@NonNull final GroupChannel channel, @NonNull final List<BaseMessage> messageList, @Nullable OnMessageListUpdateHandler callback) {
         if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
-            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
+            if (messageDisplayDataProvider != null)
+                MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
             notifyMessageListChanged(channel, messageList, callback);
             return;
         }
@@ -363,7 +364,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
         differWorker.submit(() -> {
             final CountDownLatch lock = new CountDownLatch(1);
             final MessageDiffCallback diffCallback = new MessageDiffCallback(BaseMessageListAdapter.this.channel, channel,
-                    BaseMessageListAdapter.this.messageList, messageList, messageListUIParams);
+                BaseMessageListAdapter.this.messageList, messageList, messageListUIParams);
             final DiffUtil.DiffResult diffResult = calculateDiff(diffCallback);
 
             sendbirdUIKit.runOnUIThread(() -> {
@@ -605,9 +606,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @NonNull
     MessageViewHolder createViewHolder(@NonNull ViewGroup parent, int viewType, LayoutInflater inflater) {
         return MessageViewHolderFactory.createViewHolder(inflater,
-                parent,
-                MessageType.from(viewType),
-                messageListUIParams);
+            parent,
+            MessageType.from(viewType),
+            messageListUIParams);
     }
 
     @TestOnly

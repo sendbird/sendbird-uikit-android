@@ -13,6 +13,7 @@ public interface AuthenticateHandler {
      * since 3.0.0
      */
     void onAuthenticated();
+
     /**
      * Calls when current user authentication fails in each component of UIKit.
      * On the contrary, if the authentication is made successfully {@link #onAuthenticated()} will be called.

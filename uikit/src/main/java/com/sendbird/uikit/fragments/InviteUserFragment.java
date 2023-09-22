@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.user.User;
@@ -29,8 +28,9 @@ import com.sendbird.uikit.modules.InviteUserModule;
 import com.sendbird.uikit.modules.components.InviteUserListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.InviteUserViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     @NonNull
     @Override
     protected InviteUserModule onCreateModule(@NonNull Bundle args) {
-        return new InviteUserModule(requireContext());
+        return ModuleProviders.getInviteUser().provide(requireContext(), args);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class InviteUserFragment extends BaseModuleFragment<InviteUserModule, Inv
     @NonNull
     @Override
     protected InviteUserViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), pagedQueryHandler)).get(InviteUserViewModel.class);
+        return ViewModelProviders.getInviteUser().provide(this, getChannelUrl(), pagedQueryHandler);
     }
 
     @Override

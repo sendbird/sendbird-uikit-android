@@ -57,8 +57,8 @@ public class MentionSuggestion {
     @Override
     public String toString() {
         return "MentionSuggestion{" +
-                "keyword='" + keyword + '\'' +
-                ", suggestionList=" + suggestionList +
-                '}';
+            "keyword='" + keyword + '\'' +
+            ", suggestionList=" + suggestionList +
+            '}';
     }
 }

@@ -1,0 +1,68 @@
+//plugins {
+//    id 'org.jetbrains.dokka' version "$kotlin_version"
+//    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.13.1'
+//}
+configurations {
+    ktlint
+}
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            debuggable true
+            buildConfigField "String", "AUTHORIZATION", "$System.env.MESSAGING_ANDROID_BASIC_AUTH"
+            buildConfigField "String", "SECRET_KEY", "$System.env.MESSAGING_ANDROID_SECRET_KEY"
+            buildConfigField "String", "WS_HOST", "\"wss://ws-preprod.sendbird.com\""
+            buildConfigField "String", "API_HOST", "\"https://api-preprod.sendbird.com\""
+            buildConfigField "String", "ROUTING_URL", "\"https://api-preprod.sendbird.com/routing/%s\""
+        }
+    }
+}
+
+dependencies {
+    ktlint("com.pinterest:ktlint:0.50.0") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
+        }
+    }
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation "androidx.test:rules:1.4.0"
+    androidTestImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation 'io.kotest:kotest-assertions-core:5.3.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.8'
+    testImplementation 'androidx.test:core:1.5.0'
+    testImplementation 'io.kotest:kotest-assertions-core:5.6.0'
+    testImplementation "io.mockk:mockk:1.13.4"
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:1.8.20"
+}
+
+tasks.register("ktlintCheck", JavaExec) {
+    group = "verification"
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    mainClass = "com.pinterest.ktlint.Main"
+    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
+    args "src/**/*.kt", "**.kts", "!**/build/**"
+}
+
+tasks.named("check") {
+    dependsOn tasks.named("ktlintCheck")
+}
+
+tasks.register("ktlintFormat", JavaExec) {
+    group = "formatting"
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    mainClass = "com.pinterest.ktlint.Main"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
+    args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
+}

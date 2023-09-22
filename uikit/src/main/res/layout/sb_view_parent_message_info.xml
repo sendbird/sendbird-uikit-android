@@ -120,6 +120,19 @@
         app:layout_constraintBottom_toBottomOf="@id/contentPanel"
         />
 
+    <com.sendbird.uikit.internal.ui.messages.MultipleFilesMessageView
+        android:id="@+id/multipleFilesMessage"
+        android:layout_width="@dimen/sb_default_thumbnail_width"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/contentPanel"
+        app:layout_constraintEnd_toEndOf="@id/contentPanel"
+        app:layout_constraintTop_toTopOf="@id/contentPanel"
+        app:layout_constraintBottom_toBottomOf="@id/contentPanel"
+        />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fileGroup"
         android:layout_width="wrap_content"
@@ -208,7 +221,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tvTextMessage,fileGroup,ivThumbnail,ivThumbnailOverlay,ivThumbnailIcon,voiceMessage"/>
+        app:constraint_referenced_ids="tvTextMessage,fileGroup,ivThumbnail,ivThumbnailOverlay,ivThumbnailIcon,voiceMessage,multipleFilesMessage"/>
 
     <com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView
         android:id="@+id/rvEmojiReactionList"

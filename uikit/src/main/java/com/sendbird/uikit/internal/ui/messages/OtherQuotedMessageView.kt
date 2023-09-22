@@ -11,21 +11,25 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.sendbird.android.channel.GroupChannel
+import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
+import com.sendbird.android.message.MultipleFilesMessage
 import com.sendbird.android.message.UserMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewOtherQuotedMessageBinding
+import com.sendbird.uikit.internal.extensions.getCacheKey
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
+import com.sendbird.uikit.internal.extensions.getName
+import com.sendbird.uikit.internal.extensions.getType
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
 import com.sendbird.uikit.utils.DrawableUtils
-import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.UserUtils
 import com.sendbird.uikit.utils.ViewUtils
 import java.util.Locale
@@ -99,7 +103,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
 
         parentMessage?.let {
             val replyType = messageListUIParams.channelConfig.replyType
-            if (replyType == ReplyType.THREAD && it.createdAt < channel.joinedAt * 1000) {
+            if (replyType == ReplyType.THREAD && it.createdAt < channel.messageOffsetTimestamp) {
                 val messageUnavailable = context.getString(R.string.sb_text_channel_message_unavailable)
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
                 binding.tvQuoteReplyMessage.text =
@@ -130,7 +134,8 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                 binding.tvQuoteReplyMessage.maxLines = 2
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
             }
-            is FileMessage -> {
+
+            is BaseFileMessage -> {
                 val requestListener: RequestListener<Drawable?> = object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         e: GlideException?,
@@ -153,12 +158,12 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                         return false
                     }
                 }
-                val type = parentMessage.type
+                val type = parentMessage.getType()
                 binding.ivQuoteReplyThumbnail.radius = resources.getDimensionPixelSize(R.dimen.sb_size_16).toFloat()
                 binding.tvQuoteReplyMessage.isSingleLine = true
                 binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.MIDDLE
 
-                if (MessageUtils.isVoiceMessage(parentMessage)) {
+                if (type == StringSet.voice) {
                     val text = context.getString(R.string.sb_text_voice_message)
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.tvQuoteReplyMessage.text = textUIConfig?.apply(context, text) ?: text
@@ -172,11 +177,29 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                             context, R.color.background_50, R.drawable.icon_gif, R.color.onlight_03
                         )
                     )
-                    ViewUtils.drawQuotedMessageThumbnail(
-                        binding.ivQuoteReplyThumbnail,
-                        parentMessage,
-                        requestListener
-                    )
+                    when (parentMessage) {
+                        is FileMessage -> {
+                            ViewUtils.drawQuotedMessageThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage,
+                                requestListener
+                            )
+                        }
+
+                        is MultipleFilesMessage -> {
+                            val firstImage = parentMessage.files.firstOrNull() ?: return
+                            ViewUtils.drawThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage.getCacheKey(0),
+                                firstImage.url,
+                                firstImage.plainUrl,
+                                firstImage.fileType,
+                                firstImage.thumbnails,
+                                requestListener,
+                                R.dimen.sb_size_24
+                            )
+                        }
+                    }
                 } else if (type.lowercase(Locale.getDefault()).contains(StringSet.video)) {
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageDrawable(
@@ -184,32 +207,77 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                             context, R.color.background_50, R.drawable.icon_play, R.color.onlight_03
                         )
                     )
-                    ViewUtils.drawQuotedMessageThumbnail(
-                        binding.ivQuoteReplyThumbnail,
-                        parentMessage,
-                        requestListener
-                    )
+                    when (parentMessage) {
+                        is FileMessage -> {
+                            ViewUtils.drawQuotedMessageThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage,
+                                requestListener
+                            )
+                        }
+
+                        is MultipleFilesMessage -> {
+                            val firstImage = parentMessage.files.firstOrNull() ?: return
+                            ViewUtils.drawThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage.getCacheKey(0),
+                                firstImage.url,
+                                firstImage.plainUrl,
+                                firstImage.fileType,
+                                firstImage.thumbnails,
+                                requestListener,
+                                R.dimen.sb_size_24
+                            )
+                        }
+                    }
                 } else if (type.lowercase(Locale.getDefault()).startsWith(StringSet.audio)) {
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_audio)
                     binding.tvQuoteReplyMessage.text =
-                        textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
+                        textUIConfig?.apply(context, parentMessage.getName(context)) ?: parentMessage.getName(context)
                 } else if (type.startsWith(StringSet.image) && !type.contains(StringSet.svg)) {
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageResource(android.R.color.transparent)
-                    ViewUtils.drawQuotedMessageThumbnail(
-                        binding.ivQuoteReplyThumbnail,
-                        parentMessage,
-                        requestListener
-                    )
+                    when (parentMessage) {
+                        is FileMessage -> {
+                            ViewUtils.drawQuotedMessageThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage,
+                                requestListener
+                            )
+                        }
+
+                        is MultipleFilesMessage -> {
+                            val firstImage = parentMessage.files.firstOrNull() ?: return
+                            ViewUtils.drawThumbnail(
+                                binding.ivQuoteReplyThumbnail,
+                                parentMessage.getCacheKey(0),
+                                firstImage.url,
+                                firstImage.plainUrl,
+                                firstImage.fileType,
+                                firstImage.thumbnails,
+                                requestListener,
+                                R.dimen.sb_size_24
+                            )
+                        }
+                    }
                 } else {
                     binding.quoteReplyMessagePanel.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.visibility = VISIBLE
                     binding.ivQuoteReplyMessageIcon.setImageResource(R.drawable.icon_file_document)
                     binding.tvQuoteReplyMessage.text =
-                        textUIConfig?.apply(context, parentMessage.name) ?: parentMessage.name
+                        textUIConfig?.apply(context, parentMessage.getName(context)) ?: parentMessage.getName(context)
                 }
+            }
+
+            else -> {
+                if (parentMessage == null) return
+                binding.quoteReplyMessagePanel.visibility = VISIBLE
+                ViewUtils.drawUnknownMessage(binding.tvQuoteReplyMessage, false)
+                binding.tvQuoteReplyMessage.isSingleLine = false
+                binding.tvQuoteReplyMessage.maxLines = 2
+                binding.tvQuoteReplyMessage.ellipsize = TextUtils.TruncateAt.END
             }
         }
     }

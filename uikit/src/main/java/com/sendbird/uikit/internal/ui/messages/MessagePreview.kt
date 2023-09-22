@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbViewMessagePreviewBinding
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
+import com.sendbird.uikit.internal.extensions.getName
+import com.sendbird.uikit.internal.extensions.getType
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
@@ -81,18 +84,20 @@ internal class MessagePreview @JvmOverloads constructor(
         ViewUtils.drawProfile(binding.ivProfile, message)
         binding.tvUserName.text = message.sender?.nickname ?: ""
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
-        if (message is FileMessage) {
-            if (MessageUtils.isVoiceMessage(message)) {
+        if (message is BaseFileMessage) {
+            val name = message.getName(context)
+            val type = message.getType()
+            if (message is FileMessage && MessageUtils.isVoiceMessage(message)) {
                 binding.tvMessage.apply {
                     isSingleLine = true
                     maxLines = 1
                     ellipsize = TextUtils.TruncateAt.END
                     setAppearance(context, messageTextAppearance)
-                    text = context.getString(R.string.sb_text_voice_message)
+                    text = name
                 }
                 binding.ivIcon.visibility = GONE
             } else {
-                val icon = getIconDrawable(message.type)
+                val icon = getIconDrawable(type)
                 binding.tvMessage.apply {
                     isSingleLine = true
                     maxLines = 1
@@ -110,7 +115,7 @@ internal class MessagePreview @JvmOverloads constructor(
                 } ?: binding.ivIcon.setImageDrawable(AppCompatResources.getDrawable(binding.ivIcon.context, icon))
                 binding.ivIcon.setImageResource(icon)
                 binding.ivIcon.visibility = VISIBLE
-                binding.tvMessage.text = message.name
+                binding.tvMessage.text = name
             }
         } else {
             binding.tvMessage.apply {

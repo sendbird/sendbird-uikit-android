@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.params.FileMessageCreateParams;
 import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.android.params.GroupChannelUpdateParams;
+import com.sendbird.android.params.MultipleFilesMessageCreateParams;
 import com.sendbird.android.params.OpenChannelCreateParams;
 import com.sendbird.android.params.OpenChannelUpdateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
@@ -52,6 +53,15 @@ public interface CustomParamsHandler {
      * since 1.2.2
      */
     default void onBeforeSendFileMessage(@NonNull FileMessageCreateParams params) {}
+
+    /**
+     * It will be called before sending multiple files message.
+     * If you want add more data, you can override this and set the data.
+     *
+     * @param params Params of multiple files message. Refer to {@link MultipleFilesMessageCreateParams}.
+     * since 3.9.0
+     */
+    default void onBeforeSendMultipleFilesMessage(@NonNull MultipleFilesMessageCreateParams params) {}
 
     /**
      * It will be called before updating message.

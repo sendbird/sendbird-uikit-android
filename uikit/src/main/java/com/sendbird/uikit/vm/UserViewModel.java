@@ -117,7 +117,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
             public void onOperatorUpdated(@NonNull BaseChannel channel) {
                 updateChannel(channel);
                 if (isCurrentChannel(channel.getUrl()) &&
-                        ((GroupChannel) channel).getMyRole() != Role.OPERATOR) {
+                    ((GroupChannel) channel).getMyRole() != Role.OPERATOR) {
                     Logger.i(">> UserViewModel::onOperatorUpdated()");
                     Logger.i("++ my role : " + ((GroupChannel) channel).getMyRole());
                     operatorUnregistered.postValue(true);
@@ -139,7 +139,7 @@ public abstract class UserViewModel<T> extends BaseViewModel implements OnPagedD
                 updateChannel(channel);
                 final User currentUser = SendbirdChat.getCurrentUser();
                 if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
-                        user.getUserId().equals(currentUser.getUserId())) {
+                    user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> UserViewModel::onUserBanned()");
                     channelDeleted.postValue(true);
                 }

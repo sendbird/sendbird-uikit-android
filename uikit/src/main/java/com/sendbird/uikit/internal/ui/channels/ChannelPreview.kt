@@ -11,12 +11,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.AdminMessage
-import com.sendbird.android.message.FileMessage
+import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.UserMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.toDisplayText
 import com.sendbird.uikit.utils.ChannelUtils
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
@@ -202,14 +203,10 @@ internal class ChannelPreview @JvmOverloads constructor(
                         message = it.getDisplayMessage()
                     }
 
-                    is FileMessage -> {
+                    is BaseFileMessage -> {
                         textView.maxLines = 1
                         textView.ellipsize = TextUtils.TruncateAt.MIDDLE
-                        message = if (MessageUtils.isVoiceMessage(it)) {
-                            textView.context.getString(R.string.sb_text_voice_message)
-                        } else {
-                            it.name
-                        }
+                        message = it.toDisplayText(textView.context)
                     }
                 }
             }

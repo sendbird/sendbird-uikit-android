@@ -77,6 +77,10 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
         binding.svCategoryBox.visibility = if (enable) VISIBLE else GONE
     }
 
+    fun setCategoryFilterBoxBackgroundColor(@ColorInt color: Int) {
+        binding.svCategoryBox.setBackgroundColor(color)
+    }
+
     fun createCategoryFilterItemView(): CompoundButton {
         return RadioButton(context).apply {
             setTextColor(ColorStateList.valueOf(categoryMenuTextColor))

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.uikit.activities.adapter.InviteUserListAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 /**
  * This class creates and performs a view corresponding the user list area when inviting users in Sendbird UIKit.
@@ -12,7 +13,7 @@ import com.sendbird.uikit.interfaces.UserInfo;
  */
 public class InviteUserListComponent extends SelectUserListComponent<UserInfo> {
     @NonNull
-    private InviteUserListAdapter adapter = new InviteUserListAdapter();
+    private InviteUserListAdapter adapter = AdapterProviders.getInviteUserList().provide();
 
     /**
      * Sets the user list adapter when inviting users to provide child views on demand. The default is {@code new InviteUserListAdapter()}.
@@ -25,7 +26,6 @@ public class InviteUserListComponent extends SelectUserListComponent<UserInfo> {
         this.adapter = adapter;
         super.setAdapter(this.adapter);
     }
-
     /**
      * Returns the user list adapter when inviting users.
      *

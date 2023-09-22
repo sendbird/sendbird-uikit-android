@@ -16,9 +16,11 @@ import com.sendbird.android.collection.Traceable;
 import com.sendbird.android.handler.GroupChannelCallbackHandler;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.MultipleFilesMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MultipleFilesMessageCreateParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
 import com.sendbird.uikit.SendbirdUIKit;
@@ -179,6 +181,28 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     }
 
     /**
+     * Sends multiple files message to the channel.
+     *
+     * @param fileInfos Multiple files information to send to the channel
+     * @param params    Parameters to be applied to the message
+     * since 3.9.0
+     */
+    public void sendMultipleFilesMessage(@NonNull List<FileInfo> fileInfos, @NonNull MultipleFilesMessageCreateParams params) {
+        if (channel != null) {
+            MultipleFilesMessage pendingMultipleFilesMessage = channel.sendMultipleFilesMessage(params, null, (message, e) -> {
+                if (e != null) {
+                    Logger.e(e);
+                    return;
+                }
+                Logger.i("++ sent message : %s", message);
+            });
+            if (pendingMultipleFilesMessage != null) {
+                PendingMessageRepository.getInstance().addFileInfos(pendingMultipleFilesMessage, fileInfos);
+            }
+        }
+    }
+
+    /**
      * Resends a message to the channel.
      *
      * @param message Message to resend
@@ -188,16 +212,21 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     public void resendMessage(@NonNull BaseMessage message, @Nullable OnCompleteHandler handler) {
         if (channel == null) return;
         if (message instanceof UserMessage) {
-            channel.resendMessage((UserMessage) message, (message12, e) -> {
+            channel.resendMessage((UserMessage) message, (userMessage, e) -> {
                 if (handler != null) handler.onComplete(e);
-                Logger.i("__ resent message : %s", message12);
+                Logger.i("__ resent message : %s", userMessage);
             });
         } else if (message instanceof FileMessage) {
             FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
             final File file = info == null ? null : info.getFile();
-            channel.resendMessage((FileMessage) message, file, (message1, e1) -> {
-                if (handler != null) handler.onComplete(e1);
-                Logger.i("__ resent file message : %s", message1);
+            channel.resendMessage((FileMessage) message, file, (fileMessage, e) -> {
+                if (handler != null) handler.onComplete(e);
+                Logger.i("__ resent file message : %s", fileMessage);
+            });
+        } else if (message instanceof MultipleFilesMessage) {
+            channel.resendMessage((MultipleFilesMessage) message, null, (multipleFilesMessage, e) -> {
+                if (handler != null) handler.onComplete(e);
+                Logger.i("__ resent multiple files message : %s", multipleFilesMessage);
             });
         }
     }

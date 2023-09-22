@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.user.Member;
@@ -27,8 +26,9 @@ import com.sendbird.uikit.modules.RegisterOperatorModule;
 import com.sendbird.uikit.modules.components.RegisterOperatorListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.RegisterOperatorViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
     @NonNull
     @Override
     protected RegisterOperatorModule onCreateModule(@NonNull Bundle args) {
-        return new RegisterOperatorModule(requireContext());
+        return ModuleProviders.getRegisterOperator().provide(requireContext(), args);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class RegisterOperatorFragment extends BaseModuleFragment<RegisterOperato
     @NonNull
     @Override
     protected RegisterOperatorViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), pagedQueryHandler)).get(RegisterOperatorViewModel.class);
+        return ViewModelProviders.getRegisterOperator().provide(this, getChannelUrl(), pagedQueryHandler);
     }
 
     @Override

@@ -95,8 +95,8 @@ public class ChannelSettingsActivity extends AppCompatActivity {
             FragmentManager manager = getSupportFragmentManager();
             manager.popBackStack();
             manager.beginTransaction()
-                    .replace(R.id.sb_fragment_container, fragment)
-                    .commit();
+                .replace(R.id.sb_fragment_container, fragment)
+                .commit();
         }
     }
 
@@ -110,6 +110,6 @@ public class ChannelSettingsActivity extends AppCompatActivity {
     @NonNull
     protected Fragment createFragment() {
         final Bundle args = getIntent() != null && getIntent().getExtras() != null ? getIntent().getExtras() : new Bundle();
-        return SendbirdUIKit.getFragmentFactory().newChannelSettingsFragment(args.getString(StringSet.KEY_CHANNEL_URL, ""),args);
+        return SendbirdUIKit.getFragmentFactory().newChannelSettingsFragment(args.getString(StringSet.KEY_CHANNEL_URL, ""), args);
     }
 }

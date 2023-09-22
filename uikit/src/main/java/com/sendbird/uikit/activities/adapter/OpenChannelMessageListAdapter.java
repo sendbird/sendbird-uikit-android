@@ -101,9 +101,9 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
      */
     public OpenChannelMessageListAdapter(@Nullable OpenChannel channel, boolean useMessageGroupUI, boolean useReverseLayout) {
         this(channel, new MessageListUIParams.Builder()
-                .setUseMessageGroupUI(useMessageGroupUI)
-                .setUseReverseLayout(useReverseLayout)
-                .build());
+            .setUseMessageGroupUI(useMessageGroupUI)
+            .setUseReverseLayout(useReverseLayout)
+            .build());
     }
 
     /**
@@ -137,9 +137,9 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         final Context contextWrapper = new ContextThemeWrapper(parent.getContext(), values.resourceId);
         LayoutInflater inflater = LayoutInflater.from(contextWrapper);
         final MessageViewHolder viewHolder = MessageViewHolderFactory.createOpenChannelViewHolder(inflater,
-                parent,
-                MessageType.from(viewType),
-                messageListUIParams);
+            parent,
+            MessageType.from(viewType),
+            messageListUIParams);
         viewHolder.setMessageUIConfig(messageUIConfig);
 
         final Map<String, View> views = viewHolder.getClickableViewMap();
@@ -249,12 +249,12 @@ public class OpenChannelMessageListAdapter extends BaseMessageAdapter<BaseMessag
         service.submit(() -> {
             final CountDownLatch lock = new CountDownLatch(1);
             final OpenChannelMessageDiffCallback diffCallback = new OpenChannelMessageDiffCallback(
-                    OpenChannelMessageListAdapter.this.channel,
-                    channel,
-                    OpenChannelMessageListAdapter.this.messageList,
-                    messageList,
-                    messageListUIParams.shouldUseMessageGroupUI(),
-                    messageListUIParams.shouldUseReverseLayout()
+                OpenChannelMessageListAdapter.this.channel,
+                channel,
+                OpenChannelMessageListAdapter.this.messageList,
+                messageList,
+                messageListUIParams.shouldUseMessageGroupUI(),
+                messageListUIParams.shouldUseReverseLayout()
             );
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 

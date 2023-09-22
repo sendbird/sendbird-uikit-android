@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.GroupChannel;
@@ -31,8 +30,9 @@ import com.sendbird.uikit.modules.CreateChannelModule;
 import com.sendbird.uikit.modules.components.CreateChannelUserListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.CreateChannelViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.Collections;
@@ -59,7 +59,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
     @NonNull
     @Override
     protected CreateChannelModule onCreateModule(@NonNull Bundle args) {
-        return new CreateChannelModule(requireContext());
+        return ModuleProviders.getCreateChannel().provide(requireContext(), args);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CreateChannelFragment extends BaseModuleFragment<CreateChannelModul
     @NonNull
     @Override
     protected CreateChannelViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(pagedQueryHandler)).get(CreateChannelViewModel.class);
+        return ViewModelProviders.getCreateChannel().provide(this, pagedQueryHandler);
     }
 
     @Override

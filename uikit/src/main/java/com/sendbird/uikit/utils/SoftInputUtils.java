@@ -19,12 +19,12 @@ public class SoftInputUtils {
         }
 
         InputMethodManager inputMethodManager =
-                (InputMethodManager) view.getContext().getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
+            (InputMethodManager) view.getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
 
         if (inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(
-                    view.getWindowToken(), 0);
+                view.getWindowToken(), 0);
         }
     }
 
@@ -32,7 +32,7 @@ public class SoftInputUtils {
         if (editText == null) {
             return;
         }
-        
+
         InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         editText.postDelayed(() -> {
             editText.requestFocus();

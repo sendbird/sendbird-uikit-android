@@ -62,8 +62,8 @@ public class OpenChannelActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.popBackStack();
         manager.beginTransaction()
-                .replace(R.id.sb_fragment_container, fragment)
-                .commit();
+            .replace(R.id.sb_fragment_container, fragment)
+            .commit();
     }
 
     /**

@@ -19,6 +19,7 @@ import com.sendbird.android.user.UnreadMessageCount
 import com.sendbird.android.user.User
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.activities.ChannelActivity
+import com.sendbird.uikit.providers.FragmentProviders
 import com.sendbird.uikit_messaging_android.R
 import com.sendbird.uikit_messaging_android.SettingsFragment
 import com.sendbird.uikit_messaging_android.consts.StringSet
@@ -129,7 +130,7 @@ class GroupChannelMainActivity : AppCompatActivity() {
     private class MainAdapter(fm: FragmentManager, behavior: Int) : FragmentPagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
             return if (position == 0) {
-                SendbirdUIKit.getFragmentFactory().newChannelListFragment(Bundle())
+                FragmentProviders.channelList.provide(Bundle())
             } else {
                 SettingsFragment()
             }

@@ -28,6 +28,7 @@ import java.io.InputStream;
 public class ImageUtils {
     private final static int DEFAULT_THUMBNAIL_WIDTH = 600;
     private final static int DEFAULT_THUMBNAIL_HEIGHT = 600;
+
     public static int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
             return 90;
@@ -149,7 +150,7 @@ public class ImageUtils {
             return null;
         }
 
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, (int) resources.getDimension(width), (int) resources.getDimension(height), false);
 
         drawable = new BitmapDrawable(resources, bitmapResized);

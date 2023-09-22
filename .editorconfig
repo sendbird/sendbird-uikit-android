@@ -1,0 +1,96 @@
+root = true
+
+[*]
+trim_trailing_whitespace = true
+indent_style = space
+ij_continuation_indent_size = 4
+ij_any_keep_simple_methods_in_one_line = true
+ij_any_keep_simple_blocks_in_one_line = true
+ij_any_keep_simple_classes_in_one_line = true
+ij_any_keep_simple_lambdas_in_one_line = true
+max_line_length = 120
+
+## ktlint configured rules
+ktlint_standard_indent = disabled
+ktlint_standard_annotation = disabled
+ktlint_standard_filename = disabled
+ktlint_standard_max-line-length = disabled
+ktlint_standard_spacing-between-declarations-with-annotations = disabled
+ktlint_standard_spacing-between-declarations-with-comments = disabled
+
+ktlint_standard_wrapping = disabled
+ktlint_standard_parameter-wrapping = disabled
+ktlint_standard_property-wrapping = disabled
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_parameter-list-wrapping = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_import-ordering = disabled
+ktlint_standard_multiline-if-else = disabled
+ktlint_standard_no-semi = disabled
+ktlint_standard_package-name = disabled
+
+[*.java]
+ij_java_doc_enable_formatting = false
+
+[*.{kt,kts}]
+ij_kotlin_allow_trailing_comma = false
+ij_kotlin_allow_trailing_comma_on_call_site = false
+
+## Wrapping and Braces
+# Keep when reformatting
+ij_kotlin_keep_line_breaks = true
+ij_kotlin_keep_first_column_comment = true
+# Extends/implements list
+ij_kotlin_extends_list_wrap = off
+ij_kotlin_align_multiline_extends_list = false
+ij_kotlin_continuation_indent_in_supertype_lists = true
+# Function declaration parameters
+ij_kotlin_method_parameters_wrap = off
+ij_kotlin_align_multiline_parameters = true
+ij_kotlin_method_parameters_new_line_after_left_paren = false
+ij_kotlin_method_parameters_right_paren_on_new_line = false
+ij_kotlin_continuation_indent_in_parameter_lists = true
+# Function call arguments
+ij_kotlin_call_parameters_wrap = off
+ij_kotlin_align_multiline_parameters_in_calls = false
+ij_kotlin_call_parameters_new_line_after_left_paren = false
+ij_kotlin_call_parameters_right_paren_on_new_line = false
+ij_kotlin_continuation_indent_in_argument_lists = true
+# Function parentheses
+ij_kotlin_align_multiline_method_parentheses = false
+# Chained function calls
+ij_kotlin_method_call_chain_wrap = off
+ij_kotlin_wrap_first_method_in_call_chain = false
+ij_kotlin_continuation_indent_for_chained_calls = true
+# 'if()' statement
+ij_kotlin_else_on_new_line = false
+ij_kotlin_if_rparen_on_new_line = false
+ij_kotlin_continuation_indent_in_if_conditions = true
+# 'do ... while()' statement
+ij_kotlin_while_on_new_line = false
+# 'try' statement
+ij_kotlin_catch_on_new_line = false
+ij_kotlin_finally_on_new_line = false
+# Binary expressions
+ij_kotlin_align_multiline_binary_operation = false
+# Wraps
+ij_kotlin_assignment_wrap = off
+ij_kotlin_enum_constants_wrap = off
+ij_kotlin_class_annotation_wrap = split_into_lines
+ij_kotlin_method_annotation_wrap = split_into_lines
+ij_kotlin_field_annotation_wrap = split_into_lines
+ij_kotlin_parameter_annotation_wrap = off
+ij_kotlin_variable_annotation_wrap = off
+# 'when' statements
+ij_kotlin_align_in_columns_case_branch = false
+ij_kotlin_line_break_after_multiline_when_entry = false
+# Braces placement
+ij_kotlin_lbrace_on_next_line = false
+# Expression body functions
+ij_kotlin_wrap_expression_body_functions = 0
+ij_kotlin_continuation_indent_for_expression_bodies = false
+# Elvis expressions
+ij_kotlin_wrap_elvis_expressions = 0
+ij_kotlin_continuation_indent_in_elvis = false

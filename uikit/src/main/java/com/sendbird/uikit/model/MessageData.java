@@ -46,8 +46,8 @@ public class MessageData {
     @Override
     public String toString() {
         return "MessageData{" +
-                "messages=" + messages +
-                ", traceName='" + traceName + '\'' +
-                '}';
+            "messages=" + messages +
+            ", traceName='" + traceName + '\'' +
+            '}';
     }
 }

@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class CreateOpenChannelViewModel extends BaseViewModel {
     private final AtomicBoolean isCreatingChannel = new AtomicBoolean();
+
     /**
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *

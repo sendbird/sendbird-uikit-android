@@ -122,6 +122,9 @@ data class OpenChannelConfig internal constructor(
             this.camera.clear()
             this.gallery.clear()
         }
+
+        @JvmSynthetic
+        internal fun clone() = copy(camera = this.camera.copy(), gallery = this.gallery.copy())
     }
 
     @JvmSynthetic
@@ -137,4 +140,12 @@ data class OpenChannelConfig internal constructor(
         this.enableOgTagMutable = null
         this.input.clear()
     }
+
+    /**
+     * Deeply copies the current instance.
+     *
+     * @return The new copied instance of [OpenChannelConfig]
+     * @since 3.9.0
+     */
+    fun clone() = copy(input = this.input.clone())
 }

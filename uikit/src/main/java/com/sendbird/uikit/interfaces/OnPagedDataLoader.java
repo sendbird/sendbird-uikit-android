@@ -38,6 +38,7 @@ public interface OnPagedDataLoader<T> {
      * since 3.0.0
      */
     boolean hasNext();
+
     /**
      * Determine whether the data on the previous page exists.
      *

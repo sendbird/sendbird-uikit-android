@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
@@ -28,9 +27,10 @@ import com.sendbird.uikit.modules.ParticipantListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.ParticipantListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ParticipantViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -57,7 +57,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     @NonNull
     @Override
     protected ParticipantListModule onCreateModule(@NonNull Bundle args) {
-        return new ParticipantListModule(requireContext());
+        return ModuleProviders.getParticipantList().provide(requireContext(), args);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     @NonNull
     @Override
     protected ParticipantViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), ParticipantViewModel.class);
+        return ViewModelProviders.getParticipantList().provide(this, getChannelUrl(), null);
     }
 
     @Override
@@ -201,36 +201,36 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
         final ParticipantListModule module = getModule();
         final ParticipantViewModel viewModel = getViewModel();
         DialogUtils.showListDialog(getContext(), participant.getNickname(),
-                items, (v, p, item) -> {
-                    final int key = item.getKey();
-                    final OnCompleteHandler handler = e -> {
-                        module.shouldDismissLoadingDialog();
-                        if (e != null) {
-                            int errorTextResId = R.string.sb_text_error_register_operator;
-                            if (key == R.string.sb_text_unregister_operator) {
-                                errorTextResId = R.string.sb_text_error_unregister_operator;
-                            } else if (key == R.string.sb_text_mute_participant) {
-                                errorTextResId = R.string.sb_text_error_mute_participant;
-                            } else if (key == R.string.sb_text_ban_participant) {
-                                errorTextResId = R.string.sb_text_error_ban_participant;
-                            }
-                            toastError(errorTextResId);
-                        } else {
-                            viewModel.loadInitial();
+            items, (v, p, item) -> {
+                final int key = item.getKey();
+                final OnCompleteHandler handler = e -> {
+                    module.shouldDismissLoadingDialog();
+                    if (e != null) {
+                        int errorTextResId = R.string.sb_text_error_register_operator;
+                        if (key == R.string.sb_text_unregister_operator) {
+                            errorTextResId = R.string.sb_text_error_unregister_operator;
+                        } else if (key == R.string.sb_text_mute_participant) {
+                            errorTextResId = R.string.sb_text_error_mute_participant;
+                        } else if (key == R.string.sb_text_ban_participant) {
+                            errorTextResId = R.string.sb_text_error_ban_participant;
                         }
-                    };
-                    if (getContext() == null) return;
-                    module.shouldShowLoadingDialog(getContext());
-                    if (key == R.string.sb_text_register_operator) {
-                        viewModel.addOperator(participant.getUserId(), handler);
-                    } else if (key == R.string.sb_text_unregister_operator) {
-                        viewModel.removeOperator(participant.getUserId(), handler);
-                    } else if (key == R.string.sb_text_mute_participant) {
-                        viewModel.muteUser(participant.getUserId(), handler);
-                    } else if (key == R.string.sb_text_ban_participant) {
-                        viewModel.banUser(participant.getUserId(), handler);
+                        toastError(errorTextResId);
+                    } else {
+                        viewModel.loadInitial();
                     }
-                });
+                };
+                if (getContext() == null) return;
+                module.shouldShowLoadingDialog(getContext());
+                if (key == R.string.sb_text_register_operator) {
+                    viewModel.addOperator(participant.getUserId(), handler);
+                } else if (key == R.string.sb_text_unregister_operator) {
+                    viewModel.removeOperator(participant.getUserId(), handler);
+                } else if (key == R.string.sb_text_mute_participant) {
+                    viewModel.muteUser(participant.getUserId(), handler);
+                } else if (key == R.string.sb_text_ban_participant) {
+                    viewModel.banUser(participant.getUserId(), handler);
+                }
+            });
     }
 
     /**

@@ -215,6 +215,18 @@ final public class MessageListUIParams {
 
         /**
          * Sets [ChannelConfig] that contains the configuration of the channel.
+         * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val params = MessageListUIParams.Builder(CHANNEL_URL)
+         *     .setChannelConfig(
+         *         UIKitConfig.groupChannelConfig.clone().apply {
+         *             this.enableMention = true
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param channelConfig The value of [ChannelConfig]
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -229,6 +241,18 @@ final public class MessageListUIParams {
 
         /**
          * Sets [OpenChannelConfig] that contains the configuration of the open channel.
+         * Use {@code UIKitConfig.openChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val params = MessageListUIParams.Builder(CHANNEL_URL)
+         *     .setOpenChannelConfig(
+         *         UIKitConfig.openChannelConfig.clone().apply {
+         *             this.enableOgTag = false
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param openChannelConfig The value of [OpenChannelConfig]
          * @return This Builder object to allow for chaining of calls to set methods.
@@ -250,13 +274,13 @@ final public class MessageListUIParams {
         @NonNull
         public MessageListUIParams build() {
             return new MessageListUIParams(
-                    this.messageGroupType,
-                    this.useMessageGroupUI,
-                    this.useReverseLayout,
-                    this.useQuotedView,
-                    this.useMessageReceipt,
-                    this.channelConfig,
-                    this.openChannelConfig
+                this.messageGroupType,
+                this.useMessageGroupUI,
+                this.useReverseLayout,
+                this.useQuotedView,
+                this.useMessageReceipt,
+                this.channelConfig,
+                this.openChannelConfig
             );
         }
     }
@@ -292,13 +316,13 @@ final public class MessageListUIParams {
     @Override
     public String toString() {
         return "MessageListUIParams{" +
-                "messageGroupType=" + messageGroupType +
-                ", useMessageGroupUI=" + useMessageGroupUI +
-                ", useReverseLayout=" + useReverseLayout +
-                ", useQuotedView=" + useQuotedView +
-                ", useMessageReceipt=" + useMessageReceipt +
-                ", channelConfig=" + channelConfig +
-                ", openChannelConfig=" + openChannelConfig +
-                '}';
+            "messageGroupType=" + messageGroupType +
+            ", useMessageGroupUI=" + useMessageGroupUI +
+            ", useReverseLayout=" + useReverseLayout +
+            ", useQuotedView=" + useQuotedView +
+            ", useMessageReceipt=" + useMessageReceipt +
+            ", channelConfig=" + channelConfig +
+            ", openChannelConfig=" + openChannelConfig +
+            '}';
     }
 }

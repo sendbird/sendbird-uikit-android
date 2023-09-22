@@ -353,10 +353,10 @@ public class SuggestedMentionListAdapter extends MutableBaseAdapter<User> {
         @Override
         public String toString() {
             return "UserInfo{" +
-                    "userId='" + userId + '\'' +
-                    ", userNickname='" + userNickname + '\'' +
-                    ", profileUrl='" + profileUrl + '\'' +
-                    '}';
+                "userId='" + userId + '\'' +
+                ", userNickname='" + userNickname + '\'' +
+                ", profileUrl='" + profileUrl + '\'' +
+                '}';
         }
 
         @NonNull

@@ -97,7 +97,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
             if (current != null) {
                 List<String> userIds = current.getUserIds();
                 holder.itemView.setSelected(SendbirdChat.getCurrentUser() != null && userIds.contains(
-                        SendbirdChat.getCurrentUser().getUserId()));
+                    SendbirdChat.getCurrentUser().getUserId()));
             }
 
             Logger.d("++ isClickable = %s, longClickable=%s", clickable, longClickable);
@@ -107,8 +107,8 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
                     if (reactionPosition != NO_POSITION && emojiReactionClickListener != null) {
                         final Reaction reaction = getItem(reactionPosition);
                         emojiReactionClickListener.onItemClick(v,
-                                reactionPosition,
-                                reaction != null ? reaction.getKey() : "");
+                            reactionPosition,
+                            reaction != null ? reaction.getKey() : "");
                     }
                 });
             } else {
@@ -121,8 +121,8 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
                     if (reactionPosition != NO_POSITION && emojiReactionLongClickListener != null) {
                         final Reaction reaction = getItem(reactionPosition);
                         emojiReactionLongClickListener.onItemLongClick(v,
-                                reactionPosition,
-                                reaction != null ? reaction.getKey() : "");
+                            reactionPosition,
+                            reaction != null ? reaction.getKey() : "");
                         return true;
                     }
                     return false;

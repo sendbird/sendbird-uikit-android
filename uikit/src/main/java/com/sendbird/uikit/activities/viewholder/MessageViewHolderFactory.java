@@ -8,12 +8,14 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.message.AdminMessage;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.MultipleFilesMessage;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewAdminMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageBinding;
+import com.sendbird.uikit.databinding.SbViewMyMultipleFilesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOpenChannelAdminMessageBinding;
@@ -24,13 +26,16 @@ import com.sendbird.uikit.databinding.SbViewOpenChannelUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileVideoMessageBinding;
+import com.sendbird.uikit.databinding.SbViewOtherMultipleFilesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.ui.viewholders.AdminMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyImageFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.MyMultipleFilesMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyVoiceMessageViewHolder;
@@ -41,6 +46,7 @@ import com.sendbird.uikit.internal.ui.viewholders.OpenChannelUserMessageViewHold
 import com.sendbird.uikit.internal.ui.viewholders.OpenChannelVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherImageFileMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherMultipleFilesMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVoiceMessageViewHolder;
@@ -71,10 +77,10 @@ public class MessageViewHolderFactory {
                                                                 @NonNull MessageType viewType,
                                                                 boolean useMessageGroupUI) {
         return createOpenChannelViewHolder(
-                inflater,
-                parent,
-                viewType,
-                new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
+            inflater,
+            parent,
+            viewType,
+            new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
         );
     }
 
@@ -139,10 +145,10 @@ public class MessageViewHolderFactory {
                                                      @NonNull MessageType viewType,
                                                      boolean useMessageGroupUI) {
         return createViewHolder(
-                inflater,
-                parent,
-                viewType,
-                new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
+            inflater,
+            parent,
+            viewType,
+            new MessageListUIParams.Builder().setUseMessageGroupUI(useMessageGroupUI).build()
         );
     }
 
@@ -186,6 +192,12 @@ public class MessageViewHolderFactory {
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
                 holder = new OtherVideoFileMessageViewHolder(SbViewOtherFileVideoMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
+            case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME:
+                holder = new MyMultipleFilesMessageViewHolder(SbViewMyMultipleFilesMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
+            case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER:
+                holder = new OtherMultipleFilesMessageViewHolder(SbViewOtherMultipleFilesMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
             case VIEW_TYPE_TIME_LINE:
                 holder = new TimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false), messageListUIParams);
@@ -275,6 +287,12 @@ public class MessageViewHolderFactory {
                 } else {
                     type = MessageType.VIEW_TYPE_FILE_MESSAGE_OTHER;
                 }
+            }
+        } else if (message instanceof MultipleFilesMessage && MessageExtensionsKt.containsOnlyImageFiles((MultipleFilesMessage) message)) {
+            if (MessageUtils.isMine(message)) {
+                type = MessageType.VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME;
+            } else {
+                type = MessageType.VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER;
             }
         } else if (message instanceof TimelineMessage) {
             type = MessageType.VIEW_TYPE_TIME_LINE;

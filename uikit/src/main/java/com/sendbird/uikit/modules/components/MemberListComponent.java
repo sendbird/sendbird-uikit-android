@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MemberListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class MemberListComponent extends UserTypeListComponent<Member> {
     @NonNull
-    private MemberListAdapter adapter = new MemberListAdapter();
+    private MemberListAdapter adapter = AdapterProviders.getMemberList().provide();
 
     /**
      * Returns the member list adapter.

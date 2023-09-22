@@ -26,14 +26,14 @@ class UserTypeDiffCallback<T extends User> extends DiffUtil.Callback {
     @Nullable
     private final OpenChannel newOpenChannel;
 
-    static<U extends User> UserTypeDiffCallback<U> createFromOpenChannel(@NonNull List<U> oldUserList, @NonNull List<U> newUserList, @Nullable OpenChannel oldOpenChannel, @Nullable OpenChannel newOpenChannel) {
+    static <U extends User> UserTypeDiffCallback<U> createFromOpenChannel(@NonNull List<U> oldUserList, @NonNull List<U> newUserList, @Nullable OpenChannel oldOpenChannel, @Nullable OpenChannel newOpenChannel) {
         return new UserTypeDiffCallback<>(oldUserList, newUserList,
-                oldOpenChannel != null && oldOpenChannel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE,
-                newOpenChannel != null && newOpenChannel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE,
-                oldOpenChannel, newOpenChannel);
+            oldOpenChannel != null && oldOpenChannel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE,
+            newOpenChannel != null && newOpenChannel.isOperator(SendbirdChat.getCurrentUser()) ? Role.OPERATOR : Role.NONE,
+            oldOpenChannel, newOpenChannel);
     }
 
-    static<U extends User> UserTypeDiffCallback<U> createFromGroupChannel(@NonNull List<U> oldUserList, @NonNull List<U> newUserList, @NonNull Role oldMyRole, @NonNull Role newMyRole) {
+    static <U extends User> UserTypeDiffCallback<U> createFromGroupChannel(@NonNull List<U> oldUserList, @NonNull List<U> newUserList, @NonNull Role oldMyRole, @NonNull Role newMyRole) {
         return new UserTypeDiffCallback<>(oldUserList, newUserList, oldMyRole, newMyRole, null, null);
     }
 

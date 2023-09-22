@@ -31,9 +31,11 @@ public class FileDownloader {
     private static class FileDownloadHolder {
         static final FileDownloader INSTANCE = new FileDownloader();
     }
+
     public static FileDownloader getInstance() {
         return FileDownloadHolder.INSTANCE;
     }
+
     private final Set<String> downloadingFileSet = new HashSet<>();
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.uikit.activities.adapter.CreateChannelUserListAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 /**
  * This class creates and performs a view corresponding the user list area when creating a channel in Sendbird UIKit.
@@ -12,7 +13,7 @@ import com.sendbird.uikit.interfaces.UserInfo;
  */
 public class CreateChannelUserListComponent extends SelectUserListComponent<UserInfo> {
     @NonNull
-    private CreateChannelUserListAdapter adapter = new CreateChannelUserListAdapter();
+    private CreateChannelUserListAdapter adapter = AdapterProviders.getCreateChannelUserList().provide();
 
     /**
      * Returns the user list adapter when creating a channel.

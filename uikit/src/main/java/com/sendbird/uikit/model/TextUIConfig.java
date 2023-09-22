@@ -119,7 +119,7 @@ public class TextUIConfig implements Parcelable {
      */
     @Nullable
     public String getFamilyName() {
-       return familyName;
+        return familyName;
     }
 
     /**

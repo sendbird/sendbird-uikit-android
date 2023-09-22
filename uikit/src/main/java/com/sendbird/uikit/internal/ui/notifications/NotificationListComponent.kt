@@ -164,9 +164,9 @@ internal open class NotificationListComponent @JvmOverloads constructor(
     open fun getTooltipText(context: Context, count: Int): String {
         return notificationListView?.let {
             "${
-            String.format(
-                Locale.getDefault(), context.getString(R.string.sb_text_channel_tooltip), count
-            )
+                String.format(
+                    Locale.getDefault(), context.getString(R.string.sb_text_channel_tooltip), count
+                )
             }${if (count > 1) "s" else ""}"
         } ?: ""
     }

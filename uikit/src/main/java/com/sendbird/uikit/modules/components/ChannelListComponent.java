@@ -25,6 +25,7 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.ChannelListUIParams;
 import com.sendbird.uikit.model.configurations.ChannelListConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -150,13 +151,10 @@ public class ChannelListComponent {
         this.pagerRecyclerView.setHasFixedSize(true);
         this.pagerRecyclerView.setItemAnimator(new ItemAnimator());
         this.pagerRecyclerView.setThreshold(5);
-        adapter = new ChannelListAdapter(
-                null,
-                new ChannelListUIParams(
-                        params.channelListConfig.getEnableTypingIndicator(),
-                        params.channelListConfig.getEnableMessageReceiptStatus()
-                )
-        );
+        this.adapter = AdapterProviders.getChannelList().provide(new ChannelListUIParams(
+            params.channelListConfig.getEnableTypingIndicator(),
+            params.channelListConfig.getEnableMessageReceiptStatus()
+        ));
         setAdapter(adapter);
         return pagerRecyclerView;
     }
@@ -244,6 +242,16 @@ public class ChannelListComponent {
 
         /**
          * Returns the channel list config.
+         * Use {@code UIKitConfig.groupChannelListConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val channelListComponent = ChannelListComponent()
+         * channelListComponent.params.channelListConfig = UIKitConfig.groupChannelListConfig.clone().apply {
+         *     this.enableTypingIndicator = true
+         * }
+         * </pre>
+         *
          * @param channelListConfig The channel list config to be applied to this list component
          * since 3.6.0
          */

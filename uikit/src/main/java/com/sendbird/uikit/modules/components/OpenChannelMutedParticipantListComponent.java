@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.OpenChannelMutedParticipantListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class OpenChannelMutedParticipantListComponent extends UserTypeListComponent<User> {
     @NonNull
-    private OpenChannelMutedParticipantListAdapter adapter = new OpenChannelMutedParticipantListAdapter();
+    private OpenChannelMutedParticipantListAdapter adapter = AdapterProviders.getOpenChannelMutedParticipantList().provide();
 
     /**
      * Sets the muted participant list adapter to provide child views on demand. The default is {@code new OpenChannelMutedParticipantListAdapter()}.

@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.channel.GroupChannel;
@@ -22,6 +21,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.params.FileMessageCreateParams;
+import com.sendbird.android.params.MultipleFilesMessageCreateParams;
 import com.sendbird.android.params.ThreadMessageListParams;
 import com.sendbird.android.params.UserMessageCreateParams;
 import com.sendbird.android.params.UserMessageUpdateParams;
@@ -56,13 +56,14 @@ import com.sendbird.uikit.modules.components.MessageThreadHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageThreadInputComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.modules.components.ThreadListComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.MessageThreadViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
@@ -118,13 +119,13 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     @NonNull
     @Override
     protected MessageThreadModule onCreateModule(@NonNull Bundle args) {
-        return new MessageThreadModule(requireContext(), getParentMessage());
+        return ModuleProviders.getMessageThread().provide(requireContext(), args, getParentMessage());
     }
 
     @NonNull
     @Override
     protected MessageThreadViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), getParentMessage(), params)).get(getChannelUrl(), MessageThreadViewModel.class);
+        return ViewModelProviders.getMessageThread().provide(this, getChannelUrl(), getParentMessage(), params);
     }
 
     @Override
@@ -192,8 +193,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         headerComponent.setOnDescriptionClickListener(headerDescriptionClickListener != null ? headerDescriptionClickListener : v -> {
             if (!isFragmentAlive()) return;
             Intent intent = new ChannelActivity.IntentBuilder(requireContext(), getChannelUrl())
-                    .setStartingPoint(getParentMessage().getCreatedAt())
-                    .build();
+                .setStartingPoint(getParentMessage().getCreatedAt())
+                .build();
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             shouldActivityFinish();
@@ -457,6 +458,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
                 actions = new DialogListItem[]{save};
                 break;
+            case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME:
             case VIEW_TYPE_VOICE_MESSAGE_ME:
                 if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
@@ -500,7 +502,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
                 saveFileMessage((FileMessage) message);
             }
             return true;
-        } if (key == R.string.sb_text_channel_anchor_retry) {
+        }
+        if (key == R.string.sb_text_channel_anchor_retry) {
             resendMessage(message);
             return true;
         }
@@ -512,8 +515,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         int size = items.size();
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
         if (!(getViewModel().getChannel() != null &&
-                ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel())) ||
-                MessageUtils.isUnknownType(message)) {
+            ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel())) ||
+            MessageUtils.isUnknownType(message)) {
             if (getContext() == null || size <= 0) return;
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
@@ -526,6 +529,13 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         params.setParentMessageId(getViewModel().getParentMessage().getMessageId());
         params.setReplyToChannel(true);
         getViewModel().sendFileMessage(params, fileInfo);
+    }
+
+    @Override
+    void sendMultipleFilesMessageInternal(@NonNull List<FileInfo> fileInfos, @NonNull MultipleFilesMessageCreateParams params) {
+        params.setParentMessageId(getViewModel().getParentMessage().getMessageId());
+        params.setReplyToChannel(true);
+        getViewModel().sendMultipleFilesMessage(fileInfos, params);
     }
 
     /**
@@ -1484,6 +1494,18 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
 
         /**
          * Sets channel configuration for this fragment.
+         * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val fragment = MessageThreadFragment.Builder(CHANNEL_URL, parentMessage)
+         *     .setChannelConfig(
+         *         UIKitConfig.groupChannelConfig.clone().apply {
+         *             this.enableMention = true
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param channelConfig The channel config.
          * @return This Builder object to allow for chaining of calls to set methods.

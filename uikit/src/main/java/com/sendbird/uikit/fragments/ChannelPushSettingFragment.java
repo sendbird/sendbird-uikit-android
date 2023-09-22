@@ -8,7 +8,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
@@ -20,8 +19,9 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.ChannelPushSettingModule;
 import com.sendbird.uikit.modules.components.ChannelPushSettingComponent;
 import com.sendbird.uikit.modules.components.HeaderComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.ChannelPushSettingViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 /**
  * Fragment displaying the push setting option of {@code GroupChannel}.
@@ -37,7 +37,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
     @NonNull
     @Override
     protected ChannelPushSettingModule onCreateModule(@NonNull Bundle args) {
-        return new ChannelPushSettingModule(requireContext());
+        return ModuleProviders.getChannelPushSetting().provide(requireContext(), args);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
     @NonNull
     @Override
     protected ChannelPushSettingViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), ChannelPushSettingViewModel.class);
+        return ViewModelProviders.getChannelPushSetting().provide(this, getChannelUrl());
     }
 
     @Override
@@ -212,6 +212,7 @@ public class ChannelPushSettingFragment extends BaseModuleFragment<ChannelPushSe
             bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
         }
+
         /**
          * Sets the custom fragment. It must inherit {@link ChannelPushSettingFragment}.
          *

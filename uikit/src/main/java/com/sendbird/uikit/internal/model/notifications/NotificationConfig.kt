@@ -7,6 +7,7 @@ internal class NotificationConfig(
     val theme: NotificationChannelTheme
 ) {
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
+
     companion object {
         @JvmStatic
         fun from(notificationChannelSettings: NotificationChannelSettings?): NotificationConfig? {

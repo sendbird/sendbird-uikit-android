@@ -33,6 +33,7 @@ public class CreateOpenChannelModule extends BaseModule {
     private final StateHeaderComponent headerComponent;
     @NonNull
     private final ChannelProfileInputComponent channelProfileInputComponent;
+
     /**
      * Constructor
      *

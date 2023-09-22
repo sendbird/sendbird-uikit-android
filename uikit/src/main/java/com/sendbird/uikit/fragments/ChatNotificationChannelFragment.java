@@ -9,7 +9,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
@@ -18,9 +17,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler;
-import com.sendbird.uikit.internal.model.notifications.NotificationChannelSettings;
-import com.sendbird.uikit.internal.model.notifications.NotificationConfig;
-import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
+import com.sendbird.uikit.internal.extensions.NotificationExtensionsKt;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationChannelModule;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationHeaderComponent;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationListComponent;
@@ -31,7 +28,6 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChatNotificationChannelViewModel;
-import com.sendbird.uikit.vm.NotificationViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNotificationChannelModule, ChatNotificationChannelViewModel> {
@@ -44,8 +40,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     @NonNull
     @Override
     protected ChatNotificationChannelModule onCreateModule(@NonNull Bundle args) {
-        final NotificationChannelSettings settings = NotificationChannelManager.getGlobalNotificationChannelSettings();
-        return new ChatNotificationChannelModule(requireContext(), NotificationConfig.from(settings));
+        return NotificationExtensionsKt.createChatNotificationChannelModule(this, args);
     }
 
     @Override
@@ -55,7 +50,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     @NonNull
     @Override
     protected ChatNotificationChannelViewModel onCreateViewModel() {
-        final ChatNotificationChannelViewModel viewModel = new ViewModelProvider(this, new NotificationViewModelFactory(getChannelUrl(), params)).get(getChannelUrl(), ChatNotificationChannelViewModel.class);
+        final ChatNotificationChannelViewModel viewModel = NotificationExtensionsKt.createChatNotificationChannelViewModel(this, getChannelUrl(), params);
         getLifecycle().addObserver(viewModel);
         return viewModel;
     }
