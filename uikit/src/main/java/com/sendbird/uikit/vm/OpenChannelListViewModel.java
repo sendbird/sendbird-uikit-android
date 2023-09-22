@@ -146,6 +146,7 @@ public class OpenChannelListViewModel extends BaseViewModel implements OnPagedDa
             notifyChannelChanged();
         }
     }
+
     /**
      * Tries to connect Sendbird Server and retrieve a channel instance.
      *

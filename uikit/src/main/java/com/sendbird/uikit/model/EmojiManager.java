@@ -28,6 +28,7 @@ public final class EmojiManager {
     private static class EmojiManagerHolder {
         static final EmojiManager INSTANCE = new EmojiManager();
     }
+
     /**
      * Returns the {@link EmojiManager} working as a singleton.
      *

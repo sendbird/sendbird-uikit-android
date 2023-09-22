@@ -9,7 +9,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.FeedChannel;
 import com.sendbird.android.message.BaseMessage;
@@ -17,9 +16,7 @@ import com.sendbird.android.params.MessageListParams;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler;
-import com.sendbird.uikit.internal.model.notifications.NotificationChannelSettings;
-import com.sendbird.uikit.internal.model.notifications.NotificationConfig;
-import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
+import com.sendbird.uikit.internal.extensions.NotificationExtensionsKt;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationChannelModule;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationHeaderComponent;
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationListComponent;
@@ -31,7 +28,6 @@ import com.sendbird.uikit.modules.components.StatusComponent;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FeedNotificationChannelViewModel;
-import com.sendbird.uikit.vm.NotificationViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.Collections;
@@ -47,8 +43,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
     @NonNull
     @Override
     protected FeedNotificationChannelModule onCreateModule(@NonNull Bundle args) {
-        final NotificationChannelSettings settings = NotificationChannelManager.getGlobalNotificationChannelSettings();
-        return new FeedNotificationChannelModule(requireContext(), NotificationConfig.from(settings));
+        return NotificationExtensionsKt.createFeedNotificationChannelModule(this, args);
     }
 
     @Override
@@ -58,7 +53,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
     @NonNull
     @Override
     protected FeedNotificationChannelViewModel onCreateViewModel() {
-        final FeedNotificationChannelViewModel viewModel = new ViewModelProvider(this, new NotificationViewModelFactory(getChannelUrl(), params)).get(getChannelUrl(), FeedNotificationChannelViewModel.class);
+        final FeedNotificationChannelViewModel viewModel = NotificationExtensionsKt.createFeedNotificationChannelViewModel(this, getChannelUrl(), params);
         getLifecycle().addObserver(viewModel);
         return viewModel;
     }

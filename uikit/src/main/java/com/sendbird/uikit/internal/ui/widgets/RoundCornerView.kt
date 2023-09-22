@@ -6,6 +6,7 @@ import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Shader
 import android.util.AttributeSet
@@ -26,6 +27,7 @@ internal class RoundCornerView @JvmOverloads constructor(
     private var tempBitmap: Bitmap? = null
     private val child: AppCompatImageView
     var radius: Float
+    var cornerRadii: FloatArray? = null
     val content: ImageView
         get() = child
 
@@ -68,7 +70,13 @@ internal class RoundCornerView @JvmOverloads constructor(
         super.dispatchDraw(tempCanvas) // draw children
         roundingPaint.shader = BitmapShader(tempBitmap!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         canvasBounds[0f, 0f, width.toFloat()] = height.toFloat()
-        canvas.drawRoundRect(canvasBounds, radius, radius, roundingPaint)
+        cornerRadii?.let {
+            val path = Path()
+            path.addRoundRect(canvasBounds, it, Path.Direction.CW)
+            canvas.drawPath(path, roundingPaint)
+        } ?: run {
+            canvas.drawRoundRect(canvasBounds, radius, radius, roundingPaint)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

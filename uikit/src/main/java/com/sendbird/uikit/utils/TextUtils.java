@@ -35,7 +35,7 @@ public class TextUtils {
             if (where >= 0) {
                 from = where + source.length();
                 tb.setSpan(source, where, where + source.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
 

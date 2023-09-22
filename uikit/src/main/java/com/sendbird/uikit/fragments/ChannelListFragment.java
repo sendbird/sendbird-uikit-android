@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.query.GroupChannelListQuery;
@@ -35,12 +34,13 @@ import com.sendbird.uikit.modules.ChannelListModule;
 import com.sendbird.uikit.modules.components.ChannelListComponent;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.Available;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ChannelListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -64,7 +64,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
     @NonNull
     @Override
     protected ChannelListModule onCreateModule(@NonNull Bundle args) {
-        return new ChannelListModule(requireContext());
+        return ModuleProviders.getChannelList().provide(requireContext(), args);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
     @NonNull
     @Override
     protected ChannelListViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(query)).get(ChannelListViewModel.class);
+        return ViewModelProviders.getChannelList().provide(this, query);
     }
 
     @Override
@@ -189,23 +189,23 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
 
         if (isFragmentAlive()) {
             DialogUtils.showListDialog(requireContext(),
-                    ChannelUtils.makeTitleText(requireContext(), channel),
-                    items, (v, p, item) -> {
-                        final int key = item.getKey();
-                        if (key == R.string.sb_text_channel_list_leave) {
-                            Logger.dev("leave channel");
-                            leaveChannel(channel);
-                        } else {
-                            Logger.dev("change push notifications");
-                            final boolean enable = ChannelUtils.isChannelPushOff(channel);
-                            getViewModel().setPushNotification(channel, ChannelUtils.isChannelPushOff(channel), e -> {
-                                if (e != null) {
-                                    int message = enable ? R.string.sb_text_error_push_notification_on : R.string.sb_text_error_push_notification_off;
-                                    toastError(message);
-                                }
-                            });
-                        }
-                    });
+                ChannelUtils.makeTitleText(requireContext(), channel),
+                items, (v, p, item) -> {
+                    final int key = item.getKey();
+                    if (key == R.string.sb_text_channel_list_leave) {
+                        Logger.dev("leave channel");
+                        leaveChannel(channel);
+                    } else {
+                        Logger.dev("change push notifications");
+                        final boolean enable = ChannelUtils.isChannelPushOff(channel);
+                        getViewModel().setPushNotification(channel, ChannelUtils.isChannelPushOff(channel), e -> {
+                            if (e != null) {
+                                int message = enable ? R.string.sb_text_error_push_notification_on : R.string.sb_text_error_push_notification_off;
+                                toastError(message);
+                            }
+                        });
+                    }
+                });
         }
     }
 
@@ -583,6 +583,18 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
 
         /**
          * Sets the channel list configuration for this fragment.
+         * Use {@code UIKitConfig.groupChannelListConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val fragment = ChannelListFragment.Builder()
+         *     .setChannelListConfig(
+         *         UIKitConfig.groupChannelListConfig.clone().apply {
+         *             this.enableTypingIndicator = true
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param channelListConfig The channel list config.
          * @return This Builder object to allow for chaining of calls to set methods.

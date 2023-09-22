@@ -79,7 +79,7 @@ public class ViewUtils {
     private final static int MINIMUM_THUMBNAIL_HEIGHT = 100;
     public static final Pattern MENTION = Pattern.compile("[" + SendbirdUIKit.getUserMentionConfig().getTrigger() + "][{](.*?)([}])");
 
-    private static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
+    public static void drawUnknownMessage(@NonNull TextView view, boolean isMine) {
         int unknownHintAppearance;
         if (isMine) {
             unknownHintAppearance = SendbirdUIKit.isDarkMode() ? R.style.SendbirdBody3OnLight02 : R.style.SendbirdBody3OnDark02;
@@ -99,12 +99,12 @@ public class ViewUtils {
     }
 
     public static void drawTextMessage(
-            @NonNull TextView textView,
-            @Nullable BaseMessage message,
-            @Nullable MessageUIConfig uiConfig,
-            boolean enableMention,
-            @Nullable TextUIConfig mentionedCurrentUserUIConfig,
-            @Nullable OnItemClickListener<User> mentionClickListener
+        @NonNull TextView textView,
+        @Nullable BaseMessage message,
+        @Nullable MessageUIConfig uiConfig,
+        boolean enableMention,
+        @Nullable TextUIConfig mentionedCurrentUserUIConfig,
+        @Nullable OnItemClickListener<User> mentionClickListener
     ) {
         if (message == null) {
             return;
@@ -118,13 +118,13 @@ public class ViewUtils {
         final boolean isMine = MessageUtils.isMine(message);
         final Context context = textView.getContext();
         final CharSequence text = getDisplayableText(
-                context,
-                message,
-                uiConfig,
-                mentionedCurrentUserUIConfig,
-                true,
-                mentionClickListener,
-                enableMention
+            context,
+            message,
+            uiConfig,
+            mentionedCurrentUserUIConfig,
+            true,
+            mentionClickListener,
+            enableMention
         );
         final SpannableStringBuilder builder = new SpannableStringBuilder(text);
         if (message.getUpdatedAt() > 0L) {
@@ -141,13 +141,13 @@ public class ViewUtils {
 
     @NonNull
     public static CharSequence getDisplayableText(
-            @NonNull Context context,
-            @NonNull BaseMessage message,
-            @Nullable MessageUIConfig uiConfig,
-            @Nullable TextUIConfig mentionedCurrentUserUIConfig,
-            boolean mentionClickable,
-            @Nullable OnItemClickListener<User> mentionClickListener,
-            boolean enabledMention
+        @NonNull Context context,
+        @NonNull BaseMessage message,
+        @Nullable MessageUIConfig uiConfig,
+        @Nullable TextUIConfig mentionedCurrentUserUIConfig,
+        boolean mentionClickable,
+        @Nullable OnItemClickListener<User> mentionClickListener,
+        boolean enabledMention
     ) {
         final String mentionedText = message.getMentionedMessageTemplate();
         String displayedMessage = message.getMessage();
@@ -261,10 +261,10 @@ public class ViewUtils {
     }
 
     public static void drawNickname(
-            @NonNull TextView tvNickname,
-            @Nullable BaseMessage message,
-            @Nullable MessageUIConfig uiConfig,
-            boolean isOperator
+        @NonNull TextView tvNickname,
+        @Nullable BaseMessage message,
+        @Nullable MessageUIConfig uiConfig,
+        boolean isOperator
     ) {
         if (message == null) {
             return;
@@ -315,23 +315,50 @@ public class ViewUtils {
     }
 
     public static void drawThumbnail(@NonNull RoundCornerView view, @NonNull FileMessage message) {
-        drawThumbnail(view, message, null, R.dimen.sb_size_48);
+        drawThumbnail(
+            view,
+            message.getRequestId(),
+            getUrl(message),
+            message.getPlainUrl(),
+            message.getType(),
+            message.getThumbnails(),
+            null,
+            R.dimen.sb_size_48
+        );
     }
 
     public static void drawQuotedMessageThumbnail(@NonNull RoundCornerView view, @NonNull FileMessage message, @Nullable RequestListener<Drawable> requestListener) {
-        drawThumbnail(view, message, requestListener, R.dimen.sb_size_24);
+        drawThumbnail(
+            view,
+            message.getRequestId(),
+            getUrl(message),
+            message.getPlainUrl(),
+            message.getType(),
+            message.getThumbnails(),
+            requestListener,
+            R.dimen.sb_size_24
+        );
     }
 
-    private static void drawThumbnail(
-            @NonNull RoundCornerView view,
-            @NonNull FileMessage message,
-            @Nullable RequestListener<Drawable> requestListener,
-            @DimenRes int iconSize
-    ) {
+    private static String getUrl(@NonNull FileMessage message) {
         String url = message.getUrl();
         if (TextUtils.isEmpty(url) && message.getMessageCreateParams() != null && message.getMessageCreateParams().getFile() != null) {
             url = message.getMessageCreateParams().getFile().getAbsolutePath();
         }
+
+        return url;
+    }
+
+    public static void drawThumbnail(
+        @NonNull RoundCornerView view,
+        @NonNull String requestId,
+        @NonNull String url,
+        @NonNull String plainUrl,
+        @NonNull String fileType,
+        @NonNull List<Thumbnail> thumbnails,
+        @Nullable RequestListener<Drawable> requestListener,
+        @DimenRes int iconSize
+    ) {
         Context context = view.getContext();
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL);
         RequestBuilder<Drawable> builder = Glide.with(context).asDrawable().apply(options);
@@ -339,7 +366,7 @@ public class ViewUtils {
         Pair<Integer, Integer> defaultResizingSize = SendbirdUIKit.getResizingSize();
         int width = defaultResizingSize.first / 2;
         int height = defaultResizingSize.second / 2;
-        FileInfo fileInfo = PendingMessageRepository.getInstance().getFileInfo(message);
+        FileInfo fileInfo = PendingMessageRepository.getInstance().getFileInfo(requestId);
         if (fileInfo != null) {
             width = fileInfo.getThumbnailWidth();
             height = fileInfo.getThumbnailHeight();
@@ -348,7 +375,6 @@ public class ViewUtils {
                 url = fileInfo.getThumbnailPath();
             }
         } else {
-            List<Thumbnail> thumbnails = message.getThumbnails();
             Thumbnail thumbnail = null;
             if (thumbnails.size() > 0) {
                 thumbnail = thumbnails.get(0);
@@ -365,13 +391,13 @@ public class ViewUtils {
             }
         }
 
-        if (message.getType().toLowerCase().contains(StringSet.image) && !message.getType().toLowerCase().contains(StringSet.gif)) {
+        if (fileType.toLowerCase().contains(StringSet.image) && !fileType.toLowerCase().contains(StringSet.gif)) {
             view.getContent().setScaleType(ImageView.ScaleType.CENTER);
             int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
             builder = builder.placeholder(DrawableUtils.setTintList(ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_photo), iconSize, iconSize), AppCompatResources.getColorStateList(context, thumbnailIconTint))).error(DrawableUtils.setTintList(ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_thumbnail_none), iconSize, iconSize), AppCompatResources.getColorStateList(context, thumbnailIconTint)));
         }
 
-        final String cacheKey = generateThumbnailCacheKey(message);
+        final String cacheKey = generateThumbnailCacheKey(requestId, plainUrl);
         GlideCachedUrlLoader.load(builder, url, cacheKey).centerCrop().listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -392,22 +418,24 @@ public class ViewUtils {
         }).into(view.getContent());
     }
 
-    private static String generateThumbnailCacheKey(@NonNull FileMessage message) {
-        final String requestId = message.getRequestId();
+    private static String generateThumbnailCacheKey(@NonNull String requestId, @NonNull String plainUrl) {
         if (TextUtils.isNotEmpty(requestId)) {
-            return "thumbnail_" + message.getRequestId();
+            return "thumbnail_" + requestId;
         }
-        return String.valueOf(message.getPlainUrl().hashCode());
+        return String.valueOf(plainUrl.hashCode());
     }
 
-    public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
-        String type = fileMessage.getType();
+    public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull FileMessage message) {
+        drawThumbnailIcon(imageView, message.getType());
+    }
+
+    public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull String fileType) {
         Context context = imageView.getContext();
         int backgroundTint = R.color.ondark_01;
         int iconTint = R.color.onlight_02;
-        if (type.toLowerCase().contains(StringSet.gif)) {
+        if (fileType.toLowerCase().contains(StringSet.gif)) {
             imageView.setImageDrawable(DrawableUtils.createOvalIcon(context, backgroundTint, R.drawable.icon_gif, iconTint));
-        } else if (type.toLowerCase().contains(StringSet.video)) {
+        } else if (fileType.toLowerCase().contains(StringSet.video)) {
             imageView.setImageDrawable(DrawableUtils.createOvalIcon(context, backgroundTint, R.drawable.icon_play, iconTint));
         } else {
             imageView.setImageResource(android.R.color.transparent);
@@ -415,12 +443,16 @@ public class ViewUtils {
     }
 
     public static void drawFileIcon(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
+        drawFileIcon(imageView, fileMessage.getType());
+    }
+
+    public static void drawFileIcon(@NonNull ImageView imageView, @NonNull String fileType) {
         Context context = imageView.getContext();
         int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_600 : R.color.background_50;
         int iconTint = SendbirdUIKit.getDefaultThemeMode().getPrimaryTintResId();
         int inset = (int) context.getResources().getDimension(R.dimen.sb_size_4);
         Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
-        if ((fileMessage.getType().toLowerCase().startsWith(StringSet.audio))) {
+        if (fileType.toLowerCase().startsWith(StringSet.audio)) {
             Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_audio, iconTint);
             imageView.setImageDrawable(DrawableUtils.createLayerIcon(background, icon, inset));
         } else {
@@ -430,17 +462,20 @@ public class ViewUtils {
     }
 
     public static void drawFileMessageIconToReply(@NonNull ImageView imageView, @NonNull FileMessage fileMessage) {
-        String type = fileMessage.getType();
+        drawFileMessageIconToReply(imageView, fileMessage.getType());
+    }
+
+    public static void drawFileMessageIconToReply(@NonNull ImageView imageView, @NonNull String fileType) {
         Context context = imageView.getContext();
         int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_500 : R.color.background_100;
         int iconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
         int inset = (int) context.getResources().getDimension(R.dimen.sb_size_8);
         Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
 
-        if ((fileMessage.getType().toLowerCase().startsWith(StringSet.audio))) {
+        if (fileType.toLowerCase().startsWith(StringSet.audio)) {
             Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_audio, iconTint);
             imageView.setImageDrawable(DrawableUtils.createLayerIcon(background, icon, inset));
-        } else if ((type.startsWith(StringSet.image) && !type.contains(StringSet.svg)) || type.toLowerCase().contains(StringSet.gif) || type.toLowerCase().contains(StringSet.video)) {
+        } else if ((fileType.startsWith(StringSet.image) && !fileType.contains(StringSet.svg)) || fileType.toLowerCase().contains(StringSet.gif) || fileType.toLowerCase().contains(StringSet.video)) {
             imageView.setImageResource(android.R.color.transparent);
         } else {
             Drawable icon = DrawableUtils.setTintList(imageView.getContext(), R.drawable.icon_file_document, iconTint);
@@ -449,11 +484,11 @@ public class ViewUtils {
     }
 
     public static void drawQuotedMessage(
-            @NonNull BaseQuotedMessageView replyPanel,
-            @NonNull GroupChannel channel,
-            @NonNull BaseMessage message,
-            @Nullable TextUIConfig uiConfig,
-            @NonNull MessageListUIParams params) {
+        @NonNull BaseQuotedMessageView replyPanel,
+        @NonNull GroupChannel channel,
+        @NonNull BaseMessage message,
+        @Nullable TextUIConfig uiConfig,
+        @NonNull MessageListUIParams params) {
         final boolean hasParentMessage = MessageUtils.hasParentMessage(message);
         replyPanel.setVisibility(hasParentMessage ? View.VISIBLE : View.GONE);
         replyPanel.drawQuotedMessage(channel, message, uiConfig, params);
@@ -496,9 +531,12 @@ public class ViewUtils {
             return;
         }
 
-        final Spannable filename = new SpannableString(message.getName());
+        drawFilename(tvFilename, message.getName(), MessageUtils.isMine(message), uiConfig);
+    }
+
+    public static void drawFilename(@NonNull TextView tvFilename, @NonNull String fileName, boolean isMine, @Nullable MessageUIConfig uiConfig) {
+        final Spannable filename = new SpannableString(fileName);
         if (uiConfig != null) {
-            final boolean isMine = MessageUtils.isMine(message);
             final TextUIConfig textUIConfig = isMine ? uiConfig.getMyMessageTextUIConfig() : uiConfig.getOtherMessageTextUIConfig();
             textUIConfig.bind(tvFilename.getContext(), filename, 0, filename.length());
         }

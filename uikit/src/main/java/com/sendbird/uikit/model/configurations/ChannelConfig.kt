@@ -34,6 +34,8 @@ data class ChannelConfig internal constructor(
     private var _enableReactions: Boolean = true,
     @SerialName(KeySet.enable_voice_message)
     private var _enableVoiceMessage: Boolean = false,
+    @SerialName(KeySet.enable_multiple_files_message)
+    private var _enableMultipleFilesMessage: Boolean = false,
     @SerialName(KeySet.thread_reply_select_type)
     @Serializable(with = ThreadReplySelectTypeAsStringSerializer::class)
     private var _threadReplySelectType: ThreadReplySelectType = ThreadReplySelectType.THREAD,
@@ -58,6 +60,8 @@ data class ChannelConfig internal constructor(
     private var enableReactionsMutable: Boolean? = null,
     @Transient
     private var enableVoiceMessageMutable: Boolean? = null,
+    @Transient
+    private var enableMultipleFilesMessageMutable: Boolean? = null,
     @Transient
     private var threadReplySelectTypeMutable: ThreadReplySelectType? = null,
     @Transient
@@ -228,6 +232,25 @@ data class ChannelConfig internal constructor(
         set(value) {
             enableVoiceMessageMutable = value
         }
+    var enableMultipleFilesMessage: Boolean
+        /**
+         * Returns a value that determines whether to use the multiple files message or not.
+         * true, if channel displays the multiple files message in the message list.
+         * false, otherwise.
+         *
+         * @return true if the multiple files message is enabled, false otherwise
+         * @since 3.9.0
+         */
+        get() = enableMultipleFilesMessageMutable ?: _enableMultipleFilesMessage
+        /**
+         * Sets whether to use the multiple files message or not.
+         *
+         * @param value true if the multiple files message is enabled, false otherwise
+         * @since 3.9.0
+         */
+        set(value) {
+            enableMultipleFilesMessageMutable = value
+        }
     var threadReplySelectType: ThreadReplySelectType
         /**
          * Returns <code>ThreadReplySelectType</code>, which determines where to go when reply is selected.
@@ -271,6 +294,7 @@ data class ChannelConfig internal constructor(
         this._enableTypingIndicator = config._enableTypingIndicator
         this._enableReactions = config._enableReactions
         this._enableVoiceMessage = config._enableVoiceMessage
+        this._enableMultipleFilesMessage = config._enableMultipleFilesMessage
         this._threadReplySelectType = config._threadReplySelectType
         this._replyType = config._replyType
         this.input.merge(config.input)
@@ -285,10 +309,19 @@ data class ChannelConfig internal constructor(
         this.enableTypingIndicatorMutable = null
         this.enableReactionsMutable = null
         this.enableVoiceMessageMutable = null
+        this.enableMultipleFilesMessageMutable = null
         this.threadReplySelectTypeMutable = null
         this.replyTypeMutable = null
         this.input.clear()
     }
+
+    /**
+     * Deeply copies the current instance.
+     *
+     * @return The new copied instance of [ChannelConfig]
+     * @since 3.9.0
+     */
+    fun clone(): ChannelConfig = copy(input = this.input.clone())
 
     @Serializable
     @Parcelize
@@ -346,5 +379,8 @@ data class ChannelConfig internal constructor(
             this.camera.clear()
             this.gallery.clear()
         }
+
+        @JvmSynthetic
+        internal fun clone() = copy(camera = camera.copy(), gallery = gallery.copy())
     }
 }

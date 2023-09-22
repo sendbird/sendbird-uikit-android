@@ -135,7 +135,7 @@ public class ChannelSettingsMenuComponent {
         messageSearchItemView.setMenuType(SingleMenuItemView.Type.NONE);
         messageSearchItemView.setIcon(R.drawable.icon_search);
         messageSearchItemView.setVisibility(
-                ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
+            ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
 
         final SingleMenuItemView leaveItemView = view.findViewById(R.id.leave);
         leaveItemView.setName(context.getString(R.string.sb_text_channel_settings_leave_channel));
@@ -173,7 +173,7 @@ public class ChannelSettingsMenuComponent {
         moderationsItemView.setVisibility(channel.getMyRole() == Role.OPERATOR ? View.VISIBLE : View.GONE);
         final SingleMenuItemView messageSearchItemView = menuView.findViewById(R.id.messageSearch);
         messageSearchItemView.setVisibility(
-                ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
+            ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -221,6 +221,15 @@ public class ChannelSettingsMenuComponent {
 
         /**
          * Sets the {@link ChannelSettingConfig} for the channel settings menu.
+         * Use {@code UIKitConfig.groupChannelSettingConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val channelSettingsMenuComponent = ChannelSettingsMenuComponent()
+         * channelSettingsMenuComponent.params.channelSettingConfig = UIKitConfig.groupChannelSettingConfig.clone().apply {
+         *     this.enableMessageSearch = true
+         * }
+         * </pre>
          *
          * @param channelSettingConfig The ChannelSettingConfig for the channel settings menu.
          * @see ChannelSettingConfig
@@ -241,7 +250,6 @@ public class ChannelSettingsMenuComponent {
         public ChannelSettingConfig getChannelSettingConfig() {
             return channelSettingConfig;
         }
-
 
 
         /**

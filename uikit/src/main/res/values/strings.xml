@@ -74,6 +74,7 @@
     <string name="sb_text_yesterday">Yesterday</string>
     <string name="sb_text_dialog_delete_file_message">Delete this file?</string>
     <string name="sb_text_dialog_delete_message">Delete this message?</string>
+    <string name="sb_text_dialog_delete_multiple_files_message">Do you want to delete all %d photos?</string>
     <string name="sb_text_dialog_delete_channel">Delete channel?</string>
     <string name="sb_text_dialog_delete_channel_message">Once deleted, this channel can\'t be restored.</string>
     <string name="sb_text_toast_success_copy">Copied</string>
@@ -89,6 +90,7 @@
     <string name="sb_text_button_retry">Retry</string>
     <string name="sb_text_button_selected">Selected</string>
     <string name="sb_text_button_add">Add</string>
+    <string name="sb_text_button_ok">OK</string>
     <string name="sb_text_ellipsis">&#8230;</string>
 
     <!--  Message Thread  -->
@@ -139,6 +141,8 @@
     <string name="sb_text_error_open_gallery">Couldn\&#39;t open photo library.</string>
     <string name="sb_text_error_open_file">Couldn\&#39;t open file.</string>
     <string name="sb_text_error_download_file">Couldn\&#39;t download file.</string>
+    <string name="sb_text_error_multiple_files_count_limit">Up to %d files can be attached.</string>
+    <string name="sb_text_error_file_upload_size_limit">The maximum size per file is %s.</string>
 
     <string name="sb_text_dialog_permission_title">Allow permission</string>
     <string name="sb_text_go_to_settings">Settings</string>

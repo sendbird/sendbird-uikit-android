@@ -64,7 +64,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      * @param listener The listener performing when the {@link ChannelPreviewHolder} is clicked.
      */
     public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener) {
-         this(listener, new ChannelListUIParams());
+        this(listener, new ChannelListUIParams());
     }
 
     public ChannelListAdapter(@Nullable OnItemClickListener<GroupChannel> listener, @NonNull ChannelListUIParams params) {
@@ -214,7 +214,8 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
      */
     public void setItems(@NonNull List<GroupChannel> channelList) {
         if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
-            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayDataFromChannelList(channelList, messageDisplayDataProvider);
+            if (messageDisplayDataProvider != null)
+                MessageDisplayDataManager.checkAndGenerateDisplayDataFromChannelList(channelList, messageDisplayDataProvider);
             notifyChannelListChanged(channelList);
             return;
         }
@@ -397,7 +398,7 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
                         return false;
                     }
                 } else if (lastMessage instanceof FileMessage) {
-                    if (!((FileMessage) lastMessage).getName().equals(((FileMessage)that.getLastMessage()).getName())) {
+                    if (!((FileMessage) lastMessage).getName().equals(((FileMessage) that.getLastMessage()).getName())) {
                         return false;
                     }
                 }
@@ -437,21 +438,21 @@ public class ChannelListAdapter extends BaseAdapter<GroupChannel, BaseViewHolder
         @Override
         public String toString() {
             return "ChannelInfo{" +
-                    "channelUrl='" + channelUrl + '\'' +
-                    ", createdAt=" + createdAt +
-                    ", memberCount=" + memberCount +
-                    ", lastMessage=" + lastMessage +
-                    ", channelName='" + channelName + '\'' +
-                    ", coverImageUrl='" + coverImageUrl + '\'' +
-                    ", coverImageHash=" + coverImageHash +
-                    ", pushTriggerOption=" + pushTriggerOption +
-                    ", unreadMessageCount=" + unreadMessageCount +
-                    ", unreadMentionCount=" + unreadMentionCount +
-                    ", isFrozen=" + isFrozen +
-                    ", typingMembers=" + typingMembers +
-                    ", unReadMemberCount=" + unReadMemberCount +
-                    ", unDeliveredMemberCount=" + unDeliveredMemberCount +
-                    '}';
+                "channelUrl='" + channelUrl + '\'' +
+                ", createdAt=" + createdAt +
+                ", memberCount=" + memberCount +
+                ", lastMessage=" + lastMessage +
+                ", channelName='" + channelName + '\'' +
+                ", coverImageUrl='" + coverImageUrl + '\'' +
+                ", coverImageHash=" + coverImageHash +
+                ", pushTriggerOption=" + pushTriggerOption +
+                ", unreadMessageCount=" + unreadMessageCount +
+                ", unreadMentionCount=" + unreadMentionCount +
+                ", isFrozen=" + isFrozen +
+                ", typingMembers=" + typingMembers +
+                ", unReadMemberCount=" + unReadMemberCount +
+                ", unDeliveredMemberCount=" + unDeliveredMemberCount +
+                '}';
         }
 
         @NonNull

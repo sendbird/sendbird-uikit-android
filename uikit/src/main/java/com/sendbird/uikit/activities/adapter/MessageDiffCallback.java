@@ -177,6 +177,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
 
         return true;
     }
+
     private String getItemId(@NonNull BaseMessage item) {
         if (TextUtils.isEmpty(item.getRequestId())) {
             return String.valueOf(item.getMessageId());

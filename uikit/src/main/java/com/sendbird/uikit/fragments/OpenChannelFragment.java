@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -23,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.SendbirdChat;
@@ -72,6 +72,8 @@ import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMessageInputComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMessageListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
@@ -81,7 +83,6 @@ import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.OpenChannelViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
@@ -175,6 +176,8 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             sendFileMessage(mediaUri);
         }
     });
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+        registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::onPickMediaResult);
 
     @NonNull
     private OpenChannelConfig openChannelConfig = UIKitConfig.getOpenChannelConfig();
@@ -191,7 +194,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     @NonNull
     @Override
     protected OpenChannelModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelModule(requireContext());
+        return ModuleProviders.getOpenChannel().provide(requireContext(), args);
     }
 
     @Override
@@ -222,7 +225,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     @NonNull
     @Override
     public OpenChannelViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), params)).get(getChannelUrl(), OpenChannelViewModel.class);
+        return ViewModelProviders.getOpenChannel().provide(this, getChannelUrl(), params);
     }
 
 
@@ -505,10 +508,10 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
             if (messageListView != null) {
                 MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
-                        .setOnItemClickListener(createMessageActionListener(message))
-                        .setOnDismissListener(() -> anchorDialogShowing.set(false))
-                        .setUseOverlay(getModule().getParams().shouldUseOverlayMode())
-                        .build();
+                    .setOnItemClickListener(createMessageActionListener(message))
+                    .setOnDismissListener(() -> anchorDialogShowing.set(false))
+                    .setUseOverlay(getModule().getParams().shouldUseOverlayMode())
+                    .build();
                 messageAnchorDialog.show();
                 anchorDialogShowing.set(true);
             }
@@ -650,17 +653,20 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
      * since 2.0.1
      */
     public void takePhoto() {
-        SendbirdChat.setAutoBackgroundDetection(false);
-        Logger.d("++ build sdk int=%s", Build.VERSION.SDK_INT);
-        final String[] permissions = PermissionUtils.GET_CONTENT_PERMISSION;
-        if (permissions.length > 0) {
-            requestPermission(permissions, () -> {
-                Intent intent = openChannelConfig.getInput().getGallery().getGalleryIntent();
-                getContentLauncher.launch(intent);
-            });
-        } else {
-            Intent intent = openChannelConfig.getInput().getGallery().getGalleryIntent();
-            getContentLauncher.launch(intent);
+        ActivityResultContracts.PickVisualMedia.VisualMediaType mediaType =
+            openChannelConfig.getInput().getGallery().getPickVisualMediaType();
+        if (mediaType != null) {
+            SendbirdChat.setAutoBackgroundDetection(false);
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(mediaType)
+                .build());
+        }
+    }
+
+    private void onPickMediaResult(@Nullable Uri uri) {
+        SendbirdChat.setAutoBackgroundDetection(true);
+        if (uri != null && isFragmentAlive()) {
+            sendFileMessage(uri);
         }
     }
 
@@ -941,7 +947,7 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             public Boolean call() throws Exception {
                 if (getContext() == null) return false;
                 FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
-                        fileMessage.getType(), fileMessage.getName());
+                    fileMessage.getType(), fileMessage.getName());
                 return true;
             }
 
@@ -972,16 +978,16 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     private void showWarningDialog(@NonNull BaseMessage message) {
         if (getContext() == null) return;
         DialogUtils.showWarningDialog(
-                requireContext(),
-                getString(R.string.sb_text_dialog_delete_message),
-                getString(R.string.sb_text_button_delete),
-                delete -> {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                },
-                getString(R.string.sb_text_button_cancel),
-                cancel -> Logger.dev("cancel"),
-                getModule().getParams().shouldUseOverlayMode());
+            requireContext(),
+            getString(R.string.sb_text_dialog_delete_message),
+            getString(R.string.sb_text_button_delete),
+            delete -> {
+                Logger.dev("delete");
+                deleteMessage(message);
+            },
+            getString(R.string.sb_text_button_cancel),
+            cancel -> Logger.dev("cancel"),
+            getModule().getParams().shouldUseOverlayMode());
     }
 
     /**
@@ -1829,6 +1835,18 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
 
         /**
          * Sets open channel configuration for this fragment.
+         * Use {@code UIKitConfig.openChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val fragment = OpenChannelFragment.Builder(CHANNEL_URL)
+         *     .setOpenChannelConfig(
+         *         UIKitConfig.openChannelConfig.clone().apply {
+         *             this.enableOgTag = false
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param openChannelConfig The open channel config.
          * @return This Builder object to allow for chaining of calls to set methods.

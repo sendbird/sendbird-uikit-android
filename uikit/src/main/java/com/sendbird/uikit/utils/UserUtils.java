@@ -51,8 +51,8 @@ public class UserUtils {
         if (user == null) return nickname;
 
         if (usePronouns && user.getUserId() != null &&
-                SendbirdChat.getCurrentUser() != null &&
-                user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
+            SendbirdChat.getCurrentUser() != null &&
+            user.getUserId().equals(SendbirdChat.getCurrentUser().getUserId())) {
             nickname = context.getString(R.string.sb_text_you);
         } else if (!TextUtils.isEmpty(user.getNickname())) {
             nickname = user.getNickname();

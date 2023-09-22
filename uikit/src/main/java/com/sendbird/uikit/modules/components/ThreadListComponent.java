@@ -18,6 +18,7 @@ import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 /**
  * This class creates and performs a view corresponding the thread list area in Sendbird UIKit.
@@ -82,7 +83,9 @@ public class ThreadListComponent extends BaseMessageListComponent<ThreadListAdap
                     .setUseMessageGroupUI(getParams().shouldUseGroupUI())
                     .setUseMessageReceipt(false)
                     .build();
-            setAdapter(new ThreadListAdapter(null, messageListUIParams));
+            setAdapter(
+                AdapterProviders.getThreadList().provide(messageListUIParams)
+            );
         }
         return view;
     }

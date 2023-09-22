@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.User;
@@ -29,9 +29,10 @@ import com.sendbird.uikit.modules.BannedUserListModule;
 import com.sendbird.uikit.modules.components.BannedUserListComponent;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.BannedUserListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -58,13 +59,13 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
     @NonNull
     @Override
     public BannedUserListViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), BannedUserListViewModel.class);
+        return ViewModelProviders.getBannedUserList().provide(this, getChannelUrl(), ChannelType.GROUP);
     }
 
     @NonNull
     @Override
     protected BannedUserListModule onCreateModule(@NonNull Bundle args) {
-        return new BannedUserListModule(requireContext());
+        return ModuleProviders.getBannedUserList().provide(requireContext(), args);
     }
 
     @Override
@@ -199,14 +200,14 @@ public class BannedUserListFragment extends BaseModuleFragment<BannedUserListMod
         items = new DialogListItem[]{unbanMember};
 
         DialogUtils.showListDialog(getContext(), user.getNickname(),
-                items,
-                (v, p, key) -> {
-                    shouldShowLoadingDialog();
-                    getViewModel().unbanUser(user.getUserId(), e -> {
-                        shouldDismissLoadingDialog();
-                        if (e != null) toastError(R.string.sb_text_error_unban_member);
-                    });
-                }
+            items,
+            (v, p, key) -> {
+                shouldShowLoadingDialog();
+                getViewModel().unbanUser(user.getUserId(), e -> {
+                    shouldDismissLoadingDialog();
+                    if (e != null) toastError(R.string.sb_text_error_unban_member);
+                });
+            }
         );
     }
 

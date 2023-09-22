@@ -13,6 +13,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.model.MessageListUIParams;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 /**
  * This class creates and performs a view corresponding the message list area in Sendbird UIKit.
@@ -51,13 +52,10 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (getAdapter() == null) {
             setAdapter(
-                new MessageListAdapter(
-                    channel,
-                    new MessageListUIParams.Builder()
-                        .setUseMessageGroupUI(getParams().shouldUseGroupUI())
-                        .setChannelConfig(getParams().getChannelConfig())
-                        .build()
-                )
+                AdapterProviders.getMessageList().provide(channel, new MessageListUIParams.Builder()
+                    .setUseMessageGroupUI(getParams().shouldUseGroupUI())
+                    .setChannelConfig(getParams().getChannelConfig())
+                    .build())
             );
         }
         super.notifyChannelChanged(channel);

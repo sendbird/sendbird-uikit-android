@@ -116,8 +116,8 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
                 Emoji emoji = getItem(holder.getBindingAdapterPosition());
                 if (emojiClickListener != null && emoji != null) {
                     emojiClickListener.onItemClick(v,
-                            holder.getBindingAdapterPosition(),
-                            emoji.getKey());
+                        holder.getBindingAdapterPosition(),
+                        emoji.getKey());
                 }
             });
         }
@@ -135,7 +135,7 @@ public class EmojiListAdapter extends BaseAdapter<Emoji, BaseViewHolder<Emoji>> 
     @Override
     public int getItemCount() {
         if (showMoreButton) {
-            return emojiList.size()+1;
+            return emojiList.size() + 1;
         } else {
             return emojiList.size();
         }

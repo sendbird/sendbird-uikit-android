@@ -18,6 +18,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class MessageSearchListComponent {
     private PagerRecyclerView pagerRecyclerView;
 
     @NonNull
-    private MessageSearchAdapter adapter = new MessageSearchAdapter();
+    private MessageSearchAdapter adapter = AdapterProviders.getMessageSearch().provide();
 
     @Nullable
     private OnItemClickListener<BaseMessage> itemClickListener;

@@ -21,6 +21,7 @@ public class DateUtils {
     private DateUtils() {
 
     }
+
     @NonNull
     public static String formatTime(@NonNull Context context, long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_SHOW_TIME;
@@ -31,11 +32,11 @@ public class DateUtils {
      * If the given time is of a different date, display the date.
      * If it is of the same date, display the time.
      * @param timeInMillis  The time to convert, in milliseconds.
-     * @return  The time or date.
+     * @return The time or date.
      */
     @NonNull
     public static String formatDateTime(@NonNull Context context, long timeInMillis) {
-        if(isToday(timeInMillis)) {
+        if (isToday(timeInMillis)) {
             return formatTime(context, timeInMillis);
         } else if (isYesterday(timeInMillis)) {
             return context.getString(R.string.sb_text_yesterday);
@@ -52,10 +53,10 @@ public class DateUtils {
     @NonNull
     public static String formatDate(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
-                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
-                | android.text.format.DateUtils.FORMAT_ABBREV_WEEKDAY
-                | android.text.format.DateUtils.FORMAT_SHOW_WEEKDAY
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
+            | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
+            | android.text.format.DateUtils.FORMAT_ABBREV_WEEKDAY
+            | android.text.format.DateUtils.FORMAT_SHOW_WEEKDAY
+            | android.text.format.DateUtils.FORMAT_SHOW_DATE;
         return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
     }
 
@@ -65,8 +66,8 @@ public class DateUtils {
     @NonNull
     public static String formatDate2(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
-                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
+            | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
+            | android.text.format.DateUtils.FORMAT_SHOW_DATE;
         return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
     }
 
@@ -76,8 +77,8 @@ public class DateUtils {
     @NonNull
     public static String formatDate3(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_SHOW_YEAR
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE
-                | android.text.format.DateUtils.FORMAT_NUMERIC_DATE;
+            | android.text.format.DateUtils.FORMAT_SHOW_DATE
+            | android.text.format.DateUtils.FORMAT_NUMERIC_DATE;
         return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
     }
 
@@ -87,8 +88,8 @@ public class DateUtils {
     @NonNull
     public static String formatDate4(long timeInMillis) {
         int flags = android.text.format.DateUtils.FORMAT_SHOW_YEAR
-                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
+            | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
+            | android.text.format.DateUtils.FORMAT_SHOW_DATE;
         return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
     }
 
@@ -113,11 +114,11 @@ public class DateUtils {
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(timeInMillis);
 
-        now.add(Calendar.DATE,-1);
+        now.add(Calendar.DATE, -1);
 
         return now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-                && now.get(Calendar.MONTH) == date.get(Calendar.MONTH)
-                && now.get(Calendar.DATE) == date.get(Calendar.DATE);
+            && now.get(Calendar.MONTH) == date.get(Calendar.MONTH)
+            && now.get(Calendar.DATE) == date.get(Calendar.DATE);
     }
 
     public static boolean isThisYear(long timeInMillis) {
@@ -137,7 +138,7 @@ public class DateUtils {
      * Checks if two dates are of the same day.
      * @param millisFirst   The time in milliseconds of the first date.
      * @param millisSecond  The time in milliseconds of the second date.
-     * @return  Whether {@param millisFirst} and {@param millisSecond} are off the same day.
+     * @return Whether {@param millisFirst} and {@param millisSecond} are off the same day.
      */
     public static boolean hasSameDate(long millisFirst, long millisSecond) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
@@ -146,10 +147,10 @@ public class DateUtils {
 
     /**
      * Checks if two dates are of the same time up to the minute.
-     * 
+     *
      * @param millisFirst   The time in milliseconds of the first date.
      * @param millisSecond  The time in milliseconds of the second date.
-     * @return  Whether {@param millisFirst} and {@param millisSecond} are off the same day.
+     * @return Whether {@param millisFirst} and {@param millisSecond} are off the same day.
      * since 1.2.1
      */
     public static boolean hasSameTimeInMinute(long millisFirst, long millisSecond) {
@@ -165,8 +166,8 @@ public class DateUtils {
     @NonNull
     public static String getTimeDiff(long time) {
         int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
-                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
+            | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
+            | android.text.format.DateUtils.FORMAT_SHOW_DATE;
         return (String) android.text.format.DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), 60000, flags);
     }
 }

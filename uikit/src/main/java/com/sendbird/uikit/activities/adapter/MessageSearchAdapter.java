@@ -114,7 +114,8 @@ public class MessageSearchAdapter extends BaseAdapter<BaseMessage, BaseViewHolde
      */
     public void setItems(@NonNull List<BaseMessage> items) {
         if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
-            if (messageDisplayDataProvider != null) MessageDisplayDataManager.checkAndGenerateDisplayData(items, messageDisplayDataProvider);
+            if (messageDisplayDataProvider != null)
+                MessageDisplayDataManager.checkAndGenerateDisplayData(items, messageDisplayDataProvider);
             notifyMessageListChanged(items);
             return;
         }

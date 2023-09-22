@@ -15,7 +15,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
@@ -33,6 +32,8 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.CreateOpenChannelModule;
 import com.sendbird.uikit.modules.components.ChannelProfileInputComponent;
 import com.sendbird.uikit.modules.components.StateHeaderComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
@@ -40,7 +41,6 @@ import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.CreateOpenChannelViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 import java.io.File;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
     @NonNull
     @Override
     protected CreateOpenChannelModule onCreateModule(@NonNull Bundle args) {
-        return new CreateOpenChannelModule(requireContext());
+        return ModuleProviders.getCreateOpenChannel().provide(requireContext(), args);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
     @NonNull
     @Override
     protected CreateOpenChannelViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory()).get(CreateOpenChannelViewModel.class);
+        return ViewModelProviders.getCreateOpenChannel().provide(this);
     }
 
     @Override

@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.MutedMemberListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class MutedMemberListComponent extends UserTypeListComponent<Member> {
     @NonNull
-    private MutedMemberListAdapter adapter = new MutedMemberListAdapter();
+    private MutedMemberListAdapter adapter = AdapterProviders.getMutedMemberList().provide();
 
     /**
      * Sets the muted member list  adapter to provide child views on demand. The default is {@code new MutedMemberListAdapter()}.

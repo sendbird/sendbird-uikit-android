@@ -118,6 +118,8 @@
         <attr name="sb_widget_parent_message_info" format="reference"/>
         <attr name="sb_widget_feed_notification" format="reference"/>
         <attr name="sb_widget_chat_notification" format="reference"/>
+        <attr name="sb_widget_my_multiple_files_message" format="reference"/>
+        <attr name="sb_widget_other_multiple_files_message" format="reference"/>
 
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
@@ -277,7 +279,7 @@
         <attr name="sb_message_other_background_tint" />
 
         <attr name="sb_message_time_text_appearance" />
-        <attr name="sb_message_sender_name_text_appearance"/>`
+        <attr name="sb_message_sender_name_text_appearance"/>
 
         <attr name="sb_message_emoji_reaction_list_background" />
 
@@ -299,6 +301,22 @@
         <attr name="sb_voice_message_progress_color" format="reference"/>
         <attr name="sb_voice_message_progress_track_color" format="reference"/>
         <attr name="sb_voice_message_timeline_text_appearance" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MessageView.MultipleFiles">
+        <attr name="sb_message_me_background" />
+        <attr name="sb_message_other_background" />
+        <attr name="sb_message_me_background_tint" />
+        <attr name="sb_message_other_background_tint" />
+
+        <attr name="sb_message_time_text_appearance" />
+        <attr name="sb_message_sender_name_text_appearance"/>
+
+        <attr name="sb_message_emoji_reaction_list_background" />
+
+        <attr name="sb_multiple_files_message_background_color" format="reference|color"/>
+        <attr name="sb_multiple_files_message_item_background_color" format="reference|color"/>
+        <attr name="sb_multiple_files_message_is_mine" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="MessageView.Admin">
@@ -347,10 +365,6 @@
     <declare-styleable name="EmojiReactionCountList">
         <attr name="sb_emoji_reaction_count_tab_layout_background" format="reference"/>
         <attr name="sb_emoji_reaction_count_tab_indicator_color" format="color"/>
-    </declare-styleable>
-
-    <declare-styleable name="EmojiReactionUser">
-        <attr name="sb_emoji_reaction_user_nickname_appearance" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="AutoLinkTextView">

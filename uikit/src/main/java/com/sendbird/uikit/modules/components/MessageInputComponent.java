@@ -461,9 +461,9 @@ public class MessageInputComponent {
      * since 3.0.0
      */
     public void notifyDataChanged(
-            @Nullable BaseMessage message,
-            @NonNull GroupChannel channel,
-            @NonNull String defaultText
+        @Nullable BaseMessage message,
+        @NonNull GroupChannel channel,
+        @NonNull String defaultText
     ) {
         if (messageInputView == null) return;
         final MessageInputView inputView = this.messageInputView;
@@ -472,13 +472,13 @@ public class MessageInputComponent {
         if (MessageInputView.Mode.EDIT == mode) {
             if (message != null) {
                 final CharSequence text = ViewUtils.getDisplayableText(
-                        inputView.getContext(),
-                        message,
-                        params.messageUIConfig,
-                        null,
-                        true,
-                        null,
-                        params.getChannelConfig().getEnableMention()
+                    inputView.getContext(),
+                    message,
+                    params.messageUIConfig,
+                    null,
+                    true,
+                    null,
+                    params.getChannelConfig().getEnableMention()
                 );
                 inputView.setInputText(text);
             }
@@ -693,6 +693,15 @@ public class MessageInputComponent {
 
         /**
          * Sets {@link ChannelConfig} that will be used in this component.
+         * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val messageInputComponent = MessageInputComponent()
+         * messageInputComponent.params.channelConfig = UIKitConfig.groupChannelConfig.clone().apply {
+         *     this.enableMention = true
+         * }
+         * </pre>
          *
          * @param channelConfig Channel config to be used in this component.
          * since 3.6.0
@@ -817,7 +826,8 @@ public class MessageInputComponent {
          */
         public void setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMentionUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
         }
 
         /**

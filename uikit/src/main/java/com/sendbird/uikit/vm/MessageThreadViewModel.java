@@ -515,7 +515,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
         params.setNextResultSize(1);
         if (messageListParams != null) {
             params.setMessagePayloadFilter(new MessagePayloadFilter(messageListParams.getMessagePayloadFilter().getIncludeMetaArray(),
-                    messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
+                messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
         } else {
             params.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
         }
@@ -585,7 +585,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
         params.setNextResultSize(1);
         if (messageListParams != null) {
             params.setMessagePayloadFilter(new MessagePayloadFilter(messageListParams.getMessagePayloadFilter().getIncludeMetaArray(),
-                    messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
+                messageListParams.getMessagePayloadFilter().getIncludeReactions(), true, true));
         } else {
             params.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), true, true));
         }
@@ -599,7 +599,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
 
                 // event from changelogs won't handle at this collection.
                 if (context.getCollectionEventSource() == CollectionEventSource.MESSAGE_CHANGELOG
-                        || context.getCollectionEventSource() == CollectionEventSource.MESSAGE_FILL) return;
+                    || context.getCollectionEventSource() == CollectionEventSource.MESSAGE_FILL) return;
 
                 final List<BaseMessage> threadedMessages = filterThreadMessages(messages);
                 if (threadedMessages.isEmpty()) return;
@@ -611,7 +611,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
             public void onMessagesUpdated(@NonNull MessageContext context, @NonNull GroupChannel groupChannel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> MessageThreadViewModel::onMessagesUpdated(collection) from=%s, size=%s", context.getCollectionEventSource(), messages.size());
                 if (context.getCollectionEventSource() == CollectionEventSource.MESSAGE_CHANGELOG
-                        || context.getCollectionEventSource() == CollectionEventSource.MESSAGE_FILL) return;
+                    || context.getCollectionEventSource() == CollectionEventSource.MESSAGE_FILL) return;
                 final List<BaseMessage> threadMessages = filterThreadMessages(messages);
                 if (threadMessages.isEmpty()) return;
 

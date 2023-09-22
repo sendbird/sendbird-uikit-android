@@ -44,8 +44,8 @@ public class ChannelUtils {
 
                 String nickName = member.getNickname();
                 names.append(", ")
-                        .append(TextUtils.isEmpty(nickName) ?
-                                context.getString(R.string.sb_text_channel_list_title_unknown) : nickName);
+                    .append(TextUtils.isEmpty(nickName) ?
+                        context.getString(R.string.sb_text_channel_list_title_unknown) : nickName);
             }
             result = names.delete(0, 2).toString();
         } else {
@@ -59,10 +59,10 @@ public class ChannelUtils {
                 count++;
                 String nickName = member.getNickname();
                 names.append(", ")
-                        .append(TextUtils.isEmpty(nickName) ?
-                                context.getString(R.string.sb_text_channel_list_title_unknown) : nickName);
+                    .append(TextUtils.isEmpty(nickName) ?
+                        context.getString(R.string.sb_text_channel_list_title_unknown) : nickName);
 
-                if(count >= 10) {
+                if (count >= 10) {
                     break;
                 }
             }
@@ -85,7 +85,7 @@ public class ChannelUtils {
         if (lastMessage instanceof FileMessage) {
             Sender sender = lastMessage.getSender();
             return String.format(context.getString(R.string.sb_text_channel_list_last_message_file),
-                    sender != null ? sender.getNickname() : context.getString(R.string.sb_text_channel_list_last_message_file_unknown));
+                sender != null ? sender.getNickname() : context.getString(R.string.sb_text_channel_list_last_message_file_unknown));
         }
         return lastMessage.getMessage();
     }
@@ -144,10 +144,10 @@ public class ChannelUtils {
     public static String makeTypingText(@NonNull Context context, @NonNull List<? extends User> typingUsers) {
         if (typingUsers.size() == 1) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_single),
-                    typingUsers.get(0).getNickname());
+                typingUsers.get(0).getNickname());
         } else if (typingUsers.size() == 2) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_double),
-                    typingUsers.get(0).getNickname(), typingUsers.get(1).getNickname());
+                typingUsers.get(0).getNickname(), typingUsers.get(1).getNickname());
         } else {
             return context.getString(R.string.sb_text_channel_typing_indicator_multiple);
         }

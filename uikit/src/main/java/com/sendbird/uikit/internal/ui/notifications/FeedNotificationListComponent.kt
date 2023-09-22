@@ -117,6 +117,10 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
 
                         if (uiConfig == null) return@apply
                         val themeMode = uiConfig.themeMode
+                        recyclerView.setCategoryFilterBoxBackgroundColor(
+                            uiConfig.theme.listTheme.backgroundColor.getColor(themeMode)
+                        )
+
                         uiConfig.theme.listTheme.category?.let {
                             setTextColor(
                                 DrawableUtils.createTextColorSelector(

@@ -96,6 +96,7 @@ public class StringSet {
     public final static String jpg = "jpg";
     public final static String jpeg = "jpeg";
     public final static String gif = "gif";
+    public final static String file = "file";
     public final static String png = "png";
     public final static String webp = "webp";
     public final static String m4a = "m4a";
@@ -133,6 +134,7 @@ public class StringSet {
     public final static String EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED";
     public final static String INVALID_URL = "INVALID_URL";
     public final static String photo = "photo";
+    public final static String photos = "photos";
 
     public final static String Chat = "Chat";
     public final static String Profile = "Profile";

@@ -171,6 +171,8 @@ public class BaseApplication extends MultiDexApplication {
         UIKitConfig.getGroupChannelConfig().setEnableMention(true);
         // set the voice message
         UIKitConfig.getGroupChannelConfig().setEnableVoiceMessage(true);
+        // set whether to use Multiple Files Message
+        UIKitConfig.getGroupChannelConfig().setEnableMultipleFilesMessage(true);
         // set the mention configuration
         SendbirdUIKit.setMentionConfig(new UserMentionConfig.Builder()
                 .setMaxMentionCount(5)

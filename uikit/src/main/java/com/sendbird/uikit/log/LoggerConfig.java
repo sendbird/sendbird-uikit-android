@@ -111,7 +111,7 @@ class LoggerConfig {
         Builder setPrintLoggerLevel(int level) {
             printLoggerLevel = level;
             return this;
-    }
+        }
 
         @SuppressWarnings("UnusedReturnValue")
         @NonNull

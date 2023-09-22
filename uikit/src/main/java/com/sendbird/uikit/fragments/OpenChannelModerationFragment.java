@@ -8,7 +8,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.OpenChannel;
@@ -25,8 +24,9 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.OpenChannelModerationModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelModerationListComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.OpenChannelModerationViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 /**
  * Fragment displaying the menu list to control the open channel.
@@ -47,7 +47,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
     @NonNull
     @Override
     protected OpenChannelModerationModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelModerationModule(requireContext());
+        return ModuleProviders.getOpenChannelModeration().provide(requireContext(), args);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
     @NonNull
     @Override
     protected OpenChannelModerationViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelModerationViewModel.class);
+        return ViewModelProviders.getOpenChannelModeration().provide(this, getChannelUrl());
     }
 
     @Override

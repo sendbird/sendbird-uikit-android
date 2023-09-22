@@ -88,7 +88,7 @@ public class MentionEditText extends AppCompatEditText {
 
         snackbar.dismiss();
     }
-    
+
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
@@ -212,7 +212,7 @@ public class MentionEditText extends AppCompatEditText {
                 Logger.d("__ deleteSurroundingText beforeLength = %s, afterLength=%s", beforeLength, afterLength);
                 if (beforeLength == 1 && afterLength == 0) {
                     return sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-                            && sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+                        && sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
                 }
 
                 return super.deleteSurroundingText(beforeLength, afterLength);

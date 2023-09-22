@@ -60,23 +60,23 @@ public class MessageUtils {
 
     public static boolean isGroupChanged(@Nullable BaseMessage frontMessage, @Nullable BaseMessage backMessage, @NonNull MessageListUIParams messageListUIParams) {
         return frontMessage == null ||
-                frontMessage.getSender() == null ||
-                frontMessage instanceof AdminMessage ||
-                frontMessage instanceof TimelineMessage ||
-                (messageListUIParams.shouldUseQuotedView() && hasParentMessage(frontMessage)) ||
-                backMessage == null ||
-                backMessage.getSender() == null ||
-                backMessage instanceof AdminMessage ||
-                backMessage instanceof TimelineMessage ||
-                (messageListUIParams.shouldUseQuotedView() && hasParentMessage(backMessage)) ||
-                !backMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
-                !frontMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
-                !frontMessage.getSender().equals(backMessage.getSender()) ||
-                !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt()) ||
-                (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD && (
-                        (!(frontMessage instanceof CustomizableMessage) && frontMessage.getThreadInfo().getReplyCount() > 0) ||
-                        (!(backMessage instanceof CustomizableMessage) && backMessage.getThreadInfo().getReplyCount() > 0)
-                ));
+            frontMessage.getSender() == null ||
+            frontMessage instanceof AdminMessage ||
+            frontMessage instanceof TimelineMessage ||
+            (messageListUIParams.shouldUseQuotedView() && hasParentMessage(frontMessage)) ||
+            backMessage == null ||
+            backMessage.getSender() == null ||
+            backMessage instanceof AdminMessage ||
+            backMessage instanceof TimelineMessage ||
+            (messageListUIParams.shouldUseQuotedView() && hasParentMessage(backMessage)) ||
+            !backMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
+            !frontMessage.getSendingStatus().equals(SendingStatus.SUCCEEDED) ||
+            !frontMessage.getSender().equals(backMessage.getSender()) ||
+            !DateUtils.hasSameTimeInMinute(frontMessage.getCreatedAt(), backMessage.getCreatedAt()) ||
+            (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD && (
+                (!(frontMessage instanceof CustomizableMessage) && frontMessage.getThreadInfo().getReplyCount() > 0) ||
+                    (!(backMessage instanceof CustomizableMessage) && backMessage.getThreadInfo().getReplyCount() > 0)
+            ));
     }
 
     @NonNull
@@ -97,8 +97,8 @@ public class MessageUtils {
         }
 
         if (messageListUIParams.getChannelConfig().getReplyType() == ReplyType.THREAD &&
-                !(message instanceof CustomizableMessage) &&
-                message.getThreadInfo().getReplyCount() > 0) {
+            !(message instanceof CustomizableMessage) &&
+            message.getThreadInfo().getReplyCount() > 0) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
 

@@ -14,7 +14,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.GroupChannel;
@@ -42,12 +41,13 @@ import com.sendbird.uikit.modules.ChannelSettingsModule;
 import com.sendbird.uikit.modules.components.ChannelSettingsHeaderComponent;
 import com.sendbird.uikit.modules.components.ChannelSettingsInfoComponent;
 import com.sendbird.uikit.modules.components.ChannelSettingsMenuComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.FileUtils;
 import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.vm.ChannelSettingsViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 import java.io.File;
 
@@ -92,7 +92,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     @NonNull
     @Override
     protected ChannelSettingsModule onCreateModule(@NonNull Bundle args) {
-        return new ChannelSettingsModule(requireContext());
+        return ModuleProviders.getChannelSettings().provide(requireContext(), args);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
     @NonNull
     @Override
     protected ChannelSettingsViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), ChannelSettingsViewModel.class);
+        return ViewModelProviders.getChannelSettings().provide(this, getChannelUrl());
     }
 
     private void processPickedImage(@NonNull Uri uri) {
@@ -243,8 +243,8 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
 
     private void showChannelInfoEditDialog() {
         DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
         };
 
         if (getContext() == null) return;
@@ -263,11 +263,11 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
                 DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
                 params.setEnableSingleLine(true);
                 DialogUtils.showInputDialog(
-                        requireContext(),
-                        getString(R.string.sb_text_channel_settings_change_channel_name),
-                        params, listener,
-                        getString(R.string.sb_text_button_save), null,
-                        getString(R.string.sb_text_button_cancel), null);
+                    requireContext(),
+                    getString(R.string.sb_text_channel_settings_change_channel_name),
+                    params, listener,
+                    getString(R.string.sb_text_button_save), null,
+                    getString(R.string.sb_text_button_cancel), null);
             } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
                 Logger.dev("change channel image");
                 requestPermission(PermissionUtils.CAMERA_PERMISSION, this::showMediaSelectDialog);
@@ -354,24 +354,24 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
         if (getContext() == null) return;
 
         DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_camera),
-                new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_gallery)};
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_camera),
+            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image_gallery)};
 
         DialogUtils.showListDialog(getContext(), getString(R.string.sb_text_channel_settings_change_channel_image),
-                items, (v, p, item) -> {
-                    try {
-                        final int key = item.getKey();
-                        SendbirdChat.setAutoBackgroundDetection(false);
-                        if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
-                            takeCamera();
-                        } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
-                            takePhoto();
-                        }
-                    } catch (Exception e) {
-                        Logger.e(e);
-                        toastError(R.string.sb_text_error_open_camera);
+            items, (v, p, item) -> {
+                try {
+                    final int key = item.getKey();
+                    SendbirdChat.setAutoBackgroundDetection(false);
+                    if (key == R.string.sb_text_channel_settings_change_channel_image_camera) {
+                        takeCamera();
+                    } else if (key == R.string.sb_text_channel_settings_change_channel_image_gallery) {
+                        takePhoto();
                     }
-                });
+                } catch (Exception e) {
+                    Logger.e(e);
+                    toastError(R.string.sb_text_error_open_camera);
+                }
+            });
     }
 
     private void takeCamera() {
@@ -604,6 +604,18 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
 
         /**
          * Sets the channel setting configuration for this fragment.
+         * Use {@code UIKitConfig.groupChannelSettingConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val fragment = ChannelSettingsFragment.Builder()
+         *     .setChannelSettingConfig(
+         *         UIKitConfig.groupChannelSettingConfig.clone().apply {
+         *             this.enableMessageSearch = true
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param channelSettingConfig The channel setting config.
          * @return This Builder object to allow for chaining of calls to set methods.

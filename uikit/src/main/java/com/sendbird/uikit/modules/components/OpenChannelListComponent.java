@@ -22,6 +22,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ import java.util.List;
  */
 public class OpenChannelListComponent {
     @NonNull
-    private OpenChannelListAdapter adapter = new OpenChannelListAdapter();
+    private OpenChannelListAdapter adapter = AdapterProviders.getOpenChannelList().provide();
     @Nullable
     private PagerRecyclerView recyclerview;
     @Nullable
@@ -262,6 +263,7 @@ public class OpenChannelListComponent {
      */
     public static class Params {
         private boolean useRefreshLayout = true;
+
         /**
          * Constructor
          *

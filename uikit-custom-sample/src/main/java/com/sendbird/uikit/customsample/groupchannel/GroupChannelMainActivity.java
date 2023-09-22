@@ -21,11 +21,11 @@ import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.handler.UserEventHandler;
 import com.sendbird.android.params.GroupChannelTotalUnreadMessageCountParams;
 import com.sendbird.android.user.User;
-import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.customsample.R;
 import com.sendbird.uikit.customsample.SettingsFragment;
 import com.sendbird.uikit.customsample.widgets.CustomTabView;
+import com.sendbird.uikit.providers.FragmentProviders;
 
 import java.util.List;
 import java.util.Map;
@@ -165,7 +165,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return SendbirdUIKit.getFragmentFactory().newChannelListFragment(new Bundle());
+                return FragmentProviders.getChannelList().provide(new Bundle());
             } else {
                 return new SettingsFragment();
             }

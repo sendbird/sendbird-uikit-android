@@ -83,8 +83,8 @@ public class MessageThreadInputComponent extends MessageInputComponent {
         boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;
         inputView.setEnabled(!isMuted && !isFrozen &&
-                status != StatusFrameView.Status.ERROR &&
-                status != StatusFrameView.Status.CONNECTION_ERROR);
+            status != StatusFrameView.Status.ERROR &&
+            status != StatusFrameView.Status.CONNECTION_ERROR);
 
         final MessageInputView.Mode mode = inputView.getInputMode();
         // set hint

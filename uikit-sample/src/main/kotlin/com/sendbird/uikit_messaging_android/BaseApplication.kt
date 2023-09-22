@@ -115,6 +115,8 @@ class BaseApplication : MultiDexApplication() {
         UIKitConfig.groupChannelConfig.threadReplySelectType = ThreadReplySelectType.THREAD
         // set whether to use voice message
         UIKitConfig.groupChannelConfig.enableVoiceMessage = true
+        // set whether to use Multiple Files Message
+        UIKitConfig.groupChannelConfig.enableMultipleFilesMessage = true
 
         // set custom params
         SendbirdUIKit.setCustomParamsHandler(object : CustomParamsHandler {

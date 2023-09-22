@@ -68,4 +68,12 @@ data class ChannelSettingConfig internal constructor(
     internal fun clear() {
         this.enableMessageSearchMutable = null
     }
+
+    /**
+     * Deeply copies the current instance.
+     *
+     * @return The new copied instance of [ChannelSettingConfig]
+     * @since 3.9.0
+     */
+    fun clone() = copy()
 }

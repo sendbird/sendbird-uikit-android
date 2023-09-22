@@ -81,12 +81,27 @@ public enum MessageType {
     VIEW_TYPE_VOICE_MESSAGE_ME(15),
     /**
      * Type of voice message sent by users other than the current user.
-     * 
+     *
      * since 3.4.0
      */
-    VIEW_TYPE_VOICE_MESSAGE_OTHER(16);
+    VIEW_TYPE_VOICE_MESSAGE_OTHER(16),
+
+    /**
+     * Type of MultipleFilesMessage sent by the current user.
+     *
+     * @since 3.9.0
+     */
+    VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME(17),
+
+    /**
+     * Type of MultipleFilesMessage sent by users other than the current user .
+     *
+     * @since 3.9.0
+     */
+    VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER(18);
 
     final int value;
+
     MessageType(int value) {
         this.value = value;
     }

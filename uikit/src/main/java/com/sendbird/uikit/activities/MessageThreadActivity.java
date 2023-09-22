@@ -42,8 +42,8 @@ public class MessageThreadActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.popBackStack();
         manager.beginTransaction()
-                .replace(R.id.sb_fragment_container, fragment)
-                .commit();
+            .replace(R.id.sb_fragment_container, fragment)
+            .commit();
     }
 
     /**
@@ -58,9 +58,9 @@ public class MessageThreadActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final Bundle args = intent != null && intent.getExtras() != null ? intent.getExtras() : new Bundle();
         return SendbirdUIKit.getFragmentFactory().newMessageThreadFragment(
-                args.getString(StringSet.KEY_CHANNEL_URL, ""),
-                Objects.requireNonNull(BaseMessage.buildFromSerializedData(args.getByteArray(StringSet.KEY_PARENT_MESSAGE))),
-                args
+            args.getString(StringSet.KEY_CHANNEL_URL, ""),
+            Objects.requireNonNull(BaseMessage.buildFromSerializedData(args.getByteArray(StringSet.KEY_PARENT_MESSAGE))),
+            args
         );
     }
 

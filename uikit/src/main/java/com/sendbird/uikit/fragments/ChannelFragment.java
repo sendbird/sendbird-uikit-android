@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,13 +60,14 @@ import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.modules.components.MessageListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.MentionEditText;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
@@ -146,13 +146,13 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     @NonNull
     @Override
     protected ChannelModule onCreateModule(@NonNull Bundle args) {
-        return new ChannelModule(requireContext());
+        return ModuleProviders.getChannel().provide(requireContext(), args);
     }
 
     @NonNull
     @Override
     protected ChannelViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), params, channelConfig)).get(getChannelUrl(), ChannelViewModel.class);
+        return ViewModelProviders.getChannel().provide(this, getChannelUrl(), params, channelConfig);
     }
 
     @Override
@@ -461,7 +461,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             return;
         }
         if (channelConfig.getReplyType() == ReplyType.THREAD &&
-                channelConfig.getThreadReplySelectType() == ThreadReplySelectType.THREAD) {
+            channelConfig.getThreadReplySelectType() == ThreadReplySelectType.THREAD) {
             startMessageThreadActivity(message);
         } else {
             jumpToParentMessage(message);
@@ -561,7 +561,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 if (before == MessageInputView.Mode.QUOTE_REPLY && targetMessage == null) {
                     final EditText input = inputComponent.getEditTextView();
                     final String defaultText = input != null && !TextUtils.isEmpty(input.getText())
-                            ? inputComponent.getEditTextView().getText().toString() : "";
+                        ? inputComponent.getEditTextView().getText().toString() : "";
                     inputComponent.notifyDataChanged(null, channel, defaultText);
                 } else {
                     inputComponent.notifyDataChanged(null, channel);
@@ -631,6 +631,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     actions = new DialogListItem[]{save, reply};
                 }
                 break;
+            case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME:
             case VIEW_TYPE_VOICE_MESSAGE_ME:
                 if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
@@ -642,6 +643,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     }
                 }
                 break;
+            case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER:
             case VIEW_TYPE_VOICE_MESSAGE_OTHER:
                 if (replyType != ReplyType.NONE) {
                     actions = new DialogListItem[]{reply};
@@ -705,9 +707,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
             if (getContext() == null || messageListView == null || size <= 0) return;
             MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
-                    .setOnItemClickListener(createMessageActionListener(message))
-                    .setOnDismissListener(() -> anchorDialogShowing.set(false))
-                    .build();
+                .setOnItemClickListener(createMessageActionListener(message))
+                .setOnDismissListener(() -> anchorDialogShowing.set(false))
+                .build();
             messageAnchorDialog.show();
             anchorDialogShowing.set(true);
         } else if (MessageUtils.isUnknownType(message)) {
@@ -764,13 +766,13 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         }
 
         final GroupChannel channel = getViewModel().getChannel();
-        if (channel != null && parentMessage.getCreatedAt() < (channel.getJoinedAt() * 1000)) {
+        if (channel != null && parentMessage.getCreatedAt() < channel.getMessageOffsetTimestamp()) {
             toastError(R.string.sb_text_error_original_message_not_found);
         } else {
             startActivity(new MessageThreadActivity
-                    .IntentBuilder(requireContext(), getChannelUrl(), parentMessage)
-                    .setStartingPoint(startingPoint)
-                    .build(), ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                .IntentBuilder(requireContext(), getChannelUrl(), parentMessage)
+                .setStartingPoint(startingPoint)
+                .build(), ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         }
     }
 
@@ -1843,6 +1845,18 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
 
         /**
          * Sets channel configuration for this fragment.
+         * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val fragment = ChannelFragment.Builder(CHANNEL_URL)
+         *     .setChannelConfig(
+         *         UIKitConfig.groupChannelConfig.clone().apply {
+         *            this.enableMention = true
+         *         }
+         *     )
+         *     .build()
+         * </pre>
          *
          * @param channelConfig The channel config.
          * @return This Builder object to allow for chaining of calls to set methods.

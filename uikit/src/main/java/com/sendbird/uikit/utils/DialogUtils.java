@@ -36,15 +36,15 @@ import java.util.Collections;
 @SuppressWarnings("UnusedReturnValue")
 public final class DialogUtils {
 
-    private DialogUtils(){
+    private DialogUtils() {
         throw new UnsupportedOperationException();
     }
 
     @NonNull
     public static AlertDialog showListDialog(@NonNull Context context,
-                                      @NonNull String title,
-                                      @NonNull DialogListItem[] items,
-                                      @Nullable OnItemClickListener<DialogListItem> itemClickListener) {
+                                             @NonNull String title,
+                                             @NonNull DialogListItem[] items,
+                                             @Nullable OnItemClickListener<DialogListItem> itemClickListener) {
         int themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         final DialogView dialogView = new DialogView(themeWrapperContext);
@@ -182,11 +182,11 @@ public final class DialogUtils {
                                                 @Nullable View.OnClickListener negativeButtonListener,
                                                 boolean useOverlay) {
         int negativeButtonTextColor = SendbirdUIKit.isDarkMode() ?
-                R.color.sb_button_uncontained_text_color_cancel_dark :
-                R.color.sb_button_uncontained_text_color_cancel_light;
+            R.color.sb_button_uncontained_text_color_cancel_dark :
+            R.color.sb_button_uncontained_text_color_cancel_light;
         int positiveButtonTextColor = SendbirdUIKit.isDarkMode() ?
-                R.color.sb_button_uncontained_text_color_alert_dark :
-                R.color.sb_button_uncontained_text_color_alert_light;
+            R.color.sb_button_uncontained_text_color_alert_dark :
+            R.color.sb_button_uncontained_text_color_alert_light;
 
         int themeResId;
         if (useOverlay) {
@@ -220,8 +220,45 @@ public final class DialogUtils {
     }
 
     @NonNull
+    public static AlertDialog showConfirmDialog(@NonNull Context context,
+                                                @NonNull String message,
+                                                @NonNull String positiveButtonText,
+                                                @Nullable View.OnClickListener positiveButtonListener,
+                                                boolean useOverlay) {
+        int themeResId;
+        if (useOverlay) {
+            themeResId = R.style.Widget_Sendbird_Overlay_DialogView;
+        } else {
+            themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
+        }
+        final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
+        final DialogView dialogView = new DialogView(themeWrapperContext);
+        dialogView.setMessageTextAppearance(
+            SendbirdUIKit.isDarkMode() ?
+                R.style.SendbirdSubtitle2OnDark01 : R.style.SendbirdSubtitle2OnLight01
+        );
+        dialogView.setTitleEmpty();
+        dialogView.setMessage(message);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Sendbird_Dialog);
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+        dialogView.setPositiveButton(positiveButtonText, 0, v -> {
+            dialog.dismiss();
+            if (positiveButtonListener != null) positiveButtonListener.onClick(v);
+        });
+
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout((int) context.getResources().getDimension(R.dimen.sb_dialog_width_280), WRAP_CONTENT);
+        }
+
+        return dialog;
+    }
+
+    @NonNull
     public static AlertDialog showContentDialog(@NonNull Context context,
-                                         @NonNull View contentView) {
+                                                @NonNull View contentView) {
         int themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         final DialogView dialogView = new DialogView(themeWrapperContext);
@@ -243,7 +280,7 @@ public final class DialogUtils {
 
     @NonNull
     public static AlertDialog showContentTopDialog(@NonNull Context context,
-                                            @NonNull View contentView) {
+                                                   @NonNull View contentView) {
         int themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         final DialogView dialogView = new DialogView(themeWrapperContext);
@@ -264,9 +301,9 @@ public final class DialogUtils {
 
     @NonNull
     public static AlertDialog showContentViewAndListDialog(@NonNull Context context,
-                                                    @NonNull View contentView,
-                                                    @NonNull DialogListItem[] items,
-                                                    @Nullable OnItemClickListener<DialogListItem> itemClickListener) {
+                                                           @NonNull View contentView,
+                                                           @NonNull DialogListItem[] items,
+                                                           @Nullable OnItemClickListener<DialogListItem> itemClickListener) {
         int themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
         final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
         final DialogView dialogView = new DialogView(themeWrapperContext);

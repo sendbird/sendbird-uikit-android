@@ -21,7 +21,7 @@ import com.sendbird.uikit.model.configurations.UIKitConfig;
 
 import java.util.Objects;
 
-public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class ViewModelFactory implements ViewModelProvider.Factory {
     @Nullable
     private final Object[] params;
 
@@ -31,7 +31,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     public ViewModelFactory(@Nullable Object... params) {
         this.params = params;
-    }   
+    }
 
     @SuppressWarnings("unchecked")
     @NonNull
@@ -93,7 +93,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         } else if (modelClass.isAssignableFrom(MessageThreadViewModel.class)) {
             return (T) new MessageThreadViewModel((String) Objects.requireNonNull(params)[0], (BaseMessage) Objects.requireNonNull(params)[1], params.length > 2 ? (ThreadMessageListParams) params[2] : null);
         } else {
-            return super.create(modelClass);
+            throw new IllegalArgumentException("Unknown ViewModel class");
         }
     }
 }

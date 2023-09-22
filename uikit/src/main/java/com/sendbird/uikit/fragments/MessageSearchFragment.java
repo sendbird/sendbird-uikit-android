@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
@@ -30,9 +29,10 @@ import com.sendbird.uikit.modules.MessageSearchModule;
 import com.sendbird.uikit.modules.components.MessageSearchHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageSearchListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.vm.MessageSearchViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
     @NonNull
     @Override
     protected MessageSearchModule onCreateModule(@NonNull Bundle args) {
-        return new MessageSearchModule(requireContext());
+        return ModuleProviders.getMessageSearch().provide(requireContext(), args);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
     @NonNull
     @Override
     public MessageSearchViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl(), query)).get(getChannelUrl(), MessageSearchViewModel.class);
+        return ViewModelProviders.getMessageSearch().provide(this, getChannelUrl(), query);
     }
 
     @Override
@@ -225,8 +225,8 @@ public class MessageSearchFragment extends BaseModuleFragment<MessageSearchModul
         if (getContext() != null) {
             final String channelUrl = getViewModel().getChannel() == null ? "" : getViewModel().getChannel().getUrl();
             Intent intent = new ChannelActivity.IntentBuilder(getContext(), channelUrl)
-                    .setStartingPoint(message.getCreatedAt())
-                    .build();
+                .setStartingPoint(message.getCreatedAt())
+                .build();
             intent.putExtra(StringSet.KEY_FROM_SEARCH_RESULT, true);
             startActivity(intent);
         }

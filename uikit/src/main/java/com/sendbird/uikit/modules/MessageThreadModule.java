@@ -29,7 +29,7 @@ import com.sendbird.uikit.modules.components.ThreadListComponent;
  *
  * <ul>
  *  <li>Header component is {@link MessageThreadHeaderComponent} and you can set custom header component by {@link #setHeaderComponent(MessageThreadHeaderComponent)}
- *  <li>List component is {@link ThreadListComponent} and you can set custom list component by {@link #setMessageListComponent(ThreadListComponent)} 
+ *  <li>List component is {@link ThreadListComponent} and you can set custom list component by {@link #setMessageListComponent(ThreadListComponent)}
  *  <li>Input component is {@link MessageThreadInputComponent} and you can set custom input component by {@link #setInputComponent(MessageInputComponent)}
  *  <li>Status component is {@link StatusComponent} and you can set custom status component by {@link #setStatusComponent(StatusComponent)}
  * </ul>

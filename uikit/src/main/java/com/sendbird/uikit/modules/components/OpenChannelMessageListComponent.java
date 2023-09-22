@@ -34,6 +34,7 @@ import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.configurations.OpenChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
+import com.sendbird.uikit.providers.AdapterProviders;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
@@ -138,7 +139,7 @@ public class OpenChannelMessageListComponent {
                     BaseMessage message = adapter.getItem(positionStart);
                     LinearLayoutManager layoutManager = messageRecyclerView.getRecyclerView().getLayoutManager();
                     if ((MessageUtils.isMine(message) ||
-                            (layoutManager != null && layoutManager.findFirstVisibleItemPosition() == 0))) {
+                        (layoutManager != null && layoutManager.findFirstVisibleItemPosition() == 0))) {
                         onMessageInserted(message);
                     }
                 }
@@ -195,13 +196,14 @@ public class OpenChannelMessageListComponent {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
-        if (adapter == null) adapter = new OpenChannelMessageListAdapter(
-                null,
+        if (adapter == null) {
+            this.adapter = AdapterProviders.getOpenChannelMessageList().provide(
                 new MessageListUIParams.Builder()
-                        .setUseMessageGroupUI(params.useGroupUI)
-                        .setOpenChannelConfig(params.getOpenChannelConfig())
-                        .build()
-        );
+                    .setUseMessageGroupUI(params.useGroupUI)
+                    .setOpenChannelConfig(params.getOpenChannelConfig())
+                    .build()
+            );
+        }
         setAdapter(adapter);
         return this.messageRecyclerView;
     }
@@ -552,7 +554,8 @@ public class OpenChannelMessageListComponent {
          */
         public void setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyEditedTextMarkUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherEditedTextMarkUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherEditedTextMarkUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -564,7 +567,8 @@ public class OpenChannelMessageListComponent {
          */
         public void setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMessageTextUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherMessageTextUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherMessageTextUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -576,7 +580,8 @@ public class OpenChannelMessageListComponent {
          */
         public void setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMySentAtTextUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherSentAtTextUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherSentAtTextUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -589,8 +594,10 @@ public class OpenChannelMessageListComponent {
          */
         public void setNicknameTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers, @Nullable TextUIConfig configSentFromOperator) {
             if (configSentFromMe != null) this.messageUIConfig.getMyNicknameTextUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherNicknameTextUIConfig().apply(configSentFromOthers);
-            if (configSentFromOperator != null) this.messageUIConfig.getOperatorNicknameTextUIConfig().apply(configSentFromOperator);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherNicknameTextUIConfig().apply(configSentFromOthers);
+            if (configSentFromOperator != null)
+                this.messageUIConfig.getOperatorNicknameTextUIConfig().apply(configSentFromOperator);
         }
 
         /**
@@ -629,6 +636,15 @@ public class OpenChannelMessageListComponent {
 
         /**
          * Sets {@link OpenChannelConfig} that will be used in this component.
+         * Use {@code UIKitConfig.openChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val openChannelMessageListComponent = OpenChannelMessageListComponent()
+         * openChannelMessageListComponent.params.openChannelConfig = UIKitConfig.openChannelConfig.clone().apply {
+         *     this.enableOgTag = false
+         * }
+         * </pre>
          *
          * @param openChannelConfig Channel config to be used in this component.
          * since 3.6.0
@@ -698,8 +714,8 @@ public class OpenChannelMessageListComponent {
             setMessageTextUIConfig(args.getParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_MESSAGE_TEXT_UI_CONFIG_SENT_FROM_OTHERS));
             setSentAtTextUIConfig(args.getParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_ME), args.getParcelable(StringSet.KEY_SENT_AT_TEXT_UI_CONFIG_SENT_FROM_OTHERS));
             setNicknameTextUIConfig(args.getParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_ME),
-                    args.getParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS),
-                    args.getParcelable(StringSet.KEY_OPERATOR_TEXT_UI_CONFIG));
+                args.getParcelable(StringSet.KEY_NICKNAME_TEXT_UI_CONFIG_SENT_FROM_OTHERS),
+                args.getParcelable(StringSet.KEY_OPERATOR_TEXT_UI_CONFIG));
 
             Drawable messageBackgroundSentFromMe = null;
             Drawable messageBackgroundSentFromOthers = null;

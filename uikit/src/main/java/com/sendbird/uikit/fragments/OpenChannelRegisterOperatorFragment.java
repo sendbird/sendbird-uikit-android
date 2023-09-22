@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.OpenChannel;
 import com.sendbird.android.user.User;
@@ -30,8 +29,9 @@ import com.sendbird.uikit.modules.OpenChannelRegisterOperatorModule;
 import com.sendbird.uikit.modules.components.OpenChannelRegisterOperatorListComponent;
 import com.sendbird.uikit.modules.components.SelectUserHeaderComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.OpenChannelRegisterOperatorViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
     @NonNull
     @Override
     protected OpenChannelRegisterOperatorModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelRegisterOperatorModule(requireContext());
+        return ModuleProviders.getOpenChannelRegisterOperator().provide(requireContext(), args);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
     @NonNull
     @Override
     protected OpenChannelRegisterOperatorViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl(), pagedQueryHandler)).get(getChannelUrl(), OpenChannelRegisterOperatorViewModel.class);
+        return ViewModelProviders.getOpenChannelRegisterOperator().provide(this, getChannelUrl(), pagedQueryHandler);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class OpenChannelRegisterOperatorFragment extends BaseModuleFragment<Open
     protected void onBindRegisterOperatorListComponent(@NonNull OpenChannelRegisterOperatorListComponent listComponent, @NonNull OpenChannelRegisterOperatorViewModel viewModel, @Nullable OpenChannel openChannel) {
         Logger.d(">> OpenChannelRegisterOperatorFragment::onBindRegisterOperatorListComponent()");
         if (openChannel != null) {
-            listComponent.setAdapter(new OpenChannelRegisterOperatorListAdapter(openChannel));
+            listComponent.notifyChannelChanged(openChannel);
         }
         listComponent.setOnUserSelectChangedListener(userSelectChangedListener != null ? userSelectChangedListener : (selectedUserIds, isSelected) -> getModule().getHeaderComponent().notifySelectedUserChanged(selectedUserIds.size()));
         listComponent.setOnUserSelectionCompleteListener(userSelectionCompleteListener != null ? userSelectionCompleteListener : OpenChannelRegisterOperatorFragment.this::onUserSelectionCompleted);

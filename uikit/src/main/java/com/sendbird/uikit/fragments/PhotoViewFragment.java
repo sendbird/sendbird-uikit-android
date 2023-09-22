@@ -133,11 +133,11 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         if (!isFragmentAlive()) return;
         requireActivity().getWindow().setNavigationBarColor(ContextCompat.getColor(requireContext(), R.color.background_700));
         requireActivity().getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_LOW_PROFILE |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LOW_PROFILE |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     private <T> RequestBuilder<T> makeRequestBuilder(@NonNull String url, @NonNull String cacheKey, @NonNull Class<T> clazz) {
@@ -192,24 +192,24 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         if (channel != null && isDeletableMessage) {
             ivDelete.setVisibility(View.VISIBLE);
             ivDelete.setOnClickListener(v -> {
-                        if (!loadComplete || getContext() == null) return;
+                    if (!loadComplete || getContext() == null) return;
 
-                        DialogUtils.showWarningDialog(
-                                requireContext(),
-                                getString(R.string.sb_text_dialog_delete_file_message),
-                                getString(R.string.sb_text_button_delete),
-                                v1 -> channel.deleteMessage(messageId, e -> {
-                                    if (e != null) {
-                                        toastError(R.string.sb_text_error_delete_message);
-                                        return;
-                                    }
-                                    if (isFragmentAlive()) {
-                                        shouldActivityFinish();
-                                    }
-                                }),
-                                getString(R.string.sb_text_button_cancel),
-                                cancel -> Logger.dev("cancel"));
-                    }
+                    DialogUtils.showWarningDialog(
+                        requireContext(),
+                        getString(R.string.sb_text_dialog_delete_file_message),
+                        getString(R.string.sb_text_button_delete),
+                        v1 -> channel.deleteMessage(messageId, e -> {
+                            if (e != null) {
+                                toastError(R.string.sb_text_error_delete_message);
+                                return;
+                            }
+                            if (isFragmentAlive()) {
+                                shouldActivityFinish();
+                            }
+                        }),
+                        getString(R.string.sb_text_button_cancel),
+                        cancel -> Logger.dev("cancel"));
+                }
             );
         } else {
             ivDelete.setVisibility(View.GONE);
@@ -240,50 +240,50 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
 
         if (vgHeader.getVisibility() == View.GONE) {
             vgHeader.animate()
-                    .setDuration(300)
-                    .alpha(1.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            vgHeader.setVisibility(View.VISIBLE);
-                        }
-                    });
+                .setDuration(300)
+                .alpha(1.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        vgHeader.setVisibility(View.VISIBLE);
+                    }
+                });
         } else {
             vgHeader.animate()
-                    .setDuration(300)
-                    .alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            vgHeader.setVisibility(View.GONE);
-                        }
-                    });
+                .setDuration(300)
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        vgHeader.setVisibility(View.GONE);
+                    }
+                });
         }
 
         if (vgBottom.getVisibility() == View.GONE) {
             vgBottom.animate()
-                    .setDuration(300)
-                    .alpha(1.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            super.onAnimationStart(animation);
-                            vgBottom.setVisibility(View.VISIBLE);
-                        }
-                    });
+                .setDuration(300)
+                .alpha(1.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        vgBottom.setVisibility(View.VISIBLE);
+                    }
+                });
         } else {
             vgBottom.animate()
-                    .setDuration(300)
-                    .alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            vgBottom.setVisibility(View.GONE);
-                        }
-                    });
+                .setDuration(300)
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        vgBottom.setVisibility(View.GONE);
+                    }
+                });
         }
     }
 
@@ -357,7 +357,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
 
         public Builder(@Nullable String senderId, @Nullable String fileName, @Nullable String channelUrl,
                        @Nullable String url, @Nullable String plainUrl, @Nullable String requestId, @Nullable String mimeType, @Nullable String senderNickname, long createdAt,
-                       long messageId, @Nullable ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode  themeMode, boolean isDeletableMessage) {
+                       long messageId, @Nullable ChannelType channelType, @Nullable SendbirdUIKit.ThemeMode themeMode, boolean isDeletableMessage) {
             bundle.putString(StringSet.KEY_SENDER_ID, senderId);
             bundle.putString(StringSet.KEY_MESSAGE_FILENAME, fileName);
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);

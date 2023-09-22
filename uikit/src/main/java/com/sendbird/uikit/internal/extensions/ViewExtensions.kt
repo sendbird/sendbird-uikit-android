@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.util.TypedValue
@@ -116,4 +117,20 @@ private fun getPressedState(pressedColor: Int): ColorStateList {
 
 internal fun TextView.setTypeface(textStyle: Int) {
     this.typeface = Typeface.create(this.typeface, textStyle)
+}
+
+internal fun View.setBackgroundColorAndRadius(colorStateList: ColorStateList?, radius: Float) {
+    val drawable = GradientDrawable()
+    drawable.shape = GradientDrawable.RECTANGLE
+    drawable.cornerRadius = radius
+    drawable.color = colorStateList
+    background = drawable
+}
+
+internal fun View.setBackgroundColorAndRadii(colorStateList: ColorStateList?, radii: FloatArray) {
+    val drawable = GradientDrawable()
+    drawable.shape = GradientDrawable.RECTANGLE
+    drawable.cornerRadii = radii
+    drawable.color = colorStateList
+    background = drawable
 }

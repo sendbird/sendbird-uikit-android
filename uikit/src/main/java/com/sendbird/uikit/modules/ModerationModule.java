@@ -180,7 +180,7 @@ public class ModerationModule extends BaseModule {
      * since 3.0.0
      */
     public boolean shouldShowLoadingDialog(@NonNull Context context) {
-         if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
+        if (loadingDialogHandler != null && loadingDialogHandler.shouldShowLoadingDialog()) {
             return true;
         }
 

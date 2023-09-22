@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -279,9 +280,9 @@ public class FileUtils {
     @NonNull
     public static File getVoiceFile(@NonNull Context context, @NonNull FileMessage message) {
         return FileUtils.createChannelCacheFile(
-                context.getApplicationContext(),
-                message.getChannelUrl(),
-                MessageUtils.getVoiceFilename(message)
+            context.getApplicationContext(),
+            message.getChannelUrl(),
+            MessageUtils.getVoiceFilename(message)
         );
     }
 
@@ -301,10 +302,19 @@ public class FileUtils {
         return new File(getChannelFileCacheDir(context, channelUrl), fileName);
     }
 
-    public static void copyFile(@NonNull File src, @NonNull File dst) throws IOException
-    {
+    public static void copyFile(@NonNull File src, @NonNull File dst) throws IOException {
         try (FileChannel inChannel = new FileInputStream(src).getChannel(); FileChannel outChannel = new FileOutputStream(dst).getChannel()) {
             inChannel.transferTo(0, inChannel.size(), outChannel);
         }
+    }
+
+    @NonNull
+    public static String getReadableFileSize(long length) {
+        if (length <= 0) {
+            return "0 B";
+        }
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(length) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(length / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }

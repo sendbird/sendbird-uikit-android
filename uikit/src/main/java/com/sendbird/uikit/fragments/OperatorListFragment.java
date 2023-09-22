@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
@@ -30,9 +29,10 @@ import com.sendbird.uikit.modules.OperatorListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OperatorListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.OperatorListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -62,7 +62,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
     @NonNull
     @Override
     protected OperatorListModule onCreateModule(@NonNull Bundle args) {
-        return new OperatorListModule(requireContext());
+        return ModuleProviders.getOperatorList().provide(requireContext(), args);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
     @NonNull
     @Override
     protected OperatorListViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OperatorListViewModel.class);
+        return ViewModelProviders.getOperatorList().provide(this, getChannelUrl(), null, null);
     }
 
     @Override
@@ -188,16 +188,16 @@ public class OperatorListFragment extends BaseModuleFragment<OperatorListModule,
         DialogListItem removeOperator = new DialogListItem(R.string.sb_text_unregister_operator);
         items = new DialogListItem[]{removeOperator};
         DialogUtils.showListDialog(getContext(), user.getNickname(),
-                items,
-                (v, p, key) -> {
-                    shouldShowLoadingDialog();
-                    getViewModel().removeOperator(user.getUserId(), e -> {
-                        shouldDismissLoadingDialog();
-                        if (e != null) {
-                            toastError(R.string.sb_text_error_unregister_operator);
-                        }
-                    });
-                }
+            items,
+            (v, p, key) -> {
+                shouldShowLoadingDialog();
+                getViewModel().removeOperator(user.getUserId(), e -> {
+                    shouldDismissLoadingDialog();
+                    if (e != null) {
+                        toastError(R.string.sb_text_error_unregister_operator);
+                    }
+                });
+            }
         );
     }
 

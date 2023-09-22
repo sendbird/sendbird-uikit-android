@@ -52,18 +52,18 @@ public class MetricsUtils {
     public static RectF rotateRect(@NonNull RectF originRect, float pivotX, float pivotY, double degree) {
         double angle = Math.toRadians(degree);
 
-        float pointLeftTopX = (originRect.left-pivotX) * (float)Math.cos(angle) - (originRect.top-pivotY) * (float)Math.sin(angle) + pivotX;
-        float pointLeftTopY = (originRect.left-pivotX) * (float)Math.sin(angle) + (originRect.top-pivotY) * (float)Math.cos(angle) + pivotY;
+        float pointLeftTopX = (originRect.left - pivotX) * (float) Math.cos(angle) - (originRect.top - pivotY) * (float) Math.sin(angle) + pivotX;
+        float pointLeftTopY = (originRect.left - pivotX) * (float) Math.sin(angle) + (originRect.top - pivotY) * (float) Math.cos(angle) + pivotY;
 
-        float pointRightBottomX = (originRect.right-pivotX) * (float)Math.cos(angle)
-                - (originRect.bottom-pivotY) * (float)Math.sin(angle) + pivotX;
-        float pointRightBottomY = (originRect.right-pivotX) * (float)Math.sin(angle)
-                + (originRect.bottom-pivotY) * (float)Math.cos(angle) + pivotY;
+        float pointRightBottomX = (originRect.right - pivotX) * (float) Math.cos(angle)
+            - (originRect.bottom - pivotY) * (float) Math.sin(angle) + pivotX;
+        float pointRightBottomY = (originRect.right - pivotX) * (float) Math.sin(angle)
+            + (originRect.bottom - pivotY) * (float) Math.cos(angle) + pivotY;
 
-        return new RectF( Math.min(pointLeftTopX, pointRightBottomX),
-                Math.min(pointLeftTopY, pointRightBottomY),
-                Math.max(pointLeftTopX, pointRightBottomX),
-                Math.max(pointLeftTopY, pointRightBottomY));
+        return new RectF(Math.min(pointLeftTopX, pointRightBottomX),
+            Math.min(pointLeftTopY, pointRightBottomY),
+            Math.max(pointLeftTopX, pointRightBottomX),
+            Math.max(pointLeftTopY, pointRightBottomY));
     }
 
     public static int getStatusBarHeight(@NonNull Context context) {

@@ -182,7 +182,7 @@ public class OpenChannelSettingsViewModel extends BaseViewModel {
             public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 final User currentUser = SendbirdChat.getCurrentUser();
                 if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
-                        user.getUserId().equals(currentUser.getUserId())) {
+                    user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> OpenChannelSettingsFragment::onUserBanned()");
                     shouldFinish.postValue(true);
                 }

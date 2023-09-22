@@ -76,4 +76,12 @@ data class ChannelListConfig internal constructor(
         this.enableTypingIndicatorMutable = null
         this.enableMessageReceiptStatusMutable = null
     }
+
+    /**
+     * Deeply copies the current instance.
+     *
+     * @return The new copied instance of [ChannelListConfig]
+     * @since 3.9.0
+     */
+    fun clone() = copy()
 }

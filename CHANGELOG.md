@@ -1,4 +1,57 @@
 # Changelog
+### v3.9.0 (Sep 22, 2023) with Chat SDK `v4.12.1`
+* Support Multiple files message
+  * Added `setEnableMultipleFilesMessage(boolean)`, `getEnableMultipleFilesMessage()` in `ChannelConfig`.
+  * Added `isMultipleMediaEnabled()`, `onMultipleMediaResult(List<Uri>)`, and `onSingleMediaResult(Uri)` in `ChannelFragment` and `MessageThreadFragment`.
+  * Added `sendMultipleFilesMessage(List<FileInfo>, MultipleFilesMessageCreateParams)` in `ChannelViewModel` and `MessageThreadViewModel`.
+  * Added `onBeforeSendMultipleFilesMessage(MultipleFilesMessageCreateParams)` in `ChannelFragment`, `MessageThreadFragment`, and `CustomParamsHandler`.
+* Added `clone()` in `ChannelConfig`, `ChannelListConfig`, `ChannelSettingConfig`, and `OpenChannelConfig`.
+
+Custom Providers are supported to create and customize various components used in UIKit. Each Provider plays a role in generating key components used in UIKit. You can customize each Provider to easily use and customize UIKit's main components.
+* Support custom providers
+  * ModuleProviders
+  * AdapterProviders
+  * FragmentProviders
+  * ViewModelProviders
+* Simple example of using each Provider to work with custom data.
+
+**ModuleProviders**
+```kotlin
+ModuleProviders.channel = ChannelModuleProvider { context, args ->
+    ChannelModule(context).apply {
+        setHeaderComponent(CustomHeaderComponent())
+    }
+}
+```
+
+**AdapterProviders**
+```kotlin
+AdapterProviders.channelList = ChannelListAdapterProvider { uiParams ->
+    CustomChannelListAdapter()
+}
+```
+
+**FragmentProviders**
+```kotlin
+FragmentProviders.channel = ChannelFragmentProvider { channelUrl, args ->
+    ChannelFragment.Builder(channelUrl)
+        .setUseHeader(true)
+        .setCustomFragment(CustomChannelFragment())
+        .withArguments(args)
+        .build()
+}
+```
+
+**ViewModelProviders**
+```kotlin
+ViewModelProviders.channel = ChannelViewModelProvider { owner, channelUrl, params, config ->
+    ViewModelProvider(
+        owner,
+        CustomViewModelFactory(channelUrl, params, config)
+    )[channelUrl, CustomChannelViewModel::class.java]
+}
+```
+> All Providers must be configured before use, and it's recommended to configure them in the Application class.
 
 ### v3.8.0 (Sep 4 2023) with Chat SDK `v4.12.0`
 * Support category filtering in feed notification channel. Categories by which messages can be filtered can be created and edited in the dashboard.

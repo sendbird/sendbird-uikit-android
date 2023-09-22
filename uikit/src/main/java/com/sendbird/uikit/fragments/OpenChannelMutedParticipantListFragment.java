@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.SendbirdChat;
 import com.sendbird.android.channel.OpenChannel;
@@ -29,9 +28,10 @@ import com.sendbird.uikit.modules.OpenChannelMutedParticipantListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.OpenChannelMutedParticipantListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.OpenChannelMutedParticipantListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -60,7 +60,7 @@ public class OpenChannelMutedParticipantListFragment extends BaseModuleFragment<
     @NonNull
     @Override
     protected OpenChannelMutedParticipantListModule onCreateModule(@NonNull Bundle args) {
-        return new OpenChannelMutedParticipantListModule(requireContext());
+        return ModuleProviders.getOpenChannelMutedParticipantList().provide(requireContext(), args);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class OpenChannelMutedParticipantListFragment extends BaseModuleFragment<
     @NonNull
     @Override
     protected OpenChannelMutedParticipantListViewModel onCreateViewModel() {
-        return new ViewModelProvider(this, new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), OpenChannelMutedParticipantListViewModel.class);
+        return ViewModelProviders.getOpenChannelMutedParticipantList().provide(this, getChannelUrl(), null);
     }
 
     @Override
@@ -198,16 +198,16 @@ public class OpenChannelMutedParticipantListFragment extends BaseModuleFragment<
         DialogListItem unMute = new DialogListItem(R.string.sb_text_unmute_participant);
         items = new DialogListItem[]{unMute};
         DialogUtils.showListDialog(getContext(), user.getNickname(),
-                items,
-                (v, p, key) -> {
-                    shouldShowLoadingDialog();
-                    getViewModel().unmuteUser(user.getUserId(), e -> {
-                        shouldDismissLoadingDialog();
-                        if (e != null) {
-                            toastError(R.string.sb_text_error_unmute_participant);
-                        }
-                    });
-                }
+            items,
+            (v, p, key) -> {
+                shouldShowLoadingDialog();
+                getViewModel().unmuteUser(user.getUserId(), e -> {
+                    shouldDismissLoadingDialog();
+                    if (e != null) {
+                        toastError(R.string.sb_text_error_unmute_participant);
+                    }
+                });
+            }
         );
     }
 

@@ -24,6 +24,7 @@ public enum MessageGroupType {
     GROUPING_TYPE_TAIL(3);
 
     int value;
+
     MessageGroupType(int value) {
         this.value = value;
     }

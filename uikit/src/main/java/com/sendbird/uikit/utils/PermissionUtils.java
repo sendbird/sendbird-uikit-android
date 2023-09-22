@@ -34,8 +34,8 @@ public class PermissionUtils {
 
     private static String[] getCameraPermission() {
         String[] permissions = new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE};
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             permissions = new String[]{Manifest.permission.CAMERA};
         }
@@ -45,7 +45,7 @@ public class PermissionUtils {
     private static String[] getGetContentPermission() {
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissions = new String[] {};
+            permissions = new String[]{};
         } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
         }

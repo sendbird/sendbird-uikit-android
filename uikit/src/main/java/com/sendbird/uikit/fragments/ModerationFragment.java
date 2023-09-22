@@ -8,7 +8,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.GroupChannel;
@@ -27,8 +26,9 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.ModerationModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.ModerationListComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.vm.ModerationViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 
 /**
  * Fragment displaying the menu list to control the channel.
@@ -49,7 +49,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     @NonNull
     @Override
     protected ModerationModule onCreateModule(@NonNull Bundle args) {
-        return new ModerationModule(requireContext());
+        return ModuleProviders.getModeration().provide(requireContext(), args);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ModerationFragment extends BaseModuleFragment<ModerationModule, Mod
     @NonNull
     @Override
     protected ModerationViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), ModerationViewModel.class);
+        return ViewModelProviders.getModeration().provide(this, getChannelUrl());
     }
 
     @Override

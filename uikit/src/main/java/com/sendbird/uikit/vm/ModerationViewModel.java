@@ -100,7 +100,7 @@ public class ModerationViewModel extends BaseViewModel {
             public void onUserBanned(@NonNull BaseChannel channel, @NonNull RestrictedUser user) {
                 final User currentUser = SendbirdChat.getCurrentUser();
                 if (isCurrentChannel(channel.getUrl()) && currentUser != null &&
-                        user.getUserId().equals(currentUser.getUserId())) {
+                    user.getUserId().equals(currentUser.getUserId())) {
                     Logger.i(">> ModerationFragment::onUserBanned()");
                     ModerationViewModel.this.isBanned.setValue(true);
                 }

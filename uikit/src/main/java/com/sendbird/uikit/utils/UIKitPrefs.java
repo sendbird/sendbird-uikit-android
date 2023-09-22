@@ -17,14 +17,15 @@ final public class UIKitPrefs {
 
     @Nullable
     private static SharedPreferences preferences;
+
     private UIKitPrefs() {}
 
     public static void init(@NonNull Context context) {
         try {
             // execute IO operations on the executor to avoid strict mode logs
             preferences = Executors.newSingleThreadExecutor().submit(() -> context.getApplicationContext().getSharedPreferences(
-                    PREFERENCE_FILE_NAME,
-                    Context.MODE_PRIVATE
+                PREFERENCE_FILE_NAME,
+                Context.MODE_PRIVATE
             )).get();
         } catch (Throwable e) {
             Logger.w(e);

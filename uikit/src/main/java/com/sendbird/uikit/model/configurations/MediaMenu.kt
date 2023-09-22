@@ -2,6 +2,7 @@ package com.sendbird.uikit.model.configurations
 
 import android.content.Intent
 import android.os.Parcelable
+import androidx.activity.result.contract.ActivityResultContracts
 import com.sendbird.uikit.internal.model.template_messages.KeySet
 import com.sendbird.uikit.utils.IntentUtils
 import kotlinx.parcelize.Parcelize
@@ -69,7 +70,9 @@ data class MediaMenu internal constructor(
      *
      * @return the intent for selecting media files.
      * @since 3.6.0
+     * @deprecated 3.9.0 Use [getPickVisualMediaType] instead.
      */
+    @Deprecated(message = "Use Android Photo Picker", replaceWith = ReplaceWith("getPickVisualMediaType()"))
     fun getGalleryIntent(): Intent {
         return if (enablePhoto && !enableVideo) {
             IntentUtils.getImageGalleryIntent()
@@ -77,6 +80,24 @@ data class MediaMenu internal constructor(
             IntentUtils.getVideoGalleryIntent()
         } else {
             IntentUtils.getGalleryIntent()
+        }
+    }
+
+    /**
+     * Returns the [ActivityResultContracts.PickVisualMedia.VisualMediaType] for selecting media files.
+     *
+     * @return the [ActivityResultContracts.PickVisualMedia.VisualMediaType] for selecting media files.
+     * @since 3.9.0
+     */
+    fun getPickVisualMediaType(): ActivityResultContracts.PickVisualMedia.VisualMediaType? {
+        return if (enablePhoto && !enableVideo) {
+            ActivityResultContracts.PickVisualMedia.ImageOnly
+        } else if (!enablePhoto && enableVideo) {
+            ActivityResultContracts.PickVisualMedia.VideoOnly
+        } else if (enablePhoto && enableVideo) {
+            ActivityResultContracts.PickVisualMedia.ImageAndVideo
+        } else {
+            null
         }
     }
 

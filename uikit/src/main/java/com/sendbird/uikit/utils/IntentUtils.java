@@ -23,7 +23,7 @@ public class IntentUtils {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         grantWritePermission(context, intent, uri);
-        if ( Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             intent.setClipData(ClipData.newRawUri("", uri));
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
@@ -37,7 +37,7 @@ public class IntentUtils {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         grantWritePermission(context, intent, uri);
-        if ( Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             intent.setClipData(ClipData.newRawUri("", uri));
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
@@ -52,11 +52,13 @@ public class IntentUtils {
     }
 
     @NonNull
+    @Deprecated
     public static Intent getVideoGalleryIntent() {
         return getGalleryIntent(new String[]{"video/*"});
     }
 
     @NonNull
+    @Deprecated
     public static Intent getGalleryIntent() {
         return getGalleryIntent(new String[]{"image/*", "video/*"});
     }

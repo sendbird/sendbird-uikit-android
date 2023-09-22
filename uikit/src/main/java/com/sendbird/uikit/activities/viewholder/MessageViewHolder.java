@@ -59,8 +59,8 @@ public abstract class MessageViewHolder extends RecyclerView.ViewHolder {
 
         final MessageGroupType messageGroupType = MessageUtils.getMessageGroupType(prevMessage, message, nextMessage, messageListUIParams);
         final MessageListUIParams params = new MessageListUIParams.Builder(messageListUIParams)
-                .setMessageGroupType(messageGroupType)
-                .build();
+            .setMessageGroupType(messageGroupType)
+            .build();
         bind(channel, message, params);
 
         // for backward compatibility.

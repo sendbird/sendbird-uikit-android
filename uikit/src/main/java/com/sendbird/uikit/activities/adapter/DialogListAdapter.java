@@ -43,8 +43,8 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Li
     @Override
     public DialogListAdapter.ListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new DialogListAdapter.ListViewHolder(SbViewDialogListItemBinding.
-                inflate(LayoutInflater.from(parent.getContext()), parent, false),
-                listener, nameMarginLeft, isIconLeft);
+            inflate(LayoutInflater.from(parent.getContext()), parent, false),
+            listener, nameMarginLeft, isIconLeft);
     }
 
     @Override
@@ -73,17 +73,17 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Li
         private final boolean isIconLeft;
 
         private ListViewHolder(@NonNull SbViewDialogListItemBinding binding,
-                              @Nullable OnItemClickListener<DialogListItem> listener,
-                              int nameMarginLeft, boolean isIconLeft) {
+                               @Nullable OnItemClickListener<DialogListItem> listener,
+                               int nameMarginLeft, boolean isIconLeft) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
             this.isIconLeft = isIconLeft;
             context = binding.getRoot().getContext();
             TypedArray a = context.getTheme().obtainStyledAttributes(
-                    null,
-                    R.styleable.DialogView,
-                    0, 0);
+                null,
+                R.styleable.DialogView,
+                0, 0);
             try {
                 final int listItemAppearance = a.getResourceId(R.styleable.DialogView_sb_dialog_view_list_item_appearance, R.style.SendbirdSubtitle2OnLight01);
                 final ColorStateList listItemTextColor = a.getColorStateList(R.styleable.DialogView_sb_dialog_view_list_item_text_color);

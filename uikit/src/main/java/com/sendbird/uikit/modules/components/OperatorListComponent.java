@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.adapter.OperatorListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class OperatorListComponent extends UserTypeListComponent<User> {
 
     @NonNull
-    private OperatorListAdapter adapter = new OperatorListAdapter();
+    private OperatorListAdapter adapter = AdapterProviders.getOperatorList().provide();
 
     /**
      * Returns the operator list adapter.

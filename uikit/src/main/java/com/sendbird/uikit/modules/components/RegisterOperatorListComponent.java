@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.android.user.Member;
 import com.sendbird.uikit.activities.adapter.RegisterOperatorListAdapter;
+import com.sendbird.uikit.providers.AdapterProviders;
 
 /**
  * This class creates and performs a view corresponding the member list area when registering operators in Sendbird UIKit.
@@ -12,7 +13,7 @@ import com.sendbird.uikit.activities.adapter.RegisterOperatorListAdapter;
  */
 public class RegisterOperatorListComponent extends SelectUserListComponent<Member> {
     @NonNull
-    private RegisterOperatorListAdapter adapter = new RegisterOperatorListAdapter();
+    private RegisterOperatorListAdapter adapter = AdapterProviders.getRegisterOperatorList().provide();
 
     /**
      * Returns the member list adapter when registering operators.

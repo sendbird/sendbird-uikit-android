@@ -701,7 +701,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
 
         // filter failed, pending messages
         int newIndex = 0;
-        for (int i = 0; i < size ; i++) {
+        for (int i = 0; i < size; i++) {
             BaseMessage message = list.get(i);
             if (message.getSendingStatus() == SendingStatus.SUCCEEDED) {
                 newIndex = i;
@@ -829,6 +829,15 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
 
         /**
          * Sets {@link ChannelConfig} that will be used in this component.
+         * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
+         * Example usage:
+         *
+         * <pre>
+         * val messageListComponent = MessageListComponent()
+         * messageListComponent.params.channelConfig = UIKitConfig.groupChannelConfig.clone().apply {
+         *     this.enableMention = true
+         * }
+         * </pre>
          *
          * @param channelConfig Channel config to be used in this component.
          * since 3.6.0
@@ -907,7 +916,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setMentionUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMentionUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherMentionUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -919,7 +929,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setEditedTextMarkUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyEditedTextMarkUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherEditedTextMarkUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherEditedTextMarkUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -931,7 +942,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setMessageTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMyMessageTextUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherMessageTextUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherMessageTextUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -943,7 +955,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setSentAtTextUIConfig(@Nullable TextUIConfig configSentFromMe, @Nullable TextUIConfig configSentFromOthers) {
             if (configSentFromMe != null) this.messageUIConfig.getMySentAtTextUIConfig().apply(configSentFromMe);
-            if (configSentFromOthers != null) this.messageUIConfig.getOtherSentAtTextUIConfig().apply(configSentFromOthers);
+            if (configSentFromOthers != null)
+                this.messageUIConfig.getOtherSentAtTextUIConfig().apply(configSentFromOthers);
         }
 
         /**
@@ -987,7 +1000,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
          */
         public void setReactionListBackground(@Nullable Drawable drawableSentFromMe, @Nullable Drawable drawableSentFromOthers) {
             if (drawableSentFromMe != null) this.messageUIConfig.setMyReactionListBackground(drawableSentFromMe);
-            if (drawableSentFromOthers != null) this.messageUIConfig.setOtherReactionListBackground(drawableSentFromOthers);
+            if (drawableSentFromOthers != null)
+                this.messageUIConfig.setOtherReactionListBackground(drawableSentFromOthers);
         }
 
         /**

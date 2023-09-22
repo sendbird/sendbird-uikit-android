@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
@@ -31,9 +30,10 @@ import com.sendbird.uikit.modules.MemberListModule;
 import com.sendbird.uikit.modules.components.HeaderComponent;
 import com.sendbird.uikit.modules.components.MemberListComponent;
 import com.sendbird.uikit.modules.components.StatusComponent;
+import com.sendbird.uikit.providers.ModuleProviders;
+import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.MemberListViewModel;
-import com.sendbird.uikit.vm.ViewModelFactory;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 /**
@@ -60,7 +60,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
     @NonNull
     @Override
     protected MemberListModule onCreateModule(@NonNull Bundle args) {
-        return new MemberListModule(requireContext());
+        return ModuleProviders.getMemberList().provide(requireContext(), args);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
     @NonNull
     @Override
     protected MemberListViewModel onCreateViewModel() {
-        return new ViewModelProvider(getViewModelStore(), new ViewModelFactory(getChannelUrl())).get(getChannelUrl(), MemberListViewModel.class);
+        return ViewModelProviders.getMemberList().provide(this, getChannelUrl());
     }
 
     @Override
@@ -199,44 +199,44 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
         DialogListItem muteMember = new DialogListItem(isMuted ? R.string.sb_text_unmute_member : R.string.sb_text_mute_member);
         DialogListItem banMember = new DialogListItem(R.string.sb_text_ban_member, 0, true);
         DialogListItem[] items = !channel.isBroadcast() ?
-                new DialogListItem[]{registerOperator, muteMember, banMember} :
-                new DialogListItem[]{registerOperator, banMember};
+            new DialogListItem[]{registerOperator, muteMember, banMember} :
+            new DialogListItem[]{registerOperator, banMember};
 
         final MemberListModule module = getModule();
         final MemberListViewModel viewModel = getViewModel();
         DialogUtils.showListDialog(getContext(), member.getNickname(),
-                items, (v, p, item) -> {
-                    final int key = item.getKey();
-                    final OnCompleteHandler handler = e -> {
-                        module.shouldDismissLoadingDialog();
-                        if (e != null) {
-                            int errorTextResId = R.string.sb_text_error_register_operator;
-                            if (key == R.string.sb_text_unregister_operator) {
-                                errorTextResId = R.string.sb_text_error_unregister_operator;
-                            } else if (key == R.string.sb_text_mute_member) {
-                                errorTextResId = R.string.sb_text_error_mute_member;
-                            } else if (key == R.string.sb_text_unmute_member) {
-                                errorTextResId = R.string.sb_text_error_unmute_member;
-                            } else if (key == R.string.sb_text_ban_member) {
-                                errorTextResId = R.string.sb_text_error_ban_member;
-                            }
-                            toastError(errorTextResId);
+            items, (v, p, item) -> {
+                final int key = item.getKey();
+                final OnCompleteHandler handler = e -> {
+                    module.shouldDismissLoadingDialog();
+                    if (e != null) {
+                        int errorTextResId = R.string.sb_text_error_register_operator;
+                        if (key == R.string.sb_text_unregister_operator) {
+                            errorTextResId = R.string.sb_text_error_unregister_operator;
+                        } else if (key == R.string.sb_text_mute_member) {
+                            errorTextResId = R.string.sb_text_error_mute_member;
+                        } else if (key == R.string.sb_text_unmute_member) {
+                            errorTextResId = R.string.sb_text_error_unmute_member;
+                        } else if (key == R.string.sb_text_ban_member) {
+                            errorTextResId = R.string.sb_text_error_ban_member;
                         }
-                    };
-                    if (getContext() == null) return;
-                    module.shouldShowLoadingDialog(getContext());
-                    if (key == R.string.sb_text_register_operator) {
-                        viewModel.addOperator(member.getUserId(), handler);
-                    } else if (key == R.string.sb_text_unregister_operator) {
-                        viewModel.removeOperator(member.getUserId(), handler);
-                    } else if (key == R.string.sb_text_mute_member) {
-                        viewModel.muteUser(member.getUserId(), handler);
-                    } else if (key == R.string.sb_text_unmute_member) {
-                        viewModel.unmuteUser(member.getUserId(), handler);
-                    } else if (key == R.string.sb_text_ban_member) {
-                        viewModel.banUser(member.getUserId(), handler);
+                        toastError(errorTextResId);
                     }
-                });
+                };
+                if (getContext() == null) return;
+                module.shouldShowLoadingDialog(getContext());
+                if (key == R.string.sb_text_register_operator) {
+                    viewModel.addOperator(member.getUserId(), handler);
+                } else if (key == R.string.sb_text_unregister_operator) {
+                    viewModel.removeOperator(member.getUserId(), handler);
+                } else if (key == R.string.sb_text_mute_member) {
+                    viewModel.muteUser(member.getUserId(), handler);
+                } else if (key == R.string.sb_text_unmute_member) {
+                    viewModel.unmuteUser(member.getUserId(), handler);
+                } else if (key == R.string.sb_text_ban_member) {
+                    viewModel.banUser(member.getUserId(), handler);
+                }
+            });
     }
 
     /**
