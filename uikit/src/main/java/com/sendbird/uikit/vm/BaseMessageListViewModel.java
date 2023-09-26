@@ -48,7 +48,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     @NonNull
     private final String channelUrl;
     @Nullable
-    private MemberFinder memberFinder;
+    MemberFinder memberFinder;
     @NonNull
     final MessageList cachedMessages = new MessageList();
     @NonNull

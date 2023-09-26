@@ -100,6 +100,7 @@ class MemberFinder {
         if (SendbirdUIKit.getAdapter() != null) {
             final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
             for (Member member : members) {
+                if (!member.isActive()) continue;
                 final String nickname = member.getNickname();
                 if (nickname.toLowerCase().startsWith(nicknameStartWith.toLowerCase()) && !myUserId.equalsIgnoreCase(member.getUserId())) {
                     if (filteredList.size() >= maxMemberCount) {
@@ -135,6 +136,7 @@ class MemberFinder {
         if (SendbirdUIKit.getAdapter() != null) {
             final String myUserId = SendbirdUIKit.getAdapter().getUserInfo().getUserId();
             for (Member member : results.get()) {
+                if (!member.isActive()) continue;
                 if (!myUserId.equalsIgnoreCase(member.getUserId())) {
                     if (filteredList.size() >= maxSuggestionCount) {
                         return filteredList;

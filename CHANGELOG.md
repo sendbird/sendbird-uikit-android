@@ -1,4 +1,7 @@
 # Changelog
+### v3.9.1 (Sep 26, 2023) with Chat SDK `v4.12.1`
+* Fixed a problem with the user mentions feature in ThreadFragment
+* Filter deactivated users from the user mentions list.
 ### v3.9.0 (Sep 22, 2023) with Chat SDK `v4.12.1`
 * Support Multiple files message
   * Added `setEnableMultipleFilesMessage(boolean)`, `getEnableMultipleFilesMessage()` in `ChannelConfig`.

@@ -140,6 +140,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
                     if (e1 != null || channel == null) {
                         handler.onAuthenticationFailed();
                     } else {
+                        this.memberFinder = new MemberFinder(channel, SendbirdUIKit.getUserMentionConfig());
                         prepareThreadViewModel(channel, e2 -> {
                             if (e2 != null) {
                                 handler.onAuthenticationFailed();
