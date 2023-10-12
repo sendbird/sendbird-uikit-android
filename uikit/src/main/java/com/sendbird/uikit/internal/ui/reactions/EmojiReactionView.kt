@@ -95,6 +95,6 @@ internal class EmojiReactionView @JvmOverloads constructor(
 
     fun drawReaction(reaction: Reaction) {
         setCount(reaction.userIds.size)
-        setEmojiUrl(EmojiManager.getInstance().getEmojiUrl(reaction.key))
+        setEmojiUrl(EmojiManager.getEmojiUrl(reaction.key))
     }
 }

@@ -144,7 +144,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      */
     @Override
     public int getItemCount() {
-        if (reactionList.size() >= EmojiManager.getInstance().getAllEmojis().size()) {
+        if (reactionList.size() >= EmojiManager.getAllEmojis().size()) {
             return reactionList.size();
         } else {
             return reactionList.size() + (useMoreButton ? 1 : 0);

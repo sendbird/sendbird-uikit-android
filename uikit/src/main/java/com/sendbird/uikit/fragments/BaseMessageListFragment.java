@@ -100,6 +100,8 @@ abstract public class BaseMessageListFragment<
     @Nullable
     private OnItemClickListener<BaseMessage> messageProfileClickListener;
     @Nullable
+    private OnItemClickListener<User> emojiReactionUserListProfileClickListener;
+    @Nullable
     private OnItemLongClickListener<BaseMessage> messageLongClickListener;
     @Nullable
     private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
@@ -292,6 +294,23 @@ abstract public class BaseMessageListFragment<
     }
 
     /**
+     * Called when the emoji reaction user list profile view is clicked.
+     *
+     * @param view     The View clicked
+     * @param position The position clicked
+     * @param user  The user that the clicked item displays
+     * since 3.9.2
+     */
+    protected void onEmojiReactionUserListProfileClicked(@NonNull View view, int position, @NonNull User user) {
+        if (emojiReactionUserListProfileClickListener != null) {
+            emojiReactionUserListProfileClickListener.onItemClick(view, position, user);
+            return;
+        }
+
+        showUserProfile(user);
+    }
+
+    /**
      * Called when the item of the message list is long-clicked.
      *
      * @param view     The View long-clicked
@@ -421,7 +440,7 @@ abstract public class BaseMessageListFragment<
             return;
         }
 
-        List<Emoji> emojiList = EmojiManager.getInstance().getAllEmojis();
+        List<Emoji> emojiList = EmojiManager.getAllEmojis();
 
         int shownEmojiSize = emojiList.size();
         boolean showMoreButton = false;
@@ -455,9 +474,10 @@ abstract public class BaseMessageListFragment<
     private void showUserProfile(@NonNull User sender) {
         final Bundle args = getArguments();
         final boolean useUserProfile = args == null || args.getBoolean(StringSet.KEY_USE_USER_PROFILE, UIKitConfig.getCommon().getEnableUsingDefaultUserProfile());
-        if (getContext() == null || !useUserProfile) return;
+        if (getContext() == null || SendbirdUIKit.getAdapter() == null || !useUserProfile) return;
         hideKeyboard();
-        DialogUtils.showUserProfileDialog(getContext(), sender, true, null, null);
+        boolean useChannelCreateButton = !sender.getUserId().equals(SendbirdUIKit.getAdapter().getUserInfo().getUserId());
+        DialogUtils.showUserProfileDialog(getContext(), sender, useChannelCreateButton, null, null);
     }
 
     @NonNull
@@ -503,6 +523,7 @@ abstract public class BaseMessageListFragment<
 
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
         final EmojiReactionUserListView emojiReactionUserListView = new EmojiReactionUserListView(contextThemeWrapper);
+        emojiReactionUserListView.setOnProfileClickListener(this::onEmojiReactionUserListProfileClicked);
         final GroupChannel channel = getViewModel().getChannel();
         if (channel != null) {
             emojiReactionUserListView.setEmojiReactionUserData(this,
@@ -520,7 +541,7 @@ abstract public class BaseMessageListFragment<
         }
 
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, EmojiManager.getInstance().getAllEmojis(), message.getReactions(), false);
+        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, EmojiManager.getAllEmojis(), message.getReactions(), false);
         hideKeyboard();
         final AlertDialog dialog = DialogUtils.showContentDialog(requireContext(), emojiListView);
 
@@ -1135,6 +1156,16 @@ abstract public class BaseMessageListFragment<
      */
     void setOnMessageProfileClickListener(@Nullable OnItemClickListener<BaseMessage> messageProfileClickListener) {
         this.messageProfileClickListener = messageProfileClickListener;
+    }
+
+    /**
+     * Sets the click listener on the profile of emoji reaction user list.
+     *
+     * @param emojiReactionUserListProfileClickListener The callback that will run.
+     * since 3.9.2
+     */
+    void setOnEmojiReactionUserListProfileClickListener(@Nullable OnItemClickListener<User> emojiReactionUserListProfileClickListener) {
+        this.emojiReactionUserListProfileClickListener = emojiReactionUserListProfileClickListener;
     }
 
     /**

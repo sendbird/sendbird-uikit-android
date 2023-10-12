@@ -26,6 +26,7 @@ internal class EmojiReactionUserView @JvmOverloads constructor(
     val binding: SbViewEmojiReactionUserComponentBinding = SbViewEmojiReactionUserComponentBinding.inflate(LayoutInflater.from(getContext()))
     val layout: View
         get() = this
+    var onProfileClickListener: OnClickListener? = null
 
     init {
         addView(binding.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -33,6 +34,9 @@ internal class EmojiReactionUserView @JvmOverloads constructor(
         binding.tvNickname.setAppearance(context, nicknameAppearance)
         binding.tvNickname.ellipsize = TextUtils.TruncateAt.END
         binding.tvNickname.maxLines = 1
+        binding.ivUserCover.setOnClickListener {
+            onProfileClickListener?.onClick(it)
+        }
     }
 
     fun drawUser(user: User?) {

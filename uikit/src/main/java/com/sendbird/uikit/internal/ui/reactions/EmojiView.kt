@@ -71,6 +71,6 @@ internal class EmojiView @JvmOverloads constructor(
     }
 
     fun drawEmoji(emoji: Emoji) {
-        setEmojiUrl(EmojiManager.getInstance().getEmojiUrl(emoji.key))
+        setEmojiUrl(EmojiManager.getEmojiUrl(emoji.key))
     }
 }

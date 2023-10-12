@@ -1,4 +1,8 @@
 # Changelog
+### v3.9.2 (Oct 12, 2023) with Chat SDK `v4.12.3`
+* Added `setVoiceRecorderConfig(VoiceRecorderConfig)` and `getVoiceRecorderConfig()` in `SendbirdUIKit`.
+* Added `setOnEmojiReactionUserListProfileClickListener(OnItemClickListener<User>)` in `ChannelFragment.Builder` and `MessageThreadFragment.Builder`.
+* Improved stability.
 ### v3.9.1 (Sep 26, 2023) with Chat SDK `v4.12.1`
 * Fixed a problem with the user mentions feature in ThreadFragment
 * Filter deactivated users from the user mentions list.

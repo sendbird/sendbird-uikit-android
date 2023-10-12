@@ -165,7 +165,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     }
 
     private void handleAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
-        switch (action.getType()) {
+        switch (action.type) {
             case StringSet.web:
                 handleWebAction(view, action, message);
                 break;
@@ -186,7 +186,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
      */
     protected void handleWebAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> ChatNotificationChannelFragment::handleWebAction() action=%s", action);
-        final Intent intent = IntentUtils.getWebViewerIntent(action.getData());
+        final Intent intent = IntentUtils.getWebViewerIntent(action.data);
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -204,7 +204,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
     protected void handleCustomAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
         Logger.d(">> ChatNotificationChannelFragment::handleCustomAction() action=%s", action);
         try {
-            final String data = action.getData();
+            final String data = action.data;
             if (TextUtils.isNotEmpty(data)) {
                 final Uri uri = Uri.parse(data);
                 Logger.d("++ uri = %s", uri);
@@ -213,7 +213,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 boolean hasIntent = IntentUtils.hasIntent(requireContext(), intent);
                 if (!hasIntent) {
-                    final String alterData = action.getAlterData();
+                    final String alterData = action.alterData;
                     if (alterData != null) {
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
                     }

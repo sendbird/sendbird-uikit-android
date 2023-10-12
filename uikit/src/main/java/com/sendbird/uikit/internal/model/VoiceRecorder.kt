@@ -6,17 +6,18 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.UiThread
-import androidx.annotation.VisibleForTesting
 import com.sendbird.android.SendbirdChat
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.log.Logger
+import com.sendbird.uikit.model.VoiceRecorderConfig
 import com.sendbird.uikit.utils.ClearableScheduledExecutorService
-import java.io.File
 import java.util.concurrent.TimeUnit
+import java.io.File
 import kotlin.concurrent.thread
 
 internal class VoiceRecorder(
     context: Context,
+    private val voiceRecorderConfig: VoiceRecorderConfig,
     private val onUpdateListener: OnUpdateListener? = null,
     private val onProgressUpdateListener: OnProgressUpdateListener? = null
 ) {
@@ -66,12 +67,12 @@ internal class VoiceRecorder(
             file.delete()
         }
         recorder.run {
-            setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
+            setAudioSource(voiceRecorderConfig.audioSource)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setAudioChannels(1)
-            setAudioSamplingRate(11025)
-            setAudioEncodingBitRate(12000)
+            setAudioChannels(voiceRecorderConfig.audioChannels)
+            setAudioSamplingRate(voiceRecorderConfig.samplingRate)
+            setAudioEncodingBitRate(voiceRecorderConfig.bitRate)
             setOutputFile(recordFilePath)
             setMaxDuration(maxDurationMillis)
             SendbirdChat.appInfo?.let {
@@ -189,15 +190,5 @@ internal class VoiceRecorder(
                 uiThreadHandler.post { block(this) }
             }
         }
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    constructor(
-        context: Context,
-        isRunningOnTest: Boolean,
-        onUpdateListener: OnUpdateListener? = null,
-        onProgressUpdateListener: OnProgressUpdateListener? = null
-    ) : this(context, onUpdateListener, onProgressUpdateListener) {
-        this.isRunningOnTest = isRunningOnTest
     }
 }

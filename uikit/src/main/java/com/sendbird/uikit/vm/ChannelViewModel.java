@@ -479,7 +479,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @UiThread
     private synchronized void notifyChannelDataChanged() {
         Logger.d(">> ChannelViewModel::notifyChannelDataChanged()");
-        channelUpdated.setValue(getChannel());
+        final GroupChannel groupChannel = getChannel();
+        if (groupChannel == null) return;
+        channelUpdated.setValue(groupChannel);
     }
 
     @Override
