@@ -576,6 +576,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         @Nullable
         private OnItemClickListener<BaseMessage> messageProfileClickListener;
         @Nullable
+        private OnItemClickListener<User> emojiReactionUserListProfileClickListener;
+        @Nullable
         private OnItemLongClickListener<BaseMessage> messageLongClickListener;
         @Nullable
         private OnItemLongClickListener<BaseMessage> messageProfileLongClickListener;
@@ -1080,6 +1082,19 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
         }
 
         /**
+         * Sets the click listener on the profile of emoji reaction user list.
+         *
+         * @param emojiReactionUserListProfileClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.9.2
+         */
+        @NonNull
+        public Builder setOnEmojiReactionUserListProfileClickListener(@NonNull OnItemClickListener<User> emojiReactionUserListProfileClickListener) {
+            this.emojiReactionUserListProfileClickListener = emojiReactionUserListProfileClickListener;
+            return this;
+        }
+
+        /**
          * Sets the long click listener on the profile of message.
          *
          * @param messageProfileLongClickListener The callback that will run.
@@ -1538,6 +1553,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
             fragment.emojiReactionLongClickListener = emojiReactionLongClickListener;
             fragment.emojiReactionMoreButtonClickListener = emojiReactionMoreButtonClickListener;
             fragment.setOnMessageProfileClickListener(messageProfileClickListener);
+            fragment.setOnEmojiReactionUserListProfileClickListener(emojiReactionUserListProfileClickListener);
             fragment.setOnMessageProfileLongClickListener(messageProfileLongClickListener);
             fragment.parentMessageMenuClickListener = parentMessageMenuClickListener;
             fragment.setOnLoadingDialogHandler(loadingDialogHandler);

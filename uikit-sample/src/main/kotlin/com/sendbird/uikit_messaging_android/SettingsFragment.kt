@@ -51,9 +51,9 @@ import com.sendbird.uikit_messaging_android.databinding.ViewCustomMenuTextButton
 import com.sendbird.uikit_messaging_android.utils.DrawableUtils.setTintList
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils
 import com.sendbird.uikit_messaging_android.widgets.WaitingDialog
+import java.io.File
 import java.util.Locale
 import java.util.TimeZone
-import java.io.File
 
 /**
  * Displays a settings screen.
@@ -376,9 +376,8 @@ class SettingsFragment : Fragment() {
                     }
                     updateUserNickname(result)
                 }
-                val params =
-                    DialogEditTextParams(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_name_hint))
-                params.setEnableSingleLine(true)
+                val params = DialogEditTextParams(getString(com.sendbird.uikit.R.string.sb_text_channel_settings_change_channel_name_hint))
+                params.enableSingleLine = true
                 DialogUtils.showInputDialog(
                     requireContext(),
                     getString(R.string.text_settings_change_user_nickname),

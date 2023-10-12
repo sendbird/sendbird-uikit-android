@@ -245,7 +245,7 @@ public class CustomMessageInputComponent extends MessageInputComponent {
 
     private static class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.EmojiViewHolder> {
         @NonNull
-        private final List<Emoji> emojis = EmojiManager.getInstance().getAllEmojis();
+        private final List<Emoji> emojis = EmojiManager.getAllEmojis();
         @Nullable
         private OnItemClickListener<String> emojiClickListener;
 

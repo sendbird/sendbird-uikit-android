@@ -106,14 +106,14 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
     }
 
     private fun drawUserMessage(message: UserMessage, messageListUIConfig: MessageListUIParams) {
-        val enableOgtag = message.ogMetaData != null && ChannelConfig.getEnableOgTag(messageListUIConfig.channelConfig)
+        val enableMention = messageListUIConfig.channelConfig.enableMention
         binding.tvTextMessage.visibility = VISIBLE
         binding.fileGroup.visibility = GONE
         binding.imageGroup.visibility = GONE
         binding.voiceMessage.visibility = GONE
         binding.multipleFilesMessage.visibility = GONE
         ViewUtils.drawTextMessage(
-            binding.tvTextMessage, message, parentMessageInfoUIConfig, enableOgtag, null
+            binding.tvTextMessage, message, parentMessageInfoUIConfig, enableMention, null
         ) { view, position, data -> mentionClickListener?.onItemClick(view, position, data) }
     }
 

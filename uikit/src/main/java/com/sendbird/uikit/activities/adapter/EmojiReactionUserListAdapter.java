@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserBinding;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.ui.reactions.EmojiReactionUserView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
 public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHolder<User>> {
     @NonNull
     final private List<User> userList;
+    @Nullable
+    private OnItemClickListener<User> emojiReactionUserListProfileClickListener;
 
     /**
      * Constructor
@@ -57,7 +61,20 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
     @NonNull
     @Override
     public BaseViewHolder<User> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new EmojiReactionUserViewHolder(SbViewEmojiReactionUserBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        final EmojiReactionUserViewHolder viewHolder = new EmojiReactionUserViewHolder(SbViewEmojiReactionUserBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        if (viewHolder.itemView instanceof EmojiReactionUserView) {
+            final EmojiReactionUserView view = (EmojiReactionUserView) viewHolder.itemView;
+            view.setOnProfileClickListener(v -> {
+                if (emojiReactionUserListProfileClickListener != null) {
+                    final int position = viewHolder.getAbsoluteAdapterPosition();
+                    final User user = getItem(position);
+                    if (user != null) {
+                        emojiReactionUserListProfileClickListener.onItemClick(v, position, user);
+                    }
+                }
+            });
+        }
+        return viewHolder;
     }
 
     /**
@@ -131,6 +148,10 @@ public class EmojiReactionUserListAdapter extends BaseAdapter<User, BaseViewHold
         this.userList.clear();
         this.userList.addAll(userList);
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    public void setOnEmojiReactionUserListProfileClickListener(@Nullable OnItemClickListener<User> emojiReactionUserListProfileClickListener) {
+        this.emojiReactionUserListProfileClickListener = emojiReactionUserListProfileClickListener;
     }
 
 

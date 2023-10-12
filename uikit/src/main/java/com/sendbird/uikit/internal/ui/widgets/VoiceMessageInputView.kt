@@ -260,7 +260,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
                     ViewUtils.drawVoicePlayerProgress(binding.progress, milliseconds, maxDurationMillis)
                 }
             }
-            recorder = VoiceRecorder(context, onRecorderUpdateListener, onRecorderProgressUpdateListener)
+            recorder = VoiceRecorder(context, SendbirdUIKit.getVoiceRecorderConfig(), onRecorderUpdateListener, onRecorderProgressUpdateListener)
             onUpdateListener = object : VoicePlayer.OnUpdateListener {
                 override fun onUpdated(key: String, status: VoicePlayer.Status) {
                     Logger.i("VoiceMessageRecorderView >> onUpdateListener, status: $status")

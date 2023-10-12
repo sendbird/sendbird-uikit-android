@@ -1,9 +1,9 @@
-package com.sendbird.uikit.model;
+package com.sendbird.uikit.model
 
 /**
  * Represents status to connect Sendbird.
  */
-public enum ReadyStatus {
+enum class ReadyStatus {
     /**
      * All preparations are complete successfully.
      */

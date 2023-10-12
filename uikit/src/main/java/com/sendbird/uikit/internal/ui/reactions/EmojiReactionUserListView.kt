@@ -19,6 +19,7 @@ import com.sendbird.uikit.activities.adapter.EmojiReactionUserListAdapter
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.databinding.SbFragmentUserListBinding
 import com.sendbird.uikit.databinding.SbViewEmojiReactionUserListBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.model.EmojiManager
 
 internal class EmojiReactionUserListView @JvmOverloads constructor(
@@ -27,6 +28,8 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
     defStyleAttr: Int = R.attr.sb_widget_emoji_message
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private val binding: SbViewEmojiReactionUserListBinding
+
+    var onProfileClickListener: OnItemClickListener<User>? = null
 
     init {
         val a = context.theme.obtainStyledAttributes(
@@ -58,13 +61,17 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
         reactionList: List<Reaction>,
         reactionUserInfo: Map<Reaction, List<User?>>
     ) {
-        val pagerAdapter = UserListPagerAdapter(fragment, reactionList, reactionUserInfo)
+        val pagerAdapter = UserListPagerAdapter(fragment, reactionList, reactionUserInfo).apply {
+            this.onProfileClickListener = OnItemClickListener<User> { view, position, data ->
+                this@EmojiReactionUserListView.onProfileClickListener?.onItemClick(view, position, data)
+            }
+        }
         binding.vpEmojiReactionUserList.adapter = pagerAdapter
         TabLayoutMediator(binding.tabLayout, binding.vpEmojiReactionUserList) { tab: TabLayout.Tab, position: Int ->
             val view = EmojiReactionCountView(context)
             val reaction = reactionList[position]
             view.setCount(reaction.userIds.size)
-            view.setEmojiUrl(EmojiManager.getInstance().getEmojiUrl(reaction.key))
+            view.setEmojiUrl(EmojiManager.getEmojiUrl(reaction.key))
             tab.customView = view
         }.attach()
         val defaultTab = binding.tabLayout.getTabAt(currentPosition)
@@ -78,13 +85,19 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
     ) : FragmentStateAdapter(fragment) {
         private val itemCount: Int
         private val fragmentList: MutableList<Fragment> = ArrayList()
+        var onProfileClickListener: OnItemClickListener<User> = OnItemClickListener<User> { _, _, _ -> }
+
         override fun createFragment(position: Int): Fragment = fragmentList[position]
         override fun getItemCount(): Int = itemCount
 
         init {
             itemCount = reactionUserInfo.size
             reactionList.forEach {
-                val userListFragment = UserListFragment()
+                val userListFragment = UserListFragment().apply {
+                    this.onProfileClickListener = OnItemClickListener<User> { view, position, data ->
+                        this@UserListPagerAdapter.onProfileClickListener.onItemClick(view, position, data)
+                    }
+                }
                 reactionUserInfo[it]?.let { userList ->
                     val bundle = Bundle()
                     bundle.putInt(StringSet.KEY_EMOJI_REACTION_USER_LIST_SIZE, userList.size)
@@ -102,6 +115,7 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
     // If user who was already reacted has been banned or was deactivated, the reacted user may be empty.
     internal class UserListFragment : Fragment() {
         private lateinit var binding: SbFragmentUserListBinding
+        var onProfileClickListener: OnItemClickListener<User> = OnItemClickListener<User> { _, _, _ -> }
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
             val themeInflater = inflater.cloneInContext(context)
@@ -122,6 +136,13 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
                 }
             }
             val userListAdapter = EmojiReactionUserListAdapter(userList)
+            userListAdapter.setOnEmojiReactionUserListProfileClickListener { v, position, item ->
+                onProfileClickListener.onItemClick(
+                    v,
+                    position,
+                    item
+                )
+            }
             binding.rvUserList.adapter = userListAdapter
             binding.rvUserList.setHasFixedSize(true)
         }

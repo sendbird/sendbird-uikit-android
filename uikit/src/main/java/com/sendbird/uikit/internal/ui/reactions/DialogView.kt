@@ -176,7 +176,7 @@ internal class DialogView @JvmOverloads constructor(
             it.text?.isNotEmpty()?.let {
                 binding.etInputText.hint = params.text
             }
-            binding.etInputText.isSingleLine = params.enabledSingleLine()
+            binding.etInputText.isSingleLine = params.enableSingleLine
             it.ellipsis?.let {
                 binding.etInputText.ellipsize = params.ellipsis
             }

@@ -17,7 +17,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.message.BaseMessage;
@@ -228,7 +227,11 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 headerComponent.notifyHeaderDescriptionChanged(description);
             });
         }
-        viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), headerComponent::notifyChannelChanged);
+        viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), groupChannel -> {
+            if (groupChannel != null) {
+                headerComponent.notifyChannelChanged(groupChannel);
+            }
+        });
     }
 
     /**
@@ -806,6 +809,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         @Nullable
         private OnItemClickListener<BaseMessage> messageProfileClickListener;
         @Nullable
+        private OnItemClickListener<User> emojiReactionUserListProfileClickListener;
+        @Nullable
         private OnItemClickListener<BaseMessage> quoteReplyMessageClickListener;
         @Nullable
         private OnItemLongClickListener<BaseMessage> messageLongClickListener;
@@ -1333,6 +1338,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         @NonNull
         public Builder setOnMessageProfileClickListener(@NonNull OnItemClickListener<BaseMessage> profileClickListener) {
             this.messageProfileClickListener = profileClickListener;
+            return this;
+        }
+
+        /**
+         * Sets the click listener on the profile of emoji reaction user list.
+         *
+         * @param emojiReactionUserListProfileClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.9.2
+         */
+        @NonNull
+        public Builder setOnEmojiReactionUserListProfileClickListener(@NonNull OnItemClickListener<User> emojiReactionUserListProfileClickListener) {
+            this.emojiReactionUserListProfileClickListener = emojiReactionUserListProfileClickListener;
             return this;
         }
 
@@ -1887,6 +1905,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             fragment.emojiReactionLongClickListener = emojiReactionLongClickListener;
             fragment.emojiReactionMoreButtonClickListener = emojiReactionMoreButtonClickListener;
             fragment.setOnMessageProfileClickListener(messageProfileClickListener);
+            fragment.setOnEmojiReactionUserListProfileClickListener(emojiReactionUserListProfileClickListener);
             fragment.setOnMessageProfileLongClickListener(messageProfileLongClickListener);
             fragment.setOnLoadingDialogHandler(loadingDialogHandler);
             fragment.inputTextChangedListener = inputTextChangedListener;

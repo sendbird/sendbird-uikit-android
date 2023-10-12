@@ -54,6 +54,7 @@ import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.UserMentionConfig;
+import com.sendbird.uikit.model.VoiceRecorderConfig;
 import com.sendbird.uikit.model.configurations.Common;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.FileUtils;
@@ -232,7 +233,10 @@ public class SendbirdUIKit {
     private static Pair<Integer, Integer> resizingSize = new Pair<>(DEFAULT_RESIZING_WIDTH_SIZE, DEFAULT_RESIZING_HEIGHT_SIZE);
     @NonNull
     private static UIKitFragmentFactory fragmentFactory = new UIKitFragmentFactory();
+    @NonNull
     private static UserMentionConfig userMentionConfig = new UserMentionConfig.Builder().build();
+    @NonNull
+    private static VoiceRecorderConfig voiceRecorderConfig = new VoiceRecorderConfig();
 
     static void clearAll() {
         SendbirdUIKit.customUserListQueryHandler = null;
@@ -316,7 +320,7 @@ public class SendbirdUIKit {
         FileUtils.removeDeletableDir(context.getApplicationContext());
         UIKitPrefs.init(context.getApplicationContext());
         NotificationChannelManager.init(context.getApplicationContext());
-        EmojiManager.getInstance().init();
+        EmojiManager.init();
     }
 
     /**
@@ -602,7 +606,7 @@ public class SendbirdUIKit {
                     final AppInfo appInfo = sendbirdChat.getAppInfo();
                     if (appInfo != null) {
                         if (appInfo.getUseReaction()
-                            && appInfo.needUpdateEmoji(EmojiManager.getInstance().getEmojiHash())
+                            && appInfo.needUpdateEmoji(EmojiManager.getEmojiHash())
                             && connectType == ConnectType.CONNECT) {
                             updateEmojiList();
                         }
@@ -778,7 +782,7 @@ public class SendbirdUIKit {
                 Logger.e(e);
             } else {
                 if (emojiContainer != null) {
-                    EmojiManager.getInstance().upsertEmojiContainer(emojiContainer);
+                    EmojiManager.upsertEmojiContainer(emojiContainer);
                 }
             }
         });
@@ -873,6 +877,28 @@ public class SendbirdUIKit {
      */
     public static void setMentionConfig(@NonNull UserMentionConfig config) {
         SendbirdUIKit.userMentionConfig = config;
+    }
+
+    /**
+     * Returns the voice recorder configuration.
+     *
+     * @return The configuration applied for the voice recorder
+     * since 3.9.2
+     */
+    @NonNull
+    public static VoiceRecorderConfig getVoiceRecorderConfig() {
+        return voiceRecorderConfig;
+    }
+
+    /**
+     * Sets the voice recorder configuration.
+     *
+     * @param config The configuration to be applied for the voice recorder
+     * @see VoiceRecorderConfig
+     * since 3.9.2
+     */
+    public static void setVoiceRecorderConfig(@NonNull VoiceRecorderConfig config) {
+        SendbirdUIKit.voiceRecorderConfig = config;
     }
 
     /**
