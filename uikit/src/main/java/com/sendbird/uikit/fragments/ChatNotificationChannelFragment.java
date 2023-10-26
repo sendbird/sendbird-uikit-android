@@ -278,7 +278,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          * since 3.5.0
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
+            this(channelUrl, 0);
         }
 
         /**
@@ -301,7 +301,9 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
         }
 

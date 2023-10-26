@@ -323,7 +323,7 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          * since 3.2.0
          */
         public Builder() {
-            this(SendbirdUIKit.getDefaultThemeMode());
+            this(0);
         }
 
         /**
@@ -344,7 +344,9 @@ public class CreateOpenChannelFragment extends BaseModuleFragment<CreateOpenChan
          */
         public Builder(@StyleRes int customThemeResId) {
             bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
         }
 
         /**

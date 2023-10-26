@@ -285,7 +285,7 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          * Constructor
          */
         public Builder() {
-            this(SendbirdUIKit.getDefaultThemeMode());
+            this(0);
         }
 
         /**
@@ -304,7 +304,9 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
          */
         public Builder(@StyleRes int customThemeResId) {
             bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
         }
 
         /**

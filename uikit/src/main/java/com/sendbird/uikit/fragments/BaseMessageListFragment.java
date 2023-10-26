@@ -436,21 +436,16 @@ abstract public class BaseMessageListFragment<
     }
 
     void showEmojiActionsDialog(@NonNull BaseMessage message, @NonNull DialogListItem[] actions) {
-        if (getContext() == null) {
-            return;
-        }
-
-        List<Emoji> emojiList = EmojiManager.getAllEmojis();
-
-        int shownEmojiSize = emojiList.size();
         boolean showMoreButton = false;
+        List<Emoji> emojiList = EmojiManager.getAllEmojis();
+        int shownEmojiSize = emojiList.size();
         if (emojiList.size() > 6) {
             showMoreButton = true;
             shownEmojiSize = 5;
         }
         emojiList = emojiList.subList(0, shownEmojiSize);
 
-        final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
+        final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(requireContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
         final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), showMoreButton);
         hideKeyboard();
         if (actions.length > 0 || emojiList.size() > 0) {
@@ -502,7 +497,7 @@ abstract public class BaseMessageListFragment<
         return result;
     }
 
-    private void hideKeyboard() {
+    void hideKeyboard() {
         if (getView() != null) {
             SoftInputUtils.hideSoftKeyboard(getView());
         }

@@ -17,6 +17,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.message.BaseMessage;
@@ -708,15 +709,16 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
         if (getViewModel().getChannel() != null && !(ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel()))) {
             final RecyclerView messageListView = getModule().getMessageListComponent().getRecyclerView();
-            if (getContext() == null || messageListView == null || size <= 0) return;
+            if (getContext() == null || messageListView == null || size == 0) return;
             MessageAnchorDialog messageAnchorDialog = new MessageAnchorDialog.Builder(anchorView, messageListView, actions)
                 .setOnItemClickListener(createMessageActionListener(message))
                 .setOnDismissListener(() -> anchorDialogShowing.set(false))
                 .build();
             messageAnchorDialog.show();
             anchorDialogShowing.set(true);
-        } else if (MessageUtils.isUnknownType(message)) {
-            if (getContext() == null || size <= 0) return;
+        } else if (MessageUtils.isUnknownType(message) || !MessageUtils.isSucceed(message)) {
+            if (getContext() == null || size == 0) return;
+            hideKeyboard();
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
             showEmojiActionsDialog(message, actions);
@@ -869,7 +871,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          * @param channelUrl the url of the channel will be implemented.
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
+            this(channelUrl, 0);
         }
 
         /**
@@ -890,7 +892,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             this.bundle = new Bundle();
-            this.bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                this.bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
             this.bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
         }
 

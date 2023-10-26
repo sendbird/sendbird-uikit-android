@@ -514,10 +514,12 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     void showMessageContextMenu(@NonNull View anchorView, @NonNull BaseMessage message, @NonNull List<DialogListItem> items) {
         int size = items.size();
         final DialogListItem[] actions = items.toArray(new DialogListItem[size]);
-        if (!(getViewModel().getChannel() != null &&
-            ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel())) ||
-            MessageUtils.isUnknownType(message)) {
-            if (getContext() == null || size <= 0) return;
+        if (!(getViewModel().getChannel() != null && ChannelConfig.canSendReactions(channelConfig, getViewModel().getChannel())) ||
+            MessageUtils.isUnknownType(message) ||
+            !MessageUtils.isSucceed(message)
+        ) {
+            if (getContext() == null || size == 0) return;
+            hideKeyboard();
             DialogUtils.showListBottomDialog(requireContext(), actions, createMessageActionListener(message));
         } else {
             showEmojiActionsDialog(message, actions);
@@ -625,7 +627,7 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          * since 3.3.0
          */
         public Builder(@NonNull String channelUrl, @NonNull BaseMessage parentMessage) {
-            this(channelUrl, parentMessage, SendbirdUIKit.getDefaultThemeMode());
+            this(channelUrl, parentMessage, 0);
         }
 
         /**
@@ -650,7 +652,9 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
          */
         public Builder(@NonNull String channelUrl, @NonNull BaseMessage parentMessage, @StyleRes int customThemeResId) {
             this.bundle = new Bundle();
-            this.bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                this.bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
             this.bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
             this.bundle.putByteArray(StringSet.KEY_PARENT_MESSAGE, parentMessage.serialize());
         }
