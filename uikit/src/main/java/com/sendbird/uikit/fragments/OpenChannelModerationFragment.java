@@ -192,7 +192,7 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          * since 3.1.0
          */
         public Builder(@NonNull String channelUrl) {
-            this(channelUrl, SendbirdUIKit.getDefaultThemeMode());
+            this(channelUrl, 0);
         }
 
         /**
@@ -215,7 +215,9 @@ public class OpenChannelModerationFragment extends BaseModuleFragment<OpenChanne
          */
         public Builder(@NonNull String channelUrl, @StyleRes int customThemeResId) {
             bundle = new Bundle();
-            bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            if (customThemeResId != 0) {
+                bundle.putInt(StringSet.KEY_THEME_RES_ID, customThemeResId);
+            }
             bundle.putString(StringSet.KEY_CHANNEL_URL, channelUrl);
         }
 

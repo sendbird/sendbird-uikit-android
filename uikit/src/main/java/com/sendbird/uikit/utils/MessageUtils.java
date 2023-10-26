@@ -58,6 +58,11 @@ public class MessageUtils {
         return status == SendingStatus.FAILED || status == SendingStatus.CANCELED;
     }
 
+    public static boolean isSucceed(@NonNull BaseMessage message) {
+        final SendingStatus status = message.getSendingStatus();
+        return status == SendingStatus.SUCCEEDED;
+    }
+
     public static boolean isGroupChanged(@Nullable BaseMessage frontMessage, @Nullable BaseMessage backMessage, @NonNull MessageListUIParams messageListUIParams) {
         return frontMessage == null ||
             frontMessage.getSender() == null ||

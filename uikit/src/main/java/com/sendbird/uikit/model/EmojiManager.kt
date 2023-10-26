@@ -94,10 +94,10 @@ object EmojiManager {
         get() = allEmojiMap.values.toList()
 
     /**
-     * Returns the [<] corresponding to emoji category id
+     * Returns the [List] corresponding to emoji category id
      *
      * @param emojiCategoryId Emoji category id
-     * @return The [<] corresponding to emoji category id
+     * @return The [List] corresponding to emoji category id
      * @since 1.1.0
      */
     @JvmStatic
