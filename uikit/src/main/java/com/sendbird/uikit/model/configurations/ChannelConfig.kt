@@ -36,6 +36,10 @@ data class ChannelConfig internal constructor(
     private var _enableVoiceMessage: Boolean = false,
     @SerialName(KeySet.enable_multiple_files_message)
     private var _enableMultipleFilesMessage: Boolean = false,
+    @SerialName(KeySet.enable_suggested_replies)
+    private var _enableSuggestedReplies: Boolean = false,
+    @SerialName(KeySet.enable_form_type_message)
+    private var _enableFormTypeMessage: Boolean = false,
     @SerialName(KeySet.thread_reply_select_type)
     @Serializable(with = ThreadReplySelectTypeAsStringSerializer::class)
     private var _threadReplySelectType: ThreadReplySelectType = ThreadReplySelectType.THREAD,
@@ -65,7 +69,11 @@ data class ChannelConfig internal constructor(
     @Transient
     private var threadReplySelectTypeMutable: ThreadReplySelectType? = null,
     @Transient
-    private var replyTypeMutable: ReplyType? = null
+    private var replyTypeMutable: ReplyType? = null,
+    @Transient
+    private var enableSuggestedRepliesMutable: Boolean? = null,
+    @Transient
+    private var enableFormTypeMessageMutable: Boolean? = null
 ) : Parcelable {
     companion object {
         /**
@@ -286,6 +294,47 @@ data class ChannelConfig internal constructor(
         set(value) {
             replyTypeMutable = value
         }
+    var enableSuggestedReplies: Boolean
+        /**
+         * Returns a value that determines whether to use the suggested replies or not.
+         * true, if channel displays suggested replies in the message list.
+         * false, otherwise.
+         *
+         * @return true if the suggested replies is enabled, false otherwise
+         * @since 3.10.0
+         */
+        get() = enableSuggestedRepliesMutable ?: _enableSuggestedReplies
+
+        /**
+         * Sets whether to use the suggested replies or not.
+         *
+         * @param value true if the suggested replies is enabled, false otherwise
+         * @since 3.10.0
+         */
+        set(value) {
+            enableSuggestedRepliesMutable = value
+        }
+
+    var enableFormTypeMessage: Boolean
+        /**
+         * Returns a value that determines whether to use the form type message or not.
+         * true, if channel displays form type message in the message list if it contains form type message data.
+         * false, otherwise.
+         *
+         * @return true if the form type is enabled, false otherwise
+         * @since 3.10.0
+         */
+        get() = enableFormTypeMessageMutable ?: _enableFormTypeMessage
+
+        /**
+         * Sets whether to use the form type message or not.
+         *
+         * @param value true if the form type message is enabled, false otherwise
+         * @since 3.10.0
+         */
+        set(value) {
+            enableFormTypeMessageMutable = value
+        }
 
     @JvmSynthetic
     internal fun merge(config: ChannelConfig): ChannelConfig {
@@ -295,6 +344,8 @@ data class ChannelConfig internal constructor(
         this._enableReactions = config._enableReactions
         this._enableVoiceMessage = config._enableVoiceMessage
         this._enableMultipleFilesMessage = config._enableMultipleFilesMessage
+        this._enableSuggestedReplies = config._enableSuggestedReplies
+        this._enableFormTypeMessage = config._enableFormTypeMessage
         this._threadReplySelectType = config._threadReplySelectType
         this._replyType = config._replyType
         this.input.merge(config.input)
@@ -312,6 +363,7 @@ data class ChannelConfig internal constructor(
         this.enableMultipleFilesMessageMutable = null
         this.threadReplySelectTypeMutable = null
         this.replyTypeMutable = null
+        this.enableSuggestedRepliesMutable = null
         this.input.clear()
     }
 

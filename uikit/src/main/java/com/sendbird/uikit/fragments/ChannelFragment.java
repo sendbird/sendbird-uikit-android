@@ -49,6 +49,8 @@ import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MessageListComponentExtensionsKt;
 import com.sendbird.uikit.internal.model.VoicePlayerManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
@@ -200,6 +202,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         if (!isInitCallFinished.get()) {
             shouldDismissLoadingDialog();
         }
+        MessageExtensionsKt.clearTemporaryAnswers(getChannelUrl());
     }
 
     /**
@@ -255,6 +258,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         messageListComponent.setOnEmojiReactionClickListener(emojiReactionClickListener != null ? emojiReactionClickListener : (view, position, message, reactionKey) -> toggleReaction(view, message, reactionKey));
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
+        messageListComponent.setSuggestedRepliesClickListener((view, position, data) -> onSuggestedRepliesClicked(data));
         messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : this::onMessageTooltipClicked);
 
         messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
@@ -267,6 +271,14 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 return true;
             }
             return false;
+        });
+
+        MessageListComponentExtensionsKt.setSubmitButtonClickListener(messageListComponent, (message, form) -> {
+            MessageExtensionsKt.submitForm(message, form, (e) -> {
+                if (e != null) {
+                    showConfirmDialog(getString(R.string.sb_forms_submit_failed));
+                }
+            });
         });
 
         final ChannelModule module = getModule();
@@ -500,6 +512,18 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         }
         startMessageThreadActivity(message);
     }
+
+    /**
+     * Called when the a suggested replies view is clicked
+     *
+     * @param suggestedReply Clicked suggested reply data.
+     * since 3.10.0
+     */
+    protected void onSuggestedRepliesClicked(@NonNull String suggestedReply) {
+        UserMessageCreateParams params = new UserMessageCreateParams(suggestedReply);
+        sendUserMessage(params);
+    }
+
 
     /**
      * Find the same message as the message ID and move it to the matching message.

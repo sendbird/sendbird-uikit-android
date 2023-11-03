@@ -31,6 +31,7 @@ import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.wrappers.MessageCollectionImpl;
 import com.sendbird.uikit.internal.wrappers.MessageCollectionWrapper;
 import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
@@ -38,6 +39,7 @@ import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.Available;
@@ -519,6 +521,11 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         if (!hasNext()) {
             copiedList.addAll(0, pendingMessages);
             copiedList.addAll(0, failedMessages);
+
+            SuggestedRepliesMessage suggestedRepliesMessage = createSuggestedRepliesMessage();
+            if (suggestedRepliesMessage != null) {
+                copiedList.add(0, suggestedRepliesMessage);
+            }
         }
 
         if (copiedList.size() == 0) {
@@ -537,6 +544,28 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                 iterator.remove();
             }
         }
+    }
+
+    @Nullable
+    private SuggestedRepliesMessage createSuggestedRepliesMessage() {
+        if (!channelConfig.getEnableSuggestedReplies()) return null;
+        if (hasNext()) return null;
+
+        if (collection != null) {
+            List<BaseMessage> pendingMessages = collection.getPendingMessages();
+            List<BaseMessage> failedMessages = collection.getFailedMessages();
+            if (!pendingMessages.isEmpty() || !failedMessages.isEmpty()) return null;
+        }
+
+        GroupChannel groupChannel = channel;
+        if (groupChannel != null) {
+            BaseMessage lastMessage = groupChannel.getLastMessage();
+            if (lastMessage != null && !MessageExtensionsKt.getSuggestedReplies(lastMessage).isEmpty()) {
+                return new SuggestedRepliesMessage(lastMessage);
+            }
+        }
+
+        return null;
     }
 
     private void markAsRead() {

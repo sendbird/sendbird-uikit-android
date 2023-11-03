@@ -12,6 +12,9 @@ import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.extensions.MessageListAdapterExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MessageListComponentExtensionsKt;
+import com.sendbird.uikit.internal.interfaces.OnSubmitButtonClickListener;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.providers.AdapterProviders;
 
@@ -27,6 +30,8 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     private OnItemLongClickListener<BaseMessage> quoteReplyMessageLongClickListener;
     @Nullable
     private OnItemClickListener<BaseMessage> threadInfoClickListener;
+    @Nullable
+    private OnItemClickListener<String> suggestedRepliesClickListener;
 
     /**
      * Constructor
@@ -35,6 +40,23 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      */
     public MessageListComponent() {
         super(new Params(), true, true);
+    }
+
+    @Override
+    public void setAdapter(@NonNull MessageListAdapter adapter) {
+        super.setAdapter(adapter);
+        if (adapter.getSuggestedRepliesClickListener() == null) {
+            adapter.setSuggestedRepliesClickListener(this::onSuggestedRepliesClicked);
+        }
+
+        if (MessageListAdapterExtensionsKt.getSubmitButtonClickListener(adapter) == null) {
+            MessageListAdapterExtensionsKt.setSubmitButtonClickListener(adapter, (message, form) -> {
+                OnSubmitButtonClickListener listener = MessageListComponentExtensionsKt.getSubmitButtonClickListener(this);
+                if (listener != null) {
+                    listener.onClicked(message, form);
+                }
+            });
+        }
     }
 
     /**
@@ -105,6 +127,20 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     }
 
     /**
+     * Called when the suggested replies button is clicked.
+     *
+     * @param view The clicked view.
+     * @param position The position of clicked view.
+     * @param suggestedReply The content of clicked view.
+     * since 3.10.0
+     */
+    protected void onSuggestedRepliesClicked(@NonNull View view, int position, @NonNull String suggestedReply) {
+        if (suggestedRepliesClickListener != null) {
+            suggestedRepliesClickListener.onItemClick(view, position, suggestedReply);
+        }
+    }
+
+    /**
      * Register a callback to be invoked when the quoted message is clicked.
      *
      * since 3.0.0
@@ -169,6 +205,16 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     protected void onThreadInfoClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
         if (threadInfoClickListener != null)
             threadInfoClickListener.onItemClick(view, position, message);
+    }
+
+    /**
+     * Register a callback to be invoked when the suggested replies button is clicked.
+     *
+     * @param suggestedRepliesClickListener The callback to be registered
+     * since 3.10.0
+     */
+    public void setSuggestedRepliesClickListener(@Nullable OnItemClickListener<String> suggestedRepliesClickListener) {
+        this.suggestedRepliesClickListener = suggestedRepliesClickListener;
     }
 
     /**

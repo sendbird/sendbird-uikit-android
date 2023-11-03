@@ -215,4 +215,10 @@
 
     <!-- Voice message -->
     <string name="sb_text_voice_message">Voice message</string>
+
+    <!-- AI Chatbot -->
+    <string name="sb_forms_submit">Submit</string>
+    <string name="sb_forms_invalid_form_field">Please check the value</string>
+    <string name="sb_forms_submit_failed">Submit failed</string>
+    <string name="sb_forms_optional">(optional)</string>
 </resources>
