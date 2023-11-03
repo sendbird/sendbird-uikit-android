@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.message.AdminMessage;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
@@ -12,6 +13,7 @@ import com.sendbird.android.message.MultipleFilesMessage;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.databinding.SbViewAdminMessageBinding;
+import com.sendbird.uikit.databinding.SbViewFormMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageBinding;
@@ -30,9 +32,11 @@ import com.sendbird.uikit.databinding.SbViewOtherMultipleFilesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
+import com.sendbird.uikit.databinding.SbViewSuggestedRepliesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.ui.viewholders.AdminMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyImageFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyMultipleFilesMessageViewHolder;
@@ -51,10 +55,14 @@ import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVoiceMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.ParentMessageInfoViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.TimelineViewHolder;
 import com.sendbird.uikit.model.MessageListUIParams;
+import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.utils.MessageUtils;
+
+import java.util.Map;
 
 /**
  * A Factory manages a type of messages.
@@ -214,6 +222,12 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_VOICE_MESSAGE_OTHER:
                 holder = new OtherVoiceMessageViewHolder(SbViewOtherVoiceMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
+            case VIEW_TYPE_SUGGESTED_REPLIES:
+                holder = new SuggestedRepliesViewHolder(SbViewSuggestedRepliesMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
+            case VIEW_TYPE_FORM_TYPE_MESSAGE:
+                holder = new FormMessageViewHolder(SbViewFormMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
@@ -244,6 +258,15 @@ public class MessageViewHolderFactory {
     @NonNull
     public static MessageType getMessageType(@NonNull BaseMessage message) {
         MessageType type;
+
+        Map<String, String> extendedMessagePayload = message.getExtendedMessagePayload();
+        if (!extendedMessagePayload.isEmpty()) {
+            if (message.getChannelType() == ChannelType.GROUP
+                && !MessageExtensionsKt.getForms(message).isEmpty()
+            ) {
+                return MessageType.VIEW_TYPE_FORM_TYPE_MESSAGE;
+            }
+        }
 
         if (message instanceof UserMessage) {
             if (MessageUtils.isMine(message)) {
@@ -298,6 +321,8 @@ public class MessageViewHolderFactory {
             type = MessageType.VIEW_TYPE_TIME_LINE;
         } else if (message instanceof AdminMessage) {
             type = MessageType.VIEW_TYPE_ADMIN_MESSAGE;
+        } else if (message instanceof SuggestedRepliesMessage) {
+            type = MessageType.VIEW_TYPE_SUGGESTED_REPLIES;
         } else {
             if (MessageUtils.isMine(message)) {
                 type = MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME;

@@ -28,6 +28,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
@@ -355,6 +356,10 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                 PendingMessageRepository.getInstance().clearAllFileInfo(messages);
                 cachedMessages.addAll(messages);
             } else {
+                for (BaseMessage message : messages) {
+                    MessageExtensionsKt.getFormMap().remove(message.getMessageId());
+                }
+
                 cachedMessages.updateAll(messages);
             }
             notifyDataSetChanged(context);
@@ -372,6 +377,9 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
 
         if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED) {
             // Remove the succeeded message from the succeeded message datasource.
+            for (BaseMessage message : messages) {
+                MessageExtensionsKt.getFormMap().remove(message.getMessageId());
+            }
             cachedMessages.deleteAll(messages);
             notifyDataSetChanged(context);
         } else if (context.getMessagesSendingStatus() == SendingStatus.PENDING) {

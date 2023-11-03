@@ -40,7 +40,6 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
-import com.sendbird.uikit.utils.TextUtils;
 
 import org.jetbrains.annotations.TestOnly;
 
@@ -70,6 +69,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     @Nullable
     protected OnItemClickListener<User> mentionClickListener;
+
     @NonNull
     private final MessageListUIParams messageListUIParams;
     @Nullable

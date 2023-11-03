@@ -89,16 +89,30 @@ public enum MessageType {
     /**
      * Type of MultipleFilesMessage sent by the current user.
      *
-     * @since 3.9.0
+     * since 3.9.0
      */
     VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME(17),
 
     /**
      * Type of MultipleFilesMessage sent by users other than the current user .
      *
-     * @since 3.9.0
+     * since 3.9.0
      */
-    VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER(18);
+    VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER(18),
+
+    /**
+     * Type of suggested replies.
+     *
+     * since 3.10.0
+     */
+    VIEW_TYPE_SUGGESTED_REPLIES(19),
+
+    /**
+     * Type of forms message.
+     *
+     * since 3.10.0
+     */
+    VIEW_TYPE_FORM_TYPE_MESSAGE(20);
 
     final int value;
 

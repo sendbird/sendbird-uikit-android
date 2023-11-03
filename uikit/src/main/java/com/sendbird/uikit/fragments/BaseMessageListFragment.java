@@ -424,7 +424,6 @@ abstract public class BaseMessageListFragment<
             cancel -> Logger.dev("cancel"));
     }
 
-    @VisibleForTesting
     void showConfirmDialog(@NonNull String message) {
         if (getContext() == null) return;
         DialogUtils.showConfirmDialog(

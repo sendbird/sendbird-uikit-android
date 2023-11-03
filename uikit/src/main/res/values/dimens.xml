@@ -175,4 +175,5 @@
     <dimen name="sb_open_channel_max_message_width">296dp</dimen>
     <dimen name="sb_open_channel_ogtag_thumbnail_width">280dp</dimen>
     <dimen name="sb_open_channel_ogtag_thumbnail_height">156dp</dimen>
+    <dimen name="sb_forms_message_width">244dp</dimen>
 </resources>

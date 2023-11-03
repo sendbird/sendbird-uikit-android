@@ -158,6 +158,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         if (this.adapter.getMentionClickListener() == null) {
             this.adapter.setMentionClickListener(this::onMessageMentionClicked);
         }
+
         if (messageRecyclerView == null) return;
         messageRecyclerView.getRecyclerView().setAdapter(this.adapter);
     }

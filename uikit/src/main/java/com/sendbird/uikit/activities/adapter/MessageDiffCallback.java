@@ -18,6 +18,7 @@ import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
+import java.util.Map;
 
 class MessageDiffCallback extends DiffUtil.Callback {
     @NonNull
@@ -81,6 +82,12 @@ class MessageDiffCallback extends DiffUtil.Callback {
             if (!oldMessage.getMessage().equals(newMessage.getMessage())) {
                 return false;
             }
+        }
+
+        Map<String, String> oldExtendedMessagePayload = oldMessage.getExtendedMessagePayload();
+        Map<String, String> newExtendedMessagePayload = newMessage.getExtendedMessagePayload();
+        if (!oldExtendedMessagePayload.equals(newExtendedMessagePayload)) {
+            return false;
         }
 
         if (messageListUIParams.shouldUseMessageReceipt()) {

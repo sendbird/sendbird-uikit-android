@@ -977,7 +977,7 @@ public class SendbirdUIKit {
      * @param botId The bot ID that is created in dashboard.
      * @param isDistinct Determines whether to reuse an existing channel or create a new channel.
      * @param handler The callback handler that lets you know if the request was successful or not.
-     * @since 3.8.0
+     * since 3.8.0
      */
     public static void startChatWithAiBot(@NonNull Context context, @NonNull String botId, boolean isDistinct, @Nullable CompletionHandler handler) {
         User currentUser = SendbirdChat.getCurrentUser();

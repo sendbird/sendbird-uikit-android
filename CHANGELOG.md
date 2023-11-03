@@ -1,4 +1,9 @@
 # Changelog
+### v3.10.0 (Nov 3, 2023) with Chat SDK `v4.13.0`
+* Added the `Suggested Replies` feature to enable quick and effective question asking to the bot.
+  * Added `ChannelConfig.enableSuggestedReplies` configuration to enable/disable `Suggested Replies` feature.
+* Added the `Form type message` feature to enable the user to submit a form type message received by the bot.
+  * Added `ChannelConfig.enableFormTypeMessage` configuration to enable/disable `Form type message` feature.
 ### v3.9.3 (Oct 26, 2023) with Chat SDK `v4.13.0`
 * Improve stability.
 
