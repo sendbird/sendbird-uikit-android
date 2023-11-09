@@ -11,12 +11,12 @@ Sendbird UIKit for Android is a development kit with an user interface that enab
 - **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
 - **uikit-samples** consists of four use cases of UIKit.
 You can navigate to each use case through the four menus that appear when you run it.
-  * Basic Usage - A sample that contains the basic usage of UIKit. Please check the [README](src/main/java/com/sendbird/uikit/samples/basic/README.md) for details.
-  * Customizations - Examples that have applied customization to UIKit. Please check the [README](src/main/java/com/sendbird/uikit/samples/customization/README.md) for details.
+  * Basic Usage - A sample that contains the basic usage of UIKit. Please check the [README](uikit-samples/src/main/java/com/sendbird/uikit/samples/basic/README.md) for details.
+  * Customizations - Examples that have applied customization to UIKit. Please check the [README](uikit-samples/src/main/java/com/sendbird/uikit/samples/customization/README.md) for details.
   * AI Chatbot: You can chat with the AI Chatbot running on the Sendbird platform.
-It is disabled by default, To enable it, please check the [README](src/main/java/com/sendbird/uikit/samples/aichatbot/README.md) for details.
+It is disabled by default, To enable it, please check the [README](uikit-samples/src/main/java/com/sendbird/uikit/samples/aichatbot/README.md) for details.
   * Sendbird Notification: You can try out Sendbird's Notification product in this sample.
-    It is disabled by default. To enable it, please check the [README](src/main/java/com/sendbird/uikit/samples/notification/README.md) for details.
+    It is disabled by default. To enable it, please check the [README](uikit-samples/src/main/java/com/sendbird/uikit/samples/notification/README.md) for details.
     Caution: This sample is not related to push notifications. It is a demonstration of Sendbird's Notification product.
 
 ### More about Sendbird UIKIT for Android
