@@ -4,19 +4,20 @@
 
 ## Introduction
 
-We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/changelogs/MIGRATIONGUIDE_V3.md) and download [our samples](https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-sample)
+We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/changelogs/MIGRATIONGUIDE_V3.md) and download [our samples](https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-samples)
 
 Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
 
 - **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
-- **uikit-sample** is a chat app with UIKit’s core features in which you can see items such as push notifications, total unread message count and auto sign-in are demonstrated. When you sign in to the sample app, you will only see a list of channels rendered by the [ChannelListActivity](https://sendbird.com/docs/uikit/v3/android/key-functions/list-channels) on the screen. 
-- **uikit-custom-sample** is a chat app which contains customizable sample code for the following:  
-  * An example of how you can create your own custom message type, for example, a demonstration of sending a message in highlight.
-  * MessageListParams provides various options for retrieving a list of messages with `MessageListParams`
-  * ChannelListQuery provides various options for retrieving a list of channels with `ChannelListQuery`
-  * User list provides various options for retrieving a list of users
-  * Styles, colors, fonts
-  * An example of multilingual UI support. In the `/res/values-ko-rKR/strings.xml`, you can find an example written in Korean language.
+- **uikit-samples** consists of four use cases of UIKit.
+You can navigate to each use case through the four menus that appear when you run it.
+  * Basic Usage - A sample that contains the basic usage of UIKit. Please check the [README](src/main/java/com/sendbird/uikit/samples/basic/README.md) for details.
+  * Customizations - Examples that have applied customization to UIKit. Please check the [README](src/main/java/com/sendbird/uikit/samples/customization/README.md) for details.
+  * AI Chatbot: You can chat with the AI Chatbot running on the Sendbird platform.
+It is disabled by default, To enable it, please check the [README](src/main/java/com/sendbird/uikit/samples/aichatbot/README.md) for details.
+  * Sendbird Notification: You can try out Sendbird's Notification product in this sample.
+    It is disabled by default. To enable it, please check the [README](src/main/java/com/sendbird/uikit/samples/notification/README.md) for details.
+    Caution: This sample is not related to push notifications. It is a demonstration of Sendbird's Notification product.
 
 ### More about Sendbird UIKIT for Android
 
