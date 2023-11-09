@@ -1,0 +1,31 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary_300</item>
+        <item name="colorPrimaryDark">@color/primary_500</item>
+        <item name="colorAccent">@color/secondary_300</item>
+    </style>
+
+    <style name="AppTheme.Sendbird.Custom">
+        <item name="sb_module_channel">@style/Module.Channel.Custom</item>
+    </style>
+
+    <style name="Module.Channel.Custom">
+        <item name="sb_component_list">@style/Component.List.Channel.Custom</item>
+    </style>
+
+    <style name="Component.List.Channel.Custom">
+        <item name="sb_widget_other_user_message">@style/Widget.Sendbird.Message.Other.User.Custom</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.Other.User.Custom">
+        <item name="sb_message_other_text_appearance">@style/SendbirdBody3OnLight04.Custom</item>
+    </style>
+
+    <style name="SendbirdBody3OnLight04.Custom">
+        <item name="android:textColor">@color/primary_300</item>
+        <item name="android:textSize">@dimen/sb_size_32</item>
+    </style>
+</resources>

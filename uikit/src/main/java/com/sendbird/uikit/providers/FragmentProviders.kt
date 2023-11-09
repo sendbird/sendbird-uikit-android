@@ -11,7 +11,6 @@ import com.sendbird.uikit.interfaces.providers.*
  * @since 3.9.0
  */
 object FragmentProviders {
-
     /**
      * Returns the ChannelListFragment provider.
      *
@@ -19,9 +18,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var channelList = ChannelListFragmentProvider { args ->
-        ChannelListFragment.Builder().withArguments(args).setUseHeader(true).build()
-    }
+    lateinit var channelList: ChannelListFragmentProvider
 
     /**
      * Returns the ChannelFragment provider.
@@ -30,11 +27,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var channel = ChannelFragmentProvider { channelUrl, args ->
-        ChannelFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var channel: ChannelFragmentProvider
 
     /**
      * Returns the OpenChannelFragment provider.
@@ -43,12 +36,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannel = OpenChannelFragmentProvider { channelUrl, args ->
-        OpenChannelFragment.Builder(channelUrl)
-            .withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var openChannel: OpenChannelFragmentProvider
 
     /**
      * Returns the CreateChannelFragment provider.
@@ -57,11 +45,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var createChannel = CreateChannelFragmentProvider { channelType, args ->
-        CreateChannelFragment.Builder(channelType).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var createChannel: CreateChannelFragmentProvider
 
     /**
      * Returns the CreateOpenChannelFragment provider.
@@ -70,12 +54,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var createOpenChannel = CreateOpenChannelFragmentProvider { args ->
-        CreateOpenChannelFragment.Builder().withArguments(args)
-            .setUseHeader(true)
-            .setUseHeaderRightButton(true)
-            .build()
-    }
+    lateinit var createOpenChannel: CreateOpenChannelFragmentProvider
 
     /**
      * Returns the ChannelSettingsFragment provider.
@@ -84,11 +63,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var channelSettings = ChannelSettingsFragmentProvider { channelUrl, args ->
-        ChannelSettingsFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var channelSettings: ChannelSettingsFragmentProvider
 
     /**
      * Returns the OpenChannelSettingsFragment provider.
@@ -97,11 +72,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelSettings = OpenChannelSettingsFragmentProvider { channelUrl, args ->
-        OpenChannelSettingsFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var openChannelSettings: OpenChannelSettingsFragmentProvider
 
     /**
      * Returns the InviteUserFragment provider.
@@ -110,11 +81,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var inviteUser = InviteUserFragmentProvider { channelUrl, args ->
-        InviteUserFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var inviteUser: InviteUserFragmentProvider
 
     /**
      * Returns the RegisterOperatorFragment provider.
@@ -123,11 +90,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var registerOperator = RegisterOperatorFragmentProvider { channelUrl, args ->
-        RegisterOperatorFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build() as RegisterOperatorFragment // for backward compatibility
-    }
+    lateinit var registerOperator: RegisterOperatorFragmentProvider
 
     /**
      * Returns the OpenChannelRegisterOperatorFragment provider.
@@ -136,10 +99,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelRegisterOperator = OpenChannelRegisterOperatorFragmentProvider { channelUrl, args ->
-        OpenChannelRegisterOperatorFragment.Builder(channelUrl).withArguments(args)
-            .build()
-    }
+    lateinit var openChannelRegisterOperator: OpenChannelRegisterOperatorFragmentProvider
 
     /**
      * Returns the ModerationFragment provider.
@@ -148,11 +108,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var moderation = ModerationFragmentProvider { channelUrl, args ->
-        ModerationFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var moderation: ModerationFragmentProvider
 
     /**
      * Returns the OpenChannelModerationFragment provider.
@@ -161,10 +117,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelModeration = OpenChannelModerationFragmentProvider { channelUrl, args ->
-        OpenChannelModerationFragment.Builder(channelUrl).withArguments(args)
-            .build()
-    }
+    lateinit var openChannelModeration: OpenChannelModerationFragmentProvider
 
     /**
      * Returns the MemberListFragment provider.
@@ -173,12 +126,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var memberList = MemberListFragmentProvider { channelUrl, args ->
-        MemberListFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .setUseHeaderRightButton(true)
-            .build()
-    }
+    lateinit var memberList: MemberListFragmentProvider
 
     /**
      * Returns the BannedUserListFragment provider.
@@ -187,12 +135,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var bannedUserList = BannedUserListFragmentProvider { channelUrl, args ->
-        BannedUserListFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .setUseHeaderRightButton(false)
-            .build()
-    }
+    lateinit var bannedUserList: BannedUserListFragmentProvider
 
     /**
      * Returns the OpenChannelBannedUserListFragment provider.
@@ -201,10 +144,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelBannedUserList = OpenChannelBannedUserListFragmentProvider { channelUrl, args ->
-        OpenChannelBannedUserListFragment.Builder(channelUrl).withArguments(args)
-            .build()
-    }
+    lateinit var openChannelBannedUserList: OpenChannelBannedUserListFragmentProvider
 
     /**
      * Returns the MutedMemberListFragment provider.
@@ -213,12 +153,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var mutedMemberList = MutedMemberListFragmentProvider { channelUrl, args ->
-        MutedMemberListFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .setUseHeaderRightButton(false)
-            .build()
-    }
+    lateinit var mutedMemberList: MutedMemberListFragmentProvider
 
     /**
      * Returns the OpenChannelMutedParticipantListFragment provider.
@@ -227,10 +162,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelMutedParticipantList = OpenChannelMutedParticipantListFragmentProvider { channelUrl, args ->
-        OpenChannelMutedParticipantListFragment.Builder(channelUrl).withArguments(args)
-            .build()
-    }
+    lateinit var openChannelMutedParticipantList: OpenChannelMutedParticipantListFragmentProvider
 
     /**
      * Returns the OperatorListFragment provider.
@@ -239,12 +171,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var operatorList = OperatorListFragmentProvider { channelUrl, args ->
-        OperatorListFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .setUseHeaderRightButton(true)
-            .build()
-    }
+    lateinit var operatorList: OperatorListFragmentProvider
 
     /**
      * Returns the OpenChannelOperatorListFragment provider.
@@ -253,10 +180,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelOperatorList = OpenChannelOperatorListFragmentProvider { channelUrl, args ->
-        OpenChannelOperatorListFragment.Builder(channelUrl).withArguments(args)
-            .build()
-    }
+    lateinit var openChannelOperatorList: OpenChannelOperatorListFragmentProvider
 
     /**
      * Returns the MessageSearchFragment provider.
@@ -265,11 +189,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var messageSearch = MessageSearchFragmentProvider { channelUrl, args ->
-        MessageSearchFragment.Builder(channelUrl).withArguments(args)
-            .setUseSearchBar(true)
-            .build()
-    }
+    lateinit var messageSearch: MessageSearchFragmentProvider
 
     /**
      * Returns the MessageThreadFragment provider.
@@ -278,12 +198,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var messageThread = MessageThreadFragmentProvider { channelUrl, message, args ->
-        MessageThreadFragment.Builder(channelUrl, message).setStartingPoint(0L)
-            .setUseHeader(true)
-            .withArguments(args)
-            .build()
-    }
+    lateinit var messageThread: MessageThreadFragmentProvider
 
     /**
      * Returns the ParticipantListFragment provider.
@@ -292,11 +207,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var participantList = ParticipantListFragmentProvider { channelUrl, args ->
-        ParticipantListFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var participantList: ParticipantListFragmentProvider
 
     /**
      * Returns the ChannelPushSettingFragment provider.
@@ -305,11 +216,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var channelPushSetting = ChannelPushSettingFragmentProvider { channelUrl, args ->
-        ChannelPushSettingFragment.Builder(channelUrl).withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var channelPushSetting: ChannelPushSettingFragmentProvider
 
     /**
      * Returns the OpenChannelListFragment provider.
@@ -318,11 +225,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelList = OpenChannelListFragmentProvider { args ->
-        OpenChannelListFragment.Builder().withArguments(args)
-            .setUseHeader(true)
-            .build()
-    }
+    lateinit var openChannelList: OpenChannelListFragmentProvider
 
     /**
      * Returns the FeedNotificationChannelFragment provider.
@@ -331,12 +234,7 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var feedNotificationChannel = FeedNotificationChannelFragmentProvider { channelUrl, args ->
-        FeedNotificationChannelFragment.Builder(channelUrl)
-            .withArguments(args)
-            .setUseHeaderLeftButton(true)
-            .build()
-    }
+    lateinit var feedNotificationChannel: FeedNotificationChannelFragmentProvider
 
     /**
      * Returns the ChatNotificationChannelFragment provider.
@@ -345,10 +243,175 @@ object FragmentProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var chatNotificationChannel = ChatNotificationChannelFragmentProvider { channelUrl, args ->
-        ChatNotificationChannelFragment.Builder(channelUrl)
-            .withArguments(args)
-            .setUseHeaderLeftButton(true)
-            .build()
+    lateinit var chatNotificationChannel: ChatNotificationChannelFragmentProvider
+
+    /**
+     * Reset all providers to default provider.
+     *
+     * @since 3.10.1
+     */
+    @JvmStatic
+    fun resetToDefault() {
+        this.channelList = ChannelListFragmentProvider { args ->
+            ChannelListFragment.Builder().withArguments(args).setUseHeader(true).build()
+        }
+
+        this.channel = ChannelFragmentProvider { channelUrl, args ->
+            ChannelFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.openChannel = OpenChannelFragmentProvider { channelUrl, args ->
+            OpenChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.createChannel = CreateChannelFragmentProvider { channelType, args ->
+            CreateChannelFragment.Builder(channelType).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.createOpenChannel = CreateOpenChannelFragmentProvider { args ->
+            CreateOpenChannelFragment.Builder().withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(true)
+                .build()
+        }
+
+        this.channelSettings = ChannelSettingsFragmentProvider { channelUrl, args ->
+            ChannelSettingsFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.openChannelSettings = OpenChannelSettingsFragmentProvider { channelUrl, args ->
+            OpenChannelSettingsFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.inviteUser = InviteUserFragmentProvider { channelUrl, args ->
+            InviteUserFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.registerOperator = RegisterOperatorFragmentProvider { channelUrl, args ->
+            RegisterOperatorFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build() as RegisterOperatorFragment // for backward compatibility
+        }
+
+        this.openChannelRegisterOperator = OpenChannelRegisterOperatorFragmentProvider { channelUrl, args ->
+            OpenChannelRegisterOperatorFragment.Builder(channelUrl).withArguments(args)
+                .build()
+        }
+
+        this.moderation = ModerationFragmentProvider { channelUrl, args ->
+            ModerationFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.openChannelModeration = OpenChannelModerationFragmentProvider { channelUrl, args ->
+            OpenChannelModerationFragment.Builder(channelUrl).withArguments(args)
+                .build()
+        }
+
+        this.memberList = MemberListFragmentProvider { channelUrl, args ->
+            MemberListFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(true)
+                .build()
+        }
+
+        this.bannedUserList = BannedUserListFragmentProvider { channelUrl, args ->
+            BannedUserListFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(false)
+                .build()
+        }
+
+        this.openChannelBannedUserList = OpenChannelBannedUserListFragmentProvider { channelUrl, args ->
+            OpenChannelBannedUserListFragment.Builder(channelUrl).withArguments(args)
+                .build()
+        }
+
+        this.mutedMemberList = MutedMemberListFragmentProvider { channelUrl, args ->
+            MutedMemberListFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(false)
+                .build()
+        }
+
+        this.openChannelMutedParticipantList = OpenChannelMutedParticipantListFragmentProvider { channelUrl, args ->
+            OpenChannelMutedParticipantListFragment.Builder(channelUrl).withArguments(args)
+                .build()
+        }
+
+        this.operatorList = OperatorListFragmentProvider { channelUrl, args ->
+            OperatorListFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .setUseHeaderRightButton(true)
+                .build()
+        }
+
+        this.openChannelOperatorList = OpenChannelOperatorListFragmentProvider { channelUrl, args ->
+            OpenChannelOperatorListFragment.Builder(channelUrl).withArguments(args)
+                .build()
+        }
+
+        this.messageSearch = MessageSearchFragmentProvider { channelUrl, args ->
+            MessageSearchFragment.Builder(channelUrl).withArguments(args)
+                .setUseSearchBar(true)
+                .build()
+        }
+
+        this.messageThread = MessageThreadFragmentProvider { channelUrl, message, args ->
+            MessageThreadFragment.Builder(channelUrl, message).setStartingPoint(0L)
+                .setUseHeader(true)
+                .withArguments(args)
+                .build()
+        }
+
+        this.participantList = ParticipantListFragmentProvider { channelUrl, args ->
+            ParticipantListFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.channelPushSetting = ChannelPushSettingFragmentProvider { channelUrl, args ->
+            ChannelPushSettingFragment.Builder(channelUrl).withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.openChannelList = OpenChannelListFragmentProvider { args ->
+            OpenChannelListFragment.Builder().withArguments(args)
+                .setUseHeader(true)
+                .build()
+        }
+
+        this.feedNotificationChannel = FeedNotificationChannelFragmentProvider { channelUrl, args ->
+            FeedNotificationChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setUseHeaderLeftButton(true)
+                .build()
+        }
+
+        this.chatNotificationChannel = ChatNotificationChannelFragmentProvider { channelUrl, args ->
+            ChatNotificationChannelFragment.Builder(channelUrl)
+                .withArguments(args)
+                .setUseHeaderLeftButton(true)
+                .build()
+        }
+    }
+
+    init {
+        resetToDefault()
     }
 }
