@@ -735,7 +735,7 @@ public class SendbirdUIKit {
      *
      * @param handler The callback that will run.
      */
-    public static void setCustomUserListQueryHandler(@NonNull CustomUserListQueryHandler handler) {
+    public static void setCustomUserListQueryHandler(@Nullable CustomUserListQueryHandler handler) {
         SendbirdUIKit.customUserListQueryHandler = handler;
     }
 
@@ -745,7 +745,7 @@ public class SendbirdUIKit {
      * @param handler The callback that will run.
      * since 1.2.2
      */
-    public static void setCustomParamsHandler(@NonNull CustomParamsHandler handler) {
+    public static void setCustomParamsHandler(@Nullable CustomParamsHandler handler) {
         SendbirdUIKit.customParamsHandler = handler;
     }
 

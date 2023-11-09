@@ -15,6 +15,6 @@ dependencyResolutionManagement {
     }
 }
 
-include ':uikit-custom-sample'
-include ':uikit-sample', ':uikit'
+include ':uikit'
 rootProject.name='sendbird-uikit-android-sources'
+include ':uikit-samples'

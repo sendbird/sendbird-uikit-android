@@ -1,23 +1,7 @@
 package com.sendbird.uikit.providers
 
 import com.sendbird.uikit.activities.adapter.*
-import com.sendbird.uikit.interfaces.providers.BannedUserListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.ChannelListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.CreateChannelUserListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.InviteUserListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.MemberListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.MessageListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.MessageSearchAdapterProvider
-import com.sendbird.uikit.interfaces.providers.MutedMemberListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OpenChannelBannedUserListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OpenChannelListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OpenChannelMessageListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OpenChannelMutedParticipantListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OpenChannelRegisterOperatorListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.OperatorListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.ParticipantListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.RegisterOperatorListAdapterProvider
-import com.sendbird.uikit.interfaces.providers.ThreadListAdapterProvider
+import com.sendbird.uikit.interfaces.providers.*
 
 /**
  * A set of Providers that provide a RecyclerView.Adapter that binds to a RecyclerView among the screens used in UIKit.
@@ -32,9 +16,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var messageList = MessageListAdapterProvider { channel, messageListUIParams ->
-        MessageListAdapter(channel, messageListUIParams)
-    }
+    lateinit var messageList: MessageListAdapterProvider
 
     /**
      * Returns the BannedUserListAdapter provider.
@@ -43,7 +25,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var bannedUserList = BannedUserListAdapterProvider { BannedUserListAdapter() }
+    lateinit var bannedUserList: BannedUserListAdapterProvider
 
     /**
      * Returns the ChannelListAdapter provider.
@@ -52,9 +34,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var channelList = ChannelListAdapterProvider { uiParams ->
-        ChannelListAdapter(null, uiParams)
-    }
+    lateinit var channelList: ChannelListAdapterProvider
 
     /**
      * Returns the CreateChannelUserListAdapter provider.
@@ -63,7 +43,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var createChannelUserList = CreateChannelUserListAdapterProvider { CreateChannelUserListAdapter() }
+    lateinit var createChannelUserList: CreateChannelUserListAdapterProvider
 
     /**
      * Returns the InviteChannelFragment provider.
@@ -72,7 +52,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var inviteUserList = InviteUserListAdapterProvider { InviteUserListAdapter() }
+    lateinit var inviteUserList: InviteUserListAdapterProvider
 
     /**
      * Returns the MemberListAdapter provider.
@@ -81,7 +61,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var memberList = MemberListAdapterProvider { MemberListAdapter() }
+    lateinit var memberList: MemberListAdapterProvider
 
     /**
      * Returns the MessageSearchAdapter provider.
@@ -90,7 +70,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var messageSearch = MessageSearchAdapterProvider { MessageSearchAdapter() }
+    lateinit var messageSearch: MessageSearchAdapterProvider
 
     /**
      * Returns the MutedMemberListAdapter provider.
@@ -99,7 +79,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var mutedMemberList = MutedMemberListAdapterProvider { MutedMemberListAdapter() }
+    lateinit var mutedMemberList: MutedMemberListAdapterProvider
 
     /**
      * Returns the OpenChannelBannedUserListAdapter provider.
@@ -108,9 +88,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelBannedUserList = OpenChannelBannedUserListAdapterProvider {
-        OpenChannelBannedUserListAdapter()
-    }
+    lateinit var openChannelBannedUserList: OpenChannelBannedUserListAdapterProvider
 
     /**
      * Returns the OpenChannelListAdapter provider.
@@ -119,7 +97,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelList = OpenChannelListAdapterProvider { OpenChannelListAdapter() }
+    lateinit var openChannelList: OpenChannelListAdapterProvider
 
     /**
      * Returns the OpenChannelMessageListAdapter provider.
@@ -128,9 +106,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelMessageList = OpenChannelMessageListAdapterProvider { messageListUIParams ->
-        OpenChannelMessageListAdapter(null, messageListUIParams)
-    }
+    lateinit var openChannelMessageList: OpenChannelMessageListAdapterProvider
 
     /**
      * Returns the OpenChannelMutedParticipantListAdapter provider.
@@ -139,7 +115,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelMutedParticipantList = OpenChannelMutedParticipantListAdapterProvider { OpenChannelMutedParticipantListAdapter() }
+    lateinit var openChannelMutedParticipantList: OpenChannelMutedParticipantListAdapterProvider
 
     /**
      * Returns the OpenChannelRegisterOperatorListAdapter provider.
@@ -148,9 +124,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var openChannelRegisterOperatorList = OpenChannelRegisterOperatorListAdapterProvider { channel ->
-        OpenChannelRegisterOperatorListAdapter(channel)
-    }
+    lateinit var openChannelRegisterOperatorList: OpenChannelRegisterOperatorListAdapterProvider
 
     /**
      * Returns the OperatorListAdapter provider.
@@ -159,7 +133,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var operatorList = OperatorListAdapterProvider { OperatorListAdapter() }
+    lateinit var operatorList: OperatorListAdapterProvider
 
     /**
      * Returns the ParticipantListAdapter provider.
@@ -168,7 +142,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var participantList = ParticipantListAdapterProvider { ParticipantListAdapter() }
+    lateinit var participantList: ParticipantListAdapterProvider
 
     /**
      * Returns the RegisterOperatorListAdapter provider.
@@ -177,7 +151,7 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var registerOperatorList = RegisterOperatorListAdapterProvider { RegisterOperatorListAdapter() }
+    lateinit var registerOperatorList: RegisterOperatorListAdapterProvider
 
     /**
      * Returns the ThreadListAdapter provider.
@@ -186,7 +160,62 @@ object AdapterProviders {
      * @since 3.9.0
      */
     @JvmStatic
-    var threadList = ThreadListAdapterProvider { messageListUIParams ->
-        ThreadListAdapter(null, messageListUIParams)
+    lateinit var threadList: ThreadListAdapterProvider
+
+    /**
+     * Reset all providers to default provider.
+     *
+     * @since 3.10.1
+     */
+    @JvmStatic
+    fun resetToDefault() {
+        this.messageList = MessageListAdapterProvider { channel, messageListUIParams ->
+            MessageListAdapter(channel, messageListUIParams)
+        }
+        this.bannedUserList = BannedUserListAdapterProvider { BannedUserListAdapter() }
+
+        this.channelList = ChannelListAdapterProvider { uiParams ->
+            ChannelListAdapter(null, uiParams)
+        }
+
+        this.createChannelUserList = CreateChannelUserListAdapterProvider { CreateChannelUserListAdapter() }
+
+        this.inviteUserList = InviteUserListAdapterProvider { InviteUserListAdapter() }
+
+        this.memberList = MemberListAdapterProvider { MemberListAdapter() }
+
+        this.messageSearch = MessageSearchAdapterProvider { MessageSearchAdapter() }
+
+        this.mutedMemberList = MutedMemberListAdapterProvider { MutedMemberListAdapter() }
+
+        this.openChannelBannedUserList = OpenChannelBannedUserListAdapterProvider {
+            OpenChannelBannedUserListAdapter()
+        }
+
+        this.openChannelList = OpenChannelListAdapterProvider { OpenChannelListAdapter() }
+
+        this.openChannelMessageList = OpenChannelMessageListAdapterProvider { messageListUIParams ->
+            OpenChannelMessageListAdapter(null, messageListUIParams)
+        }
+
+        this.openChannelMutedParticipantList = OpenChannelMutedParticipantListAdapterProvider { OpenChannelMutedParticipantListAdapter() }
+
+        this.openChannelRegisterOperatorList = OpenChannelRegisterOperatorListAdapterProvider { channel ->
+            OpenChannelRegisterOperatorListAdapter(channel)
+        }
+
+        this.operatorList = OperatorListAdapterProvider { OperatorListAdapter() }
+
+        this.participantList = ParticipantListAdapterProvider { ParticipantListAdapter() }
+
+        this.registerOperatorList = RegisterOperatorListAdapterProvider { RegisterOperatorListAdapter() }
+
+        this.threadList = ThreadListAdapterProvider { messageListUIParams ->
+            ThreadListAdapter(null, messageListUIParams)
+        }
+    }
+
+    init {
+        resetToDefault()
     }
 }

@@ -32,7 +32,7 @@ internal class MultipleFilesMessageView @JvmOverloads internal constructor(
             val bgColorStateList =
                 a.getColorStateList(R.styleable.MessageView_MultipleFiles_sb_multiple_files_message_background_color)
             isMine = a.getBoolean(R.styleable.MessageView_MultipleFiles_sb_multiple_files_message_is_mine, false)
-            val bgRadius = resources.getDimensionPixelSize(R.dimen.sb_size_12)
+            val bgRadius = resources.getDimensionPixelSize(R.dimen.sb_size_16)
             binding.root.setBackgroundColorAndRadius(bgColorStateList, bgRadius.toFloat())
             val recyclerView = binding.multipleFilesMessageRecyclerView
             adapter = MultipleFilesAdapter().apply {
@@ -61,7 +61,7 @@ internal class MultipleFilesMessageView @JvmOverloads internal constructor(
                     spanCount = spanCount,
                     spacing = resources.getDimensionPixelSize(R.dimen.sb_size_4),
                     isMine = isMine,
-                    parentRadius = bgRadius,
+                    parentRadius = resources.getDimensionPixelSize(R.dimen.sb_size_12),
                     childRadius = resources.getDimensionPixelSize(R.dimen.sb_size_6)
                 )
             )

@@ -1,4 +1,7 @@
 # Changelog
+### v3.10.1 (Nov 9, 2023) with Chat SDK `v4.13.0`
+* Added `uikit-samples` project to demonstrate the usage of `UIKit`.
+* Added `resetToDefault()` in `FragmentProviders`, `ModuleProviders`, `AdapterProviders` and `ViewModelProviders` to reset the providers to default.
 ### v3.10.0 (Nov 3, 2023) with Chat SDK `v4.13.0`
 * Added the `Suggested Replies` feature to enable quick and effective question asking to the bot.
   * Added `ChannelConfig.enableSuggestedReplies` configuration to enable/disable `Suggested Replies` feature.
