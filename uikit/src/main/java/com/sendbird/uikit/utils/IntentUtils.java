@@ -116,8 +116,10 @@ public class IntentUtils {
         if (!url.startsWith("pivotapp://") && !url.startsWith("http://") && !url.startsWith("https://")) {
             url = "https://" + url;
         }
-        Uri uri = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+        Intent intent = new Intent();
+        intent.setClassName("com.carrot.pivot","com.carrot.pivot.coaching.chat.deeplinks.CoachingDeeplinksReceiverActivity");
+        intent.putExtra("URL_KEY", url);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
