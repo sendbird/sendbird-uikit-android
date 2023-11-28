@@ -1,4 +1,16 @@
-# !! [PIVOT] Use `pivot-group-ui` branch
+# PIVOT
+
+## Sendbird UIKit version: 3.10.1
+
+## Updating Sendbird library
+Pulling from the Sendbird repository (`sendbird/sendbird-uikit-android`) causes a lot of hard-to-fix conflicts, so it's much easier to rebase our changes on top of the Sendbird latest `main` branch.
+```
+git remote add sendbird git@github.com:sendbird/sendbird-uikit-android.git
+git fetch sendbird
+git checkout main
+git rebase sendbird/main
+```
+Resolve all conflicts by checking the original commits (https://github.com/carrotsense/sendbird-uikit-android/commits/main) and preserving the implemented functionality.
 
 
 # Sendbird UIKit for Android
