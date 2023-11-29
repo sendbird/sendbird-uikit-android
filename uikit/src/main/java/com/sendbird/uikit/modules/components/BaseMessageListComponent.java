@@ -248,18 +248,13 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * since 3.0.0
      */
     public void notifyOtherMessageReceived(boolean showTooltipIfPossible) {
-        if (messageRecyclerView == null) return;
-        int firstVisibleItemPosition = messageRecyclerView.getRecyclerView().findFirstVisibleItemPosition();
+        int firstVisibleItemPosition = getFirstVisibleItemPosition();
 
         if (useMessageTooltip && (firstVisibleItemPosition > 0 || showTooltipIfPossible)) {
             messageRecyclerView.showNewMessageTooltip(getTooltipMessage(messageRecyclerView.getContext(), tooltipMessageCount.incrementAndGet()));
             return;
         }
-        if (!hasNextMessages()) {
-            if (firstVisibleItemPosition == 0) {
-                scrollToFirst();
-            }
-        }
+        scrollToFirstIfLastMessageVisible(true);
     }
 
     /**
@@ -478,12 +473,16 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      * since 3.0.0
      */
     public void notifyMessagesFilled(boolean scrollToFirstIfPossible) {
-        if (messageRecyclerView == null) return;
-        int firstVisibleItemPosition = messageRecyclerView.getRecyclerView().findFirstVisibleItemPosition();
+        scrollToFirstIfLastMessageVisible(scrollToFirstIfPossible);
+    }
 
-        if (firstVisibleItemPosition == 0 && !hasNextMessages() && scrollToFirstIfPossible) {
-            scrollToFirst();
-        }
+    /**
+     * After updating the typing indicator, determines whether to scroll to the bottom.
+     *
+     * since 3.11.0
+     */
+    public void notifyTypingIndicatorUpdated(boolean scrollToFirstIfPossible) {
+        scrollToFirstIfLastMessageVisible(scrollToFirstIfPossible);
     }
 
     /**
@@ -732,7 +731,10 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
             position = size - 1;
         }
 
-        layoutManager.scrollToPositionWithOffset(position, offset);
+        // To show the top of the item view, scroll to next item position with offset.
+        layoutManager.scrollToPositionWithOffset(
+            position + 1 >= size ? position : position + 1, offset
+        );
         return position;
     }
 
@@ -768,6 +770,21 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
                 messageListView.hideScrollFirstButton();
             }
         }
+    }
+
+    private void scrollToFirstIfLastMessageVisible(boolean scrollToFirstIfPossible) {
+        int firstVisibleItemPosition = getFirstVisibleItemPosition();
+
+        if (firstVisibleItemPosition == 0 && !hasNextMessages() && scrollToFirstIfPossible) {
+            scrollToFirst();
+        }
+    }
+
+    // Implement the logic to handle the case when messageRecyclerView is null.
+    // If messageRecyclerView is null, consider returning an appropriate default value -1.
+    private int getFirstVisibleItemPosition() {
+        if (messageRecyclerView == null) return -1;
+        return messageRecyclerView.getRecyclerView().findFirstVisibleItemPosition();
     }
 
     /**

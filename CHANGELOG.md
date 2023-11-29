@@ -1,4 +1,7 @@
 # Changelog
+### v3.11.0 (Nov 29, 2023) with Chat SDK `v4.13.0`
+* `VIEW_TYPE_TYPING_INDICATOR` is a new typing indicator UI that can be turned on through `typingIndicatorTypes` option. When turned on, it will be displayed in `ChannelFragment` upon receiving typing event in real time.
+  * Added `typingIndicatorTypes` in `ChannelConfig`.
 ### v3.10.1 (Nov 9, 2023) with Chat SDK `v4.13.0`
 * Added `uikit-samples` project to demonstrate the usage of `UIKit`.
 * Added `resetToDefault()` in `FragmentProviders`, `ModuleProviders`, `AdapterProviders` and `ViewModelProviders` to reset the providers to default.

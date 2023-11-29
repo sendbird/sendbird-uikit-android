@@ -6,6 +6,7 @@ import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.channel.Role
 import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.consts.ThreadReplySelectType
+import com.sendbird.uikit.consts.TypingIndicatorType
 import com.sendbird.uikit.internal.model.serializer.ReplyTypeAsStringSerializer
 import com.sendbird.uikit.internal.model.serializer.ThreadReplySelectTypeAsStringSerializer
 import com.sendbird.uikit.internal.model.template_messages.KeySet
@@ -30,6 +31,8 @@ data class ChannelConfig internal constructor(
     private var _enableMention: Boolean = false,
     @SerialName(KeySet.enable_typing_indicator)
     private var _enableTypingIndicator: Boolean = true,
+    @SerialName(KeySet.typing_indicator_types)
+    private var _typingIndicatorTypes: Set<TypingIndicatorType> = setOf(TypingIndicatorType.TEXT),
     @SerialName(KeySet.enable_reactions)
     private var _enableReactions: Boolean = true,
     @SerialName(KeySet.enable_voice_message)
@@ -60,6 +63,8 @@ data class ChannelConfig internal constructor(
     private var enableMentionMutable: Boolean? = null,
     @Transient
     private var enableTypingIndicatorMutable: Boolean? = null,
+    @Transient
+    private var typingIndicatorTypesMutable: Set<TypingIndicatorType>? = null,
     @Transient
     private var enableReactionsMutable: Boolean? = null,
     @Transient
@@ -198,6 +203,23 @@ data class ChannelConfig internal constructor(
          */
         set(value) {
             enableTypingIndicatorMutable = value
+        }
+    var typingIndicatorTypes: Set<TypingIndicatorType>
+        /**
+         * Returns <code>Set<TypingIndicatorType></code>, which is how typingIndicators are displayed in the channel fragment.
+         *
+         * @return The value of <code>Set<TypingIndicatorType></code>
+         * @since 3.11.0
+         */
+        get() = typingIndicatorTypesMutable ?: _typingIndicatorTypes
+        /**
+         * Sets the type of the typing indicator.
+         *
+         * @param value of <code>Set<TypingIndicatorType></code>
+         * @since 3.11.0
+         */
+        set(value) {
+            typingIndicatorTypesMutable = value
         }
     var enableReactions: Boolean
         /**
@@ -341,6 +363,7 @@ data class ChannelConfig internal constructor(
         this._enableOgTag = config._enableOgTag
         this._enableMention = config._enableMention
         this._enableTypingIndicator = config._enableTypingIndicator
+        this._typingIndicatorTypes = config._typingIndicatorTypes
         this._enableReactions = config._enableReactions
         this._enableVoiceMessage = config._enableVoiceMessage
         this._enableMultipleFilesMessage = config._enableMultipleFilesMessage
@@ -358,6 +381,7 @@ data class ChannelConfig internal constructor(
         this.enableOgTagMutable = null
         this.enableMentionMutable = null
         this.enableTypingIndicatorMutable = null
+        this.typingIndicatorTypesMutable = null
         this.enableReactionsMutable = null
         this.enableVoiceMessageMutable = null
         this.enableMultipleFilesMessageMutable = null

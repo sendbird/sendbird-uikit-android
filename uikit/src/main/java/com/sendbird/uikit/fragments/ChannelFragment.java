@@ -40,6 +40,7 @@ import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.consts.ThreadReplySelectType;
+import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnConsumableClickListener;
@@ -222,7 +223,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             startActivity(intent);
         });
 
-        if (channelConfig.getEnableTypingIndicator()) {
+        if (channelConfig.getEnableTypingIndicator() && channelConfig.getTypingIndicatorTypes().contains(TypingIndicatorType.TEXT)) {
             viewModel.getTypingMembers().observe(getViewLifecycleOwner(), typingMembers -> {
                 String description = null;
                 if (typingMembers != null && getContext() != null) {
@@ -329,6 +330,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                         case StringSet.MESSAGE_CHANGELOG:
                         case StringSet.MESSAGE_FILL:
                             messageListComponent.notifyMessagesFilled(!anchorDialogShowing.get());
+                            break;
+                        case StringSet.EVENT_TYPING_STATUS_UPDATED:
+                            messageListComponent.notifyTypingIndicatorUpdated(!anchorDialogShowing.get());
                             break;
                     }
                 }

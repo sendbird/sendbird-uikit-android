@@ -108,6 +108,7 @@ internal fun SampleType?.newRedirectToChannelIntent(
                 putExtra(StringSet.KEY_CHANNEL_URL, channelUrl)
                 putExtra(StringSet.PUSH_REDIRECT_CHANNEL, channelUrl)
                 putExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID, messageId)
+                putExtra(StringSet.PUSH_REDIRECT_CHANNEL_TYPE, channelType)
             }
         }
     }

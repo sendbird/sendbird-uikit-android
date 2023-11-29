@@ -112,8 +112,14 @@ public enum MessageType {
      *
      * since 3.10.0
      */
-    VIEW_TYPE_FORM_TYPE_MESSAGE(20);
+    VIEW_TYPE_FORM_TYPE_MESSAGE(20),
 
+    /**
+     * Type of typing indicator.
+     *
+     * since 3.11.0
+     */
+    VIEW_TYPE_TYPING_INDICATOR(21);
     final int value;
 
     MessageType(int value) {

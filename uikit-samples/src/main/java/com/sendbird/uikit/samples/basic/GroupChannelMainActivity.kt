@@ -17,6 +17,7 @@ import com.sendbird.android.user.UnreadMessageCount
 import com.sendbird.android.user.User
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.activities.ChannelActivity
+import com.sendbird.uikit.activities.ChatNotificationChannelActivity
 import com.sendbird.uikit.providers.FragmentProviders
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.SampleSettingsFragment
@@ -99,14 +100,19 @@ class GroupChannelMainActivity : AppCompatActivity() {
         if (intent.hasExtra(StringSet.PUSH_REDIRECT_CHANNEL)) {
             val channelUrl = intent.getStringExtra(StringSet.PUSH_REDIRECT_CHANNEL)
                 ?: return
-            if (intent.hasExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID)) {
-                val messageId = intent.getLongExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID, 0L)
-                if (messageId > 0L) {
-                    startActivity(ChannelActivity.newRedirectToMessageThreadIntent(this, channelUrl, messageId))
-                    intent.removeExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID)
-                }
+            val channelType = intent.getStringExtra(StringSet.PUSH_REDIRECT_CHANNEL_TYPE)
+            if (channelType == StringSet.notification_chat) {
+                startActivity(ChatNotificationChannelActivity.newIntent(this, channelUrl))
             } else {
-                startActivity(ChannelActivity.newIntent(this, channelUrl))
+                if (intent.hasExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID)) {
+                    val messageId = intent.getLongExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID, 0L)
+                    if (messageId > 0L) {
+                        startActivity(ChannelActivity.newRedirectToMessageThreadIntent(this, channelUrl, messageId))
+                        intent.removeExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID)
+                    }
+                } else {
+                    startActivity(ChannelActivity.newIntent(this, channelUrl))
+                }
             }
             intent.removeExtra(StringSet.PUSH_REDIRECT_CHANNEL)
         }
