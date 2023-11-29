@@ -15,6 +15,7 @@ import com.sendbird.android.user.User;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.model.MessageListUIParams;
+import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
@@ -132,6 +133,10 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         } else if (oldMessage.getOgMetaData() != null && !oldMessage.getOgMetaData().equals(newMessage.getOgMetaData())) {
             return false;
+        }
+
+        if (oldMessage instanceof TypingIndicatorMessage && newMessage instanceof TypingIndicatorMessage) {
+            return ((TypingIndicatorMessage) oldMessage).getTypingUsers().equals(((TypingIndicatorMessage) newMessage).getTypingUsers()) ;
         }
 
         if (messageListUIParams.shouldUseQuotedView()) {

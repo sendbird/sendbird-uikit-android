@@ -6,7 +6,7 @@
 
 We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/changelogs/MIGRATIONGUIDE_V3.md) and download [our samples](https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-samples)
 
-Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below. 
+Sendbird UIKit for Android is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. This repository houses the UIKit source code in addition to two samples as explained below.
 
 - **uikit** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-android-sources/blob/main/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
 - **uikit-samples** consists of four use cases of UIKit.
@@ -33,13 +33,13 @@ This section shows you the prerequisites you need for testing Sendbird UIKit for
 
 The minimum requirements for UIKit for Android are:
 
-- Android 5.0 (API level 21) or higher 
+- Android 5.0 (API level 21) or higher
 - Java 8 or higher
-- Support androidx only 
+- Support androidx only
 - Android Gradle plugin 4.0.1 or higher
 - Sendbird Chat SDK for Android 4.0.3 and later
 
-### Try the sample app using your data 
+### Try the sample app using your data
 
 If you would like to try the sample app specifically fit to your usage, you can do so by replacing the default sample app ID with yours, which you can obtain by [creating your Sendbird application from the dashboard](https://sendbird.com/docs/chat/v4/android/quickstart/send-first-message#3-install-and-configure-the-chat-sdk-4-step-1-create-a-sendbird-application-from-your-dashboard). Furthermore, you could also add data of your choice on the dashboard to test. This will allow you to experience the sample app with data from your Sendbird application.
 
@@ -95,11 +95,11 @@ Then, open the `build.gradle` file at the application level. For `Java` and `Kot
 ```gradle
 apply plugin: 'com.android.application'
 
-android {    
+android {
     buildFeatures {
         viewBinding true
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -111,6 +111,6 @@ dependencies {
 }
 ```
 
-After saving your `build.gradle` file, click the **Sync** button to apply all the changes. 
+After saving your `build.gradle` file, click the **Sync** button to apply all the changes.
 
 <br />

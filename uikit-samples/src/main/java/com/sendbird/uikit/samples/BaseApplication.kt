@@ -12,6 +12,7 @@ import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter
 import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.consts.ThreadReplySelectType
+import com.sendbird.uikit.consts.TypingIndicatorType
 import com.sendbird.uikit.interfaces.CustomParamsHandler
 import com.sendbird.uikit.interfaces.UserInfo
 import com.sendbird.uikit.model.configurations.UIKitConfig
@@ -105,6 +106,8 @@ class BaseApplication : MultiDexApplication() {
                 UIKitConfig.groupChannelConfig.threadReplySelectType = ThreadReplySelectType.THREAD
                 // set whether to use voice message
                 UIKitConfig.groupChannelConfig.enableVoiceMessage = true
+                // set typing indicator types
+                UIKitConfig.groupChannelConfig.typingIndicatorTypes = setOf(TypingIndicatorType.BUBBLE, TypingIndicatorType.TEXT)
 
                 // set custom params
                 SendbirdUIKit.setCustomParamsHandler(object : CustomParamsHandler {

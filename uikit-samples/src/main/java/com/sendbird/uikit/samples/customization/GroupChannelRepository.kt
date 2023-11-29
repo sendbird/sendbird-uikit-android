@@ -20,11 +20,11 @@ internal object GroupChannelRepository {
         worker.submit {
             GroupChannel.createMyGroupChannelListQuery(GroupChannelListQueryParams()).next { channels, e ->
                 WaitingDialog.dismiss()
-                if (e != null) {
+                if (e != null || channels.isNullOrEmpty()) {
                     ContextUtils.toastError(activity, "No channels")
                     return@next
                 }
-                channels?.let { channelCache.addAll(it) }
+                channelCache.addAll(channels)
                 activity.runOnUiThread { callback(channelCache.random()) }
             }
         }

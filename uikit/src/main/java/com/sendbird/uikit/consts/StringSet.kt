@@ -126,6 +126,7 @@ object StringSet {
     const val EVENT_MESSAGE_SENT = "EVENT_MESSAGE_SENT"
     const val EVENT_MESSAGE_RECEIVED = "EVENT_MESSAGE_RECEIVED"
     const val EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED"
+    const val EVENT_TYPING_STATUS_UPDATED = "EVENT_TYPING_STATUS_UPDATED"
     const val INVALID_URL = "INVALID_URL"
     const val photo = "photo"
     const val photos = "photos"

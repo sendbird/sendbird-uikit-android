@@ -30,6 +30,7 @@ import com.sendbird.android.user.User;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.wrappers.MessageCollectionImpl;
@@ -40,6 +41,7 @@ import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.SuggestedRepliesMessage;
+import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.Available;
@@ -298,6 +300,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                         } else {
                             typingMembers.setValue(null);
                         }
+                        if (channelConfig.getEnableTypingIndicator() && channelConfig.getTypingIndicatorTypes().contains(TypingIndicatorType.BUBBLE)) {
+                            notifyDataSetChanged(context);
+                        }
                         break;
                     case EVENT_DELIVERY_STATUS_UPDATED:
                     case EVENT_READ_STATUS_UPDATED:
@@ -526,6 +531,11 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             if (suggestedRepliesMessage != null) {
                 copiedList.add(0, suggestedRepliesMessage);
             }
+
+            TypingIndicatorMessage typingIndicatorMessage = createTypingIndicatorMessage();
+            if (typingIndicatorMessage != null) {
+                copiedList.add(0, typingIndicatorMessage);
+            }
         }
 
         if (copiedList.size() == 0) {
@@ -562,6 +572,20 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             BaseMessage lastMessage = groupChannel.getLastMessage();
             if (lastMessage != null && !MessageExtensionsKt.getSuggestedReplies(lastMessage).isEmpty()) {
                 return new SuggestedRepliesMessage(lastMessage);
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private TypingIndicatorMessage createTypingIndicatorMessage() {
+        if (!channelConfig.getEnableTypingIndicator() || !channelConfig.getTypingIndicatorTypes().contains(TypingIndicatorType.BUBBLE)) return null;
+        GroupChannel groupChannel = channel;
+        if (groupChannel != null) {
+            List<User> typingUsers = groupChannel.getTypingUsers();
+            if (!typingUsers.isEmpty()) {
+                return new TypingIndicatorMessage(groupChannel.getUrl(), typingUsers);
             }
         }
 
