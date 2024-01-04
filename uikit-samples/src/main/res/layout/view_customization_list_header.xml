@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toStartOf="@id/arrow"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/arrow"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"

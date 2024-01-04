@@ -8,12 +8,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/sb_size_0"
-        android:layout_marginRight="@dimen/sb_size_4"
+        android:layout_marginStart="@dimen/sb_size_0"
+        android:layout_marginEnd="@dimen/sb_size_4"
         app:layout_constraintBottom_toBottomOf="@+id/brBottom"
         app:layout_constraintEnd_toEndOf="@+id/contentLeftView"
         app:layout_constraintHorizontal_bias="1"
@@ -31,8 +31,8 @@
         android:id="@+id/ivStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/sb_size_0"
-        android:layout_marginRight="@dimen/sb_size_4"
+        android:layout_marginStart="@dimen/sb_size_0"
+        android:layout_marginEnd="@dimen/sb_size_4"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintBottom_toBottomOf="@+id/tvSentAt"

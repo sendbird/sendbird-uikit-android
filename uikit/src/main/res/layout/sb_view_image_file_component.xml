@@ -18,10 +18,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivThumbnailIcon"
         android:background="@drawable/selector_file_message_bubble"
         android:scaleType="centerInside"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="@id/ivThumbnail"
         app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
         app:layout_constraintTop_toTopOf="@id/ivThumbnail"
@@ -29,9 +30,10 @@
         android:layout_width="@dimen/sb_size_32"
         android:layout_height="@dimen/sb_size_32"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivThumbnailOverlay"
         android:scaleType="centerInside"
+        android:contentDescription="@string/sb_view_image_file_description"
         app:layout_constraintStart_toStartOf="@id/ivThumbnail"
         app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
         app:layout_constraintTop_toTopOf="@id/ivThumbnail"

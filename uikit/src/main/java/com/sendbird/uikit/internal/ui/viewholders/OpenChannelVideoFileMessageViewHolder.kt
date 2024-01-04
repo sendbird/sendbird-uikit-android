@@ -23,7 +23,7 @@ internal class OpenChannelVideoFileMessageViewHolder internal constructor(
 
     override fun getClickableViewMap(): Map<String, View> {
         return mapOf(
-            ClickableViewIdentifier.Chat.name to binding.openChannelVideoFileMessageView.binding.ivThumbnailOveray,
+            ClickableViewIdentifier.Chat.name to binding.openChannelVideoFileMessageView.binding.ivThumbnailOverlay,
             ClickableViewIdentifier.Profile.name to binding.openChannelVideoFileMessageView.binding.ivProfileView
         )
     }

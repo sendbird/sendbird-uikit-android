@@ -28,7 +28,6 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
-import com.sendbird.uikit.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

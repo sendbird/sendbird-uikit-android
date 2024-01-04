@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivProfileView"
             android:layout_width="@dimen/sb_size_64"
             android:layout_height="@dimen/sb_size_64"
@@ -25,7 +25,7 @@
             android:layout_marginTop="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_4"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvNickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:layout_marginRight="@dimen/sb_size_16"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvUserIdBadge"
             android:text="@string/text_settings_user_id_badge"
             android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
             android:textAppearance="@style/SendbirdBody3OnLight02"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvUserId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 app:layout_constraintStart_toEndOf="@id/tvDarkThemeName"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivDarkThemeIcon"
                 android:layout_width="@dimen/sb_size_28"
                 android:layout_height="@dimen/sb_size_28"
@@ -110,7 +110,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvDarkThemeName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                 app:layout_constraintStart_toEndOf="@id/tvDisturbName"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivDisturbIcon"
                 android:layout_width="@dimen/sb_size_28"
                 android:layout_height="@dimen/sb_size_28"
@@ -163,7 +163,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvDisturbName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
             android:paddingLeft="@dimen/sb_size_16"
             android:paddingRight="@dimen/sb_size_16">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivHomeIcon"
                 android:layout_width="@dimen/sb_size_28"
                 android:layout_height="@dimen/sb_size_28"
@@ -207,7 +207,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvHomeName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

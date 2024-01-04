@@ -438,4 +438,18 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
                 break;
         }
     }
+
+    /**
+     * Sends the log impression to Sendbird server.
+     * It is working only when the channel is visible.
+     *
+     * @param messages The list of messages to be sent
+     * since 3.12.0
+     */
+    public void sendLogImpression(@NonNull List<BaseMessage> messages) {
+        Logger.d(">> FeedNotificationChannelViewModel::sendLogImpression(), size=%s, isVisible", messages.size(), isVisible);
+        if (channel == null || !isVisible) return;
+        final boolean result = channel.logImpression(messages);
+        Logger.d("++ logImpression result=%s", result);
+    }
 }

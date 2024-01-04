@@ -9,12 +9,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfile"
         android:layout_width="@dimen/sb_size_56"
         android:layout_height="@dimen/sb_size_56"
         android:scaleType="centerCrop"
-        android:layout_marginLeft="@dimen/sb_size_16"
+        android:layout_marginStart="@dimen/sb_size_16"
+        android:contentDescription="@string/sb_sender_profile_description"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +35,7 @@
         app:layout_constraintGuide_end="@dimen/sb_size_16"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUserName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,13 +49,11 @@
         app:layout_constraintBottom_toTopOf="@id/brMiddle"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:paddingLeft="@dimen/sb_size_10"
-        android:paddingRight="@dimen/sb_size_0"
         app:layout_constraintBottom_toTopOf="@id/brMiddle"
         app:layout_constraintRight_toLeftOf="@id/rightGL"
         app:layout_constraintTop_toTopOf="parent"
@@ -69,21 +68,21 @@
         app:constraint_referenced_ids="tvUserName, tvSentAt"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivIcon"
         android:scaleType="centerCrop"
         android:layout_width="@dimen/sb_size_26"
         android:layout_height="@dimen/sb_size_26"
         android:layout_marginTop="@dimen/sb_size_4"
         android:padding="@dimen/sb_size_4"
-        android:layout_marginRight="4dp"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toEndOf="@id/leftGL"
         app:layout_constraintEnd_toStartOf="@id/tvMessage"
         app:layout_constraintTop_toBottomOf="@id/brMiddle"
         android:layout_marginEnd="4dp"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvMessage"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -103,11 +102,12 @@
         app:constraint_referenced_ids="tvMessage, ivProfile, ivIcon"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivDivider"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_1"
         android:layout_marginTop="@dimen/sb_size_8"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="@id/leftGL"
         app:layout_constraintTop_toBottomOf="@id/brBottom"
         app:layout_constraintEnd_toEndOf="parent"

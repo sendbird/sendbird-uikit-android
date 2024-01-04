@@ -11,12 +11,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivEmoji"
         android:layout_width="@dimen/sb_size_20"
         android:layout_height="@dimen/sb_size_20"
         android:src="@drawable/icon_question"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_emoji_default_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +34,7 @@
         app:layout_constraintStart_toEndOf="@id/ivEmoji"
         app:layout_constraintEnd_toStartOf="@id/tvCount"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -11,13 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/icon"
             android:layout_width="@dimen/sb_size_24"
             android:layout_height="@dimen/sb_size_24"
             android:layout_marginTop="@dimen/sb_size_4"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/title"
             android:gravity="center"
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:layout_marginBottom="@dimen/sb_size_4"/>
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/badge"
         android:layout_gravity="center_horizontal"
         android:translationX="@dimen/sb_size_14"

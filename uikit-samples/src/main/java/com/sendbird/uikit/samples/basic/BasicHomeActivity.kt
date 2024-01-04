@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
@@ -23,13 +22,15 @@ import com.sendbird.android.user.UnreadMessageCount
 import com.sendbird.android.user.User
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.basic.openchannel.OpenChannelMainActivity
+import com.sendbird.uikit.samples.common.ThemeHomeActivity
 import com.sendbird.uikit.samples.common.extensions.logout
+import com.sendbird.uikit.samples.common.extensions.setTextColorResource
 import com.sendbird.uikit.samples.databinding.ActivityHomeBinding
 import com.sendbird.uikit.utils.ContextUtils
 import java.util.Locale
 
-class BasicHomeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityHomeBinding
+class BasicHomeActivity : ThemeHomeActivity() {
+    override val binding by lazy { ActivityHomeBinding.inflate(layoutInflater) }
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
     private val appSettingLauncher =
@@ -37,7 +38,7 @@ class BasicHomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.binding = ActivityHomeBinding.inflate(layoutInflater).apply {
+        binding.apply {
             groupChannelButton.setOnClickListener {
                 startActivity(Intent(this@BasicHomeActivity, GroupChannelMainActivity::class.java))
             }
@@ -61,7 +62,15 @@ class BasicHomeActivity : AppCompatActivity() {
                 requestPermissionLauncher.launch(permission)
             }
         }
-        setContentView(binding.root)
+    }
+
+    override fun applyTheme() {
+        super.applyTheme()
+        binding.mainTitle.setTextColorResource(if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01)
+        binding.btSignOut.setBackgroundResource(
+            if (isDarkTheme) R.drawable.selector_home_signout_button_dark
+            else R.drawable.selector_home_signout_button
+        )
     }
 
     override fun onResume() {

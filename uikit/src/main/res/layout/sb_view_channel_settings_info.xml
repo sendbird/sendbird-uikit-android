@@ -19,7 +19,7 @@
             android:layout_height="@dimen/sb_size_64"
             android:layout_margin="@dimen/sb_size_8"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvChannelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

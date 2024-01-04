@@ -1,21 +1,28 @@
 package com.sendbird.uikit.samples.aichatbot
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.samples.R
+import com.sendbird.uikit.samples.common.ThemeHomeActivity
 import com.sendbird.uikit.samples.common.extensions.logout
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 import com.sendbird.uikit.samples.databinding.ActivityAiChatbotHomeBinding
 import com.sendbird.uikit.utils.ContextUtils
 
-class AIChatBotHomeActivity : AppCompatActivity() {
+class AIChatBotHomeActivity : ThemeHomeActivity() {
+    override val binding by lazy { ActivityAiChatbotHomeBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ActivityAiChatbotHomeBinding.inflate(layoutInflater).apply {
-            setContentView(root)
-            chatbotButton.setOnClickListener { startChatWithAiBot() }
-            btSignOut.setOnClickListener { logout() }
-        }
+        binding.chatbotButton.setOnClickListener { startChatWithAiBot() }
+        binding.btSignOut.setOnClickListener { logout() }
+    }
+
+    override fun applyTheme() {
+        super.applyTheme()
+        binding.btSignOut.setBackgroundResource(
+            if (isDarkTheme) R.drawable.selector_home_signout_button_dark
+            else R.drawable.selector_home_signout_button
+        )
     }
 
     private fun startChatWithAiBot() {

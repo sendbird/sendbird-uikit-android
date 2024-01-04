@@ -5,16 +5,12 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/title"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/sb_text_size_20"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-        android:textColor="@color/onlight_01"
         android:lineSpacingExtra="@dimen/sb_text_size_4"
         android:layout_marginStart="@dimen/sb_size_24"
         android:layout_marginTop="@dimen/sb_size_24"
@@ -26,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unreadCount"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/description"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -45,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unreadCount"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/unreadCount"
         android:background="@drawable/shape_badge_background"
         android:textAppearance="@style/SendbirdCaption3OnDark01"
@@ -63,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/chevron"
         android:layout_width="@dimen/sb_size_20"
         android:layout_height="@dimen/sb_size_20"

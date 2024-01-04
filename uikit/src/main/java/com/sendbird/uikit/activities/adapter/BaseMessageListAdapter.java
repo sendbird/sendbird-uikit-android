@@ -20,10 +20,10 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
+import com.sendbird.uikit.interfaces.EmojiReactionHandler;
 import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
@@ -233,10 +233,10 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
             next = getItem(position - 1);
         }
 
-        if (ChannelConfig.getEnableReactions(messageListUIParams.getChannelConfig(), channel) && holder instanceof GroupChannelMessageViewHolder) {
-            GroupChannelMessageViewHolder groupChannelHolder = (GroupChannelMessageViewHolder) holder;
+        if (ChannelConfig.getEnableReactions(messageListUIParams.getChannelConfig(), channel) && holder instanceof EmojiReactionHandler) {
+            EmojiReactionHandler emojiReactionHandler = (EmojiReactionHandler) holder;
             List<Reaction> reactionList = current.getReactions();
-            groupChannelHolder.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
+            emojiReactionHandler.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
                 int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
                     emojiReactionClickListener.onEmojiReactionClick(
@@ -247,7 +247,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
                     );
                 }
             }, (view, reactionPosition, reactionKey) -> {
-                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
+                int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionLongClickListener != null) {
                     emojiReactionLongClickListener.onEmojiReactionLongClick(
                         view,
@@ -257,7 +257,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
                     );
                 }
             }, v -> {
-                int messagePosition = groupChannelHolder.getBindingAdapterPosition();
+                int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionMoreButtonClickListener != null) {
                     emojiReactionMoreButtonClickListener.onItemClick(
                         v,
@@ -602,7 +602,6 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
         return messageListUIParams;
     }
 
-    @TestOnly
     @NonNull
     MessageViewHolder createViewHolder(@NonNull ViewGroup parent, int viewType, LayoutInflater inflater) {
         return MessageViewHolderFactory.createViewHolder(inflater,

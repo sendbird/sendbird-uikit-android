@@ -8,17 +8,18 @@
     android:paddingBottom="@dimen/sb_size_8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfileView"
         android:layout_width="@dimen/sb_size_26"
         android:layout_height="@dimen/sb_size_26"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_channel_cover_description"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/contentPanel"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvLabel"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

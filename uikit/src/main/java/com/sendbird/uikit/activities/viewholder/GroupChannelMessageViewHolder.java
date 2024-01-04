@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sendbird.android.message.Reaction;
+import com.sendbird.uikit.interfaces.EmojiReactionHandler;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.model.MessageListUIParams;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * A ViewHolder describes an item view and Message about its place within the RecyclerView.
  */
-public abstract class GroupChannelMessageViewHolder extends MessageViewHolder {
+public abstract class GroupChannelMessageViewHolder extends MessageViewHolder implements EmojiReactionHandler {
     public GroupChannelMessageViewHolder(@NonNull View view) {
         super(view);
     }

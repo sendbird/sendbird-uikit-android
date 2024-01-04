@@ -26,15 +26,16 @@
         app:layout_constraintGuide_begin="@dimen/sb_size_16"
         android:orientation="horizontal"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfile"
         android:layout_width="@dimen/sb_size_34"
         android:layout_height="@dimen/sb_size_34"
+        android:importantForAccessibility="no"
         app:layout_constraintLeft_toLeftOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintBottom_toBottomOf="@id/senderBarrier"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvNickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,7 +49,7 @@
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintBottom_toTopOf="@id/tvSentAt"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -61,12 +62,13 @@
         app:layout_constraintTop_toBottomOf="@id/tvNickname"
         app:layout_constraintBottom_toTopOf="@id/senderBarrier"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivMoreIcon"
         android:layout_width="@dimen/sb_size_24"
         android:layout_height="@dimen/sb_size_24"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintRight_toRightOf="@id/guidelineEnd"/>
+        app:layout_constraintRight_toRightOf="@id/guidelineEnd"
+        android:contentDescription="@string/sb_view_parent_message_info_menu_icon_description"/>
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/senderGroup"
@@ -89,6 +91,7 @@
         android:layout_marginTop="@dimen/sb_size_8"
         android:layout_marginBottom="@dimen/sb_size_6"
         android:background="@android:color/transparent"
+        android:importantForAccessibility="no"
         app:layout_goneMarginBottom="@dimen/sb_size_6"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
@@ -149,24 +152,25 @@
         app:layout_constraintTop_toTopOf="@id/contentPanel"
         app:layout_constraintBottom_toBottomOf="@id/contentPanel">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivFileIcon"
             android:layout_width="@dimen/sb_size_28"
             android:layout_height="@dimen/sb_size_28"
             android:src="@drawable/icon_document"
             android:scaleType="centerCrop"
+            android:importantForAccessibility="no"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvFileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="middle"
-            android:layout_marginLeft="@dimen/sb_size_8"
+            android:layout_marginStart="@dimen/sb_size_8"
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/ivFileIcon"
@@ -187,10 +191,11 @@
         app:layout_constraintTop_toTopOf="@id/contentPanel"
         app:layout_constraintBottom_toBottomOf="@id/contentPanel" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivThumbnailOverlay"
         android:background="@drawable/selector_file_message_bubble"
         android:scaleType="centerInside"
+        android:contentDescription="@string/sb_view_image_file_description"
         app:layout_constraintStart_toStartOf="@id/ivThumbnail"
         app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
         app:layout_constraintTop_toTopOf="@id/ivThumbnail"
@@ -198,10 +203,11 @@
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_0"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivThumbnailIcon"
         android:background="@drawable/selector_file_message_bubble"
         android:scaleType="centerInside"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="@id/ivThumbnail"
         app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
         app:layout_constraintTop_toTopOf="@id/ivThumbnail"
@@ -247,11 +253,10 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="rvEmojiReactionList, contentDivider"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvReplyCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="1 reply"
         android:layout_marginTop="@dimen/sb_size_12"
         android:layout_marginBottom="@dimen/sb_size_12"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"

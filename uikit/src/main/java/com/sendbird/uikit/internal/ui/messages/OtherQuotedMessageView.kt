@@ -99,7 +99,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
         binding.quoteReplyMessagePanel.visibility = GONE
         binding.ivQuoteReplyMessageIcon.visibility = GONE
         binding.quoteReplyThumbnailPanel.visibility = GONE
-        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+        binding.ivQuoteReplyThumbnailOverlay.visibility = GONE
 
         parentMessage?.let {
             val replyType = messageListUIParams.channelConfig.replyType
@@ -143,7 +143,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                         target: Target<Drawable?>,
                         isFirstResource: Boolean
                     ): Boolean {
-                        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+                        binding.ivQuoteReplyThumbnailOverlay.visibility = GONE
                         return false
                     }
 
@@ -154,7 +154,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                         dataSource: DataSource,
                         isFirstResource: Boolean
                     ): Boolean {
-                        binding.ivQuoteReplyThumbnailOveray.visibility = VISIBLE
+                        binding.ivQuoteReplyThumbnailOverlay.visibility = VISIBLE
                         return false
                     }
                 }

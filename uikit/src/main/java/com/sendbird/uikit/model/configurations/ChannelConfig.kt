@@ -326,7 +326,6 @@ data class ChannelConfig internal constructor(
          * @since 3.10.0
          */
         get() = enableSuggestedRepliesMutable ?: _enableSuggestedReplies
-
         /**
          * Sets whether to use the suggested replies or not.
          *
@@ -347,7 +346,6 @@ data class ChannelConfig internal constructor(
          * @since 3.10.0
          */
         get() = enableFormTypeMessageMutable ?: _enableFormTypeMessage
-
         /**
          * Sets whether to use the form type message or not.
          *

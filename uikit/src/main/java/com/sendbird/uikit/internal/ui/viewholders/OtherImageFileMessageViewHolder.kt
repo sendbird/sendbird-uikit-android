@@ -40,7 +40,7 @@ internal class OtherImageFileMessageViewHolder internal constructor(
 
     override fun getClickableViewMap(): Map<String, View> {
         return mapOf(
-            ClickableViewIdentifier.Chat.name to binding.otherImageFileMessageView.binding.ivThumbnailOveray,
+            ClickableViewIdentifier.Chat.name to binding.otherImageFileMessageView.binding.ivThumbnailOverlay,
             ClickableViewIdentifier.Profile.name to binding.otherImageFileMessageView.binding.ivProfileView,
             ClickableViewIdentifier.QuoteReply.name to binding.otherImageFileMessageView.binding.quoteReplyPanel,
             ClickableViewIdentifier.ThreadInfo.name to binding.otherImageFileMessageView.binding.threadInfo

@@ -494,8 +494,22 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @Override
     synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> ChannelViewModel::notifyDataSetChanged(), size = %s, action=%s, hasNext=%s", cachedMessages.size(), traceName, hasNext());
-        if (collection == null) return;
+        if (shouldIgnoreEvent(traceName)) {
+            Logger.d("-- ChannelViewModel::notifyDataSetChanged() event is ignored. traceName=%s", traceName);
+            return;
+        }
+        final List<BaseMessage> finalMessageList = buildMessageList();
+        if (finalMessageList.size() == 0) {
+            statusFrame.setValue(StatusFrameView.Status.EMPTY);
+        } else {
+            statusFrame.setValue(StatusFrameView.Status.NONE);
+        }
 
+        messageList.setValue(new ChannelMessageData(traceName, finalMessageList));
+    }
+
+    boolean shouldIgnoreEvent(@NonNull String traceName) {
+        if (collection == null) return true;
         // even though a pending message is added, if the message is sent from the Thread page it shouldn't scroll to the first.
         final List<BaseMessage> pendingMessages = new ArrayList<>(collection.getPendingMessages());
         final List<BaseMessage> failedMessages = new ArrayList<>(collection.getFailedMessages());
@@ -515,9 +529,23 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                 isThreadMessage = lastFailedMessage != null && lastFailedMessage.isReplyToChannel();
             }
 
-            if (shouldCheckEvents && isThreadMessage) return;
+            return shouldCheckEvents && isThreadMessage;
+        }
 
-            // even though it is not a pending message event, it has to remove pending message from the thread page for the other events.
+        return false;
+    }
+
+    @UiThread
+    @NonNull
+    @Override
+    public List<BaseMessage> buildMessageList() {
+        MessageCollectionWrapper collection = this.collection;
+        if (collection == null) return Collections.emptyList();
+
+        final List<BaseMessage> pendingMessages = new ArrayList<>(collection.getPendingMessages());
+        final List<BaseMessage> failedMessages = new ArrayList<>(collection.getFailedMessages());
+
+        if (channelConfig.getReplyType() == ReplyType.THREAD)  {
             removeThreadMessages(pendingMessages);
             removeThreadMessages(failedMessages);
         }
@@ -538,13 +566,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             }
         }
 
-        if (copiedList.size() == 0) {
-            statusFrame.setValue(StatusFrameView.Status.EMPTY);
-        } else {
-            statusFrame.setValue(StatusFrameView.Status.NONE);
-        }
-
-        messageList.setValue(new ChannelMessageData(traceName, copiedList));
+        return copiedList;
     }
 
     private void removeThreadMessages(@NonNull List<BaseMessage> src) {

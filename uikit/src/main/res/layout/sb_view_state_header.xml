@@ -13,27 +13,26 @@
         android:layout_height="@dimen/sb_size_56"
         android:padding="@dimen/sb_size_8">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/leftButton"
             android:layout_width="@dimen/sb_size_40"
             android:layout_height="@dimen/sb_size_40"
             android:padding="@dimen/sb_size_8"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
+            android:contentDescription="@string/sb_view_header_left_button_description"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/title"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/title"
             android:layout_width="@dimen/sb_size_0"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
-            android:layout_marginLeft="@dimen/sb_size_20"
-            android:layout_marginRight="@dimen/sb_size_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/leftButton"
@@ -41,7 +40,7 @@
             android:layout_marginStart="@dimen/sb_size_20"
             android:layout_marginEnd="@dimen/sb_size_8" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/rightButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sb_size_40"

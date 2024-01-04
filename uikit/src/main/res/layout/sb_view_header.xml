@@ -14,13 +14,14 @@
         android:paddingLeft="@dimen/sb_size_8"
         android:paddingRight="@dimen/sb_size_8">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/leftButton"
             android:layout_width="@dimen/sb_size_40"
             android:layout_height="@dimen/sb_size_40"
             android:padding="@dimen/sb_size_8"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
+            android:contentDescription="@string/sb_view_header_left_button_description"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +32,7 @@
             android:id="@+id/profileView"
             android:layout_width="@dimen/sb_size_34"
             android:layout_height="@dimen/sb_size_34"
-            android:layout_marginLeft="@dimen/sb_size_8"
+            android:layout_marginStart="@dimen/sb_size_8"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +51,7 @@
             app:layout_constraintStart_toEndOf="@id/profileView"
             app:layout_constraintEnd_toStartOf="@id/rightButton">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +59,7 @@
                 android:ellipsize="end"
                 />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,13 +69,14 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/rightButton"
             android:layout_width="@dimen/sb_size_40"
             android:layout_height="@dimen/sb_size_40"
             android:padding="@dimen/sb_size_8"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
+            android:contentDescription="@string/sb_view_header_right_button_description"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

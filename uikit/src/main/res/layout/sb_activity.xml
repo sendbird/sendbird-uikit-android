@@ -7,7 +7,8 @@
     <ImageView
         android:background="@color/onlight_04"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"/>
 
     <FrameLayout
         android:id="@+id/sb_fragment_container"

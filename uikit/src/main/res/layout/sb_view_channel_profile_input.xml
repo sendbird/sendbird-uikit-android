@@ -8,19 +8,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivMediaSelector"
         android:layout_width="@dimen/sb_size_72"
         android:layout_height="@dimen/sb_size_72"
         android:layout_marginStart="@dimen/sb_size_16"
+        android:contentDescription="@string/sb_view_channel_profile_input_select_channel_cover_description"
+        android:labelFor="@id/ivCameraIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/inputContainer"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivCameraIcon"
         android:layout_width="@dimen/sb_size_41"
         android:layout_height="@dimen/sb_size_41"
+        android:importantForAccessibility="no"
         app:layout_constraintTop_toTopOf="@id/ivMediaSelector"
         app:layout_constraintBottom_toBottomOf="@id/ivMediaSelector"
         app:layout_constraintStart_toStartOf="@id/ivMediaSelector"
@@ -39,25 +42,28 @@
         app:layout_constraintStart_toEndOf="@id/ivMediaSelector"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <EditText
             android:id="@+id/etChannelName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:hint="@string/text_input_channel_name_hint"
+            android:importantForAutofill="no"
             android:singleLine="true"
             android:lines="1"
             android:layout_weight="1"
             android:background="@null">
             <requestFocus />
-        </androidx.appcompat.widget.AppCompatEditText>
+        </EditText>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivClear"
             android:layout_width="@dimen/sb_size_24"
             android:layout_height="@dimen/sb_size_24"
-            android:layout_marginLeft="@dimen/sb_size_5"
+            android:layout_marginStart="@dimen/sb_size_5"
             android:layout_gravity="end|center_vertical"
             android:visibility="gone"
+            android:contentDescription="@string/sb_view_channel_profile_input_clear_channel_name_description"
             />
 
     </LinearLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/quoteReplyPanel"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -7,28 +7,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivQuoteReplyIcon"
         android:src="@drawable/icon_reply_filled"
         android:layout_width="@dimen/sb_size_12"
         android:layout_height="@dimen/sb_size_12"
-        android:layout_marginRight="@dimen/sb_size_4"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:layout_marginStart="@dimen/sb_size_12"
+        android:importantForAccessibility="no"
         app:layout_constraintRight_toLeftOf="@+id/tvQuoteReplyTitle"
         app:layout_constraintTop_toTopOf="@id/tvQuoteReplyTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvQuoteReplyTitle"
         android:layout_marginEnd="@dimen/sb_size_4" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvQuoteReplyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxWidth="@dimen/sb_message_max_width"
         android:singleLine="true"
         android:ellipsize="end"
+        android:paddingStart="@dimen/sb_size_0"
         android:paddingEnd="@dimen/sb_size_12"
-        android:paddingRight="@dimen/sb_size_12"
         android:layout_marginBottom="@dimen/sb_size_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,18 +55,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvQuoteReplyTitle"
-        >
+        tools:ignore="UseCompoundDrawables">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivQuoteReplyMessageIcon"
             android:layout_width="@dimen/sb_size_14"
             android:layout_height="@dimen/sb_size_14"
-            android:layout_marginRight="@dimen/sb_size_4"
             android:layout_marginEnd="@dimen/sb_size_4"
+            android:importantForAccessibility="no"
             android:visibility="gone"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvQuoteReplyMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,20 +88,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivQuoteReplyThumbnailOveray"
+        <ImageView
+            android:id="@+id/ivQuoteReplyThumbnailOverlay"
             android:background="@drawable/sb_shape_quoted_message_thumbnail_overlay"
             android:alpha="0.4"
             android:scaleType="centerInside"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:contentDescription="@string/sb_view_my_quoted_file_message_description"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivQuoteReplyThumbnailIcon"
             android:scaleType="centerInside"
             android:layout_gravity="center"
             android:layout_width="@dimen/sb_size_24"
-            android:layout_height="@dimen/sb_size_24"/>
+            android:layout_height="@dimen/sb_size_24"
+            android:importantForAccessibility="no"/>
 
     </FrameLayout>
 

@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/sb_size_8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvLabel"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -25,19 +25,20 @@
         app:layout_constraintBottom_toTopOf="@id/contentTopBarrier"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivUnreadIndicator"
         android:layout_width="@dimen/sb_size_6"
         android:layout_height="@dimen/sb_size_6"
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginBottom="@dimen/sb_size_4"
+        android:contentDescription="@string/sb_view_feed_notification_unread_indicator_description"
         app:layout_constraintStart_toEndOf="@id/tvLabel"
         app:layout_constraintEnd_toStartOf="@id/tvSentAt"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/contentTopBarrier"
     />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

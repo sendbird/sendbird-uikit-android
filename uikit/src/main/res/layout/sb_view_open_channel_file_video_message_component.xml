@@ -12,22 +12,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfileView"
         android:layout_width="@dimen/sb_size_28"
         android:layout_height="@dimen/sb_size_28"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_sender_profile_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:layout_marginEnd="@dimen/sb_size_4"
-        android:layout_marginRight="@dimen/sb_size_4"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/sb_size_2"
@@ -39,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@id/ivProfileView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,7 +60,6 @@
         android:layout_height="wrap_content"
         android:maxWidth="@dimen/sb_open_channel_max_message_width"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:layout_marginTop="@dimen/sb_size_4"
         app:layout_constraintWidth_max="@dimen/sb_open_channel_max_message_width"
         app:layout_constraintHorizontal_bias="0"
@@ -81,11 +79,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivThumbnailOveray"
+        <ImageView
+            android:id="@+id/ivThumbnailOverlay"
             android:background="@drawable/selector_file_message_bubble"
             android:scaleType="centerInside"
             android:maxWidth="@dimen/sb_open_channel_max_message_width"
+            android:contentDescription="@string/sb_view_open_channel_file_video_message_description"
             app:layout_constraintStart_toStartOf="@id/ivThumbnail"
             app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
             app:layout_constraintTop_toTopOf="@id/ivThumbnail"
@@ -93,10 +92,11 @@
             android:layout_width="@dimen/sb_size_0"
             android:layout_height="@dimen/sb_size_0"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivThumbnailIcon"
             android:background="@drawable/selector_file_message_bubble"
             android:scaleType="centerInside"
+            android:importantForAccessibility="no"
             app:layout_constraintStart_toStartOf="@id/ivThumbnail"
             app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
             app:layout_constraintTop_toTopOf="@id/ivThumbnail"
@@ -111,7 +111,6 @@
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"
         android:layout_marginTop="@dimen/sb_size_2"
-        android:layout_marginLeft="@dimen/sb_size_40"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/contentPanel"
         android:layout_marginStart="@dimen/sb_size_40" />

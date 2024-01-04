@@ -9,7 +9,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,17 +26,18 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tvNickname" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfileView"
         android:layout_width="@dimen/sb_size_26"
         android:layout_height="@dimen/sb_size_26"
         android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nicknameBarrier"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="1" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,16 +70,16 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/buttonSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sb_size_36"
                 android:text="@string/sb_forms_submit"
-                android:inputType="text"
                 android:layout_marginTop="@dimen/sb_size_12"
                 app:layout_constraintTop_toBottomOf="@id/rvFormFields"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.sendbird.uikit.internal.ui.widgets.AutoLinkTextView
             android:id="@+id/tvMessageFormDisabled"
             android:layout_width="wrap_content"

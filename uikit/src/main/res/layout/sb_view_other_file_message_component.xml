@@ -8,18 +8,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfileView"
         android:layout_width="@dimen/sb_size_26"
         android:layout_height="@dimen/sb_size_26"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_sender_profile_description"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         app:layout_constraintEnd_toStartOf="@id/contentPanelWithReactions"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:translationY="@dimen/sb_size_10"
         app:layout_constraintStart_toEndOf="@+id/ivProfileView"
         app:layout_constraintTop_toTopOf="parent"
@@ -53,9 +53,7 @@
         android:layout_height="wrap_content"
         android:maxWidth="@dimen/sb_message_max_width"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:layout_marginEnd="@dimen/sb_size_4"
-        android:layout_marginRight="@dimen/sb_size_4"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
@@ -89,15 +87,15 @@
             app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
             app:layout_constraintBottom_toTopOf="@id/rvEmojiReactionList" >
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivIcon"
                 android:layout_width="@dimen/sb_size_28"
                 android:layout_height="@dimen/sb_size_28"
                 android:scaleType="centerCrop"
-                android:layout_marginRight="@dimen/sb_size_8"
-                android:layout_marginEnd="@dimen/sb_size_8" />
+                android:layout_marginEnd="@dimen/sb_size_8"
+                android:importantForAccessibility="no" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvFileName"
                 android:maxWidth="@dimen/sb_file_name_max_width"
                 android:layout_width="wrap_content"
@@ -133,12 +131,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_0"
-        android:layout_marginLeft="@dimen/sb_size_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/brBottom"
         app:layout_constraintHorizontal_bias="1"

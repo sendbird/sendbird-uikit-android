@@ -15,18 +15,19 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="ivProfileView,contentPanel,tvSentAt" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivProfileView"
         android:layout_width="@dimen/sb_size_26"
         android:layout_height="@dimen/sb_size_26"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_sender_profile_description"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/contentPanel"
         app:layout_constraintBottom_toTopOf="@+id/brBottom" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,13 +37,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_0"
         android:layout_marginEnd="@dimen/sb_size_0"
-        android:layout_marginLeft="@dimen/sb_size_4"
         android:layout_marginStart="@dimen/sb_size_4"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@+id/contentPanel"
@@ -62,7 +61,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:translationY="@dimen/sb_size_10"
         app:layout_constraintStart_toEndOf="@+id/ivProfileView"
         app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +71,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
         android:addStatesFromChildren="true"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/ivProfileView"
