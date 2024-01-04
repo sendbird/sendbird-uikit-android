@@ -5,22 +5,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivOgImage"
         android:layout_width="@dimen/sb_default_thumbnail_width"
         android:layout_height="@dimen/sb_default_thumbnail_height"
+        android:importantForAccessibility="no"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintBottom_toTopOf="@id/phOgTop"
         app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"  />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivOgImageOveray"
+    <ImageView
+        android:id="@+id/ivOgImageOverlay"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_0"
         android:background="@drawable/selector_message_og_image_overlay"
         android:duplicateParentState="true"
+        android:contentDescription="@string/sb_view_ogtag_image_description"
         app:layout_constraintStart_toStartOf="@id/ivOgImage"
         app:layout_constraintEnd_toEndOf="@id/ivOgImage"
         app:layout_constraintTop_toTopOf="@id/ivOgImage"
@@ -35,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivOgImage"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvOgTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/phOgTop" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvOgDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,7 +72,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvOgTitle" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvOgUrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

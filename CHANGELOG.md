@@ -1,4 +1,28 @@
 # Changelog
+### v3.12.0 (Jan, 2024) with Chat SDK `v4.13.0`
+* Added `sendLogImpression(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.
+* Improved performance of scrolling in Message List.
+
+**MyMessageViewHolder** and **OtherMessageViewHolder**:
+* Added `MyMessageViewHolder` and `OtherMessageViewHolder` to provide a basic UI frame for single message.
+* These ViewHolders include UI elements such as 'message sent time,' 'nickname,' 'profile,' and 'sending status,' excluding the content area.
+* Customers can now customize only the content area. Note: This feature is currently experimental.
+
+**BaseMessageListViewModel.buildMessageList()**:
+* Added `BaseMessageListViewModel.buildMessageList()` to allow customers to customize the message list before delivering it to the view.
+
+```kotlin
+class CustomChannelViewModel(
+    channelUrl: String
+) : ChannelViewModel(channelUrl, null) {
+    override fun buildMessageList(): List<BaseMessage> {
+        return super.buildMessageList().map { message ->
+            // Customize the message here
+            message
+        }
+    }
+}
+```
 ### v3.11.0 (Nov 29, 2023) with Chat SDK `v4.13.0`
 * `VIEW_TYPE_TYPING_INDICATOR` is a new typing indicator UI that can be turned on through `typingIndicatorTypes` option. When turned on, it will be displayed in `ChannelFragment` upon receiving typing event in real time.
   * Added `typingIndicatorTypes` in `ChannelConfig`.

@@ -21,6 +21,7 @@ import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setTypeface
+import com.sendbird.uikit.internal.utils.NotificationImpressionTracker
 import com.sendbird.uikit.utils.SoftInputUtils
 
 internal class NotificationRecyclerView @JvmOverloads constructor(
@@ -32,6 +33,18 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
     private var categoryMenuTextAppearance: Int
     private var categoryMenuBackground: Int
     private val binding: SbViewChatNotificationRecyclerViewBinding
+    private val notificationScrollImpressionTracker by lazy {
+        NotificationImpressionTracker(recyclerView).apply {
+            onImpressionDetected = {
+                recyclerView.layoutManager?.let {
+                    val firstVisibleItemPosition = it.findFirstVisibleItemPosition()
+                    val lastVisibleItemPosition = it.findLastVisibleItemPosition()
+                    onImpressionDetectedListener?.invoke(firstVisibleItemPosition, lastVisibleItemPosition)
+                }
+            }
+        }
+    }
+    var onImpressionDetectedListener: ((firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) -> Unit)? = null
     val recyclerView: PagerRecyclerView
         get() = binding.rvMessageList
     val isReverseLayout
@@ -126,6 +139,16 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
             )
         }
         set.applyTo(rootView)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        notificationScrollImpressionTracker.start()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        notificationScrollImpressionTracker.stop()
     }
 
     init {

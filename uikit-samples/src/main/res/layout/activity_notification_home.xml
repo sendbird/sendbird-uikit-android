@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/sb_size_24"
-        android:background="@color/background_100">
+        android:paddingTop="@dimen/sb_size_24">
 
         <TextView
+            android:id="@+id/mainTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/sb_size_24"
@@ -43,7 +43,7 @@
             android:layout_marginEnd="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_16"/>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/btSignOut"
             android:layout_marginTop="@dimen/sb_size_16"
             android:layout_width="match_parent"

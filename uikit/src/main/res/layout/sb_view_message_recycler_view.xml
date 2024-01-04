@@ -23,8 +23,6 @@
         android:id="@+id/vgTooltipBox"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_58"
-        android:paddingLeft="@dimen/sb_size_48"
-        android:paddingRight="@dimen/sb_size_0"
         android:visibility="gone"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +31,7 @@
         android:paddingStart="@dimen/sb_size_48"
         android:paddingEnd="@dimen/sb_size_0">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvTooltipText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,18 +44,18 @@
             />
     </FrameLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivScrollFirstIcon"
         android:layout_width="@dimen/sb_size_58"
         android:layout_height="@dimen/sb_size_58"
         android:padding="@dimen/sb_size_17"
         android:visibility="gone"
-        android:layout_marginRight="@dimen/sb_size_16"
+        android:contentDescription="@string/sb_view_message_recycler_view_scroll_to_bottom_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/sb_size_16" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:visibility="gone"
         android:id="@+id/tvTypingIndicator"
         android:layout_width="match_parent"
@@ -70,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvBanner"
         android:visibility="gone"
         android:layout_width="@dimen/sb_size_0"

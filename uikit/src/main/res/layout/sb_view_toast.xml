@@ -14,24 +14,26 @@
         android:layout_marginRight="@dimen/sb_size_8"
         android:layout_marginLeft="@dimen/sb_size_8">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivSuccess"
             android:layout_width="@dimen/sb_size_20"
             android:layout_height="@dimen/sb_size_20"
-            android:src="@drawable/icon_done"/>
+            android:src="@drawable/icon_done"
+            android:contentDescription="@string/sb_view_toast_success_description"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivError"
             android:layout_width="@dimen/sb_size_20"
             android:layout_height="@dimen/sb_size_20"
-            android:src="@drawable/icon_error" />
+            android:src="@drawable/icon_error"
+            android:contentDescription="@string/sb_view_toast_error_description"/>
     </FrameLayout>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvToastText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_16"
+        android:layout_marginEnd="@dimen/sb_size_16"
         android:maxLines="2"
         android:ellipsize="end"/>
 

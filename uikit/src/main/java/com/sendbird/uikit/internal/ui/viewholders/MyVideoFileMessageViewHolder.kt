@@ -40,7 +40,7 @@ internal class MyVideoFileMessageViewHolder internal constructor(
 
     override fun getClickableViewMap(): Map<String, View> {
         return mapOf(
-            ClickableViewIdentifier.Chat.name to binding.myVideoFileMessageView.binding.ivThumbnailOveray,
+            ClickableViewIdentifier.Chat.name to binding.myVideoFileMessageView.binding.ivThumbnailOverlay,
             ClickableViewIdentifier.QuoteReply.name to binding.myVideoFileMessageView.binding.quoteReplyPanel,
             ClickableViewIdentifier.ThreadInfo.name to binding.myVideoFileMessageView.binding.threadInfo
         )

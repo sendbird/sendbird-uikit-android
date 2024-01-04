@@ -12,8 +12,6 @@
         android:id="@+id/ivStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_4"
-        android:layout_marginLeft="@dimen/sb_size_0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintBottom_toBottomOf="@id/tvSentAt"
         app:layout_constraintEnd_toStartOf="@id/tvSentAt"
@@ -22,12 +20,10 @@
         android:layout_marginEnd="@dimen/sb_size_4"
         android:layout_marginStart="@dimen/sb_size_0" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_4"
-        android:layout_marginLeft="@dimen/sb_size_0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintBottom_toBottomOf="@id/brBottom"
         app:layout_constraintEnd_toEndOf="@id/contentLeftView"
@@ -95,16 +91,16 @@
             app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
             app:layout_constraintBottom_toTopOf="@id/rvEmojiReactionList" >
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivIcon"
                 android:layout_width="@dimen/sb_size_28"
                 android:layout_height="@dimen/sb_size_28"
                 android:scaleType="centerCrop"
-                android:layout_marginRight="@dimen/sb_size_8"
                 android:layout_marginEnd="@dimen/sb_size_8"
+                android:importantForAccessibility="no"
                 />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvFileName"
                 android:maxWidth="@dimen/sb_file_name_max_width"
                 android:layout_width="wrap_content"

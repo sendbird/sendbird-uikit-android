@@ -219,18 +219,18 @@ open class TextUIConfig private constructor(
 
     class Builder {
         @ColorInt
-        private var textBackgroundColor = -1
+        private var textBackgroundColor = UNDEFINED_RESOURCE_ID
 
         @ColorInt
-        private var textColor = -1
-        private var textStyle = -1
+        private var textColor = UNDEFINED_RESOURCE_ID
+        private var textStyle = UNDEFINED_RESOURCE_ID
 
         // pixel size
-        private var textSize = -1
+        private var textSize = UNDEFINED_RESOURCE_ID
         private var familyName: String? = null
 
         @FontRes
-        private var customFontRes = 0
+        private var customFontRes = UNDEFINED_RESOURCE_ID
 
         /**
          * Constructor
@@ -327,7 +327,7 @@ open class TextUIConfig private constructor(
          * @return This Builder object to allow for chaining of calls to set methods.
          * @since 3.2.1
          */
-        fun setCustomFontRes(customFontRes: Int): Builder {
+        fun setCustomFontRes(@FontRes customFontRes: Int): Builder {
             this.customFontRes = customFontRes
             return this
         }

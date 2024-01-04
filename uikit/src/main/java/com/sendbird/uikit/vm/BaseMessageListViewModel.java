@@ -41,6 +41,7 @@ import com.sendbird.uikit.model.MutableLiveDataEx;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 abstract public class BaseMessageListViewModel extends BaseViewModel implements OnPagedDataLoader<List<BaseMessage>> {
@@ -397,7 +398,35 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     }
 
     @UiThread
-    synchronized void notifyDataSetChanged(@NonNull String traceName) {}
+    synchronized void notifyDataSetChanged(@NonNull String traceName) {
+    }
+
+    /**
+     * Processes a list of messages to be passed to the view. The return value of this function is delivered to the view through {@link LiveData}.
+     * If you want to customize the message list to be delivered to the view, you can override this function as shown below.
+     *
+     * <pre>
+     * class CustomChannelViewModel(
+     *     channelUrl: String
+     * ) : ChannelViewModel(channelUrl, null) {
+     *     override fun buildMessageList(): List&lt;BaseMessage&gt; {
+     *         return super.buildMessageList().map { message ->
+     *             // customize the message here
+     *             message
+     *         }
+     *     }
+     * }
+     * </pre>
+     * To provide custom {@link ChannelViewModel} to Sendbird UIKit, Check out <a href="https://sendbird.com/docs/chat/uikit/v3/android/customizations/global-customization/viewmodels#2-apply-custom-viewmodels">here</a> for more details.
+     *
+     * @return List of messages to be passed to the view through LiveData.
+     * since 3.12.0
+     */
+    @UiThread
+    @NonNull
+    public List<BaseMessage> buildMessageList() {
+        return Collections.emptyList();
+    }
 
     @TestOnly
     @Nullable

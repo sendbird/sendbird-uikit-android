@@ -20,7 +20,7 @@
             android:layout_height="@dimen/sb_size_64"
             android:layout_margin="@dimen/sb_size_8"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvChannelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvInformationTitle"
             android:text="@string/sb_text_url"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/tvInformationContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

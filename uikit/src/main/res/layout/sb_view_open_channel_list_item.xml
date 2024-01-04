@@ -6,26 +6,28 @@
     android:layout_height="wrap_content"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivCoverImage"
         android:layout_width="@dimen/sb_size_42"
         android:layout_height="@dimen/sb_size_42"
         android:layout_marginTop="@dimen/sb_size_10"
         android:layout_marginStart="@dimen/sb_size_16"
+        android:contentDescription="@string/sb_channel_cover_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivCoverIcon"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="@dimen/sb_size_9"
+        android:importantForAccessibility="no"
         app:layout_constraintTop_toTopOf="@id/ivCoverImage"
         app:layout_constraintBottom_toBottomOf="@id/ivCoverImage"
         app:layout_constraintStart_toStartOf="@id/ivCoverImage"
         app:layout_constraintEnd_toEndOf="@id/ivCoverImage"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,29 +42,31 @@
         app:layout_constraintTop_toTopOf="@id/ivCoverImage"
         app:layout_constraintEnd_toStartOf="@id/ivFrozenIcon"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivFrozenIcon"
         android:src="@drawable/icon_freeze"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"
-        android:layout_marginLeft="@dimen/sb_size_4"
+        android:contentDescription="@string/sb_view_channel_list_item_frozen_icon_description"
+        android:layout_marginStart="@dimen/sb_size_4"
         app:layout_constraintStart_toEndOf="@id/tvTitle"
         app:layout_constraintTop_toTopOf="@id/tvTitle"
         app:layout_constraintBottom_toBottomOf="@id/tvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivParticipantsIcon"
         android:layout_width="@dimen/sb_size_14"
         android:layout_height="@dimen/sb_size_12"
         android:src="@drawable/icon_members"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="@id/tvTitle"
         app:layout_constraintTop_toTopOf="@+id/tvParticipants"
         app:layout_constraintBottom_toBottomOf="@+id/tvParticipants"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvParticipants"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,12 +76,13 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivDivider"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_1"
         android:layout_marginTop="@dimen/sb_size_13"
         android:layout_marginBottom="@dimen/sb_size_10"
+        android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="@id/tvTitle"
         app:layout_constraintTop_toBottomOf="@id/ivParticipantsIcon"
         app:layout_constraintEnd_toEndOf="parent"

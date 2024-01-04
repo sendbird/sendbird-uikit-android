@@ -1,4 +1,5 @@
 package com.sendbird.uikit.internal.extensions
+
 import com.sendbird.uikit.internal.interfaces.OnSubmitButtonClickListener
 import com.sendbird.uikit.modules.components.MessageListComponent
 

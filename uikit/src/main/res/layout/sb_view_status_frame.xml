@@ -13,14 +13,15 @@
         android:layout_gravity="center"
         android:gravity="center">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivAlertIcon"
             android:minWidth="@dimen/sb_size_48"
             android:minHeight="@dimen/sb_size_48"
+            android:importantForAccessibility="no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/ivAlertText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,10 +37,11 @@
             android:padding="@dimen/sb_size_8"
             android:gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivAction"
                 android:layout_width="@dimen/sb_size_20"
                 android:layout_height="@dimen/sb_size_20"
+                android:importantForAccessibility="no"
                 android:scaleType="centerCrop"
                 android:src="@drawable/icon_refresh"/>
 
@@ -47,7 +49,7 @@
                 android:layout_width="@dimen/sb_size_12"
                 android:layout_height="@dimen/sb_size_0"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

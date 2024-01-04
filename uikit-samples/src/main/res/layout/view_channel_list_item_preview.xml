@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/sb_size_16"
     android:paddingBottom="@dimen/sb_size_10">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivBroadcastIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginEnd="@dimen/sb_size_4" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvMemberCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
         android:layout_marginStart="@dimen/sb_size_0"
         android:layout_marginEnd="@dimen/sb_size_4" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivFrozenIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
@@ -68,7 +68,7 @@
         app:layout_constraintStart_toEndOf="@id/tvMemberCount"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivPushEnabledIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
@@ -79,7 +79,7 @@
         app:layout_constraintStart_toEndOf="@id/ivFrozenIcon"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivLastMessageStatus"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
@@ -90,7 +90,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tvUpdatedAt"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUpdatedAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvLastMessage"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
         app:layout_constraintRight_toLeftOf="@+id/tvUnreadMentionCount"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUnreadMentionCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
         app:layout_constraintRight_toLeftOf="@+id/tvUnreadCount"
         app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUnreadCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/ivMediaSelector"
             android:layout_width="@dimen/sb_size_56"
             android:layout_height="@dimen/sb_size_56"

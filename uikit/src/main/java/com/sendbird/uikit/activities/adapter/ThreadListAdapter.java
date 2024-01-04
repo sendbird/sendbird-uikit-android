@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseFileMessage;
 import com.sendbird.android.message.BaseMessage;
-import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.UserMessage;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;

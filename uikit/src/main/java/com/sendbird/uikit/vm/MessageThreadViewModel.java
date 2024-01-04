@@ -397,15 +397,38 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
     synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.i(">> MessageThreadViewModel::notifyDataSetChanged(), skipEvent=%s traceName=%s ", skipEvent, traceName);
         if (skipEvent) return;
+        if (shouldIgnoreEvent(traceName)) {
+            Logger.d("-- MessageThreadViewModel::notifyDataSetChanged() event is ignored. traceName=%s", traceName);
+            return;
+        }
+        final List<BaseMessage> finalMessageList = buildMessageList();
+        statusFrame.setValue(StatusFrameView.Status.NONE);
+        messageList.setValue(new ChannelViewModel.ChannelMessageData(traceName, finalMessageList));
+    }
+
+    boolean shouldIgnoreEvent(@NonNull String traceName) {
+        MessageCollection collection = this.collection;
+        if (collection == null) return true;
+
+        final List<BaseMessage> pendingMessages = new ArrayList<>(filterThreadMessages(collection.getPendingMessages()));
+        if (traceName.equals(StringSet.ACTION_PENDING_MESSAGE_ADDED) && pendingMessages.size() == 0) return true;
+
+        final List<BaseMessage> failedMessages = new ArrayList<>(filterThreadMessages(collection.getFailedMessages()));
+        if (traceName.equals(StringSet.ACTION_FAILED_MESSAGE_ADDED) && failedMessages.size() == 0) return true;
+
+        return false;
+    }
+
+    @UiThread
+    @NonNull
+    @Override
+    public List<BaseMessage> buildMessageList() {
+        MessageCollection collection = this.collection;
+        if (collection == null) return Collections.emptyList();
+
         final List<BaseMessage> currentList = this.cachedMessages.toList();
-
-        final List<BaseMessage> pendingMessages = new ArrayList<>();
-        if (collection != null) pendingMessages.addAll(filterThreadMessages(collection.getPendingMessages()));
-        if (traceName.equals(StringSet.ACTION_PENDING_MESSAGE_ADDED) && pendingMessages.size() == 0) return;
-
-        final List<BaseMessage> failedMessages = new ArrayList<>();
-        if (collection != null) failedMessages.addAll(filterThreadMessages(collection.getFailedMessages()));
-        if (traceName.equals(StringSet.ACTION_FAILED_MESSAGE_ADDED) && failedMessages.size() == 0) return;
+        final List<BaseMessage> pendingMessages = new ArrayList<>(filterThreadMessages(collection.getPendingMessages()));
+        final List<BaseMessage> failedMessages = new ArrayList<>(filterThreadMessages(collection.getFailedMessages()));
 
         // parent message should be added regardless of pending, failed messages.
         if (!hasPrevious() || currentList.size() == 0) {
@@ -416,9 +439,7 @@ public class MessageThreadViewModel extends BaseMessageListViewModel {
             currentList.addAll(0, pendingMessages);
             currentList.addAll(0, failedMessages);
         }
-
-        statusFrame.setValue(StatusFrameView.Status.NONE);
-        messageList.setValue(new ChannelViewModel.ChannelMessageData(traceName, currentList));
+        return currentList;
     }
 
     private synchronized void disposeMessageCollection() {

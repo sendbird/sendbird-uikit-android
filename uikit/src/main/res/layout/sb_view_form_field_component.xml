@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvFormFieldTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvFormFieldTitleOptional"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:id="@+id/unansweredLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatEditText
+            <EditText
                 android:id="@+id/etFormField"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sb_size_36"
@@ -49,8 +49,10 @@
                 android:paddingBottom="@dimen/sb_size_8"
                 android:maxLines="1"
                 android:inputType="text"
-                app:layout_constraintTop_toTopOf="parent"/>
-            <androidx.appcompat.widget.AppCompatTextView
+                android:hint="@string/sb_edittext_hint_default_description"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="Autofill" />
+            <TextView
                 android:id="@+id/tvFormFieldError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +70,7 @@
             android:paddingStart="@dimen/sb_size_12"
             android:paddingEnd="@dimen/sb_size_12"
             android:layout_marginTop="@dimen/sb_size_8">
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvAnswer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -76,11 +78,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iconDone"/>
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/iconDone"
                 android:layout_width="@dimen/sb_size_20"
                 android:layout_height="@dimen/sb_size_20"
                 android:src="@drawable/icon_done"
+                android:importantForAccessibility="no"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>

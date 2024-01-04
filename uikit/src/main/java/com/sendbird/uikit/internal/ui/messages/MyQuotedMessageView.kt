@@ -101,7 +101,7 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
             context.getString(R.string.sb_text_you),
             UserUtils.getDisplayName(context, parentMessage?.sender, true)
         )
-        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+        binding.ivQuoteReplyThumbnailOverlay.visibility = GONE
         when (parentMessage) {
             is UserMessage -> {
                 binding.quoteReplyMessagePanel.visibility = VISIBLE
@@ -120,7 +120,7 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
                         target: Target<Drawable?>,
                         isFirstResource: Boolean
                     ): Boolean {
-                        binding.ivQuoteReplyThumbnailOveray.visibility = GONE
+                        binding.ivQuoteReplyThumbnailOverlay.visibility = GONE
                         return false
                     }
 
@@ -131,7 +131,7 @@ internal class MyQuotedMessageView @JvmOverloads constructor(
                         dataSource: DataSource,
                         isFirstResource: Boolean
                     ): Boolean {
-                        binding.ivQuoteReplyThumbnailOveray.visibility = VISIBLE
+                        binding.ivQuoteReplyThumbnailOverlay.visibility = VISIBLE
                         return false
                     }
                 }

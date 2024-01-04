@@ -9,9 +9,11 @@ import com.sendbird.uikit.samples.BaseApplication.Companion.initStateChanges
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.consts.InitState
 import com.sendbird.uikit.samples.common.extensions.authenticate
+import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
 import com.sendbird.uikit.samples.common.extensions.startingIntent
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
+import com.sendbird.uikit.samples.databinding.ActivitySplashBinding
 
 /**
  * Displays a splash screen.
@@ -20,7 +22,12 @@ import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        ActivitySplashBinding.inflate(layoutInflater).apply {
+            setContentView(root)
+            val isDarkTheme = PreferenceUtils.themeMode.isUsingDarkTheme()
+            val backgroundRedId = if (isDarkTheme) R.color.background_600 else R.color.background_50
+            root.setBackgroundResource(backgroundRedId)
+        }
         initStateChanges().observe(this) { initState: InitState ->
             Logger.i("++ init state : %s", initState)
             WaitingDialog.dismiss()

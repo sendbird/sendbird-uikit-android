@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/sb_size_16"
     android:paddingBottom="@dimen/sb_size_10">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivBroadcastIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
@@ -19,6 +19,7 @@
         android:layout_marginRight="@dimen/sb_size_4"
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginEnd="@dimen/sb_size_4"
+        android:contentDescription="@string/sb_view_channel_list_item_broadcast_icon_description"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintRight_toLeftOf="@id/tvTitle"
@@ -27,7 +28,7 @@
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +45,7 @@
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginEnd="@dimen/sb_size_4" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvMemberCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,40 +58,43 @@
         android:layout_marginStart="@dimen/sb_size_0"
         android:layout_marginEnd="@dimen/sb_size_4" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivFrozenIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
         android:src="@drawable/icon_freeze"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_view_channel_list_item_frozen_icon_description"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         app:layout_constraintEnd_toStartOf="@id/ivPushEnabledIcon"
         app:layout_constraintStart_toEndOf="@id/tvMemberCount"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivPushEnabledIcon"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
         android:src="@drawable/icon_notifications_off_filled"
         android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         app:layout_constraintEnd_toStartOf="@id/ivLastMessageStatus"
         app:layout_constraintStart_toEndOf="@id/ivFrozenIcon"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivLastMessageStatus"
         android:layout_width="@dimen/sb_size_15"
         android:layout_height="@dimen/sb_size_15"
         android:layout_marginStart="@dimen/sb_size_4"
         android:src="@drawable/icon_done_all"
+        android:importantForAccessibility="no"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         app:layout_constraintEnd_toStartOf="@+id/tvUpdatedAt"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUpdatedAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,7 +105,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvLastMessage"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"
@@ -114,7 +118,7 @@
         app:layout_constraintRight_toLeftOf="@+id/tvUnreadMentionCount"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUnreadMentionCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -126,7 +130,7 @@
         app:layout_constraintRight_toLeftOf="@+id/tvUnreadCount"
         app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvUnreadCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

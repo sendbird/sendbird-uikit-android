@@ -127,7 +127,7 @@ class MessageUISampleAdapter(
         val binding: ViewCustomMessageMeBinding
     ) : GroupChannelMessageViewHolder(binding.root) {
         override fun setEmojiReaction(
-            reactionList: MutableList<Reaction>,
+            reactionList: List<Reaction>,
             emojiReactionClickListener: OnItemClickListener<String>?,
             emojiReactionLongClickListener: OnItemLongClickListener<String>?,
             moreButtonClickListener: View.OnClickListener?

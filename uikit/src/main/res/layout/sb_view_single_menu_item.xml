@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tvDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,26 +37,28 @@
                 android:layout_marginRight="@dimen/sb_size_8"
                 />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/ivNext"
                 android:layout_width="@dimen/sb_size_24"
                 android:layout_height="@dimen/sb_size_24"
                 android:src="@drawable/icon_chevron_right"
+                android:importantForAccessibility="no"
                 />
         </LinearLayout>
     </FrameLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivIcon"
         android:layout_width="@dimen/sb_size_24"
         android:layout_height="@dimen/sb_size_24"
         android:scaleType="centerCrop"
+        android:importantForAccessibility="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/tvName"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="wrap_content"

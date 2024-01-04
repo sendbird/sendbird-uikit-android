@@ -4,10 +4,11 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/ivStatus"
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"
+        android:importantForAccessibility="no"
         android:visibility="gone"/>
 
     <com.sendbird.uikit.internal.ui.widgets.MessageProgressView
