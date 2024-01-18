@@ -7,14 +7,13 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Form;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
-import com.sendbird.uikit.internal.extensions.MessageListAdapterExtensionsKt;
-import com.sendbird.uikit.internal.extensions.MessageListComponentExtensionsKt;
-import com.sendbird.uikit.internal.interfaces.OnSubmitButtonClickListener;
+import com.sendbird.uikit.interfaces.FormSubmitButtonClickListener;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.providers.AdapterProviders;
 
@@ -33,6 +32,9 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     @Nullable
     private OnItemClickListener<String> suggestedRepliesClickListener;
 
+    @Nullable
+    private FormSubmitButtonClickListener formSubmitButtonClickListener;
+
     /**
      * Constructor
      *
@@ -49,13 +51,8 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
             adapter.setSuggestedRepliesClickListener(this::onSuggestedRepliesClicked);
         }
 
-        if (MessageListAdapterExtensionsKt.getSubmitButtonClickListener(adapter) == null) {
-            MessageListAdapterExtensionsKt.setSubmitButtonClickListener(adapter, (message, form) -> {
-                OnSubmitButtonClickListener listener = MessageListComponentExtensionsKt.getSubmitButtonClickListener(this);
-                if (listener != null) {
-                    listener.onClicked(message, form);
-                }
-            });
+        if (adapter.getFormSubmitButtonClickListener() == null) {
+            adapter.setFormSubmitButtonClickListener(this::onFormSubmitButtonClicked);
         }
     }
 
@@ -141,6 +138,16 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     }
 
     /**
+     * Register a callback to be invoked when the button to submit the form is clicked.
+     *
+     * @param formSubmitButtonClickListener The callback that will run.
+     * since 3.12.1
+     */
+    public void setFormSubmitButtonClickListener(@Nullable FormSubmitButtonClickListener formSubmitButtonClickListener) {
+        this.formSubmitButtonClickListener = formSubmitButtonClickListener;
+    }
+
+    /**
      * Register a callback to be invoked when the quoted message is clicked.
      *
      * since 3.0.0
@@ -215,6 +222,18 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      */
     public void setSuggestedRepliesClickListener(@Nullable OnItemClickListener<String> suggestedRepliesClickListener) {
         this.suggestedRepliesClickListener = suggestedRepliesClickListener;
+    }
+
+    /**
+     * Called when the form submit button is clicked.
+     *
+     * @param message the message that contains the form
+     * @param form the form to be submitted
+     * since 3.12.1
+     */
+    public void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull Form form) {
+        if (formSubmitButtonClickListener != null)
+            formSubmitButtonClickListener.onClicked(message, form);
     }
 
     /**

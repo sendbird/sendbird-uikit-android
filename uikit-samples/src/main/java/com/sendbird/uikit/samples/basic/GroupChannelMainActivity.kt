@@ -91,6 +91,11 @@ class GroupChannelMainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+        SendbirdChat.removeUserEventHandler(USER_EVENT_HANDLER_KEY)
+    }
+
     private fun redirectChannelIfNeeded(intent: Intent?) {
         if (intent == null) return
         if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) {

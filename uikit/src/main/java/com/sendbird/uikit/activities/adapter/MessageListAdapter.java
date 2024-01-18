@@ -10,8 +10,7 @@ import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.internal.extensions.MessageListAdapterExtensionsKt;
-import com.sendbird.uikit.internal.interfaces.OnSubmitButtonClickListener;
+import com.sendbird.uikit.interfaces.FormSubmitButtonClickListener;
 import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
 import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
@@ -24,6 +23,9 @@ import com.sendbird.uikit.model.MessageListUIParams;
 public class MessageListAdapter extends BaseMessageListAdapter {
     @Nullable
     protected OnItemClickListener<String> suggestedRepliesClickListener;
+
+    @Nullable
+    protected FormSubmitButtonClickListener formSubmitButtonClickListener;
 
     public MessageListAdapter(boolean useMessageGroupUI) {
         this(null, useMessageGroupUI);
@@ -68,7 +70,7 @@ public class MessageListAdapter extends BaseMessageListAdapter {
         if (holder instanceof FormMessageViewHolder) {
             FormMessageViewHolder formMessageViewHolder = (FormMessageViewHolder) holder;
             formMessageViewHolder.setOnSubmitClickListener((message, form) -> {
-                final OnSubmitButtonClickListener finalListener = MessageListAdapterExtensionsKt.getSubmitButtonClickListener(this);
+                final FormSubmitButtonClickListener finalListener = this.formSubmitButtonClickListener;
                 if (finalListener != null) {
                     finalListener.onClicked(message, form);
                 }
@@ -95,5 +97,26 @@ public class MessageListAdapter extends BaseMessageListAdapter {
      */
     public void setSuggestedRepliesClickListener(@Nullable OnItemClickListener<String> suggestedRepliesClickListener) {
         this.suggestedRepliesClickListener = suggestedRepliesClickListener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the Form submit button is clicked.
+     *
+     * @return {@link FormSubmitButtonClickListener} to be invoked when the Form submit button is clicked.
+     * since 3.12.1
+     */
+    @Nullable
+    public FormSubmitButtonClickListener getFormSubmitButtonClickListener() {
+        return formSubmitButtonClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the Form submit button is clicked.
+     *
+     * @param formSubmitButtonClickListener The callback that will run when the Form submit button is clicked.
+     * since 3.12.1
+     */
+    public void setFormSubmitButtonClickListener(@Nullable FormSubmitButtonClickListener formSubmitButtonClickListener) {
+        this.formSubmitButtonClickListener = formSubmitButtonClickListener;
     }
 }

@@ -82,7 +82,6 @@ open class LoginActivity : AppCompatActivity() {
                 Logger.e(e)
                 ContextUtils.toastError(this@LoginActivity, "${e.message}")
                 WaitingDialog.dismiss()
-                PreferenceUtils.clearAll()
                 return@authenticate
             }
             WaitingDialog.dismiss()

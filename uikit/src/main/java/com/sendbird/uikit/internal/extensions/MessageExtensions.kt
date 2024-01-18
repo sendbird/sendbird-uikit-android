@@ -1,20 +1,16 @@
 package com.sendbird.uikit.internal.extensions
 
 import android.content.Context
-import com.sendbird.android.annotation.AIChatBotExperimental
-import com.sendbird.android.handler.CompletionHandler
 import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
+import com.sendbird.android.message.FormField
 import com.sendbird.android.message.MultipleFilesMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
-import com.sendbird.uikit.internal.model.Form
-import com.sendbird.uikit.internal.singleton.JsonParser
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager
 import com.sendbird.uikit.model.UserMessageDisplayData
 import com.sendbird.uikit.utils.MessageUtils
-import java.util.concurrent.ConcurrentHashMap
 
 internal fun BaseMessage.hasParentMessage() = parentMessageId != 0L
 
@@ -81,59 +77,22 @@ internal fun BaseFileMessage.getName(context: Context): String {
     }
 }
 
-@OptIn(AIChatBotExperimental::class)
-internal fun BaseMessage.submitForm(form: Form, handler: CompletionHandler? = null) {
-    val answers = form.formFields.fold(mutableMapOf<String, String>()) { acc, formField ->
-        val answer = formField.temporaryAnswer ?: return@fold acc
-        acc.apply { put(answer.formFieldKey, answer.answer) }
-    }
-
-    this.submitForm(form.formKey, answers) { e ->
-        handler?.onResult(e)
-    }
+internal fun List<BaseMessage>.clearLastValidations() {
+    this.flatMap { message -> message.forms }
+        .flatMap { form -> form.formFields }
+        .forEach { formField -> formField.lastValidation = null }
 }
 
-internal val BaseMessage.suggestedReplies: List<String>
-    get() {
-        val suggestedReplies = extendedMessagePayload[StringSet.suggested_replies] ?: return emptyList()
-        return try {
-            JsonParser.fromJson(suggestedReplies)
-        } catch (e: Exception) {
-            emptyList()
+internal val lastValidations: MutableMap<String, Boolean?> = mutableMapOf()
+internal var FormField.lastValidation: Boolean?
+    get() = lastValidations[this.identifier]
+    set(value) {
+        if (value == null) {
+            lastValidations.remove(this.identifier)
+        } else {
+            lastValidations[this.identifier] = value
         }
     }
 
-internal val formMap: MutableMap<Long, Pair<String, List<Form>>> = ConcurrentHashMap()
-
-internal val BaseMessage.forms: List<Form>
-    get() {
-        formMap[this.messageId]?.let { return it.second }
-        val forms = extendedMessagePayload[StringSet.forms] ?: return emptyList()
-        return try {
-            JsonParser.fromJson<List<Form>>(forms).onEach { form ->
-                // setting answer to formField manually.
-                val answeredList = form.answeredList
-                form.formFields.forEach { formField ->
-                    formField.messageId = this.messageId
-                    formField.answer = answeredList?.find { it.formFieldKey == formField.formFieldKey }
-                }
-            }.also {
-                formMap[messageId] = this.channelUrl to it
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-
-internal fun clearTemporaryAnswers(channelUrl: String) {
-    formMap.forEach {
-        if (it.value.first == channelUrl) {
-            it.value.second.forEach { form ->
-                form.formFields.forEach { formField ->
-                    formField.temporaryAnswer = null
-                    formField.lastValidation = null
-                }
-            }
-        }
-    }
-}
+private val FormField.identifier: String
+    get() = "${this.messageId}_${this.key}"

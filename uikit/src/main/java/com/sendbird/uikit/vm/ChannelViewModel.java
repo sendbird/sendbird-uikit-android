@@ -592,7 +592,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         GroupChannel groupChannel = channel;
         if (groupChannel != null) {
             BaseMessage lastMessage = groupChannel.getLastMessage();
-            if (lastMessage != null && !MessageExtensionsKt.getSuggestedReplies(lastMessage).isEmpty()) {
+            if (lastMessage != null && !lastMessage.getSuggestedReplies().isEmpty()) {
                 return new SuggestedRepliesMessage(lastMessage);
             }
         }

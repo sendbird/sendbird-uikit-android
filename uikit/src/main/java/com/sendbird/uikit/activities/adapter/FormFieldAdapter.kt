@@ -3,22 +3,23 @@ package com.sendbird.uikit.activities.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import com.sendbird.android.message.Form
+import com.sendbird.android.message.FormField
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder
 import com.sendbird.uikit.databinding.SbViewFormFieldBinding
-import com.sendbird.uikit.internal.model.Form
-import com.sendbird.uikit.internal.model.FormField
+import com.sendbird.uikit.internal.extensions.lastValidation
 
 internal class FormFieldAdapter : BaseAdapter<FormField, BaseViewHolder<FormField>>() {
     private val formFields: MutableList<FormField> = mutableListOf()
 
-    fun isReadyToSubmit(): Boolean {
-        return formFields.all { it.isReadyToSubmit() }
+    fun isSubmittable(): Boolean {
+        return formFields.all { it.isSubmittable }
     }
 
     fun updateValidation() {
         formFields.forEachIndexed { index, formField ->
             val lastValidation = formField.lastValidation
-            val validation = formField.isReadyToSubmit()
+            val validation = formField.isSubmittable
             formField.lastValidation = validation
             if (lastValidation != validation) {
                 notifyItemChanged(index)
@@ -27,7 +28,7 @@ internal class FormFieldAdapter : BaseAdapter<FormField, BaseViewHolder<FormFiel
     }
 
     fun setFormFields(form: Form) {
-        val newFormFields = if (form.isAnswered) {
+        val newFormFields = if (form.isSubmitted) {
             form.formFields.filter { it.answer != null }
         } else {
             form.formFields
@@ -83,7 +84,7 @@ internal class FormFieldAdapter : BaseAdapter<FormField, BaseViewHolder<FormFiel
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
-            return oldItem.formFieldKey == newItem.formFieldKey &&
+            return oldItem.key == newItem.key &&
                 oldItem.messageId == newItem.messageId
         }
 

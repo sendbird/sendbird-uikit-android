@@ -148,22 +148,4 @@ object StringSet {
     const val quote_reply = "quote_reply"
     const val thread = "thread"
     const val parent = "parent"
-
-    // AI ChatBot
-    const val sub_type = "sub_type"
-    const val sub_data = "sub_data"
-    const val suggested_replies = "suggested_replies"
-    const val forms = "forms"
-    const val key = "key"
-    const val fields = "fields"
-    const val data = "data"
-    const val title = "title"
-    const val input_type = "input_type"
-    const val regex = "regex"
-    const val placeholder = "placeholder"
-    const val required = "required"
-    const val text = "text"
-    const val phone = "phone"
-    const val email = "email"
-    const val password = "password"
 }

@@ -14,7 +14,6 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.activities.adapter.FormFieldAdapter
 import com.sendbird.uikit.databinding.SbViewFormMessageComponentBinding
-import com.sendbird.uikit.internal.extensions.forms
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.utils.DrawableUtils
@@ -123,10 +122,10 @@ internal class FormMessageView @JvmOverloads internal constructor(
             null
         )
 
-        if (form.answeredList == null) {
-            setSubmitButtonVisibility(View.VISIBLE)
-        } else {
+        if (form.isSubmitted) {
             setSubmitButtonVisibility(View.GONE)
+        } else {
+            setSubmitButtonVisibility(View.VISIBLE)
         }
         ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, false)
         ViewUtils.drawProfile(binding.ivProfileView, message)
@@ -140,9 +139,9 @@ internal class FormMessageView @JvmOverloads internal constructor(
 
     fun setSubmitButtonClickListener(listener: OnClickListener?) {
         binding.buttonSubmit.setOnClickListener { view ->
-            val isReadyToSubmit = formFieldAdapter.isReadyToSubmit()
+            val isSubmittable = formFieldAdapter.isSubmittable()
             formFieldAdapter.updateValidation()
-            if (!isReadyToSubmit) {
+            if (!isSubmittable) {
                 return@setOnClickListener
             }
             listener?.onClick(view)

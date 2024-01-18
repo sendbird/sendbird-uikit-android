@@ -357,10 +357,6 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                 PendingMessageRepository.getInstance().clearAllFileInfo(messages);
                 cachedMessages.addAll(messages);
             } else {
-                for (BaseMessage message : messages) {
-                    MessageExtensionsKt.getFormMap().remove(message.getMessageId());
-                }
-
                 cachedMessages.updateAll(messages);
             }
             notifyDataSetChanged(context);
@@ -378,9 +374,6 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
 
         if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED) {
             // Remove the succeeded message from the succeeded message datasource.
-            for (BaseMessage message : messages) {
-                MessageExtensionsKt.getFormMap().remove(message.getMessageId());
-            }
             cachedMessages.deleteAll(messages);
             notifyDataSetChanged(context);
         } else if (context.getMessagesSendingStatus() == SendingStatus.PENDING) {

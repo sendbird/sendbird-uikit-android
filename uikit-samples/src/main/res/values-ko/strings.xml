@@ -172,7 +172,7 @@
     <string name="text_confirm">확인</string>
     <string name="text_select_count">%d명 선택</string>
 
-    <string name="app_name">SendbirdUIKitCustomSample</string>
+    <string name="app_name">UIKitSamples</string>
     <string name="text_title_login_activity">Sendbird UIKit Sample</string>
 
     <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
