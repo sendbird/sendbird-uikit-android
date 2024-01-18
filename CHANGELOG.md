@@ -1,4 +1,6 @@
 # Changelog
+### v3.12.1 (Jan 18, 2024) with Chat SDK `v4.14.1`
+* Fix memory leaks in UIKit.
 ### v3.12.0 (Jan, 2024) with Chat SDK `v4.13.0`
 * Added `sendLogImpression(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.
 * Improved performance of scrolling in Message List.

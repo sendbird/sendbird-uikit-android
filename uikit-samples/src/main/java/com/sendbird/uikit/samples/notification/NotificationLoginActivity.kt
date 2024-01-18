@@ -32,7 +32,6 @@ class NotificationLoginActivity : LoginActivity() {
             if (e != null) {
                 Logger.e(e)
                 ContextUtils.toastError(this@NotificationLoginActivity, "${e.message}")
-                PreferenceUtils.clearAll()
                 return@authenticate
             }
             PreferenceUtils.userId = userId

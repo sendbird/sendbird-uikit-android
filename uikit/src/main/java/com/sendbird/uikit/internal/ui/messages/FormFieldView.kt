@@ -5,18 +5,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.sendbird.android.message.Answer
+import com.sendbird.android.message.FormField
+import com.sendbird.android.message.FormFieldInputType
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.databinding.SbViewFormFieldComponentBinding
+import com.sendbird.uikit.internal.extensions.lastValidation
 import com.sendbird.uikit.internal.extensions.setAppearance
-import com.sendbird.uikit.internal.model.Answer
-import com.sendbird.uikit.internal.model.FormField
-import com.sendbird.uikit.internal.model.FormFieldInputType
 
 internal class FormFieldView @JvmOverloads internal constructor(
     context: Context,
@@ -107,12 +107,12 @@ internal class FormFieldView @JvmOverloads internal constructor(
         if (answer == null) {
             binding.unansweredLayout.visibility = VISIBLE
             binding.answeredLayout.visibility = GONE
-            if (formField.formFileInputType == FormFieldInputType.PASSWORD) {
+            if (formField.inputType == FormFieldInputType.PASSWORD) {
                 binding.etFormField.transformationMethod = PasswordTransformationMethod()
             } else {
                 binding.etFormField.transformationMethod = null
             }
-            binding.etFormField.setText(formField.temporaryAnswer?.answer ?: "")
+            binding.etFormField.setText(formField.temporaryAnswer?.value ?: "")
             textWatcher = FormFieldTextWatcher(formField).also {
                 binding.etFormField.addTextChangedListener(it)
             }
@@ -120,7 +120,7 @@ internal class FormFieldView @JvmOverloads internal constructor(
         } else {
             binding.unansweredLayout.visibility = GONE
             binding.answeredLayout.visibility = VISIBLE
-            binding.tvAnswer.text = answer.answer
+            binding.tvAnswer.text = answer.value
         }
     }
 
@@ -156,12 +156,7 @@ internal class FormFieldView @JvmOverloads internal constructor(
                 showValidFormField()
             }
 
-            if (formField.temporaryAnswer == null) {
-                Log.e("nathan", "set temporary answer $formField")
-                formField.temporaryAnswer = Answer(formField.formFieldKey, s.toString())
-                return
-            }
-            formField.temporaryAnswer?.answer = s.toString()
+            formField.temporaryAnswer = Answer(formField.key, s.toString())
         }
     }
 }

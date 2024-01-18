@@ -11,7 +11,6 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.activities.adapter.SuggestedRepliesAdapter
 import com.sendbird.uikit.databinding.SbViewSuggestedRepliesMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
-import com.sendbird.uikit.internal.extensions.suggestedReplies
 import com.sendbird.uikit.model.SuggestedRepliesMessage
 
 internal class SuggestedRepliesMessageView @JvmOverloads internal constructor(

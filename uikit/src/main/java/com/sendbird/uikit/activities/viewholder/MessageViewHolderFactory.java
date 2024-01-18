@@ -265,13 +265,8 @@ public class MessageViewHolderFactory {
     public static MessageType getMessageType(@NonNull BaseMessage message) {
         MessageType type;
 
-        Map<String, String> extendedMessagePayload = message.getExtendedMessagePayload();
-        if (!extendedMessagePayload.isEmpty()) {
-            if (message.getChannelType() == ChannelType.GROUP
-                && !MessageExtensionsKt.getForms(message).isEmpty()
-            ) {
-                return MessageType.VIEW_TYPE_FORM_TYPE_MESSAGE;
-            }
+        if (message.getChannelType() == ChannelType.GROUP && !message.getForms().isEmpty()) {
+            return MessageType.VIEW_TYPE_FORM_TYPE_MESSAGE;
         }
 
         if (message instanceof UserMessage) {

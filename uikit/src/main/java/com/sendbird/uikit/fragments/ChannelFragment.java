@@ -22,6 +22,7 @@ import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.FileMessage;
+import com.sendbird.android.message.Form;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.UserMessageCreateParams;
@@ -51,7 +52,6 @@ import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
-import com.sendbird.uikit.internal.extensions.MessageListComponentExtensionsKt;
 import com.sendbird.uikit.internal.model.VoicePlayerManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
@@ -203,7 +203,11 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         if (!isInitCallFinished.get()) {
             shouldDismissLoadingDialog();
         }
-        MessageExtensionsKt.clearTemporaryAnswers(getChannelUrl());
+
+        ChannelViewModel.ChannelMessageData channelMessageData = getViewModel().getMessageList().getValue();
+        if (channelMessageData != null) {
+            MessageExtensionsKt.clearLastValidations(channelMessageData.getMessages());
+        }
     }
 
     /**
@@ -260,6 +264,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         messageListComponent.setOnEmojiReactionLongClickListener(emojiReactionLongClickListener != null ? emojiReactionLongClickListener : (view, position, message, reactionKey) -> showEmojiReactionDialog(message, position));
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
         messageListComponent.setSuggestedRepliesClickListener((view, position, data) -> onSuggestedRepliesClicked(data));
+        messageListComponent.setFormSubmitButtonClickListener(this::onFormSubmitButtonClicked);
         messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : this::onMessageTooltipClicked);
 
         messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
@@ -272,14 +277,6 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 return true;
             }
             return false;
-        });
-
-        MessageListComponentExtensionsKt.setSubmitButtonClickListener(messageListComponent, (message, form) -> {
-            MessageExtensionsKt.submitForm(message, form, (e) -> {
-                if (e != null) {
-                    showConfirmDialog(getString(R.string.sb_forms_submit_failed));
-                }
-            });
         });
 
         final ChannelModule module = getModule();
@@ -528,6 +525,20 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         sendUserMessage(params);
     }
 
+    /**
+     * Called when the Form submit button is clicked.
+     *
+     * @param message The message that contains the form
+     * @param form The form to be submitted
+     * since 3.12.1
+     */
+    protected void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull Form form) {
+        message.submitForm(form, (e) -> {
+            if (e != null) {
+                showConfirmDialog(getString(R.string.sb_forms_submit_failed));
+            }
+        });
+    }
 
     /**
      * Find the same message as the message ID and move it to the matching message.

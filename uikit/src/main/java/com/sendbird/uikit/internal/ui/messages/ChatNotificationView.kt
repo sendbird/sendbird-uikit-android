@@ -17,6 +17,7 @@ import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.utils.DateUtils
+import com.sendbird.uikit.utils.MessageUtils
 
 internal class ChatNotificationView @JvmOverloads internal constructor(
     context: Context,
@@ -65,7 +66,7 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
     }
 
     fun drawMessage(channel: BaseChannel, message: BaseMessage, config: NotificationConfig? = null) {
-        binding.tvLabel.text = message.customType
+        binding.tvLabel.text = MessageUtils.getNotificationLabel(message)
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
         binding.ivProfileView.loadCircle(channel.coverUrl)
 
