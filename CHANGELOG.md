@@ -1,4 +1,13 @@
 # Changelog
+### v3.13.0 (Feb 1, 2024) with Chat SDK `v4.14.2`
+* A feedback feature has been added to give opinions on the message.
+  * Added `enableFeedback` in `ChannelConfig`.
+  * Added `OnFeedbackRatingClickListener` which is a callback to be invoked when a feedback rating is clicked.
+  * Added `getFeedbackRatingClickListener()` and `setFeedbackRatingClickListener(OnFeedbackRatingClickListener)` in `BaseMessageListAdapter`.
+  * Added `setOnFeedbackRatingClickListener(OnFeedbackRatingClickListener)` and `onFeedbackRatingClicked(BaseMessage, FeedbackRating)` in `BaseMessageListComponent`.
+  * Added `onFeedbackRatingClicked(BaseMessage, FeedbackRating)` in `ChannelFragment`.
+  * Added `submitFeedback(BaseMessage, FeedbackRating, String)` and `removeFeedback(BaseMessage)` in `ChannelViewModel`.
+  * Added `onFeedbackSubmitted()`, `onFeedbackUpdated()` and `onFeedbackDelete` in `ChannelViewModel`. They allow you to observe feedback events for submitting, updating and deleting feedback.
 ### v3.12.1 (Jan 18, 2024) with Chat SDK `v4.14.1`
 * Fix memory leaks in UIKit.
 ### v3.12.0 (Jan, 2024) with Chat SDK `v4.13.0`

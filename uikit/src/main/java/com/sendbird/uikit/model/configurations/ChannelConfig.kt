@@ -43,6 +43,8 @@ data class ChannelConfig internal constructor(
     private var _enableSuggestedReplies: Boolean = false,
     @SerialName(KeySet.enable_form_type_message)
     private var _enableFormTypeMessage: Boolean = false,
+    @SerialName(KeySet.enable_feedback)
+    private var _enableFeedback: Boolean = false,
     @SerialName(KeySet.thread_reply_select_type)
     @Serializable(with = ThreadReplySelectTypeAsStringSerializer::class)
     private var _threadReplySelectType: ThreadReplySelectType = ThreadReplySelectType.THREAD,
@@ -78,7 +80,9 @@ data class ChannelConfig internal constructor(
     @Transient
     private var enableSuggestedRepliesMutable: Boolean? = null,
     @Transient
-    private var enableFormTypeMessageMutable: Boolean? = null
+    private var enableFormTypeMessageMutable: Boolean? = null,
+    @Transient
+    private var enableFeedbackMutable: Boolean? = null
 ) : Parcelable {
     companion object {
         /**
@@ -356,6 +360,26 @@ data class ChannelConfig internal constructor(
             enableFormTypeMessageMutable = value
         }
 
+    var enableFeedback: Boolean
+        /**
+         * Returns a value that determines whether to use feedback of the message or not.
+         * true, if channel displays feedback in the message list if it contains feedback data.
+         * false, otherwise.
+         *
+         * @return true if the feedback is enabled, false otherwise
+         * @since 3.13.0
+         */
+        get() = enableFeedbackMutable ?: _enableFeedback
+        /**
+         * Sets whether to use feedback or not.
+         *
+         * @param value true if the feedback is enabled, false otherwise
+         * @since 3.13.0
+         */
+        set(value) {
+            enableFeedbackMutable = value
+        }
+
     @JvmSynthetic
     internal fun merge(config: ChannelConfig): ChannelConfig {
         this._enableOgTag = config._enableOgTag
@@ -367,6 +391,7 @@ data class ChannelConfig internal constructor(
         this._enableMultipleFilesMessage = config._enableMultipleFilesMessage
         this._enableSuggestedReplies = config._enableSuggestedReplies
         this._enableFormTypeMessage = config._enableFormTypeMessage
+        this._enableFeedback = config._enableFeedback
         this._threadReplySelectType = config._threadReplySelectType
         this._replyType = config._replyType
         this.input.merge(config.input)

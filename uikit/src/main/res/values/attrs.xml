@@ -120,6 +120,7 @@
         <attr name="sb_widget_chat_notification" format="reference"/>
         <attr name="sb_widget_my_multiple_files_message" format="reference"/>
         <attr name="sb_widget_other_multiple_files_message" format="reference"/>
+        <attr name="sb_widget_feedback" format="reference"/>
 
         <attr name="sb_widget_channel_settings_view" format="reference"/>
         <attr name="sb_widget_single_menu_item_view" format="reference"/>
@@ -378,6 +379,13 @@
         </attr>
         <attr name="sb_auto_link_text_view_clicked_text_color" format="reference"/>
         <attr name="sb_auto_link_text_view_clicked_background_color" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="Feedback">
+        <attr name="sb_feedback_good_background" format="reference"/>
+        <attr name="sb_feedback_good_button" format="reference"/>
+        <attr name="sb_feedback_bad_background" format="reference"/>
+        <attr name="sb_feedback_bad_button" format="reference"/>
     </declare-styleable>
 
     <!-- Message List-->

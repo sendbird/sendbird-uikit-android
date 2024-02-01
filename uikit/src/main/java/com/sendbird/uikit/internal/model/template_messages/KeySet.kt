@@ -94,6 +94,7 @@ internal object KeySet {
     const val enable_multiple_files_message = "enable_multiple_files_message"
     const val enable_suggested_replies = "enable_suggested_replies"
     const val enable_form_type_message = "enable_form_type_message"
+    const val enable_feedback = "enable_feedback"
     const val reply_type = "reply_type"
     const val thread_reply_select_type = "thread_reply_select_type"
     const val enable_message_receipt_status = "enable_message_receipt_status"

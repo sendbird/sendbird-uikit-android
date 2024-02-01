@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.FeedbackRating;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.R;
@@ -32,6 +33,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
 import com.sendbird.uikit.internal.ui.widgets.PagerRecyclerView;
@@ -68,6 +70,10 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     private OnItemClickListener<BaseMessage> messageProfileClickListener;
     @Nullable
     private OnItemClickListener<User> messageMentionClickListener;
+
+    @Nullable
+    private OnFeedbackRatingClickListener feedbackRatingClickListener;
+
     @Nullable
     private OnItemLongClickListener<BaseMessage> messageLongClickListener;
     @Nullable
@@ -157,6 +163,10 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         }
         if (this.adapter.getMentionClickListener() == null) {
             this.adapter.setMentionClickListener(this::onMessageMentionClicked);
+        }
+
+        if (this.adapter.getFeedbackRatingClickListener() == null) {
+            this.adapter.setFeedbackRatingClickListener(this::onFeedbackRatingClicked);
         }
 
         if (messageRecyclerView == null) return;
@@ -327,6 +337,16 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      */
     public void setOnMessageMentionClickListener(@Nullable OnItemClickListener<User> messageMentionClickListener) {
         this.messageMentionClickListener = messageMentionClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the feedback rating of the message is clicked.
+     *
+     * @param feedbackRatingClickListener The callback that will run
+     * since 3.13.0
+     */
+    public void setOnFeedbackRatingClickListener(@Nullable OnFeedbackRatingClickListener feedbackRatingClickListener) {
+        this.feedbackRatingClickListener = feedbackRatingClickListener;
     }
 
     /**
@@ -542,6 +562,16 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     protected void onMessageMentionClicked(@NonNull View view, int position, @NonNull User user) {
         if (messageMentionClickListener != null)
             messageMentionClickListener.onItemClick(view, position, user);
+    }
+
+    /**
+     * Called when the feedback rating of the message is clicked.
+     *
+     * @param rating The clicked feedback rating
+     * since 3.13.0
+     */
+    protected void onFeedbackRatingClicked(@NonNull BaseMessage message, @NonNull FeedbackRating rating) {
+        if (feedbackRatingClickListener != null) feedbackRatingClickListener.onFeedbackClicked(message, rating);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.sendbird.uikit.samples.common.preferences
 
 import android.content.Context
 import com.sendbird.uikit.SendbirdUIKit.ThemeMode
+import com.sendbird.uikit.samples.BaseApplication
 import com.sendbird.uikit.samples.common.consts.SampleType
 
 /**
@@ -69,6 +70,7 @@ internal object PreferenceUtils {
             } else {
                 pref.putString(PREFERENCE_KEY_LATEST_USED_SAMPLE, value.name)
             }
+            BaseApplication.setupConfigurations()
         }
 
     fun clearAll() = pref.clear()

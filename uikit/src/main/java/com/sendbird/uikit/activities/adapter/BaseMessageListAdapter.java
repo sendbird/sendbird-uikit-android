@@ -31,6 +31,7 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
@@ -69,6 +70,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     private OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener;
     @Nullable
     protected OnItemClickListener<User> mentionClickListener;
+
+    @Nullable
+    protected OnFeedbackRatingClickListener feedbackRatingClickListener;
 
     @NonNull
     private final MessageListUIParams messageListUIParams;
@@ -284,6 +288,12 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
                 int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && mentionClickListener != null) {
                     mentionClickListener.onItemClick(view, messagePosition, mentionedUser);
+                }
+            });
+
+            otherUserMessageViewHolder.setOnFeedbackRatingClickListener((message, rating) -> {
+                if (feedbackRatingClickListener != null) {
+                    feedbackRatingClickListener.onFeedbackClicked(message, rating);
                 }
             });
         }
@@ -552,6 +562,27 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @Nullable
     public OnItemClickListener<User> getMentionClickListener() {
         return mentionClickListener;
+    }
+
+    /**
+     * Returns a callback to be invoked when the feedback rating is clicked.
+     *
+     * @return {@link OnFeedbackRatingClickListener} to be invoked when the feedback rating is clicked.
+     * since 3.13.0
+     */
+    @Nullable
+    public OnFeedbackRatingClickListener getFeedbackRatingClickListener() {
+        return feedbackRatingClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the feedback rating is clicked.
+     *
+     * @param feedbackRatingClickListener The callback that will run
+     * since 3.13.0
+     */
+    public void setFeedbackRatingClickListener(@Nullable OnFeedbackRatingClickListener feedbackRatingClickListener) {
+        this.feedbackRatingClickListener = feedbackRatingClickListener;
     }
 
     /**

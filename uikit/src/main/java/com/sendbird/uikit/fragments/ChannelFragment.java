@@ -20,7 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
+import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Feedback;
+import com.sendbird.android.message.FeedbackRating;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.Form;
 import com.sendbird.android.message.SendingStatus;
@@ -37,6 +40,7 @@ import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.adapter.SuggestedMentionListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
+import com.sendbird.uikit.consts.DialogEditTextParams;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
@@ -45,6 +49,7 @@ import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.MessageDisplayDataProvider;
 import com.sendbird.uikit.interfaces.OnConsumableClickListener;
+import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionClickListener;
 import com.sendbird.uikit.interfaces.OnEmojiReactionLongClickListener;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
@@ -265,6 +270,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         messageListComponent.setOnEmojiReactionMoreButtonClickListener(emojiReactionMoreButtonClickListener != null ? emojiReactionMoreButtonClickListener : (view, position, message) -> showEmojiListDialog(message));
         messageListComponent.setSuggestedRepliesClickListener((view, position, data) -> onSuggestedRepliesClicked(data));
         messageListComponent.setFormSubmitButtonClickListener(this::onFormSubmitButtonClicked);
+        messageListComponent.setOnFeedbackRatingClickListener(this::onFeedbackRatingClicked);
         messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : this::onMessageTooltipClicked);
 
         messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
@@ -378,6 +384,38 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                         VoicePlayerManager.pause();
                     }
                 }
+            }
+        });
+
+        viewModel.onFeedbackSubmitted().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            final BaseMessage message = result.first;
+            final SendbirdException e = result.second;
+            if (e == null) {
+                if (message != null) {
+                    showUpdateFeedbackCommentDialog(message);
+                }
+            } else {
+                toastError(R.string.sb_text_toast_failure_feedback_submit);
+            }
+        });
+
+        viewModel.onFeedbackUpdated().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            final SendbirdException e = result.second;
+
+            if (e == null) {
+                toastSuccess(R.string.sb_text_toast_success_feedback_update);
+            } else {
+                toastError(R.string.sb_text_toast_failure_feedback_update);
+            }
+        });
+
+        viewModel.onFeedbackDeleted().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            final SendbirdException e = result.second;
+            if (e != null) {
+                toastError(R.string.sb_text_toast_failure_feedback_delete);
             }
         });
     }
@@ -538,6 +576,37 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 showConfirmDialog(getString(R.string.sb_forms_submit_failed));
             }
         });
+    }
+
+    /**
+     * Called when the feedback rating of the message is clicked.
+     *
+     * @param message The message that contains feedback
+     * @param feedbackRating The clicked feedback rating
+     * since 3.13.0
+     */
+    protected void onFeedbackRatingClicked(@NonNull BaseMessage message, @NonNull FeedbackRating feedbackRating) {
+        Feedback currentFeedback = message.getMyFeedback();
+        if (currentFeedback != null) {
+            DialogListItem[] dialogListItems = {
+                new DialogListItem(R.string.sb_text_feedback_edit_comment),
+                new DialogListItem(R.string.sb_text_feedback_remove_comment, 0, true)
+            };
+
+            DialogUtils.showListBottomDialog(
+                requireContext(),
+                dialogListItems,
+                (view, position, data) -> {
+                    if (position == 0) {
+                        showUpdateFeedbackCommentDialog(message);
+                    } else if (position == 1) {
+                        getViewModel().removeFeedback(message);
+                    }
+                }
+            );
+        } else {
+            getViewModel().submitFeedback(message, feedbackRating, null);
+        }
     }
 
     /**
@@ -833,6 +902,33 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 startMessageThreadActivity(anchorMessage);
             }
         }
+    }
+
+    private void showUpdateFeedbackCommentDialog(@NonNull BaseMessage message) {
+        final boolean hasFeedbackComment = message.getMyFeedback() != null && message.getMyFeedback().getComment() != null;
+        final String positiveButtonText = hasFeedbackComment ? getString(R.string.sb_text_button_save) : getString(R.string.sb_text_button_submit);
+        final OnEditTextResultListener listener = text -> {
+            final Feedback feedback = message.getMyFeedback();
+            if (feedback == null) return;
+            getViewModel().submitFeedback(message, feedback.getRating(), text);
+        };
+
+        final DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_feedback_comment_hint));
+        final Feedback currentFeedback = message.getMyFeedback();
+        if (currentFeedback != null) {
+            params.setText(currentFeedback.getComment());
+        }
+        params.setEnableSingleLine(true);
+        DialogUtils.showInputDialog(
+            requireContext(),
+            getString(R.string.sb_text_feedback_comment_title),
+            params,
+            listener,
+            positiveButtonText,
+            null,
+            getString(R.string.sb_text_button_cancel),
+            null
+        );
     }
 
     @SuppressWarnings("unused")

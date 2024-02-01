@@ -11,6 +11,7 @@ import com.sendbird.uikit.consts.ClickableViewIdentifier
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.interfaces.OnItemLongClickListener
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.model.MessageListUIParams
 
 internal class OtherUserMessageViewHolder internal constructor(
@@ -50,5 +51,9 @@ internal class OtherUserMessageViewHolder internal constructor(
 
     fun setOnMentionClickListener(listener: OnItemClickListener<User>?) {
         binding.otherMessageView.mentionClickListener = listener
+    }
+
+    fun setOnFeedbackRatingClickListener(listener: OnFeedbackRatingClickListener?) {
+        binding.otherMessageView.onFeedbackRatingClickListener = listener
     }
 }

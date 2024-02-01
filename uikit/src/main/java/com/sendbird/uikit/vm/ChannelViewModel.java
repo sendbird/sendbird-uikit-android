@@ -1,5 +1,7 @@
 package com.sendbird.uikit.vm;
 
+import android.util.Pair;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -21,6 +23,8 @@ import com.sendbird.android.handler.GroupChannelHandler;
 import com.sendbird.android.handler.MessageCollectionHandler;
 import com.sendbird.android.handler.MessageCollectionInitHandler;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.Feedback;
+import com.sendbird.android.message.FeedbackRating;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.params.MessageCollectionCreateParams;
@@ -32,7 +36,6 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
-import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.wrappers.MessageCollectionImpl;
 import com.sendbird.uikit.internal.wrappers.MessageCollectionWrapper;
 import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
@@ -81,6 +84,12 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     private final MutableLiveData<StatusFrameView.Status> statusFrame = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<Boolean> hugeGapDetected = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<Pair<BaseMessage, SendbirdException>> feedbackSubmitted = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<Pair<BaseMessage, SendbirdException>> feedbackUpdated = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<Pair<BaseMessage, SendbirdException>> feedbackDeleted = new MutableLiveData<>();
     @Nullable
     private MessageListParams messageListParams;
     @Nullable
@@ -463,6 +472,39 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         return statusFrame;
     }
 
+
+    /**
+     * Returns LiveData that can be observed for the result of submitting feedback.
+     *
+     * @return The BaseMessage that feedback is submitted.
+     * since 3.13.0
+     */
+    public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackSubmitted() {
+        return feedbackSubmitted;
+    }
+
+    /**
+     * Returns LiveData that can be observed for the result of updating feedback.
+     *
+     * @return The BaseMessage that feedback is updated.
+     * since 3.13.0
+     */
+    @NonNull
+    public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackUpdated() {
+        return feedbackUpdated;
+    }
+
+    /**
+     * Returns LiveData that can be observed for the result of deleting feedback.
+     *
+     * @return The BaseMessage that feedback is deleted.
+     * since 3.13.0
+     */
+    @NonNull
+    public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackDeleted() {
+        return feedbackDeleted;
+    }
+
     @Override
     public boolean hasNext() {
         return collection == null || collection.getHasNext();
@@ -807,6 +849,49 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             messageListParams.setMessagePayloadFilter(new MessagePayloadFilter(true, Available.isSupportReaction(), false, true));
         }
         return messageListParams;
+    }
+
+    /**
+     * Submits feedback for the message.
+     *
+     * @param message The message for feedback.
+     * @param rating The rating for the message.
+     * @param comment The comment for the message.
+     * since 3.13.0
+     */
+    public void submitFeedback(@NonNull BaseMessage message, @NonNull FeedbackRating rating, @Nullable String comment) {
+        // If using BaseMessage without copying it, the properties of the message are updated immediately when updating the feedback,
+        // so the UI is not updated because the changes are not caught in the diff callback.
+        BaseMessage copiedMessage = BaseMessage.clone(message);
+        if (copiedMessage == null) return;
+
+        Feedback currentFeedback = copiedMessage.getMyFeedback();
+        if (currentFeedback == null) {
+            copiedMessage.submitFeedback(rating, comment, (feedback, e) -> {
+                feedbackSubmitted.postValue(Pair.create(copiedMessage, e));
+            });
+        } else {
+            copiedMessage.updateFeedback(rating, comment, (feedback, e) -> {
+                feedbackUpdated.postValue(Pair.create(copiedMessage, e));
+            });
+        }
+    }
+
+    /**
+     * Removes feedback for the message.
+     *
+     * @param message The message for removing feedback.
+     * since 3.13.0
+     */
+    public void removeFeedback(@NonNull BaseMessage message) {
+        // If using BaseMessage without copying it, the properties of the message are updated immediately when updating the feedback,
+        // so the UI is not updated because the changes are not caught in the diff callback.
+        BaseMessage copiedMessage = BaseMessage.clone(message);
+        if (copiedMessage == null) return;
+
+        copiedMessage.deleteFeedback(e -> {
+            feedbackDeleted.postValue(Pair.create(copiedMessage, e));
+        });
     }
 
     @VisibleForTesting
