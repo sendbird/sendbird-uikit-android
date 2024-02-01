@@ -28,7 +28,18 @@ internal object NotificationChannelManager {
     private lateinit var templateRepository: NotificationTemplateRepository
     private lateinit var channelSettingsRepository: NotificationChannelRepository
 
+    /**
+     * To avoid sending an unintended exception, if the NotificationChannelManager hasn't been initialized it tries to initialize automatically.
+     * This is very defensive code and only works when creating a Fragment and attempting to reference NotificationChannelManager in exceptional cases.
+     */
+    internal fun checkAndInit(context: Context) {
+        if (!isInitialized.get()) {
+            init(context)
+        }
+    }
+
     @JvmStatic
+    @Synchronized
     fun init(context: Context) {
         if (isInitialized.getAndSet(true)) return
         worker.submit {

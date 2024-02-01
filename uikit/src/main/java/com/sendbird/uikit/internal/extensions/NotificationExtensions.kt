@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.sendbird.android.params.MessageListParams
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
+import com.sendbird.uikit.internal.singleton.NotificationChannelManager.checkAndInit
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager.getGlobalNotificationChannelSettings
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationChannelModule
 import com.sendbird.uikit.internal.ui.notifications.FeedNotificationChannelModule
@@ -13,6 +14,7 @@ import com.sendbird.uikit.vm.ChatNotificationChannelViewModel
 import com.sendbird.uikit.vm.FeedNotificationChannelViewModel
 
 internal fun Fragment.createFeedNotificationChannelModule(args: Bundle): FeedNotificationChannelModule {
+    checkAndInit(requireContext())
     val config = getGlobalNotificationChannelSettings()?.let {
         NotificationConfig.from(it)
     }
@@ -20,6 +22,7 @@ internal fun Fragment.createFeedNotificationChannelModule(args: Bundle): FeedNot
 }
 
 internal fun Fragment.createChatNotificationChannelModule(args: Bundle): ChatNotificationChannelModule {
+    checkAndInit(requireContext())
     val config = getGlobalNotificationChannelSettings()?.let {
         NotificationConfig.from(it)
     }

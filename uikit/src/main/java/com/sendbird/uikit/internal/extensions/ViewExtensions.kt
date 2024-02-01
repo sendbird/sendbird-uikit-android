@@ -20,8 +20,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.FeedbackRating
+import com.sendbird.android.message.FeedbackStatus
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
+import com.sendbird.uikit.widgets.FeedbackView
 
 @Suppress("DEPRECATION")
 internal fun TextView.setAppearance(context: Context, res: Int) {
@@ -133,4 +138,17 @@ internal fun View.setBackgroundColorAndRadii(colorStateList: ColorStateList?, ra
     drawable.cornerRadii = radii
     drawable.color = colorStateList
     background = drawable
+}
+
+internal fun FeedbackView.drawFeedback(message: BaseMessage, shouldHideFeedback: Boolean, listener: OnFeedbackRatingClickListener?) {
+    this.visibility = if (shouldHideFeedback || message.myFeedbackStatus == FeedbackStatus.NOT_APPLICABLE) {
+        View.GONE
+    } else {
+        View.VISIBLE
+    }
+
+    this.drawFeedback(message.myFeedback)
+    this.onFeedbackRatingClickListener = { feedbackRating: FeedbackRating ->
+        listener?.onFeedbackClicked(message, feedbackRating)
+    }
 }

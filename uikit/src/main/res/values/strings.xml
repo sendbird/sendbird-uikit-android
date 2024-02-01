@@ -51,6 +51,10 @@
     <string name="sb_text_notification_fallback_description">Can\'t read this notification.</string>
     <string name="sb_text_notification_channel_message_empty">No notifications</string>
     <string name="sb_text_notification_channel_list_error">Something went wrong.</string>
+    <string name="sb_text_feedback_comment_title">Provide additional feedback (optional)</string>
+    <string name="sb_text_feedback_comment_hint">Leave a comment</string>
+    <string name="sb_text_feedback_edit_comment">Edit comment</string>
+    <string name="sb_text_feedback_remove_comment">Remove feedback</string>
 
     <!-- Channel Settings -->
     <string name="sb_text_channel_settings_moderations">Moderations</string>
@@ -81,6 +85,10 @@
     <string name="sb_text_toast_success_start_upload_file">Uploading&#8230;</string>
     <string name="sb_text_toast_success_start_download_file">Downloading&#8230;</string>
     <string name="sb_text_toast_success_download_file">File saved</string>
+    <string name="sb_text_toast_success_feedback_update">Changes saved.</string>
+    <string name="sb_text_toast_failure_feedback_submit">Couldn\'t submit. Try again.</string>
+    <string name="sb_text_toast_failure_feedback_update">Couldn\'t save. Try again.</string>
+    <string name="sb_text_toast_failure_feedback_delete">Couldn\'t delete. Try again.</string>
     <string name="sb_text_button_edit">Edit</string>
     <string name="sb_text_button_invite">Invite</string>
     <string name="sb_text_button_cancel">Cancel</string>
@@ -91,6 +99,7 @@
     <string name="sb_text_button_selected">Selected</string>
     <string name="sb_text_button_add">Add</string>
     <string name="sb_text_button_ok">OK</string>
+    <string name="sb_text_button_submit">Submit</string>
     <string name="sb_text_ellipsis">&#8230;</string>
 
     <!--  Message Thread  -->

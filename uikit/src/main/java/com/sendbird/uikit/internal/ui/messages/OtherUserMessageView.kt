@@ -12,8 +12,12 @@ import com.sendbird.android.message.SendingStatus
 import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
+import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.internal.extensions.drawFeedback
+import com.sendbird.uikit.internal.extensions.hasParentMessage
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
@@ -38,6 +42,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
     private val sentAtAppearance: Int
     private val nicknameAppearance: Int
     var mentionClickListener: OnItemClickListener<User>? = null
+    var onFeedbackRatingClickListener: OnFeedbackRatingClickListener? = null
 
     init {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0)
@@ -188,5 +193,12 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
             binding.quoteReplyPanel.visibility = GONE
         }
         ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
+
+        val shouldHideFeedback = !params.channelConfig.enableFeedback ||
+            (message.hasParentMessage() && params.channelConfig.replyType == ReplyType.THREAD)
+
+        binding.feedback.drawFeedback(message, shouldHideFeedback) { _, rating ->
+            onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+        }
     }
 }

@@ -135,6 +135,14 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
+        if (oldMessage.getMyFeedbackStatus() != newMessage.getMyFeedbackStatus()) {
+            return false;
+        }
+
+        if (oldMessage.getMyFeedback() != newMessage.getMyFeedback()) {
+            return false;
+        }
+
         if (oldMessage instanceof TypingIndicatorMessage && newMessage instanceof TypingIndicatorMessage) {
             return ((TypingIndicatorMessage) oldMessage).getTypingUsers().equals(((TypingIndicatorMessage) newMessage).getTypingUsers()) ;
         }

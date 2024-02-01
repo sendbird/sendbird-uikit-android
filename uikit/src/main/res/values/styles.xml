@@ -279,6 +279,7 @@
         <item name="sb_widget_other_voice_message">@style/Widget.Sendbird.Message.Other.VoiceMessage</item>
         <item name="sb_widget_my_multiple_files_message">@style/Widget.Sendbird.Message.Me.MultipleFilesMessage</item>
         <item name="sb_widget_other_multiple_files_message">@style/Widget.Sendbird.Message.Other.MultipleFilesMessage</item>
+        <item name="sb_widget_feedback">@style/Widget.Sendbird.Feedback</item>
     </style>
     <style name="Component.ChannelMessageInput">
         <item name="sb_message_input_background">@color/background_50</item>
@@ -1035,6 +1036,13 @@
         <item name="sb_message_other_background_tint">@color/sb_message_other_tint_light</item>
         <item name="sb_multiple_files_message_background_color">@color/background_100</item>
         <item name="sb_multiple_files_message_item_background_color">@color/background_200</item>
+    </style>
+
+    <style name="Widget.Sendbird.Feedback">
+        <item name="sb_feedback_good_background">@drawable/sb_feedback_background_light</item>
+        <item name="sb_feedback_good_button">@drawable/selector_feedback_good_button_light</item>
+        <item name="sb_feedback_bad_background">@drawable/sb_feedback_background_light</item>
+        <item name="sb_feedback_bad_button">@drawable/selector_feedback_bad_button_light</item>
     </style>
 
     <!-- DialogView -->

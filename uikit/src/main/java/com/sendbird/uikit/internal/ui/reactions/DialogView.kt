@@ -170,12 +170,14 @@ internal class DialogView @JvmOverloads constructor(
     fun setEditText(params: DialogEditTextParams?, editTextResultListener: OnEditTextResultListener?) {
         params?.let {
             binding.etInputText.visibility = VISIBLE
-            it.hintText?.isNotEmpty()?.let {
-                binding.etInputText.hint = params.hintText
+            it.hintText.takeUnless { text -> text.isNullOrEmpty() }?.let { text ->
+                binding.etInputText.hint = text
             }
-            it.text?.isNotEmpty()?.let {
-                binding.etInputText.hint = params.text
+
+            it.text.takeUnless { text -> text.isNullOrEmpty() }?.let { text ->
+                binding.etInputText.setText(text)
             }
+
             binding.etInputText.isSingleLine = params.enableSingleLine
             it.ellipsis?.let {
                 binding.etInputText.ellipsize = params.ellipsis
