@@ -39,6 +39,11 @@ class BaseApplication : MultiDexApplication() {
             return initState
         }
 
+        /**
+         * To initialize the sample app, AppId, AccessToken, UserInfo, and InitResultHandler are required.
+         * If the user registered on the Sendbird Dashboard has an AccessToken, set the Token value in getAccessToken.
+         * otherwise, set getAccessToken to null.
+         */
         private fun initUIKit(context: Context) {
             SendbirdUIKit.init(object : SendbirdUIKitAdapter {
                 override fun getAppId(): String = PreferenceUtils.appId.ifEmpty { APP_ID }
