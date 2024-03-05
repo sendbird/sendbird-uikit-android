@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <!-- Header Title -->
+    <string name="sb_text_header_channel_list">Canales</string>
+    <string name="sb_text_header_channel_settings">Información del canal</string>
+    <string name="sb_text_header_member_list">Miembros</string>
+    <string name="sb_text_header_invite_member">Invitar usuarios</string>
+    <string name="sb_text_header_create_channel">Nuevo canal</string>
+    <string name="sb_text_header_set_operators">Establecer como operadores</string>
+    <string name="sb_text_header_participants">Participantes</string>
+    <string name="sb_text_header_participants_count">%s participantes</string>
+    <string name="sb_text_header_message_thread">Hilo</string>
+
+    <!-- Channel List -->
+    <string name="sb_text_channel_list_title_no_members">(Sin miembros)</string>
+    <string name="sb_text_channel_list_title_unknown">(Sin nombre)</string>
+    <string name="sb_text_channel_list_unread_count_max">Más de 99</string>
+    <string name="sb_text_channel_list_last_message_file">%1$s envió un archivo.</string>
+    <string name="sb_text_channel_list_last_message_file_unknown">Desconocido</string>
+    <string name="sb_text_channel_list_push_on">Activar las notificaciones</string>
+    <string name="sb_text_channel_list_push_off">Desactivar las notificaciones</string>
+    <string name="sb_text_channel_list_leave">Salir del canal</string>
+    <string name="sb_text_channel_list_empty">Sin canales</string>
+
+    <!-- Channel -->
+    <string name="sb_text_channel_message_badge_edited">&#160;(editado)</string>
+    <string name="sb_text_channel_tooltip">%d mensaje nuevo</string>
+    <string name="sb_text_channel_tooltip_with_count">%d mensajes nuevos</string>
+    <string name="sb_text_channel_anchor_copy">Copiar</string>
+    <string name="sb_text_channel_anchor_save">Guardar</string>
+    <string name="sb_text_channel_anchor_edit">Editar</string>
+    <string name="sb_text_channel_anchor_delete">Borrar</string>
+    <string name="sb_text_channel_anchor_reply">Responder</string>
+    <string name="sb_text_channel_anchor_reply_in_thread">Responder en el hilo</string>
+    <string name="sb_text_channel_anchor_retry">Reintentar</string>
+    <string name="sb_text_channel_input_text_hint">Introducir mensaje</string>
+    <string name="sb_text_channel_input_reply_text_hint">Responder al mensaje</string>
+    <string name="sb_text_channel_input_reply_in_thread_hint">Responder en el hilo</string>
+    <string name="sb_text_channel_input_reply_to_thread_hint">Responder al hilo</string>
+    <string name="sb_text_channel_input_camera">Tomar foto</string>
+    <string name="sb_text_channel_input_take_video">Hacer video</string>
+    <string name="sb_text_channel_input_gallery">Galería</string>
+    <string name="sb_text_channel_input_document">Documento</string>
+    <string name="sb_text_channel_typing_indicator_single">%s está escribiendo&#8230;</string>
+    <string name="sb_text_channel_typing_indicator_double">%s y %s están escribiendo&#8230;</string>
+    <string name="sb_text_channel_typing_indicator_multiple">Varias personas están escribiendo&#8230;</string>
+    <string name="sb_text_channel_unknown_type_text">(Tipo de mensaje desconocido)\nNo se puede leer este mensaje.</string>
+    <string name="sb_text_channel_reaction_count_max">99</string>
+    <string name="sb_text_channel_message_empty">Ningún mensaje</string>
+    <string name="sb_text_channel_message_unavailable">Mensaje no disponible</string>
+    <string name="sb_text_notification_fallback_title">(Error de plantilla)</string>
+    <string name="sb_text_notification_fallback_description">No se puede leer esta notificación.</string>
+    <string name="sb_text_notification_channel_message_empty">Notificaciones</string>
+    <string name="sb_text_notification_channel_list_error">Algo salió mal.</string>
+
+    <!-- Channel Settings -->
+    <string name="sb_text_channel_settings_moderations">Moderaciones</string>
+    <string name="sb_text_channel_settings_notification">Notificaciones</string>
+    <string name="sb_text_channel_settings_members">Miembros</string>
+    <string name="sb_text_channel_settings_leave_channel">Salir del canal</string>
+    <string name="sb_text_channel_settings_delete_channel">Eliminar canal</string>
+    <string name="sb_text_channel_settings_change_channel_name">Cambiar nombre</string>
+    <string name="sb_text_channel_settings_change_channel_name_hint">Ingresar nombre</string>
+    <string name="sb_text_channel_settings_change_channel_image">Cambiar imagen del canal</string>
+    <string name="sb_text_channel_settings_change_channel_image_camera">Tomar foto</string>
+    <string name="sb_text_channel_settings_change_channel_image_gallery">Elegir foto</string>
+    <string name="sb_text_channel_settings_message_search">Buscar en el canal</string>
+
+    <!-- User List -->
+    <string name="sb_text_user_list_badge_me">&#160;(Tú)</string>
+    <string name="sb_text_user_list_empty">Sin usuarios</string>
+    <string name="sb_text_participants_list_empty">Sin participantes</string>
+
+    <!-- Views -->
+    <string name="sb_text_yesterday">Ayer</string>
+    <string name="sb_text_dialog_delete_file_message">¿Deseas eliminar este archivo?</string>
+    <string name="sb_text_dialog_delete_message">¿Deseas eliminar este mensaje?</string>
+    <string name="sb_text_dialog_delete_multiple_files_message">¿Quieres eliminar las %d fotos?</string>
+    <string name="sb_text_dialog_delete_channel">¿Deseas eliminar el canal?</string>
+    <string name="sb_text_dialog_delete_channel_message">Una vez eliminado, este canal no se puede restaurar.</string>
+    <string name="sb_text_toast_success_copy">Copiado</string>
+    <string name="sb_text_toast_success_start_upload_file">Subiendo&#8230;</string>
+    <string name="sb_text_toast_success_start_download_file">Descargando&#8230;</string>
+    <string name="sb_text_toast_success_download_file">Archivo guardado</string>
+    <string name="sb_text_button_edit">Editar</string>
+    <string name="sb_text_button_invite">Invitar</string>
+    <string name="sb_text_button_cancel">Cancelar</string>
+    <string name="sb_text_button_create">Crear</string>
+    <string name="sb_text_button_save">Guardar</string>
+    <string name="sb_text_button_delete">Borrar</string>
+    <string name="sb_text_button_retry">Reintentar</string>
+    <string name="sb_text_button_selected">Seleccionado</string>
+    <string name="sb_text_button_add">Agregar</string>
+    <string name="sb_text_button_ok">Aceptar</string>
+    <string name="sb_text_ellipsis">&#8230;</string>
+
+    <!--  Message Thread  -->
+    <string name="sb_text_original_message_deleted">El hilo no existe porque el mensaje principal fue eliminado.</string>
+
+    <!-- Error Messages -->
+    <!-- Connection Error -->
+    <string name="sb_text_error_retry_request">Comprueba tu conexión y vuelve a intentarlo.</string>
+
+    <!-- Channel Error -->
+    <string name="sb_text_error_get_channel_list">No se pudo recuperar la lista de canales.</string>
+    <string name="sb_text_error_get_channel">No se pudo recuperar el canal.</string>
+    <string name="sb_text_error_create_channel">No se pudo crear el canal.</string>
+    <string name="sb_text_error_update_channel">No se pudo actualizar el canal.</string>
+    <string name="sb_text_error_leave_channel">No se pudo abandonar el canal.</string>
+    <string name="sb_text_error_delete_channel">No se pudo eliminar el canal.</string>
+    <string name="sb_text_error_push_notification_on">No se pudieron activar las notificaciones.</string>
+    <string name="sb_text_error_push_notification_off">No se pudieron desactivar las notificaciones.</string>
+    <string name="sb_text_error_push_notification_setting">No se pudo establecer la configuración de notificaciones.</string>
+    <string name="sb_text_error_invite_member">No se pudo invitar a los usuarios.</string>
+    <string name="sb_text_error_get_user_list">No se pudo recuperar la lista de usuarios.</string>
+    <string name="sb_text_error_add_reaction">No se pudo agregar la reacción.</string>
+    <string name="sb_text_error_register_operator">No se pudo registrar como operador.</string>
+    <string name="sb_text_error_unregister_operator">No se pudo cancelar el registro del operador.</string>
+    <string name="sb_text_error_delete_reaction">No se pudo eliminar la reacción.</string>
+    <string name="sb_text_error_get_thread_list">No se pudo recuperar la lista de temas.</string>
+
+    <!-- Message Error -->
+    <string name="sb_text_error_resend_message">No se pudo enviar el mensaje. Intentar de nuevo.</string>
+    <string name="sb_text_error_update_user_message">No se pudo editar el mensaje.</string>
+    <string name="sb_text_error_delete_message">No se pudo eliminar el mensaje.</string>
+    <string name="sb_text_error_copy_message">No se pudo copiar el mensaje.</string>
+    <string name="sb_text_error_send_message">No se pudo enviar el mensaje. Intentar de nuevo.</string>
+    <string name="sb_text_error_message_filtered">Mensaje filtrado.</string>
+    <string name="sb_text_error_mute_member">No se pudo silenciar al miembro. Intentar de nuevo.</string>
+    <string name="sb_text_error_mute_participant">No se pudo silenciar al participante. Intentar de nuevo.</string>
+    <string name="sb_text_error_ban_member">No se pudo bloquear al miembro. Intentar de nuevo.</string>
+    <string name="sb_text_error_ban_participant">No se pudo bloquear al participante. Intentar de nuevo.</string>
+    <string name="sb_text_error_unmute_member">No se pudo activar el sonido del miembro. Intentar de nuevo.</string>
+    <string name="sb_text_error_unmute_participant">No se pudo activar el sonido del participante. Intentar de nuevo.</string>
+    <string name="sb_text_error_unban_member">No se pudo desbloquear al miembro. Intentar de nuevo.</string>
+    <string name="sb_text_error_unban_participant">No se pudo desbloquear al participante. Intentar de nuevo.</string>
+    <string name="sb_text_error_user_muted">Estás silenciado por el operador.</string>
+    <string name="sb_text_error_channel_frozen">El canal está caído</string>
+
+    <!-- File Error -->
+    <string name="sb_text_error_open_camera">No se pudo abrir la cámara.</string>
+    <string name="sb_text_error_open_gallery">No se pudo abrir la biblioteca de fotos.</string>
+    <string name="sb_text_error_open_file">No se pudo abrir el archivo.</string>
+    <string name="sb_text_error_download_file">No se pudo descargar el archivo.</string>
+    <string name="sb_text_error_multiple_files_count_limit">Se pueden adjuntar hasta %d archivos.</string>
+    <string name="sb_text_error_file_upload_size_limit">El tamaño máximo por archivo es %s.</string>
+
+    <string name="sb_text_dialog_permission_title">Otorgar permiso</string>
+    <string name="sb_text_go_to_settings">Configuración</string>
+    <string name="sb_text_need_to_allow_permission_camera">%s\nnecesita permiso para acceder a tu cámara. Ve a Configuración para permitir el acceso</string>
+    <string name="sb_text_need_to_allow_permission_storage">%s\nnecesita permiso para acceder al almacenamiento de tu dispositivo. Ve a Configuración para permitir el acceso.</string>
+    <string name="sb_text_need_to_allow_permission_record_audio">%s\nnecesita permiso para acceder a grabación de audio. Ve a Configuración para permitir el acceso.</string>
+
+    <string name="sb_text_channel_input_text_hint_frozen">El chat no está disponible en este canal.</string>
+    <string name="sb_text_channel_input_text_hint_muted">Estás silenciado</string>
+    <string name="sb_text_select_channel_type">Tipo de canal</string>
+    <string name="sb_text_group">Grupo</string>
+    <string name="sb_text_super_group">Supergrupo</string>
+    <string name="sb_text_broadcast">Transmisión</string>
+    <string name="sb_text_information_channel_frozen">Canal caído</string>
+    <string name="sb_text_operator">Operador</string>
+    <string name="sb_text_menu_operators">Operadores</string>
+    <string name="sb_text_menu_muted_members">Miembros silenciados</string>
+    <string name="sb_text_menu_banned_users">Usuarios bloqueados</string>
+    <string name="sb_text_menu_freeze_channel">Congelar canal</string>
+    <string name="sb_text_empty_no_operator_member">Ningún miembro operador</string>
+    <string name="sb_text_empty_no_muted_member">No hay miembros silenciados</string>
+    <string name="sb_text_empty_no_banned_users">No hay usuarios bloqueados</string>
+    <string name="sb_text_menu_muted_participants">Participantes silenciados</string>
+    <string name="sb_text_empty_no_operator_participant">Ningún operador participante</string>
+    <string name="sb_text_empty_no_muted_participant">No hay participantes silenciados</string>
+
+    <!-- Moderation -->
+    <string name="sb_text_register_operator">Registrarse como operador</string>
+    <string name="sb_text_mute_member">Silenciar</string>
+    <string name="sb_text_mute_participant">Silenciar</string>
+    <string name="sb_text_ban_member">Bloquear</string>
+    <string name="sb_text_ban_participant">Bloquear</string>
+    <string name="sb_text_unregister_operator">Operador no registrado</string>
+    <string name="sb_text_unmute_member">Dejar de silenciar</string>
+    <string name="sb_text_unban_member">Desbloquear</string>
+    <string name="sb_text_unban_participant">Desbloquear</string>
+    <string name="sb_text_unmute_participant">Dejar de silenciar</string>
+
+    <string name="sb_text_message">Mensaje</string>
+    <string name="sb_text_user_id">Id. de usuario</string>
+
+    <string name="sb_text_url">URL</string>
+    <string name="sb_text_error_not_possible_resend_message">No se puede enviar el mensaje.</string>
+
+    <!-- Message Search -->
+    <string name="sb_text_button_search">Buscar</string>
+    <string name="sb_text_search_result_empty">No se han encontrado resultados.</string>
+    <string name="sb_text_error_search_failure">Algo salió mal. Intentar de nuevo.</string>
+
+    <!-- Message Reply -->
+    <string name="sb_text_you">Tú</string>
+    <string name="sb_text_reply_to">Responder</string>
+    <string name="sb_text_replied_to">%s respondió a %s</string>
+    <string name="sb_text_error_original_message_not_found">No se pudo encontrar el mensaje original de esta respuesta.</string>
+    <string name="sb_text_exceed_mention_limit_count">Puedes tener hasta %d menciones por mensaje.</string>
+    <string name="sb_text_number_of_reply">%d respuesta</string>
+    <string name="sb_text_number_of_replies">%d respuestas</string>
+    <string name="sb_text_max_number_of_replies">Más de 99 respuestas</string>
+
+    <!-- Channel Push Setting -->
+    <string name="sb_text_push_setting_on">Encendido</string>
+    <string name="sb_text_push_setting_off">Apagado</string>
+    <string name="sb_text_push_setting_mentions_only">Solo menciones</string>
+    <string name="sb_text_push_setting_option_all">Todos los mensajes nuevos</string>
+    <string name="sb_text_push_setting_description">Actívalo para recibir notificaciones cuando se entreguen mensajes a este canal.</string>
+
+    <!-- Create OpenChannel -->
+    <string name="text_input_channel_name_hint">Ingresar nombre del canal</string>
+    <string name="text_remove_photo">Eliminar foto</string>
+
+    <!-- Voice message -->
+    <string name="sb_text_voice_message">Mensaje de voz</string>
+
+    <!-- AI Chatbot -->
+    <string name="sb_forms_submit">Entregar</string>
+    <string name="sb_forms_invalid_form_field">Verifica el valor</string>
+    <string name="sb_forms_submit_failed">Erro en la entrega</string>
+    <string name="sb_forms_optional">(opcional)</string>
+</resources>
