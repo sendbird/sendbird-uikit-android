@@ -14,7 +14,7 @@ import com.sendbird.uikit.interfaces.OnNotificationCategorySelectListener
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setTypeface
-import com.sendbird.uikit.internal.interfaces.OnImpressionDetectedListener
+import com.sendbird.uikit.internal.interfaces.OnNotificationViewedDetectedListener
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
 import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager
 import com.sendbird.uikit.log.Logger
@@ -33,7 +33,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
     uiConfig: NotificationConfig? = null
 ) : NotificationListComponent(params, uiConfig) {
 
-    var onImpressionDetectedListener: OnImpressionDetectedListener<BaseMessage>? = null
+    var onNotificationViewedDetectedListener: OnNotificationViewedDetectedListener<BaseMessage>? = null
 
     /**
      * Returns the feed notification list adapter.
@@ -77,7 +77,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
         val layout = super.onCreateView(context, inflater, parent, args)
         notificationListView?.let {
             it.recyclerView.layoutManager = InnerLinearLayoutManager(context).apply { reverseLayout = false }
-            it.onImpressionDetectedListener = { firstVisibleItemPosition, lastVisibleItemPosition ->
+            it.onNotificationViewedDetectedListener = { firstVisibleItemPosition, lastVisibleItemPosition ->
                 onVisibleItemDetected(firstVisibleItemPosition, lastVisibleItemPosition)
             }
         }
@@ -89,10 +89,10 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
         if (adapter == null) return
         if (firstVisibleItem < 0 || lastVisibleItem < 0) return
 
-        onImpressionDetectedListener?.let {
+        onNotificationViewedDetectedListener?.let {
             val range = if (firstVisibleItem <= lastVisibleItem) firstVisibleItem..lastVisibleItem else lastVisibleItem..firstVisibleItem
             val items = range.mapNotNull { i -> adapter?.getItem(i) }
-            it.onImpressionDetected(items)
+            it.onNotificationViewedDetected(items)
         }
     }
 

@@ -84,6 +84,7 @@ public class StatusComponent {
         if (params.emptyIcon != null) {
             statusView.setEmptyIcon(params.emptyIcon);
         }
+
         if (params.emptyIconTint != null) {
             statusView.setEmptyIconTint(params.emptyIconTint);
             statusView.setActionIconTint(params.emptyIconTint);
@@ -255,7 +256,8 @@ public class StatusComponent {
         @NonNull
         protected Params apply(@NonNull Context context, @NonNull Bundle args) {
             if (args.containsKey(StringSet.KEY_EMPTY_ICON_RES_ID)) {
-                setEmptyIcon(ContextCompat.getDrawable(context, args.getInt(StringSet.KEY_EMPTY_ICON_RES_ID)));
+                final int iconResId = args.getInt(StringSet.KEY_EMPTY_ICON_RES_ID);
+                setEmptyIcon(ContextCompat.getDrawable(context, iconResId > 0 ? iconResId : android.R.color.transparent));
             }
             if (args.containsKey(StringSet.KEY_EMPTY_ICON_TINT)) {
                 setEmptyIconTint(args.getParcelable(StringSet.KEY_EMPTY_ICON_TINT));

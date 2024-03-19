@@ -35,8 +35,8 @@ import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
@@ -86,7 +86,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     private final ExecutorService differWorker = Executors.newSingleThreadExecutor();
 
     @NonNull
-    protected final SendbirdUIKitWrapper sendbirdUIKit;
+    protected final SendbirdUIKitContract sendbirdUIKit;
 
     /**
      * Constructor
@@ -145,7 +145,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     }
 
     @VisibleForTesting
-    BaseMessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
+    BaseMessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitContract sendbirdUIKit) {
         if (channel != null) this.channel = GroupChannel.clone(channel);
         this.messageListUIParams = messageListUIParams;
         this.sendbirdUIKit = sendbirdUIKit;

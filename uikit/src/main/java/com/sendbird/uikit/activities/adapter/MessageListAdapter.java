@@ -13,8 +13,8 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.FormSubmitButtonClickListener;
 import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.model.MessageListUIParams;
 
 /**
@@ -46,7 +46,7 @@ public class MessageListAdapter extends BaseMessageListAdapter {
     }
 
     @VisibleForTesting
-    MessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitWrapper sendbirdUIKit) {
+    MessageListAdapter(@Nullable GroupChannel channel, @NonNull MessageListUIParams messageListUIParams, @NonNull SendbirdUIKitContract sendbirdUIKit) {
         super(channel,
             new MessageListUIParams.Builder(messageListUIParams)
                 .setUseQuotedView(true)

@@ -36,12 +36,12 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
-import com.sendbird.uikit.internal.wrappers.MessageCollectionImpl;
-import com.sendbird.uikit.internal.wrappers.MessageCollectionWrapper;
-import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.contracts.MessageCollectionImpl;
+import com.sendbird.uikit.internal.contracts.MessageCollectionContract;
+import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
@@ -93,12 +93,12 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @Nullable
     private MessageListParams messageListParams;
     @Nullable
-    private MessageCollectionWrapper collection;
+    private MessageCollectionContract collection;
     @Nullable
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
     @NonNull
-    private final SendbirdChatWrapper sendbirdChatWrapper;
+    private final SendbirdChatContract sendbirdChatContract;
     @NonNull
     private final ChannelConfig channelConfig;
 
@@ -155,13 +155,13 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     }
 
     @VisibleForTesting
-    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper, @NonNull SendbirdChatWrapper sendbirdChatWrapper, @NonNull ChannelConfig channelConfig) {
-        super(channelUrl, sendbirdUIKitWrapper);
+    ChannelViewModel(@NonNull String channelUrl, @Nullable MessageListParams messageListParams, @NonNull SendbirdUIKitContract sendbirdUIKitContract, @NonNull SendbirdChatContract sendbirdChatContract, @NonNull ChannelConfig channelConfig) {
+        super(channelUrl, sendbirdUIKitContract);
         this.messageListParams = messageListParams;
-        this.sendbirdChatWrapper = sendbirdChatWrapper;
+        this.sendbirdChatContract = sendbirdChatContract;
         this.channelConfig = channelConfig;
 
-        this.sendbirdChatWrapper.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
+        this.sendbirdChatContract.addChannelHandler(ID_CHANNEL_EVENT_HANDLER, new GroupChannelHandler() {
             @Override
             public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
                 if (ChannelViewModel.this.getChannel() != null && channel.getUrl().equals(channelUrl) && hasNext()) {
@@ -171,7 +171,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             }
         });
 
-        this.sendbirdChatWrapper.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
+        this.sendbirdChatContract.addConnectionHandler(CONNECTION_HANDLER_ID, new ConnectionHandler() {
             @Override
             public void onDisconnected(@NonNull String s) {
             }
@@ -350,7 +350,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             return;
         final GroupChannel channel = getChannel();
         if (channel == null) return;
-        final MessageCollectionWrapper syncCollection = createSyncMessageCollection(channel);
+        final MessageCollectionContract syncCollection = createSyncMessageCollection(channel);
         syncCollection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> list, @Nullable SendbirdException e) {}
@@ -581,7 +581,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @NonNull
     @Override
     public List<BaseMessage> buildMessageList() {
-        MessageCollectionWrapper collection = this.collection;
+        MessageCollectionContract collection = this.collection;
         if (collection == null) return Collections.emptyList();
 
         final List<BaseMessage> pendingMessages = new ArrayList<>(collection.getPendingMessages());
@@ -680,8 +680,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     protected void onCleared() {
         super.onCleared();
         Logger.dev("-- onCleared ChannelViewModel");
-        this.sendbirdChatWrapper.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
-        this.sendbirdChatWrapper.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        this.sendbirdChatContract.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
+        this.sendbirdChatContract.removeConnectionHandler(CONNECTION_HANDLER_ID);
         disposeMessageCollection();
     }
 
@@ -896,13 +896,13 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
     @VisibleForTesting
     @NonNull
-    MessageCollectionWrapper createMessageCollection(long startingPoint, @NonNull MessageListParams params, @NonNull GroupChannel channel, @NonNull MessageCollectionHandler handler) {
+    MessageCollectionContract createMessageCollection(long startingPoint, @NonNull MessageListParams params, @NonNull GroupChannel channel, @NonNull MessageCollectionHandler handler) {
         return new MessageCollectionImpl(SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, params, startingPoint, handler)));
     }
 
     @VisibleForTesting
     @NonNull
-    MessageCollectionWrapper createSyncMessageCollection(GroupChannel channel) {
+    MessageCollectionContract createSyncMessageCollection(GroupChannel channel) {
         return new MessageCollectionImpl(SendbirdChat.createMessageCollection(new MessageCollectionCreateParams(channel, new MessageListParams())));
     }
 
@@ -925,7 +925,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
     @TestOnly
     @Nullable
-    MessageCollectionWrapper getCollection() {
+    MessageCollectionContract getCollection() {
         return collection;
     }
 }

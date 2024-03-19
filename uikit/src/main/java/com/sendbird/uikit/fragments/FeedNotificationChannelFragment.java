@@ -2,12 +2,15 @@ package com.sendbird.uikit.fragments;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 
 import com.sendbird.android.channel.FeedChannel;
@@ -123,7 +126,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
         Logger.d(">> FeedNotificationChannelFragment::onBindFeedNotificationListComponent()");
         listComponent.setOnMessageTemplateActionHandler(actionHandler != null ? actionHandler : this::handleAction);
         listComponent.setOnTooltipClickListener(v -> listComponent.scrollToFirst());
-        listComponent.setOnImpressionDetectedListener(viewModel::sendLogImpression);
+        listComponent.setOnNotificationViewedDetectedListener(viewModel::sendLogImpression);
         listComponent.setOnNotificationCategorySelectListener(category -> {
             Logger.d("++ selected category = %s", category);
             listComponent.clearData();
@@ -413,6 +416,59 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
         @NonNull
         public Builder setNotificationListParams(@NonNull MessageListParams params) {
             this.params = params;
+            return this;
+        }
+
+        /**
+         * Sets the icon when the data is not exists.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.14.0
+         */
+        @NonNull
+        public Builder setEmptyIcon(@DrawableRes int resId) {
+            return setEmptyIcon(resId, null);
+        }
+
+        /**
+         * Sets the icon when the data is not exists.
+         *
+         * @param resId the resource identifier of the drawable.
+         * @param tint  Color state list to use for tinting this resource, or null to clear the tint.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.14.0
+         */
+        @NonNull
+        public Builder setEmptyIcon(@DrawableRes int resId, @Nullable ColorStateList tint) {
+            bundle.putInt(StringSet.KEY_EMPTY_ICON_RES_ID, resId);
+            bundle.putParcelable(StringSet.KEY_EMPTY_ICON_TINT, tint);
+            return this;
+        }
+
+        /**
+         * Sets the text when the data is not exists
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.14.0
+         */
+        @NonNull
+        public Builder setEmptyText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_EMPTY_TEXT_RES_ID, resId);
+            return this;
+        }
+
+        /**
+         * Sets the text when error occurs
+         *
+         * @param resId the resource identifier of text to be displayed.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.14.0
+         */
+        @NonNull
+        public Builder setErrorText(@StringRes int resId) {
+            bundle.putInt(StringSet.KEY_ERROR_TEXT_RES_ID, resId);
             return this;
         }
 

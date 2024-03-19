@@ -120,4 +120,5 @@ internal object KeySet {
     const val clicked = "clicked"
     const val channel_url = "channel_url"
     const val message_ts = "message_ts"
+    const val notification_event_deadline = "notification_event_deadline"
 }

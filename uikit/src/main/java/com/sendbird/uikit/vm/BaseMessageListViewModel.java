@@ -28,9 +28,8 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
-import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.LiveDataEx;
@@ -61,8 +60,8 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
     }
 
     @VisibleForTesting
-    BaseMessageListViewModel(@NonNull String channelUrl, @NonNull SendbirdUIKitWrapper sendbirdUIKitWrapper) {
-        super(sendbirdUIKitWrapper);
+    BaseMessageListViewModel(@NonNull String channelUrl, @NonNull SendbirdUIKitContract sendbirdUIKitContract) {
+        super(sendbirdUIKitContract);
         this.channel = null;
         this.channelUrl = channelUrl;
     }

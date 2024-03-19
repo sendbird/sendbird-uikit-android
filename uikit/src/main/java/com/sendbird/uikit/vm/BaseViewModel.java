@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.sendbird.android.handler.ConnectHandler;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.log.Logger;
 
 /**
@@ -17,14 +17,14 @@ import com.sendbird.uikit.log.Logger;
  */
 public abstract class BaseViewModel extends ViewModel {
     @NonNull
-    protected final SendbirdUIKitWrapper sendbirdUIKit;
+    protected final SendbirdUIKitContract sendbirdUIKit;
 
     protected BaseViewModel() {
         this(new SendbirdUIKitImpl());
     }
 
     @VisibleForTesting
-    BaseViewModel(@NonNull SendbirdUIKitWrapper sendbirdUIKit) {
+    BaseViewModel(@NonNull SendbirdUIKitContract sendbirdUIKit) {
         this.sendbirdUIKit = sendbirdUIKit;
     }
 

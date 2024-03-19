@@ -27,6 +27,7 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnMentionEventListener;
+import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.internal.ui.widgets.MessageInputDialogWrapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageUIConfig;
@@ -526,7 +527,8 @@ public class MessageInputComponent {
         boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;
-        inputView.setEnabled(!isMuted && !isFrozen);
+        boolean shouldDisableInput = ChannelExtensionsKt.shouldDisableInput(channel, params.channelConfig);
+        inputView.setEnabled(!isMuted && !isFrozen && !shouldDisableInput);
 
         final MessageInputView.Mode mode = inputView.getInputMode();
         // set hint

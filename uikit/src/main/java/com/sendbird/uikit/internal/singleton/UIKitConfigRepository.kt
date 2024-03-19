@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.sendbird.android.config.UIKitConfigInfo
 import com.sendbird.android.exception.SendbirdException
-import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper
+import com.sendbird.uikit.internal.contracts.SendbirdChatContract
 import com.sendbird.uikit.model.configurations.Configurations
 import com.sendbird.uikit.model.configurations.UIKitConfig
 import com.sendbird.uikit.model.configurations.UIKitConfigurations
@@ -52,7 +52,7 @@ internal class UIKitConfigRepository constructor(
     @Synchronized
     @Throws(SendbirdException::class)
     fun requestConfigurationsBlocking(
-        sendbirdChatWrapper: SendbirdChatWrapper,
+        sendbirdChatContract: SendbirdChatContract,
         uikitConfigInfo: UIKitConfigInfo
     ): UIKitConfigurations {
         val shouldInitUIKitConfig = isFirstRequestConfig.getAndSet(false)
@@ -60,7 +60,7 @@ internal class UIKitConfigRepository constructor(
         val lock = CountDownLatch(1)
         val config = AtomicReference<String>()
         val error = AtomicReference<SendbirdException>()
-        sendbirdChatWrapper.getUIKitConfiguration { uikitConfiguration, e ->
+        sendbirdChatContract.getUIKitConfiguration { uikitConfiguration, e ->
             try {
                 if (e != null) {
                     error.set(e)

@@ -9,6 +9,7 @@ import com.sendbird.android.channel.Role;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.user.MutedState;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
@@ -82,7 +83,8 @@ public class MessageThreadInputComponent extends MessageInputComponent {
         boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;
-        inputView.setEnabled(!isMuted && !isFrozen &&
+        boolean shouldDisableInput = ChannelExtensionsKt.shouldDisableInput(channel, getParams().getChannelConfig());
+        inputView.setEnabled(!isMuted && !isFrozen && !shouldDisableInput &&
             status != StatusFrameView.Status.ERROR &&
             status != StatusFrameView.Status.CONNECTION_ERROR);
 

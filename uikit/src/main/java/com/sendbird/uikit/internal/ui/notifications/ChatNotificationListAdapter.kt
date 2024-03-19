@@ -36,10 +36,6 @@ internal class ChatNotificationListAdapter(
     // the worker must be a single thread.
     private val differWorker by lazy { Executors.newSingleThreadExecutor() }
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
-        set(value) {
-            field = value
-            notificationConfig?.onMessageTemplateActionHandler = onMessageTemplateActionHandler
-        }
 
     /**
      * Called when RecyclerView needs a new [NotificationViewHolder] of the given type to represent
@@ -61,7 +57,9 @@ internal class ChatNotificationListAdapter(
         if (MessageType.from(viewType) == MessageType.VIEW_TYPE_TIME_LINE) {
             return NotificationTimelineViewHolder(SbViewTimeLineMessageBinding.inflate(inflater, parent, false))
         }
-        return ChatNotificationViewHolder(SbViewChatNotificationBinding.inflate(inflater, parent, false))
+        return ChatNotificationViewHolder(SbViewChatNotificationBinding.inflate(inflater, parent, false)).apply {
+            binding.chatNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
+        }
     }
 
     /**

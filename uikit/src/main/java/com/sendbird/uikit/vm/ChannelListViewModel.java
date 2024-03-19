@@ -16,12 +16,13 @@ import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.tasks.JobTask;
-import com.sendbird.uikit.internal.wrappers.GroupChannelCollectionImpl;
-import com.sendbird.uikit.internal.wrappers.GroupChannelCollectionWrapper;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdUIKitWrapper;
-import com.sendbird.uikit.internal.wrappers.TaskQueueImpl;
-import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
+import com.sendbird.uikit.internal.testmodel.ChannelListViewModelDataContract;
+import com.sendbird.uikit.internal.contracts.GroupChannelCollectionImpl;
+import com.sendbird.uikit.internal.contracts.GroupChannelCollectionContract;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
+import com.sendbird.uikit.internal.contracts.TaskQueueImpl;
+import com.sendbird.uikit.internal.contracts.TaskQueueContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.Available;
 
@@ -40,32 +41,21 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLoader<List<GroupChannel>> {
 
     @Nullable
-    private GroupChannelCollectionWrapper collection;
+    private GroupChannelCollectionContract collection;
 
     @NonNull
     private final GroupChannelListQuery query;
     @NonNull
-    private final MutableLiveData<List<GroupChannel>> channelList = new MutableLiveData<>();
+    private final MutableLiveData<List<GroupChannel>> channelList;
 
     @NonNull
-    private final GroupChannelCollectionHandler collectionHandler = new GroupChannelCollectionHandler() {
-        @Override
-        public void onChannelsAdded(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
-            notifyChannelChanged();
-        }
-
-        @Override
-        public void onChannelsUpdated(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
-            notifyChannelChanged();
-        }
-
-        @Override
-        public void onChannelsDeleted(@NonNull GroupChannelContext context, @NonNull List<String> deletedChannelUrls) {
-            notifyChannelChanged();
-        }
-    };
+    private final GroupChannelCollectionHandler collectionHandler;
     @NonNull
-    private final TaskQueueWrapper taskQueue;
+    private final TaskQueueContract taskQueue;
+
+    @Nullable
+    @VisibleForTesting
+    ChannelListViewModelDataContract contract;
 
     /**
      * Constructor
@@ -77,10 +67,49 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
     }
 
     @VisibleForTesting
-    ChannelListViewModel(@Nullable GroupChannelListQuery query, @NonNull SendbirdUIKitWrapper sendbirdUIKit, @NonNull TaskQueueWrapper taskQueue) {
+    ChannelListViewModel(@Nullable GroupChannelListQuery query, @NonNull SendbirdUIKitContract sendbirdUIKit, @NonNull TaskQueueContract taskQueue) {
         super(sendbirdUIKit);
         this.query = query == null ? createGroupChannelListQuery() : query;
+        this.channelList = new MutableLiveData<>();
         this.taskQueue = taskQueue;
+        this.collectionHandler = new GroupChannelCollectionHandler() {
+            @Override
+            public void onChannelsAdded(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
+                notifyChannelChanged();
+            }
+
+            @Override
+            public void onChannelsUpdated(@NonNull GroupChannelContext context, @NonNull List<GroupChannel> channels) {
+                notifyChannelChanged();
+            }
+
+            @Override
+            public void onChannelsDeleted(@NonNull GroupChannelContext context, @NonNull List<String> deletedChannelUrls) {
+                notifyChannelChanged();
+            }
+        };
+    }
+
+    @TestOnly
+    ChannelListViewModel(@NonNull ChannelListViewModelDataContract contract) {
+        super(contract.getSendbirdUIKit());
+        this.collection = contract.getCollection();
+        this.query = contract.getQuery();
+        this.channelList = contract.getChannelList();
+        this.collectionHandler = contract.getCollectionHandler();
+        this.taskQueue = contract.getTaskQueue();
+        this.contract = contract;
+    }
+
+    @TestOnly
+    boolean isSameProperties(@NonNull ChannelListViewModelDataContract contract) {
+        // It's enough to check the instance's reference.
+        return contract.getSendbirdUIKit() == this.sendbirdUIKit
+            && contract.getCollection() == this.collection
+            && contract.getQuery() == query
+            && contract.getChannelList() == channelList
+            && contract.getCollectionHandler() == collectionHandler
+            && contract.getTaskQueue() == taskQueue;
     }
 
     /**
@@ -94,7 +123,8 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
         return channelList;
     }
 
-    private synchronized void initChannelCollection() {
+    @VisibleForTesting
+    synchronized void initChannelCollection() {
         Logger.d(">> ChannelListViewModel::initChannelCollection()");
         if (this.collection != null) {
             disposeChannelCollection();
@@ -269,15 +299,8 @@ public class ChannelListViewModel extends BaseViewModel implements OnPagedDataLo
         return GroupChannel.createMyGroupChannelListQuery(params);
     }
 
-    @VisibleForTesting
     @NonNull
-    GroupChannelCollectionWrapper createGroupChannelCollection() {
+    private GroupChannelCollectionContract createGroupChannelCollection() {
         return new GroupChannelCollectionImpl(query);
-    }
-
-    @TestOnly
-    @NonNull
-    GroupChannelListQuery getGroupChannelListQuery() {
-        return query;
     }
 }
