@@ -1,4 +1,4 @@
-package com.sendbird.uikit.internal.wrappers
+package com.sendbird.uikit.internal.contracts
 
 import com.sendbird.android.collection.MessageCollectionInitPolicy
 import com.sendbird.android.handler.BaseMessagesHandler
@@ -7,7 +7,7 @@ import com.sendbird.android.handler.MessageCollectionInitHandler
 import com.sendbird.android.handler.RemoveFailedMessagesHandler
 import com.sendbird.android.message.BaseMessage
 
-internal interface MessageCollectionWrapper {
+internal interface MessageCollectionContract {
     fun initialize(initPolicy: MessageCollectionInitPolicy, handler: MessageCollectionInitHandler?)
     fun loadPrevious(handler: BaseMessagesHandler?)
     fun loadNext(handler: BaseMessagesHandler?)

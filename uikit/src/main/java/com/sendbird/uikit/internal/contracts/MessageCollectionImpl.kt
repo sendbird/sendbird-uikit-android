@@ -1,4 +1,4 @@
-package com.sendbird.uikit.internal.wrappers
+package com.sendbird.uikit.internal.contracts
 
 import com.sendbird.android.collection.MessageCollection
 import com.sendbird.android.collection.MessageCollectionInitPolicy
@@ -8,7 +8,7 @@ import com.sendbird.android.handler.MessageCollectionInitHandler
 import com.sendbird.android.handler.RemoveFailedMessagesHandler
 import com.sendbird.android.message.BaseMessage
 
-internal class MessageCollectionImpl(private val collection: MessageCollection) : MessageCollectionWrapper {
+internal class MessageCollectionImpl(private val collection: MessageCollection) : MessageCollectionContract {
     override fun initialize(initPolicy: MessageCollectionInitPolicy, handler: MessageCollectionInitHandler?) {
         collection.initialize(initPolicy, handler)
     }

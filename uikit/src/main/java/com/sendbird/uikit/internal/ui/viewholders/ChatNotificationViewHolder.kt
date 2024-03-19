@@ -10,7 +10,6 @@ internal class ChatNotificationViewHolder internal constructor(
 ) : NotificationViewHolder(binding.root) {
 
     override fun bind(channel: BaseChannel, message: BaseMessage, config: NotificationConfig?) {
-        binding.chatNotification.onNotificationTemplateActionHandler = config?.onMessageTemplateActionHandler
         binding.chatNotification.drawMessage(channel, message, config)
     }
 }

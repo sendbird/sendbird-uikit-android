@@ -34,10 +34,6 @@ internal class FeedNotificationListAdapter(
     // the worker must be a single thread.
     private val dataWorker by lazy { Executors.newSingleThreadExecutor() }
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
-        set(value) {
-            field = value
-            notificationConfig?.onMessageTemplateActionHandler = onMessageTemplateActionHandler
-        }
 
     init {
         this.currentLastSeenAt = channel.myLastRead
@@ -60,7 +56,9 @@ internal class FeedNotificationListAdapter(
         parent.context.theme.resolveAttribute(R.attr.sb_component_list, values, true)
         val contextWrapper: Context = ContextThemeWrapper(parent.context, values.resourceId)
         val inflater = LayoutInflater.from(contextWrapper)
-        return FeedNotificationViewHolder(SbViewFeedNotificationBinding.inflate(inflater, parent, false))
+        return FeedNotificationViewHolder(SbViewFeedNotificationBinding.inflate(inflater, parent, false)).apply {
+            binding.feedNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
+        }
     }
 
     /**

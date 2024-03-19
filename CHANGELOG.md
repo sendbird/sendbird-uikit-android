@@ -1,4 +1,16 @@
 # Changelog
+### v3.14.0 (Mar 19, 2024) with Chat SDK `v4.15.6`
+* A feedback feature has been added to give opinions on the message.
+  * Added `setEmptyIcon(int)`, `setEmptyIcon(int, ColorStateList)`, `setEmptyText(int)`, and `setErrorText(int)` in `ChatNotificationChannelFragment`.
+  * Added `setEmptyIcon(int)`, `setEmptyIcon(int, ColorStateList)`, `setEmptyText(int)`, and `setErrorText(int)` in `FeedNotificationChannelFragment`.
+* Simple example for creating `FeedNotificationChannelFragment` with empty icon and text.
+```kotlin
+val feedChannelFragment = FeedNotificationChannelFragment.Builder(channelUrl)
+      .withArguments(args)
+      .setEmptyIcon(R.drawable.icon_empty)
+      .setEmptyText(R.string.text_empty_notification)
+      .build()
+```
 ### v3.13.0 (Feb 1, 2024) with Chat SDK `v4.14.2`
 * A feedback feature has been added to give opinions on the message.
   * Added `enableFeedback` in `ChannelConfig`.

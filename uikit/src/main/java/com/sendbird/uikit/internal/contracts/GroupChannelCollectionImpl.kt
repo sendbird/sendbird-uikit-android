@@ -1,4 +1,4 @@
-package com.sendbird.uikit.internal.wrappers
+package com.sendbird.uikit.internal.contracts
 
 import com.sendbird.android.SendbirdChat.createGroupChannelCollection
 import com.sendbird.android.channel.GroupChannel
@@ -8,7 +8,7 @@ import com.sendbird.android.handler.GroupChannelCollectionHandler
 import com.sendbird.android.handler.GroupChannelsCallbackHandler
 import com.sendbird.android.params.GroupChannelCollectionCreateParams
 
-internal class GroupChannelCollectionImpl(query: GroupChannelListQuery) : GroupChannelCollectionWrapper {
+internal class GroupChannelCollectionImpl(query: GroupChannelListQuery) : GroupChannelCollectionContract {
     private val collection: GroupChannelCollection
 
     init {

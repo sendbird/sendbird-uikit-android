@@ -40,48 +40,29 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
         val handler = object : GetTemplateResultHandler {
             override fun onResult(templateKey: String, jsonTemplate: String?, e: SendbirdException?) {
                 Logger.d("++ get template has been succeed, matched=${parentView.tag == message.messageId}")
-                if (parentView.tag == message.messageId) {
-                    val layout = try {
-                        e?.let { throw e }
-                        jsonTemplate?.let {
-                            val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
-                            TemplateViewGenerator.inflateViews(context, viewParams) { view, params ->
-                                params.action?.register(
-                                    view,
-                                    { v, action, message ->
-                                        try {
-                                            // if `tags` key doesn't exist, empty value has to delivery.(spec)
-                                            val tags: List<String> = message.notificationData?.tags ?: listOf()
-                                            val result = SendbirdStatistics.appendStat(
-                                                KeySet.noti_stats,
-                                                mapOf(
-                                                    KeySet.action to KeySet.clicked,
-                                                    KeySet.template_key to templateKey,
-                                                    KeySet.channel_url to message.channelUrl,
-                                                    KeySet.tags to tags,
-                                                    KeySet.message_id to message.messageId,
-                                                    KeySet.source to KeySet.notification,
-                                                    KeySet.message_ts to message.createdAt,
-                                                )
-                                            )
-                                            Logger.d("++ appendStat end, result=%s, tags=%s", result, tags)
-                                        } catch (e: Throwable) {
-                                            Logger.w(e)
-                                        }
-                                        onNotificationTemplateActionHandler?.onHandleAction(
-                                            v, action, message
-                                        )
-                                    }, message
-                                )
-                            }
+                if (parentView.tag != message.messageId) return
+                val layout = try {
+                    e?.let { throw e }
+                    jsonTemplate?.let {
+                        val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
+                        TemplateViewGenerator.inflateViews(context, viewParams) { view, params ->
+                            params.action?.register(
+                                view,
+                                { v, action, message ->
+                                    sendNotificationStats(templateKey, message)
+                                    onNotificationTemplateActionHandler?.onHandleAction(
+                                        v, action, message
+                                    )
+                                }, message
+                            )
                         }
-                    } catch (e: Throwable) {
-                        Logger.w("${e.printStackTrace()}")
-                        createFallbackNotification(message, themeMode, onNotificationTemplateActionHandler)
                     }
-                    parentView.removeAllViews()
-                    parentView.addView(layout)
+                } catch (e: Throwable) {
+                    Logger.w("${e.printStackTrace()}")
+                    createFallbackNotification(message, themeMode, onNotificationTemplateActionHandler)
                 }
+                parentView.removeAllViews()
+                parentView.addView(layout)
             }
         }
 
@@ -122,6 +103,28 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
             TemplateViewGenerator.inflateViews(context, this) { view, params ->
                 params.action?.register(view, onNotificationTemplateActionHandler, message)
             }
+        }
+    }
+
+    private fun sendNotificationStats(templateKey: String, message: BaseMessage) {
+        try {
+            // if `tags` key doesn't exist, empty value has to delivery.(spec)
+            val tags: List<String> = message.notificationData?.tags ?: listOf()
+            val result = SendbirdStatistics.appendStat(
+                KeySet.noti_stats,
+                mapOf(
+                    KeySet.action to KeySet.clicked,
+                    KeySet.template_key to templateKey,
+                    KeySet.channel_url to message.channelUrl,
+                    KeySet.tags to tags,
+                    KeySet.message_id to message.messageId,
+                    KeySet.source to KeySet.notification,
+                    KeySet.message_ts to message.createdAt,
+                )
+            )
+            Logger.d("++ appendStat end, result=%s, tags=%s", result, tags)
+        } catch (e: Throwable) {
+            Logger.w(e)
         }
     }
 

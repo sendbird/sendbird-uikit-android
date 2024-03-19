@@ -38,7 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * ViewModel preparing and managing data related with the notification channel.
- *
  * since 3.5.0
  */
 public class FeedNotificationChannelViewModel extends BaseViewModel implements OnPagedDataLoader<List<BaseMessage>>, LifecycleEventObserver {
@@ -445,11 +444,12 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
      *
      * @param messages The list of messages to be sent
      * since 3.12.0
+     *
      */
     public void sendLogImpression(@NonNull List<BaseMessage> messages) {
         Logger.d(">> FeedNotificationChannelViewModel::sendLogImpression(), size=%s, isVisible", messages.size(), isVisible);
         if (channel == null || !isVisible) return;
         final boolean result = channel.logImpression(messages);
-        Logger.d("++ logImpression result=%s", result);
+        Logger.d("++ sendlogView result=%s", result);
     }
 }

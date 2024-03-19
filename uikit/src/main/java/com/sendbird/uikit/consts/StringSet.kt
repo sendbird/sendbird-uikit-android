@@ -136,6 +136,7 @@ object StringSet {
     const val ThreadInfo = "ThreadInfo"
     const val ParentMessageMenu = "ParentMessageMenu"
     const val _AT = "@"
+    const val disable_chat_input = "disable_chat_input"
 
     // template message syntax
     const val web = "web"

@@ -3,8 +3,6 @@ package com.sendbird.uikit.samples.notification
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.viewbinding.ViewBinding
 import com.sendbird.uikit.activities.FeedNotificationChannelActivity
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.ThemeHomeActivity

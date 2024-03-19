@@ -47,10 +47,10 @@ import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.singleton.UIKitConfigRepository;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
-import com.sendbird.uikit.internal.wrappers.SendbirdChatImpl;
-import com.sendbird.uikit.internal.wrappers.SendbirdChatWrapper;
-import com.sendbird.uikit.internal.wrappers.TaskQueueImpl;
-import com.sendbird.uikit.internal.wrappers.TaskQueueWrapper;
+import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
+import com.sendbird.uikit.internal.contracts.TaskQueueImpl;
+import com.sendbird.uikit.internal.contracts.TaskQueueContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.UserMentionConfig;
@@ -269,7 +269,7 @@ public class SendbirdUIKit {
 
     @VisibleForTesting
     synchronized static void init(
-        @NonNull SendbirdChatWrapper sendbirdChatWrapper,
+        @NonNull SendbirdChatContract sendbirdChatContract,
         @NonNull SendbirdUIKitAdapter adapter,
         @NonNull UIKitConfigRepository uikitConfigRepo,
         @NonNull Context context,
@@ -296,7 +296,7 @@ public class SendbirdUIKit {
             public void onInitSucceed() {
                 Logger.d(">> onInitSucceed()");
                 try {
-                    sendbirdChatWrapper.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
+                    sendbirdChatContract.addExtension(StringSet.sb_uikit, BuildConfig.VERSION_NAME);
                 } catch (Throwable ignored) {
                 }
                 try {
@@ -305,7 +305,7 @@ public class SendbirdUIKit {
                         SendbirdPlatform.ANDROID,
                         BuildConfig.VERSION_NAME
                     );
-                    sendbirdChatWrapper.addSendbirdExtensions(Collections.singletonList(o), null);
+                    sendbirdChatContract.addSendbirdExtensions(Collections.singletonList(o), null);
                 } catch (Throwable ignored) {
                 }
 
@@ -316,7 +316,7 @@ public class SendbirdUIKit {
         final com.sendbird.android.LogLevel logLevel = BuildConfig.DEBUG ? com.sendbird.android.LogLevel.VERBOSE : com.sendbird.android.LogLevel.WARN;
         // useCaching=true is required for UIKit
         final InitParams initParams = new InitParams(adapter.getAppId(), context, true, logLevel, isForeground);
-        sendbirdChatWrapper.init(initParams, initResultHandler);
+        sendbirdChatContract.init(initParams, initResultHandler);
         FileUtils.removeDeletableDir(context.getApplicationContext());
         UIKitPrefs.init(context.getApplicationContext());
         NotificationChannelManager.init(context.getApplicationContext());
@@ -564,18 +564,18 @@ public class SendbirdUIKit {
     }
 
     @VisibleForTesting
-    static void connectInternal(@NonNull SendbirdChatWrapper sendbirdChat,
-                                @NonNull TaskQueueWrapper taskQueueWrapper,
+    static void connectInternal(@NonNull SendbirdChatContract sendbirdChat,
+                                @NonNull TaskQueueContract taskQueueContract,
                                 @Nullable ConnectHandler handler) {
-        connectInternal(ConnectType.CONNECT, sendbirdChat, taskQueueWrapper, handler);
+        connectInternal(ConnectType.CONNECT, sendbirdChat, taskQueueContract, handler);
     }
 
     private static void connectInternal(
         @NonNull ConnectType connectType,
-        @NonNull SendbirdChatWrapper sendbirdChat,
-        @NonNull TaskQueueWrapper taskQueueWrapper,
+        @NonNull SendbirdChatContract sendbirdChat,
+        @NonNull TaskQueueContract taskQueueContract,
         @Nullable ConnectHandler handler) {
-        taskQueueWrapper.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
+        taskQueueContract.addTask(new JobResultTask<Pair<User, SendbirdException>>() {
             @Override
             public Pair<User, SendbirdException> call() throws Exception {
                 final Pair<User, SendbirdException> data;
@@ -654,7 +654,7 @@ public class SendbirdUIKit {
     }
 
     @NonNull
-    private static Pair<User, SendbirdException> connectBlocking(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
+    private static Pair<User, SendbirdException> connectBlocking(@NonNull SendbirdChatContract sendbirdChat) throws InterruptedException {
         AtomicReference<User> result = new AtomicReference<>();
         AtomicReference<SendbirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
@@ -675,7 +675,7 @@ public class SendbirdUIKit {
     }
 
     @NonNull
-    private static Pair<User, SendbirdException> authenticateFeedBlocking(@NonNull SendbirdChatWrapper sendbirdChat) throws InterruptedException {
+    private static Pair<User, SendbirdException> authenticateFeedBlocking(@NonNull SendbirdChatContract sendbirdChat) throws InterruptedException {
         AtomicReference<User> result = new AtomicReference<>();
         AtomicReference<SendbirdException> error = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
@@ -719,10 +719,10 @@ public class SendbirdUIKit {
         SendbirdChat.updateCurrentUserInfo(params, handler);
     }
 
-    private static void updateUserInfoBlocking(@NonNull SendbirdChatWrapper sendbirdChatWrapper, @NonNull UserUpdateParams params) throws SendbirdException, InterruptedException {
+    private static void updateUserInfoBlocking(@NonNull SendbirdChatContract sendbirdChatContract, @NonNull UserUpdateParams params) throws SendbirdException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<SendbirdException> error = new AtomicReference<>();
-        sendbirdChatWrapper.updateCurrentUserInfo(params, e -> {
+        sendbirdChatContract.updateCurrentUserInfo(params, e -> {
             if (e != null) error.set(e);
             latch.countDown();
         });

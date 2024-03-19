@@ -1,4 +1,4 @@
-package com.sendbird.uikit.internal.wrappers
+package com.sendbird.uikit.internal.contracts
 
 import com.sendbird.android.AppInfo
 import com.sendbird.android.ConnectionState
@@ -13,7 +13,7 @@ import com.sendbird.android.internal.sb.SendbirdSdkInfo
 import com.sendbird.android.params.InitParams
 import com.sendbird.android.params.UserUpdateParams
 
-internal interface SendbirdChatWrapper {
+internal interface SendbirdChatContract {
     fun addChannelHandler(identifier: String, handler: BaseChannelHandler)
     fun addConnectionHandler(identifier: String, handler: ConnectionHandler)
     fun removeChannelHandler(identifier: String): BaseChannelHandler?

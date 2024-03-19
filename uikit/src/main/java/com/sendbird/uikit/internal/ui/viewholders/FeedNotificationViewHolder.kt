@@ -16,8 +16,6 @@ internal class FeedNotificationViewHolder internal constructor(
         lastSeenAt: Long,
         config: NotificationConfig?
     ) {
-        binding.feedNotification.onNotificationTemplateActionHandler =
-            config?.onMessageTemplateActionHandler
         binding.feedNotification.drawMessage(message, channel, lastSeenAt, config)
     }
 }

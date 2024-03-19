@@ -144,10 +144,10 @@ public class ChannelUtils {
     public static String makeTypingText(@NonNull Context context, @NonNull List<? extends User> typingUsers) {
         if (typingUsers.size() == 1) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_single),
-                typingUsers.get(0).getNickname());
+                UserUtils.getDisplayName(context, typingUsers.get(0), false));
         } else if (typingUsers.size() == 2) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_double),
-                typingUsers.get(0).getNickname(), typingUsers.get(1).getNickname());
+                UserUtils.getDisplayName(context, typingUsers.get(0), false), UserUtils.getDisplayName(context, typingUsers.get(1), false));
         } else {
             return context.getString(R.string.sb_text_channel_typing_indicator_multiple);
         }

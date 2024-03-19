@@ -21,7 +21,7 @@ import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.setTypeface
-import com.sendbird.uikit.internal.utils.NotificationImpressionTracker
+import com.sendbird.uikit.internal.utils.NotificationViewedTracker
 import com.sendbird.uikit.utils.SoftInputUtils
 
 internal class NotificationRecyclerView @JvmOverloads constructor(
@@ -33,18 +33,18 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
     private var categoryMenuTextAppearance: Int
     private var categoryMenuBackground: Int
     private val binding: SbViewChatNotificationRecyclerViewBinding
-    private val notificationScrollImpressionTracker by lazy {
-        NotificationImpressionTracker(recyclerView).apply {
-            onImpressionDetected = {
+    private val notificationScrollViewedTracker by lazy {
+        NotificationViewedTracker(recyclerView).apply {
+            onNotificationViewedDetected = {
                 recyclerView.layoutManager?.let {
                     val firstVisibleItemPosition = it.findFirstVisibleItemPosition()
                     val lastVisibleItemPosition = it.findLastVisibleItemPosition()
-                    onImpressionDetectedListener?.invoke(firstVisibleItemPosition, lastVisibleItemPosition)
+                    onNotificationViewedDetectedListener?.invoke(firstVisibleItemPosition, lastVisibleItemPosition)
                 }
             }
         }
     }
-    var onImpressionDetectedListener: ((firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) -> Unit)? = null
+    var onNotificationViewedDetectedListener: ((firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) -> Unit)? = null
     val recyclerView: PagerRecyclerView
         get() = binding.rvMessageList
     val isReverseLayout
@@ -109,7 +109,7 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
 
             layoutParams = RadioGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                resources.getDimensionPixelSize(com.sendbird.uikit.R.dimen.sb_size_30)
+                resources.getDimensionPixelSize(R.dimen.sb_size_30)
             ).apply {
                 marginEnd = resources.intToDp(8)
             }
@@ -143,12 +143,12 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        notificationScrollImpressionTracker.start()
+        notificationScrollViewedTracker.start()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        notificationScrollImpressionTracker.stop()
+        notificationScrollViewedTracker.stop()
     }
 
     init {
