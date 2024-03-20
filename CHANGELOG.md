@@ -1,4 +1,6 @@
 # Changelog
+### v3.14.1 (Mar 20, 2024) with Chat SDK `v4.15.6`
+* Fixed issue where the position of the empty icon was displayed incorrectly.
 ### v3.14.0 (Mar 19, 2024) with Chat SDK `v4.15.6`
 * A feedback feature has been added to give opinions on the message.
   * Added `setEmptyIcon(int)`, `setEmptyIcon(int, ColorStateList)`, `setEmptyText(int)`, and `setErrorText(int)` in `ChatNotificationChannelFragment`.
