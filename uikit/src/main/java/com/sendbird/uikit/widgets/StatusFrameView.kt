@@ -2,10 +2,12 @@ package com.sendbird.uikit.widgets
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewStatusFrameBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
@@ -67,7 +69,12 @@ class StatusFrameView @JvmOverloads constructor(
 
     private fun setAlert(text: String?, icon: Drawable?, iconTint: ColorStateList?) {
         this.visibility = VISIBLE
-        binding.ivAlertIcon.setImageDrawable(DrawableUtils.setTintList(icon, iconTint))
+        if (!isValidDrawable(icon)) {
+            binding.ivAlertIcon.visibility = GONE
+        } else {
+            binding.ivAlertIcon.visibility = VISIBLE
+            binding.ivAlertIcon.setImageDrawable(DrawableUtils.setTintList(icon, iconTint))
+        }
         binding.ivAlertText.text = text
         binding.tvAction.setText(actionText)
         binding.actionPanel.visibility = if (showAction) VISIBLE else GONE
@@ -75,6 +82,14 @@ class StatusFrameView @JvmOverloads constructor(
             val actionIcon = binding.ivAction.drawable
             binding.ivAction.setImageDrawable(DrawableUtils.setTintList(actionIcon, actionIconTint))
         }
+    }
+
+    private fun isValidDrawable(drawable: Drawable?): Boolean {
+        val isTransparentColor = if (drawable is ColorDrawable) {
+            val transparent = ContextCompat.getColor(context, android.R.color.transparent)
+            drawable.color == transparent
+        } else false
+        return drawable != null && !isTransparentColor
     }
 
     init {
