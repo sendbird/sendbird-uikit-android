@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import com.sendbird.android.channel.BaseChannel
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewChatNotificationComponentBinding
@@ -65,8 +65,9 @@ internal class ChatNotificationView @JvmOverloads internal constructor(
         }
     }
 
-    fun drawMessage(channel: BaseChannel, message: BaseMessage, config: NotificationConfig? = null) {
+    fun drawMessage(channel: GroupChannel, message: BaseMessage, config: NotificationConfig? = null) {
         binding.tvLabel.text = MessageUtils.getNotificationLabel(message)
+        binding.tvLabel.visibility = if (channel.isTemplateLabelEnabled) View.VISIBLE else View.INVISIBLE
         binding.tvSentAt.text = DateUtils.formatDateTime(context, message.createdAt)
         binding.ivProfileView.loadCircle(channel.coverUrl)
 

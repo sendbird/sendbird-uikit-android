@@ -36,6 +36,7 @@ internal class FeedNotificationListAdapter(
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
 
     init {
+        this.prevLastSeenAt = channel.myLastRead
         this.currentLastSeenAt = channel.myLastRead
     }
 

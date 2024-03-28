@@ -515,16 +515,15 @@ abstract public class BaseMessageListFragment<
             return;
         }
 
+        final GroupChannel channel = getViewModel().getChannel();
+        if (channel == null || channel.isSuper()) return;
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
         final EmojiReactionUserListView emojiReactionUserListView = new EmojiReactionUserListView(contextThemeWrapper);
         emojiReactionUserListView.setOnProfileClickListener(this::onEmojiReactionUserListProfileClicked);
-        final GroupChannel channel = getViewModel().getChannel();
-        if (channel != null) {
-            emojiReactionUserListView.setEmojiReactionUserData(this,
-                position,
-                message.getReactions(),
-                getReactionUserInfo(channel, message.getReactions()));
-        }
+        emojiReactionUserListView.setEmojiReactionUserData(this,
+            position,
+            message.getReactions(),
+            getReactionUserInfo(channel, message.getReactions()));
         hideKeyboard();
         DialogUtils.showContentDialog(requireContext(), emojiReactionUserListView);
     }
@@ -863,9 +862,9 @@ abstract public class BaseMessageListFragment<
     private static int getMultipleFilesMessageFileCountLimit() {
         return Math.min(
             MULTIPLE_FILES_COUNT_LIMIT,
-            SendbirdChat.getAppInfo() == null ?
-                MULTIPLE_FILES_COUNT_LIMIT :
+            SendbirdChat.isInitialized() && SendbirdChat.getAppInfo() != null ?
                 SendbirdChat.getAppInfo().getMultipleFilesMessageFileCountLimit()
+                : MULTIPLE_FILES_COUNT_LIMIT
         );
     }
 

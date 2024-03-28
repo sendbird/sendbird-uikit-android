@@ -445,11 +445,25 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
      * @param messages The list of messages to be sent
      * since 3.12.0
      *
+     * @deprecated 3.15.0
+     * <p> Use {@link #sendLogViewed(List)} instead.</p>
      */
+    @Deprecated
     public void sendLogImpression(@NonNull List<BaseMessage> messages) {
-        Logger.d(">> FeedNotificationChannelViewModel::sendLogImpression(), size=%s, isVisible", messages.size(), isVisible);
+        sendLogViewed(messages);
+    }
+
+    /**
+     * Sends the log viewed to Sendbird server.
+     * It is working only when the channel is visible.
+     *
+     * @param messages The list of messages to be sent
+     * since 3.15.0
+     */
+    public void sendLogViewed(@NonNull List<BaseMessage> messages) {
+        Logger.d(">> FeedNotificationChannelViewModel::sendLogView(), size=%s, isVisible", messages.size(), isVisible);
         if (channel == null || !isVisible) return;
-        final boolean result = channel.logImpression(messages);
+        final boolean result = channel.logViewed(messages);
         Logger.d("++ sendlogView result=%s", result);
     }
 }

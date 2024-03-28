@@ -35,6 +35,8 @@ data class ChannelConfig internal constructor(
     private var _typingIndicatorTypes: Set<TypingIndicatorType> = setOf(TypingIndicatorType.TEXT),
     @SerialName(KeySet.enable_reactions)
     private var _enableReactions: Boolean = true,
+    @SerialName(KeySet.enable_reactions_supergroup)
+    private var _enableReactionsSupergroup: Boolean = false,
     @SerialName(KeySet.enable_voice_message)
     private var _enableVoiceMessage: Boolean = false,
     @SerialName(KeySet.enable_multiple_files_message)
@@ -69,6 +71,8 @@ data class ChannelConfig internal constructor(
     private var typingIndicatorTypesMutable: Set<TypingIndicatorType>? = null,
     @Transient
     private var enableReactionsMutable: Boolean? = null,
+    @Transient
+    private var enableReactionsSupergroupMutable: Boolean? = null,
     @Transient
     private var enableVoiceMessageMutable: Boolean? = null,
     @Transient
@@ -118,10 +122,14 @@ data class ChannelConfig internal constructor(
         @JvmStatic
         fun getEnableReactions(channelConfig: ChannelConfig, channel: BaseChannel): Boolean {
             return if (channel is GroupChannel) {
-                if (channel.isSuper || channel.isBroadcast || channel.isChatNotification) {
+                if (channel.isBroadcast || channel.isChatNotification) {
                     false
                 } else {
-                    Available.isSupportReaction() && channelConfig.enableReactions
+                    if (channel.isSuper) {
+                        Available.isSupportReaction() && channelConfig.enableReactionsSupergroup
+                    } else {
+                        Available.isSupportReaction() && channelConfig.enableReactions
+                    }
                 }
             } else {
                 false
@@ -234,6 +242,9 @@ data class ChannelConfig internal constructor(
          * Only the values set in UIKit dashboard and UIKitConfig are affected.
          * If you want to get the value used when actually drawing in uikit, use [ChannelConfig.getEnableReactions(ChannelConfig, GroupChannel)].
          *
+         * This works exclusively with [enableReactionsSupergroup]. In other words, it does not affect whether or not reactions are used in the supergroup channel.
+         * If you want to use reactions in a supergroup channel, adjust the [enableReactionsSupergroup] property.
+         *
          * @return true if the reactions is enabled, false otherwise
          * @since 3.6.0
          */
@@ -246,6 +257,31 @@ data class ChannelConfig internal constructor(
          */
         set(value) {
             enableReactionsMutable = value
+        }
+    var enableReactionsSupergroup: Boolean
+        /**
+         * Returns a value that determines whether to display the reactions or not in the supergroup channel.
+         * true, if supergroup channel displays the reactions in the message.
+         * false, otherwise.
+         *
+         * Only the values set in UIKit dashboard and UIKitConfig are affected.
+         * If you want to get the value used when actually drawing in uikit, use [ChannelConfig.getEnableReactions(ChannelConfig, GroupChannel)].
+         *
+         * This works exclusively with [enableReactions]. In other words, it only affects whether or not reactions are used in the supergroup channel.
+         * If you want to use reactions in a group channel, adjust the [enableReactions] property.
+         *
+         * @return true if the reactions is enabled in the supergroup channel, false otherwise
+         * @since 3.15.0
+         */
+        get() = enableReactionsSupergroupMutable ?: _enableReactionsSupergroup
+        /**
+         * Sets whether to display the reactions or not in the supergroup channel.
+         *
+         * @param value true if the reactions is enabled in the supergroup channel, false otherwise
+         * @since 3.15.0
+         */
+        set(value) {
+            enableReactionsSupergroupMutable = value
         }
     var enableVoiceMessage: Boolean
         /**
@@ -387,6 +423,7 @@ data class ChannelConfig internal constructor(
         this._enableTypingIndicator = config._enableTypingIndicator
         this._typingIndicatorTypes = config._typingIndicatorTypes
         this._enableReactions = config._enableReactions
+        this._enableReactionsSupergroup = config._enableReactionsSupergroup
         this._enableVoiceMessage = config._enableVoiceMessage
         this._enableMultipleFilesMessage = config._enableMultipleFilesMessage
         this._enableSuggestedReplies = config._enableSuggestedReplies
@@ -406,6 +443,7 @@ data class ChannelConfig internal constructor(
         this.enableTypingIndicatorMutable = null
         this.typingIndicatorTypesMutable = null
         this.enableReactionsMutable = null
+        this.enableReactionsSupergroupMutable = null
         this.enableVoiceMessageMutable = null
         this.enableMultipleFilesMessageMutable = null
         this.threadReplySelectTypeMutable = null

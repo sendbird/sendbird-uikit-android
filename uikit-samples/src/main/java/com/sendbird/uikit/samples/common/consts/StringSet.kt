@@ -7,6 +7,7 @@ object StringSet {
     const val PUSH_REDIRECT_CHANNEL = "PUSH_REDIRECT_CHANNEL"
     const val PUSH_REDIRECT_MESSAGE_ID = "PUSH_REDIRECT_MESSAGE_ID"
     const val PUSH_REDIRECT_CHANNEL_TYPE = "PUSH_REDIRECT_CHANNEL_TYPE"
+    const val PUSH_NOTIFICATION_DATA = "PUSH_NOTIFICATION_DATA"
     const val SETTINGS_USE_HEADER = "SETTINGS_USE_HEADER"
     const val SETTINGS_USE_DO_NOT_DISTURB = "SETTINGS_USE_DO_NOT_DISTURB"
     const val SB_LIVE_TYPE = "SB_LIVE_TYPE"
@@ -32,4 +33,5 @@ object StringSet {
     const val notification_chat = "notification_chat"
     const val push_title = "push_title"
     const val channel_type = "channel_type"
+    const val notification_channel_key = "notification_channel_key"
 }

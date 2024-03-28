@@ -1,4 +1,9 @@
 # Changelog
+### v3.15.0 (Mar 28, 2024) with Chat SDK `v4.16.0`
+* Added `sendLogViewed(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.
+* Deprecated `sendLogImpression(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.
+* Supported reactions in super group channel.
+  Added `enableReactionsSupergroup` in `ChannelConfig`.
 ### v3.14.1 (Mar 20, 2024) with Chat SDK `v4.15.6`
 * Fixed issue where the position of the empty icon was displayed incorrectly.
 ### v3.14.0 (Mar 19, 2024) with Chat SDK `v4.15.6`

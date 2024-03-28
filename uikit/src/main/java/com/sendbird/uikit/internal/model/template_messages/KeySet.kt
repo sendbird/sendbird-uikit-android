@@ -90,6 +90,7 @@ internal object KeySet {
     const val enable_typing_indicator = "enable_typing_indicator"
     const val typing_indicator_types = "typing_indicator_types"
     const val enable_reactions = "enable_reactions"
+    const val enable_reactions_supergroup = "enable_reactions_supergroup"
     const val enable_voice_message = "enable_voice_message"
     const val enable_multiple_files_message = "enable_multiple_files_message"
     const val enable_suggested_replies = "enable_suggested_replies"

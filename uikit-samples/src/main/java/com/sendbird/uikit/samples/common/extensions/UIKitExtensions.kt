@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.sendbird.android.SendbirdChat
@@ -33,6 +34,7 @@ import com.sendbird.uikit.samples.customization.CustomizationHomeActivity
 import com.sendbird.uikit.samples.notification.NotificationHomeActivity
 import com.sendbird.uikit.samples.notification.NotificationLoginActivity
 import com.sendbird.uikit.samples.notification.NotificationMainActivity
+import java.io.Serializable
 
 internal fun SampleType?.getLogoDrawable(context: Context): Drawable? {
     return when (this) {
@@ -169,4 +171,13 @@ internal fun getFeedChannelUrl(): String {
         val feedChannels = it.notificationInfo?.feedChannels
         feedChannels?.get(StringSet.feed)
     } ?: ""
+}
+
+internal fun <T : Serializable?> Intent.getSerializable(key: String, clazz: Class<T>): T? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.getSerializableExtra(key, clazz)
+    } else {
+        @Suppress("UNCHECKED_CAST")
+        this.getSerializableExtra(key) as? T
+    }
 }
