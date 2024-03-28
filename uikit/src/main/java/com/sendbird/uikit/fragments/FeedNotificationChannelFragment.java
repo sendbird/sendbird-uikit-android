@@ -126,7 +126,7 @@ public class FeedNotificationChannelFragment extends BaseModuleFragment<FeedNoti
         Logger.d(">> FeedNotificationChannelFragment::onBindFeedNotificationListComponent()");
         listComponent.setOnMessageTemplateActionHandler(actionHandler != null ? actionHandler : this::handleAction);
         listComponent.setOnTooltipClickListener(v -> listComponent.scrollToFirst());
-        listComponent.setOnNotificationViewedDetectedListener(viewModel::sendLogImpression);
+        listComponent.setOnNotificationViewedDetectedListener(viewModel::sendLogViewed);
         listComponent.setOnNotificationCategorySelectListener(category -> {
             Logger.d("++ selected category = %s", category);
             listComponent.clearData();

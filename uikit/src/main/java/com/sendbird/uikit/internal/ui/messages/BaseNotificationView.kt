@@ -112,7 +112,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
             val tags: List<String> = message.notificationData?.tags ?: listOf()
             val result = SendbirdStatistics.appendStat(
                 KeySet.noti_stats,
-                mapOf(
+                mutableMapOf(
                     KeySet.action to KeySet.clicked,
                     KeySet.template_key to templateKey,
                     KeySet.channel_url to message.channelUrl,
@@ -120,7 +120,11 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                     KeySet.message_id to message.messageId,
                     KeySet.source to KeySet.notification,
                     KeySet.message_ts to message.createdAt,
-                )
+                ).apply {
+                    message.notificationEventDeadline?.let {
+                        put(KeySet.notification_event_deadline, it)
+                    }
+                }.toMap()
             )
             Logger.d("++ appendStat end, result=%s, tags=%s", result, tags)
         } catch (e: Throwable) {

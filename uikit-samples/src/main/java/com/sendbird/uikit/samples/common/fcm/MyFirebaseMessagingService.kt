@@ -53,9 +53,13 @@ class MyFirebaseMessagingService : SendbirdPushHandler() {
         try {
             if (remoteMessage.data.containsKey(StringSet.sendbird)) {
                 val jsonStr = remoteMessage.data[StringSet.sendbird]
-                markAsDelivered(remoteMessage.data)
+                try {
+                    markAsDelivered(remoteMessage.data)
+                } catch (e: Exception) {
+                    Logger.e(e)
+                }
                 if (jsonStr == null) return
-                sendNotification(context, JSONObject(jsonStr))
+                sendNotification(context, JSONObject(jsonStr), remoteMessage.data)
             }
         } catch (e: JSONException) {
             Logger.e(e)
@@ -72,12 +76,13 @@ class MyFirebaseMessagingService : SendbirdPushHandler() {
          * @param sendBird JSONObject payload from FCM
          */
         @Throws(JSONException::class)
-        fun sendNotification(context: Context, sendBird: JSONObject) {
+        fun sendNotification(context: Context, sendBird: JSONObject, data: Map<String, String>) {
             val message = sendBird.getString(StringSet.message)
             val channel = sendBird.getJSONObject(StringSet.channel)
             val channelUrl = channel.getString(StringSet.channel_url)
             val messageId = sendBird.getLong(StringSet.message_id)
             val channelType = sendBird.optString(StringSet.channel_type, "")
+            val channelKey = sendBird.optString(StringSet.notification_channel_key, "")
             var pushTitle = context.getString(R.string.app_name)
             if (sendBird.has(StringSet.sender)) {
                 val sender = sendBird.getJSONObject(StringSet.sender)
@@ -95,7 +100,8 @@ class MyFirebaseMessagingService : SendbirdPushHandler() {
                 }
             }
 
-            val intent = newRedirectToChannelIntent(context, channelUrl, messageId, channelType)
+            val hashedData = if (channelKey.isNotEmpty()) HashMap(data) else null
+            val intent = newRedirectToChannelIntent(context, channelUrl, messageId, channelType, hashedData)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
             @SuppressLint("UnspecifiedImmutableFlag")
@@ -128,14 +134,17 @@ class MyFirebaseMessagingService : SendbirdPushHandler() {
             context: Context,
             channelUrl: String,
             messageId: Long,
-            channelType: String
+            channelType: String,
+            data: HashMap<String, String>?,
         ): Intent {
             return PreferenceUtils.selectedSampleType.newRedirectToChannelIntent(
                 context,
                 channelUrl,
                 messageId,
                 channelType
-            )
+            ).apply {
+                data?.let { putExtra(StringSet.PUSH_NOTIFICATION_DATA, it) }
+            }
         }
     }
 }

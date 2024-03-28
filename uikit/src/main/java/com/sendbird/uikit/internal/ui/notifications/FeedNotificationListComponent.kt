@@ -20,6 +20,7 @@ import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.Action
 import com.sendbird.uikit.utils.DrawableUtils
+import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -91,8 +92,14 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
 
         onNotificationViewedDetectedListener?.let {
             val range = if (firstVisibleItem <= lastVisibleItem) firstVisibleItem..lastVisibleItem else lastVisibleItem..firstVisibleItem
-            val items = range.mapNotNull { i -> adapter?.getItem(i) }
-            it.onNotificationViewedDetected(items)
+            val copiedList = adapter?.getItems()?.toList()
+            if (copiedList != null) {
+                try {
+                    val items = range.mapNotNull { i -> copiedList[i] }
+                    it.onNotificationViewedDetected(items)
+                } catch (ignore: Exception) {
+                }
+            }
         }
     }
 

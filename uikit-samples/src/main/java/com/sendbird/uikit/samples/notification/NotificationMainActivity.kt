@@ -16,6 +16,7 @@ import com.sendbird.android.SendbirdChat.removeUserEventHandler
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.UnreadMessageCountHandler
 import com.sendbird.android.handler.UserEventHandler
+import com.sendbird.android.push.SendbirdPushHelper
 import com.sendbird.android.user.UnreadMessageCount
 import com.sendbird.android.user.User
 import com.sendbird.uikit.SendbirdUIKit
@@ -30,6 +31,7 @@ import com.sendbird.uikit.samples.common.SampleSettingsFragment
 import com.sendbird.uikit.samples.common.consts.InitState
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.extensions.getFeedChannelUrl
+import com.sendbird.uikit.samples.common.extensions.getSerializable
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.CustomTabView
@@ -152,7 +154,19 @@ class NotificationMainActivity : AppCompatActivity() {
 
     private fun redirectChannelIfNeeded(intent: Intent?) {
         if (intent == null) return
-        Logger.i("++ intent: %s", intent)
+        Logger.i("++ intent: %s, %s", intent, intent.extras)
+        if (intent.hasExtra(StringSet.PUSH_NOTIFICATION_DATA)) {
+            intent.getSerializable(StringSet.PUSH_NOTIFICATION_DATA, HashMap::class.java)?.let {
+                val resultMap = HashMap<String, String>()
+                for ((key, value) in it) {
+                    if (key is String && value is String) {
+                        resultMap[key] = value
+                    }
+                }
+                SendbirdPushHelper.markPushNotificationAsClicked(resultMap)
+            }
+            intent.removeExtra(StringSet.PUSH_NOTIFICATION_DATA)
+        }
         if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) {
             intent.removeExtra(StringSet.PUSH_REDIRECT_CHANNEL)
             intent.removeExtra(StringSet.PUSH_REDIRECT_MESSAGE_ID)
@@ -160,7 +174,7 @@ class NotificationMainActivity : AppCompatActivity() {
         if (intent.hasExtra(StringSet.PUSH_REDIRECT_CHANNEL)) {
             val channelUrl = intent.getStringExtra(StringSet.PUSH_REDIRECT_CHANNEL)
             intent.removeExtra(StringSet.PUSH_REDIRECT_CHANNEL)
-            if (channelUrl == null) return
+            if (channelUrl.isNullOrEmpty()) return
             val channelType = intent.getStringExtra(StringSet.PUSH_REDIRECT_CHANNEL_TYPE)
             if (channelType.isNullOrEmpty()) return
 
