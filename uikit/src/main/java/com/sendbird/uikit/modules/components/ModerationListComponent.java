@@ -15,6 +15,7 @@ import androidx.core.widget.NestedScrollView;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.consts.SingleMenuType;
 import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
 import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 
@@ -141,14 +142,14 @@ public class ModerationListComponent {
         this.bannedMembers = new SingleMenuItemView(listThemeContext);
         this.frozenState = new SingleMenuItemView(listThemeContext);
 
-        this.operators.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.operators.setMenuType(SingleMenuType.NEXT);
         this.operators.setIcon(R.drawable.icon_operator);
         this.operators.setName(listThemeContext.getString(R.string.sb_text_menu_operators));
         this.operators.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.operators.setLayoutParams(layoutParams);
         this.operators.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.OPERATORS));
 
-        this.mutedMembers.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.mutedMembers.setMenuType(SingleMenuType.NEXT);
         this.mutedMembers.setIcon(R.drawable.icon_mute);
         this.mutedMembers.setName(listThemeContext.getString(R.string.sb_text_menu_muted_members));
         this.mutedMembers.setNextActionDrawable(R.drawable.icon_chevron_right);
@@ -156,14 +157,14 @@ public class ModerationListComponent {
         this.mutedMembers.setLayoutParams(layoutParams);
         this.mutedMembers.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.MUTED_MEMBERS));
 
-        this.bannedMembers.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.bannedMembers.setMenuType(SingleMenuType.NEXT);
         this.bannedMembers.setIcon(R.drawable.icon_ban);
         this.bannedMembers.setName(listThemeContext.getString(R.string.sb_text_menu_banned_users));
         this.bannedMembers.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.bannedMembers.setLayoutParams(layoutParams);
         this.bannedMembers.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.BANNED_MEMBERS));
 
-        this.frozenState.setMenuType(SingleMenuItemView.Type.SWITCH);
+        this.frozenState.setMenuType(SingleMenuType.SWITCH);
         this.frozenState.setIcon(R.drawable.icon_freeze);
         this.frozenState.setName(listThemeContext.getString(R.string.sb_text_menu_freeze_channel));
         this.frozenState.setNextActionDrawable(R.drawable.icon_chevron_right);

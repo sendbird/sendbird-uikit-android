@@ -29,6 +29,7 @@ import com.sendbird.uikit.databinding.SbViewOtherFileImageMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherFileVideoMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherMultipleFilesMessageBinding;
+import com.sendbird.uikit.databinding.SbViewOtherTemplateMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
@@ -36,6 +37,8 @@ import com.sendbird.uikit.databinding.SbViewSuggestedRepliesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
 import com.sendbird.uikit.databinding.SbViewTypingIndicatorMessageBinding;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MessageTemplateExtensionsKt;
+import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus;
 import com.sendbird.uikit.internal.ui.viewholders.AdminMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.MyFileMessageViewHolder;
@@ -52,6 +55,7 @@ import com.sendbird.uikit.internal.ui.viewholders.OpenChannelVideoFileMessageVie
 import com.sendbird.uikit.internal.ui.viewholders.OtherFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherImageFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherMultipleFilesMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherTemplateMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVoiceMessageViewHolder;
@@ -64,8 +68,6 @@ import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
-
-import java.util.Map;
 
 /**
  * A Factory manages a type of messages.
@@ -234,6 +236,9 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_TYPING_INDICATOR:
                 holder = new TypingIndicatorViewHolder(SbViewTypingIndicatorMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
+            case VIEW_TYPE_TEMPLATE_MESSAGE_OTHER:
+                holder = new OtherTemplateMessageViewHolder(SbViewOtherTemplateMessageBinding.inflate(inflater, parent, false), messageListUIParams);
+                break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
@@ -264,6 +269,19 @@ public class MessageViewHolderFactory {
     @NonNull
     public static MessageType getMessageType(@NonNull BaseMessage message) {
         MessageType type;
+
+        MessageTemplateStatus messageTemplateStatus = MessageTemplateExtensionsKt.getMessageTemplateStatus(message);
+        if (messageTemplateStatus != null) {
+            switch (messageTemplateStatus) {
+                case CACHED:
+                case LOADING:
+                case FAILED_TO_FETCH:
+                case FAILED_TO_PARSE:
+                    return MessageType.VIEW_TYPE_TEMPLATE_MESSAGE_OTHER;
+                case NOT_APPLICABLE:
+                    break;
+            }
+        }
 
         if (message.getChannelType() == ChannelType.GROUP && !message.getForms().isEmpty()) {
             return MessageType.VIEW_TYPE_FORM_TYPE_MESSAGE;

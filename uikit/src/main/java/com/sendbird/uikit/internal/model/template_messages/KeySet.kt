@@ -57,6 +57,7 @@ internal object KeySet {
     const val vertical = "vertical"
     const val sub_data = "sub_data"
     const val sub_type = "sub_type"
+    const val carouselView = "carouselView"
 
     // notifications
     const val key = "key"
@@ -66,6 +67,7 @@ internal object KeySet {
     const val ui_template = "ui_template"
     const val color_variables = "color_variables"
     const val template_variables = "template_variables"
+    const val variables = "variables"
     const val light = "light"
     const val dark = "dark"
     const val default = "default"

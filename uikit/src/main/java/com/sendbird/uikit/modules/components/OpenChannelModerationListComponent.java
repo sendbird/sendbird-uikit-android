@@ -14,6 +14,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.widget.NestedScrollView;
 
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.consts.SingleMenuType;
 import com.sendbird.uikit.interfaces.OnMenuItemClickListener;
 import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
 
@@ -133,21 +134,21 @@ public class OpenChannelModerationListComponent {
         this.mutedParticipants = new SingleMenuItemView(listThemeContext);
         this.bannedParticipants = new SingleMenuItemView(listThemeContext);
 
-        this.operators.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.operators.setMenuType(SingleMenuType.NEXT);
         this.operators.setIcon(R.drawable.icon_operator);
         this.operators.setName(listThemeContext.getString(R.string.sb_text_menu_operators));
         this.operators.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.operators.setLayoutParams(layoutParams);
         this.operators.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.OPERATORS));
 
-        this.mutedParticipants.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.mutedParticipants.setMenuType(SingleMenuType.NEXT);
         this.mutedParticipants.setIcon(R.drawable.icon_mute);
         this.mutedParticipants.setName(listThemeContext.getString(R.string.sb_text_menu_muted_participants));
         this.mutedParticipants.setNextActionDrawable(R.drawable.icon_chevron_right);
         this.mutedParticipants.setLayoutParams(layoutParams);
         this.mutedParticipants.setOnClickListener(v -> onMenuItemClicked(v, ModerationMenu.MUTED_PARTICIPANTS));
 
-        this.bannedParticipants.setMenuType(SingleMenuItemView.Type.NEXT);
+        this.bannedParticipants.setMenuType(SingleMenuType.NEXT);
         this.bannedParticipants.setIcon(R.drawable.icon_ban);
         this.bannedParticipants.setName(listThemeContext.getString(R.string.sb_text_menu_banned_users));
         this.bannedParticipants.setNextActionDrawable(R.drawable.icon_chevron_right);

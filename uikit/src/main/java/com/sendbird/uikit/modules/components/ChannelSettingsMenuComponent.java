@@ -6,7 +6,10 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
@@ -15,16 +18,24 @@ import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.channel.Role;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
+import com.sendbird.uikit.consts.SingleMenuType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.MenuViewProvider;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.ui.widgets.SingleMenuItemView;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.configurations.ChannelSettingConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.utils.ChannelUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This class creates and performs a view corresponding the channel settings menu area in Sendbird UIKit.
- *
  * since 3.0.0
  */
 public class ChannelSettingsMenuComponent {
@@ -52,8 +63,27 @@ public class ChannelSettingsMenuComponent {
         /**
          * A menu to search messages in the current channel.
          */
-        SEARCH_IN_CHANNEL
+        SEARCH_IN_CHANNEL,
+
+        /**
+         * A custom menu.
+         */
+        CUSTOM,
     }
+
+    /**
+     * A collection of default menus.
+     * since 3.16.0
+     */
+    public final static List<Menu> defaultMenuSet = Collections.unmodifiableList(
+        Arrays.asList(
+            Menu.MODERATIONS,
+            Menu.NOTIFICATIONS,
+            Menu.MEMBERS,
+            Menu.SEARCH_IN_CHANNEL,
+            Menu.LEAVE_CHANNEL
+        )
+    );
 
     @NonNull
     private final Params params;
@@ -63,9 +93,11 @@ public class ChannelSettingsMenuComponent {
     @Nullable
     protected OnItemClickListener<Menu> menuClickListener;
 
+    @NonNull
+    private final Map<Menu, SingleMenuItemView> defaultMenuViews = new HashMap<>();
+
     /**
      * Constructor
-     *
      * since 3.0.0
      */
     public ChannelSettingsMenuComponent() {
@@ -111,46 +143,42 @@ public class ChannelSettingsMenuComponent {
         final TypedValue values = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.sb_component_channel_settings_menu, values, true);
         final Context menuThemeContext = new ContextThemeWrapper(context, values.resourceId);
-        final LayoutInflater menuInflater = inflater.cloneInContext(menuThemeContext);
-        final View view = menuInflater.inflate(R.layout.sb_view_channel_settings_menu, parent, false);
+        final LinearLayout layout = new LinearLayout(menuThemeContext);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-        final SingleMenuItemView moderationsItemView = view.findViewById(R.id.moderations);
-        moderationsItemView.setName(context.getString(R.string.sb_text_channel_settings_moderations));
-        moderationsItemView.setMenuType(SingleMenuItemView.Type.NEXT);
-        moderationsItemView.setIcon(R.drawable.icon_moderations);
-        moderationsItemView.setVisibility(View.GONE);
+        for (int i = 0; i < params.getMenuList().size(); i++) {
+            final Menu menu = params.getMenuList().get(i);
+            final View menuView = createMenuView(menuThemeContext, menu, i);
+            if (menu != Menu.CUSTOM) {
+                menuView.setOnClickListener(v -> onMenuClicked(v, menu));
+                defaultMenuViews.put(menu, (SingleMenuItemView) menuView);
+            }
+            layout.addView(menuView);
+        }
+        this.menuView = layout;
+        return layout;
+    }
 
-        final SingleMenuItemView notificationItemView = view.findViewById(R.id.notification);
-        notificationItemView.setName(context.getString(R.string.sb_text_channel_settings_notification));
-        notificationItemView.setMenuType(SingleMenuItemView.Type.NEXT);
-        notificationItemView.setIcon(R.drawable.icon_notifications);
-
-        final SingleMenuItemView membersItemView = view.findViewById(R.id.members);
-        membersItemView.setName(context.getString(R.string.sb_text_channel_settings_members));
-        membersItemView.setMenuType(SingleMenuItemView.Type.NEXT);
-        membersItemView.setIcon(R.drawable.icon_members);
-
-        final SingleMenuItemView messageSearchItemView = view.findViewById(R.id.messageSearch);
-        messageSearchItemView.setName(context.getString(R.string.sb_text_channel_settings_message_search));
-        messageSearchItemView.setMenuType(SingleMenuItemView.Type.NONE);
-        messageSearchItemView.setIcon(R.drawable.icon_search);
-        messageSearchItemView.setVisibility(
-            ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
-
-        final SingleMenuItemView leaveItemView = view.findViewById(R.id.leave);
-        leaveItemView.setName(context.getString(R.string.sb_text_channel_settings_leave_channel));
-        leaveItemView.setMenuType(SingleMenuItemView.Type.NONE);
-        leaveItemView.setIcon(R.drawable.icon_leave);
-        leaveItemView.setIconTint(SendbirdUIKit.getDefaultThemeMode().getErrorTintColorStateList(context));
-
-        moderationsItemView.setOnClickListener(v -> onMenuClicked(v, Menu.MODERATIONS));
-        notificationItemView.setOnClickListener(v -> onMenuClicked(v, Menu.NOTIFICATIONS));
-        notificationItemView.setOnActionMenuClickListener(v -> onMenuClicked(v, Menu.NOTIFICATIONS));
-        membersItemView.setOnClickListener(v -> onMenuClicked(v, Menu.MEMBERS));
-        messageSearchItemView.setOnClickListener(v -> onMenuClicked(v, Menu.SEARCH_IN_CHANNEL));
-        leaveItemView.setOnClickListener(v -> onMenuClicked(v, Menu.LEAVE_CHANNEL));
-        this.menuView = view;
-        return view;
+    /**
+     * Creates a custom menu view.
+     *
+     * @param context The {@code Context} this component is currently associated with
+     * @param title The title of the menu
+     * @param type The type of the menu
+     * @param iconResId The icon resource id of the menu
+     * @return The custom menu view
+     * since 3.16.0
+     */
+    @NonNull
+    public View createMenuView(
+        @NonNull Context context,
+        @NonNull String title,
+        @Nullable String description,
+        @NonNull SingleMenuType type,
+        @DrawableRes int iconResId,
+        @ColorRes int iconTintResId
+    ) {
+        return SingleMenuItemView.createMenuView(context, title, description, type, iconResId, iconTintResId);
     }
 
     /**
@@ -162,22 +190,32 @@ public class ChannelSettingsMenuComponent {
     public void notifyChannelChanged(@NonNull GroupChannel channel) {
         if (this.menuView == null) return;
 
+        final SingleMenuItemView membersItemView = defaultMenuViews.get(Menu.MEMBERS);
+        if (membersItemView != null) {
+            membersItemView.setDescription(ChannelUtils.makeMemberCountText(channel.getMemberCount()).toString());
+        }
 
-        final SingleMenuItemView membersItemView = menuView.findViewById(R.id.members);
-        membersItemView.setDescription(ChannelUtils.makeMemberCountText(channel.getMemberCount()).toString());
-        GroupChannel.PushTriggerOption pushTriggerOption = channel.getMyPushTriggerOption();
-        final SingleMenuItemView notificationItemView = menuView.findViewById(R.id.notification);
-        notificationItemView.setDescription(ChannelUtils.makePushSettingStatusText(menuView.getContext(), pushTriggerOption));
+        final SingleMenuItemView notificationItemView = defaultMenuViews.get(Menu.NOTIFICATIONS);
+        if (notificationItemView != null) {
+            final GroupChannel.PushTriggerOption pushTriggerOption = channel.getMyPushTriggerOption();
+            notificationItemView.setDescription(ChannelUtils.makePushSettingStatusText(menuView.getContext(), pushTriggerOption));
+        }
 
-        final SingleMenuItemView moderationsItemView = menuView.findViewById(R.id.moderations);
-        moderationsItemView.setVisibility(channel.getMyRole() == Role.OPERATOR ? View.VISIBLE : View.GONE);
-        final SingleMenuItemView messageSearchItemView = menuView.findViewById(R.id.messageSearch);
-        messageSearchItemView.setVisibility(
-            ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
+        final SingleMenuItemView moderationsItemView = defaultMenuViews.get(Menu.MODERATIONS);
+        if (moderationsItemView != null) {
+            moderationsItemView.setVisibility(channel.getMyRole() == Role.OPERATOR ? View.VISIBLE : View.GONE);
+        }
+        final SingleMenuItemView messageSearchItemView = defaultMenuViews.get(Menu.SEARCH_IN_CHANNEL);
+        if (messageSearchItemView != null) {
+            messageSearchItemView.setVisibility(
+                ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
+        }
     }
 
     /**
      * Register a callback to be invoked when the item of the menu is clicked.
+     * The click event about the {@link Menu#CUSTOM} menu won’t be called.
+     * If you want to handle the {@link Menu#CUSTOM} menu, you should handle it yourself after creating a custom menu view.
      *
      * @param menuClickListener The callback that will run
      * @see Menu
@@ -199,6 +237,57 @@ public class ChannelSettingsMenuComponent {
         if (this.menuClickListener != null) this.menuClickListener.onItemClick(view, 0, menu);
     }
 
+    @NonNull
+    private View createMenuView(@NonNull Context context, @NonNull Menu menu, int position) {
+        if (menu == Menu.CUSTOM) {
+            final MenuViewProvider provider = params.getCustomMenuViewProvider();
+            if (provider != null) {
+                return provider.provideMenuView(context, position);
+            }
+            Logger.d("MenuViewProvider is not set. Creating a default View.");
+            return new View(context);
+        }
+
+        return createDefaultMenuView(context, menu);
+    }
+
+    @NonNull
+    private View createDefaultMenuView(@NonNull Context context, @NonNull Menu menu) {
+        final SingleMenuItemView menuView = new SingleMenuItemView(context);
+        switch (menu) {
+            case MODERATIONS:
+                menuView.setName(context.getString(R.string.sb_text_channel_settings_moderations));
+                menuView.setMenuType(SingleMenuType.NEXT);
+                menuView.setIcon(R.drawable.icon_moderations);
+                menuView.setVisibility(View.GONE);
+                break;
+            case NOTIFICATIONS:
+                menuView.setName(context.getString(R.string.sb_text_channel_settings_notification));
+                menuView.setMenuType(SingleMenuType.NEXT);
+                menuView.setIcon(R.drawable.icon_notifications);
+                break;
+            case MEMBERS:
+                menuView.setName(context.getString(R.string.sb_text_channel_settings_members));
+                menuView.setMenuType(SingleMenuType.NEXT);
+                menuView.setIcon(R.drawable.icon_members);
+                break;
+            case LEAVE_CHANNEL:
+                menuView.setName(context.getString(R.string.sb_text_channel_settings_leave_channel));
+                menuView.setMenuType(SingleMenuType.NONE);
+                menuView.setIcon(R.drawable.icon_leave);
+                menuView.setIconTint(SendbirdUIKit.getDefaultThemeMode().getErrorTintColorStateList(context));
+                break;
+            case SEARCH_IN_CHANNEL:
+                menuView.setName(context.getString(R.string.sb_text_channel_settings_message_search));
+                menuView.setMenuType(SingleMenuType.NONE);
+                menuView.setIcon(R.drawable.icon_search);
+                menuView.setVisibility(
+                    ChannelSettingConfig.getEnableMessageSearch(params.channelSettingConfig) ? View.VISIBLE : View.GONE);
+                break;
+        }
+        return menuView;
+    }
+
     /**
      * A collection of parameters, which can be applied to a default View. The values of params are not dynamically applied at runtime.
      * Params cannot be created directly, and it is automatically created together when components are created.
@@ -210,6 +299,12 @@ public class ChannelSettingsMenuComponent {
     public static class Params {
         @NonNull
         private ChannelSettingConfig channelSettingConfig = UIKitConfig.getGroupChannelSettingConfig();
+
+        @NonNull
+        private List<Menu> menuList = defaultMenuSet;
+
+        @Nullable
+        private MenuViewProvider customMenuViewProvider;
 
         /**
          * Constructor
@@ -251,6 +346,40 @@ public class ChannelSettingsMenuComponent {
             return channelSettingConfig;
         }
 
+        /**
+         * Sets the list of menus to be displayed in the channel settings menu.
+         * If the CUSTOM menu is included in the list, you must set the {@link MenuViewProvider} to create a custom menu view.
+         *
+         * @param menuList A list of settings menus in guaranteed with order.
+         * @param provider The provider to create custom menu view.
+         * since 3.16.0
+         */
+        public void setMenuList(@NonNull List<Menu> menuList, @Nullable MenuViewProvider provider) {
+            this.menuList = menuList;
+            this.customMenuViewProvider = provider;
+        }
+
+        /**
+         * Returns the list of menus to be displayed in the channel settings menu.
+         *
+         * @return A list of settings menus in guaranteed with order.
+         * since 3.16.0
+         */
+        @NonNull
+        public List<Menu> getMenuList() {
+            return menuList;
+        }
+
+        /**
+         * Returns the {@link MenuViewProvider} to create a custom menu view.
+         *
+         * @return The provider to create custom menu view.
+         * since 3.16.0
+         */
+        @Nullable
+        public MenuViewProvider getCustomMenuViewProvider() {
+            return customMenuViewProvider;
+        }
 
         /**
          * Apply data that matches keys mapped to Params' properties.

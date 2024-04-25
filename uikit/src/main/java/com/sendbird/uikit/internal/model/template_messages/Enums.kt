@@ -22,7 +22,10 @@ internal enum class ViewType {
     ImageButton,
 
     @SerialName(KeySet.text)
-    Text
+    Text,
+
+    @SerialName(KeySet.carouselView)
+    CarouselView
     ;
 
     companion object {

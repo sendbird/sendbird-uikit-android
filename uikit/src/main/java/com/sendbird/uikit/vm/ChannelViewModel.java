@@ -31,17 +31,19 @@ import com.sendbird.android.params.MessageCollectionCreateParams;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.common.MessagePayloadFilter;
 import com.sendbird.android.user.User;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
-import com.sendbird.uikit.internal.contracts.MessageCollectionImpl;
 import com.sendbird.uikit.internal.contracts.MessageCollectionContract;
-import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
+import com.sendbird.uikit.internal.contracts.MessageCollectionImpl;
 import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
-import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
@@ -59,6 +61,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+
+import kotlin.Unit;
 
 /**
  * ViewModel preparing and managing data related with the list of messages in a channel
@@ -101,6 +105,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     private final SendbirdChatContract sendbirdChatContract;
     @NonNull
     private final ChannelConfig channelConfig;
+
+    @NonNull
+    private final MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper();
 
     /**
      * Class that holds message data in a channel.
@@ -540,7 +547,13 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             Logger.d("-- ChannelViewModel::notifyDataSetChanged() event is ignored. traceName=%s", traceName);
             return;
         }
+
+        List<BaseMessage> messages = cachedMessages.toList();
+        // The reason why updates message template status here instead of buildMessageList(),
+        // it's difficult for customers to handle message template values by themselves when they override the `buildMessageList()` for their message list customization.
+        processMessageTemplate(messages, traceName);
         final List<BaseMessage> finalMessageList = buildMessageList();
+
         if (finalMessageList.size() == 0) {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
@@ -548,6 +561,19 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         }
 
         messageList.setValue(new ChannelMessageData(traceName, finalMessageList));
+    }
+
+    private void processMessageTemplate(@NonNull List<BaseMessage> messages, @NonNull String traceName) {
+        Logger.d("[MessageTemplate] traceName: " + traceName);
+        final List<BaseMessage> updatedTemplateMessages = messageTemplateMapper.mapTemplate(messages, (updatedMessages) -> {
+            cachedMessages.updateAll(updatedMessages);
+            SendbirdUIKit.runOnUIThread(() -> notifyDataSetChanged(StringSet.EVENT_MESSAGE_TEMPLATE_UPDATED));
+            return Unit.INSTANCE;
+        });
+
+        if (!updatedTemplateMessages.isEmpty()) {
+            cachedMessages.updateAll(updatedTemplateMessages);
+        }
     }
 
     boolean shouldIgnoreEvent(@NonNull String traceName) {

@@ -14,6 +14,8 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.FormSubmitButtonClickListener;
+import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler;
+import com.sendbird.uikit.model.Action;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.providers.AdapterProviders;
 
@@ -35,6 +37,9 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     @Nullable
     private FormSubmitButtonClickListener formSubmitButtonClickListener;
 
+    @Nullable
+    private OnMessageTemplateActionHandler messageTemplateActionHandler;
+
     /**
      * Constructor
      *
@@ -53,6 +58,10 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
 
         if (adapter.getFormSubmitButtonClickListener() == null) {
             adapter.setFormSubmitButtonClickListener(this::onFormSubmitButtonClicked);
+        }
+
+        if (adapter.getMessageTemplateActionHandler() == null) {
+            adapter.setMessageTemplateActionHandler(this::onMessageTemplateActionTriggered);
         }
     }
 
@@ -234,6 +243,28 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
     public void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull Form form) {
         if (formSubmitButtonClickListener != null)
             formSubmitButtonClickListener.onClicked(message, form);
+    }
+
+    /**
+     * Register a callback to be invoked when a message template action is clicked.
+     *
+     * @param messageTemplateActionHandler handler to be registered
+     * @since 3.16.0
+     */
+    public void setMessageTemplateActionHandler(@Nullable OnMessageTemplateActionHandler messageTemplateActionHandler) {
+        this.messageTemplateActionHandler = messageTemplateActionHandler;
+    }
+
+    /**
+     * Called when a message template action is triggered.
+     * @param view view that was clicked
+     * @param action the action data
+     * @param message the clicked message
+     */
+    public void onMessageTemplateActionTriggered(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
+        if (messageTemplateActionHandler != null) {
+            messageTemplateActionHandler.onHandleAction(view, action, message);
+        }
     }
 
     /**

@@ -27,19 +27,20 @@ import com.sendbird.uikit.model.MessageListUIParams
 @MessageViewHolderExperimental
 open class OtherMessageViewHolder(
     parent: ViewGroup,
-    open val contentView: View,
+    open val contentView: View? = null,
     messageListUIParams: MessageListUIParams,
-    private val binding: SbViewOtherMessageBinding = SbViewOtherMessageBinding.inflate(
+    protected val binding: SbViewOtherMessageBinding = SbViewOtherMessageBinding.inflate(
         LayoutInflater.from(parent.context.toComponentListContextThemeWrapper())
     )
 ) : MessageViewHolder(binding.root, messageListUIParams), EmojiReactionHandler {
 
     init {
-        binding.root.attachContentView(contentView)
+        contentView?.let { binding.root.attachContentView(it) }
     }
 
     @CallSuper
     override fun bind(channel: BaseChannel, message: BaseMessage, params: MessageListUIParams) {
+        binding.root.messageUIConfig = messageUIConfig
         binding.root.drawMessage(channel, message, params)
     }
 

@@ -13,6 +13,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.consts.SingleMenuType
 import com.sendbird.uikit.databinding.SbViewSingleMenuItemBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.utils.DrawableUtils
@@ -25,29 +26,6 @@ internal class SingleMenuItemView @JvmOverloads constructor(
     val binding: SbViewSingleMenuItemBinding
     val layout: View
         get() = this
-
-    enum class Type(var value: Int) {
-        /**
-         * A type that has an action button to redirect next page.
-         */
-        NEXT(0),
-
-        /**
-         * A type that has a switch button to toggle some action.
-         */
-        SWITCH(1),
-
-        /**
-         * A type that has no next action.
-         */
-        NONE(2);
-
-        companion object {
-            // TODO (Remove : after all codes are converted as kotlin this annotation doesn't need)
-            @JvmStatic
-            fun from(value: Int): Type = values().firstOrNull { it.value == value } ?: NONE
-        }
-    }
 
     override fun setOnClickListener(listener: OnClickListener?) = binding.vgMenuItem.setOnClickListener(listener)
     override fun setOnLongClickListener(listener: OnLongClickListener?) =
@@ -76,14 +54,14 @@ internal class SingleMenuItemView @JvmOverloads constructor(
         binding.scSwitch.isChecked = checked
     }
 
-    fun setMenuType(type: Type) {
+    fun setMenuType(type: SingleMenuType) {
         when (type) {
-            Type.NEXT -> {
+            SingleMenuType.NEXT -> {
                 binding.scSwitch.visibility = GONE
                 binding.ivNext.visibility = VISIBLE
                 binding.tvDescription.visibility = VISIBLE
             }
-            Type.SWITCH -> {
+            SingleMenuType.SWITCH -> {
                 binding.scSwitch.visibility = VISIBLE
                 binding.ivNext.visibility = GONE
                 binding.tvDescription.visibility = GONE
@@ -98,6 +76,10 @@ internal class SingleMenuItemView @JvmOverloads constructor(
 
     fun setDescription(description: String) {
         binding.tvDescription.text = description
+    }
+
+    fun setIconVisibility(visibility: Int) {
+        binding.ivIcon.visibility = visibility
     }
 
     init {
@@ -144,9 +126,42 @@ internal class SingleMenuItemView @JvmOverloads constructor(
             )
             binding.scSwitch.trackTintList = AppCompatResources.getColorStateList(context, switchTrackTint)
             binding.scSwitch.thumbTintList = AppCompatResources.getColorStateList(context, switchThumbTint)
-            setMenuType(Type.from(type))
+            setMenuType(SingleMenuType.from(type))
+
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+                height = context.resources.getDimensionPixelSize(R.dimen.sb_size_56)
+            }
         } finally {
             a.recycle()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun createMenuView(
+            context: Context,
+            title: String,
+            description: String?,
+            type: SingleMenuType,
+            @DrawableRes iconResId: Int,
+            @ColorRes iconTintResId: Int
+        ): View {
+            return SingleMenuItemView(context).apply {
+                setName(title)
+                setMenuType(type)
+                description?.let { setDescription(it) }
+
+                if (iconResId != 0) {
+                    setIcon(iconResId)
+                    setIconVisibility(VISIBLE)
+                } else {
+                    setIconVisibility(GONE)
+                }
+
+                if (iconTintResId != 0) {
+                    setIconTint(AppCompatResources.getColorStateList(context, iconTintResId))
+                }
+            }
         }
     }
 }

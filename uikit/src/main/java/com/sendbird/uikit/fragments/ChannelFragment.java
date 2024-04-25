@@ -1,9 +1,11 @@
 package com.sendbird.uikit.fragments;
 
 import android.app.ActivityOptions;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -56,9 +58,11 @@ import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.model.VoicePlayerManager;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.Action;
 import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
@@ -72,6 +76,7 @@ import com.sendbird.uikit.providers.ModuleProviders;
 import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.ChannelUtils;
 import com.sendbird.uikit.utils.DialogUtils;
+import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
@@ -141,6 +146,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     @NonNull
     private final AtomicBoolean isThreadRedirected = new AtomicBoolean(false);
+
+    @Nullable
+    private OnMessageTemplateActionHandler messageTemplateActionHandler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -284,6 +292,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             }
             return false;
         });
+        messageListComponent.setMessageTemplateActionHandler(this.messageTemplateActionHandler != null ? this.messageTemplateActionHandler : this::handleTemplateMessageAction);
 
         final ChannelModule module = getModule();
         viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), receivedMessageData -> {
@@ -931,6 +940,68 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         );
     }
 
+    private void handleTemplateMessageAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
+        switch (action.type) {
+            case StringSet.web:
+                handleWebAction(view, action, message);
+                break;
+            case StringSet.custom:
+                handleCustomAction(view, action, message);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * If an Action is registered in a specific view, it is called when a click event occurs.
+     *
+     * @param action the registered Action data
+     * @param message a clicked message
+     * since 3.16.0
+     */
+    protected void handleWebAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
+        Logger.d(">> ChannelFragment::handleWebAction() action=%s", action);
+        final Intent intent = IntentUtils.getWebViewerIntent(action.data);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Logger.e(e);
+        }
+    }
+
+    /**
+     * If an Action is registered in a specific view, it is called when a click event occurs.
+     *
+     * @param action the registered Action data
+     * @param message a clicked message
+     * since 3.16.0
+     */
+    protected void handleCustomAction(@NonNull View view, @NonNull Action action, @NonNull BaseMessage message) {
+        Logger.d(">> ChannelFragment::handleCustomAction() action=%s", action);
+        try {
+            final String data = action.data;
+            if (TextUtils.isNotEmpty(data)) {
+                final Uri uri = Uri.parse(data);
+                Logger.d("++ uri = %s", uri);
+                final String scheme = uri.getScheme();
+                Logger.d("++ scheme=%s", scheme);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                boolean hasIntent = IntentUtils.hasIntent(requireContext(), intent);
+                if (!hasIntent) {
+                    final String alterData = action.alterData;
+                    if (alterData != null) {
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alterData));
+                    }
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            Logger.w(e);
+        }
+    }
+
     @SuppressWarnings("unused")
     public static class Builder {
         @NonNull
@@ -996,6 +1067,10 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         private View.OnClickListener voiceRecorderButtonClickListener;
         @Nullable
         private OnItemClickListener<User> messageMentionClickListener;
+
+        @Nullable
+        private OnMessageTemplateActionHandler messageTemplateActionHandler;
+
         @Nullable
         private ChannelFragment customFragment;
 
@@ -2000,6 +2075,11 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             return this;
         }
 
+        public Builder setMessageTemplateActionHandler(@NonNull OnMessageTemplateActionHandler messageTemplateActionHandler) {
+            this.messageTemplateActionHandler = messageTemplateActionHandler;
+            return this;
+        }
+
         /**
          * Sets channel configuration for this fragment.
          * Use {@code UIKitConfig.groupChannelConfig.clone()} for the default value.
@@ -2065,6 +2145,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             fragment.threadInfoClickListener = threadInfoClickListener;
             fragment.onVoiceRecorderButtonClickListener = voiceRecorderButtonClickListener;
             fragment.setOnMessageMentionClickListener(messageMentionClickListener);
+            fragment.messageTemplateActionHandler = messageTemplateActionHandler;
 
             // set animation flag to TRUE to animate searched text.
             if (bundle.containsKey(StringSet.KEY_TRY_ANIMATE_WHEN_MESSAGE_LOADED)) {

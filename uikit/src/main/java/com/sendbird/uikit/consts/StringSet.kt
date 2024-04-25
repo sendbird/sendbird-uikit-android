@@ -105,6 +105,7 @@ object StringSet {
     const val LABEL_COPY_TEXT = "COPY_TEXT"
     const val DEFAULT_CHANNEL_COVER_URL = "https://static.sendbird.com/sample/cover/cover_"
     const val Voice_message = "Voice_message"
+    const val message = "message"
 
     // attributes list
     const val reactions = "reactions"
@@ -127,6 +128,7 @@ object StringSet {
     const val EVENT_MESSAGE_RECEIVED = "EVENT_MESSAGE_RECEIVED"
     const val EVENT_MESSAGE_UPDATED = "EVENT_MESSAGE_UPDATED"
     const val EVENT_TYPING_STATUS_UPDATED = "EVENT_TYPING_STATUS_UPDATED"
+    const val EVENT_MESSAGE_TEMPLATE_UPDATED = "EVENT_MESSAGE_TEMPLATE_UPDATED"
     const val INVALID_URL = "INVALID_URL"
     const val photo = "photo"
     const val photos = "photos"
@@ -143,6 +145,13 @@ object StringSet {
     const val custom = "custom"
     const val uikit = "uikit"
     const val delete = "delete"
+
+    // template message
+    const val template = "template"
+    const val message_template_params = "message_template_params"
+    const val message_template_status = "message_template_status"
+    const val container_type = "container_type"
+    const val ui = "ui"
 
     // Config
     const val none = "none"

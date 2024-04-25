@@ -1,12 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ExtraTranslation">
     <string name="app_name">UIKitSamples</string>
 
     <!-- LOGIN -->
     <string name="text_title_login_activity">Sendbird UIKit sample</string>
-    <string name="text_title_basic_sample">Basic Usage</string>
+    <string name="text_title_basic_sample">Basic Usages</string>
     <string name="text_title_ai_chat_bot_sample">Talk to an AI Chatbot</string>
     <string name="text_title_customization_sample">Customizations</string>
-    <string name="text_title_notification_sample">Sendbird Notification</string>
+    <string name="text_title_notification_sample">Business Messaging sample</string>
     <string name="text_title_uikit_sample_app">UIKit sample app</string>
 
     <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
@@ -58,7 +58,7 @@
     <string name="sb_text_go_to_readme">Go to README</string>
 
     <!-- Notifications -->
-    <string name="text_notification_home">Notification Home</string>
+    <string name="text_business_messaging">Business Messaging</string>
     <string name="text_notification_chat_and_feed_type">Chat and Feed channels</string>
     <string name="text_notification_feed_type_only">Feed channel only</string>
 
@@ -108,6 +108,15 @@
     <string name="text_channel_typing_indicator_double">%s and %s are typing&#8230;</string>
     <string name="text_channel_typing_indicator_multiple">Several people are typing&#8230;</string>
 
+    <!--  Channel Settings Customization  -->
+    <string name="text_list_title_channel_settings">Channel Settings Customization</string>
+    <string name="text_title_append_new_channel_settings_menu_sample">Append New Channel Settings Menu</string>
+    <string name="text_desc_append_new_channel_settings_menu_sample">Append new channel Settings menus.</string>
+    <string name="text_title_hide_channel_settings_menu_sample">Hide Default Channel Settings Menu</string>
+    <string name="text_desc_hide_channel_settings_menu_sample">Hide default channel Settings menus.</string>
+    <string name="text_title_custom_channel_settings_menu_sample">Change The Whole Channel Settings Menu</string>
+    <string name="text_desc_custom_channel_settings_menu_sample">Change the whole channel Settings menus.</string>
+
     <!--  User List Customization  -->
     <string name="text_list_title_user_list">User List Customization</string>
     <string name="text_title_user_item_ui_sample">User Item UI</string>
@@ -118,10 +127,14 @@
     <string name="text_desc_user_item_filtering">Implement filtering for users based on a specific criteria for display.</string>
     <string name="text_title_user_item_custom_datasource">User Item Custom Data Source</string>
     <string name="text_desc_user_item_custom_datasource">Retrieve user data from external sources.</string>
+    <string name="text_title_custom_member_context_menu">Customize member context menu</string>
+    <string name="text_desc_custom_member_context_menu">Provide a way to make custom member context menus</string>
 
     <string name="text_list_item_nickname_format">#%d. %s</string>
 
     <string name="text_resend">Resend</string>
     <string name="text_delete">Delete</string>
     <string name="text_custom_header">Custom Header</string>
+    <string name="text_menu_thumbs_up" >Thumbs Up</string>
+    <string name="text_menu_thumbs_down">Thumbs Down</string>
 </resources>

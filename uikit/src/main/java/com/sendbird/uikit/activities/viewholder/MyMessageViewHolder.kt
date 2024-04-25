@@ -40,6 +40,7 @@ open class MyMessageViewHolder(
 
     @CallSuper
     override fun bind(channel: BaseChannel, message: BaseMessage, params: MessageListUIParams) {
+        binding.root.messageUIConfig = messageUIConfig
         binding.root.drawMessage(channel, message, params)
     }
 

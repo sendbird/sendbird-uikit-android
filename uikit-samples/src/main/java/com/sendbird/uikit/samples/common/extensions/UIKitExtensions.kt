@@ -40,7 +40,7 @@ internal fun SampleType?.getLogoDrawable(context: Context): Drawable? {
     return when (this) {
         null -> R.drawable.logo_sendbird
         SampleType.Basic -> R.drawable.logo_sendbird
-        SampleType.Notification -> R.drawable.logo_notifications
+        SampleType.Notification -> R.drawable.logo_business_messaging
         SampleType.Customization -> R.drawable.logo_sendbird
         SampleType.AiChatBot -> R.drawable.logo_sendbird
     }.let { ContextCompat.getDrawable(context, it) }
