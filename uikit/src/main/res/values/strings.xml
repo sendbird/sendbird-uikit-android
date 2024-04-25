@@ -230,4 +230,9 @@
     <string name="sb_forms_invalid_form_field">Please check the value</string>
     <string name="sb_forms_submit_failed">Submit failed</string>
     <string name="sb_forms_optional">(optional)</string>
+
+    <!-- Template message -->
+    <string name="sb_text_template_message_fallback_title">(Template error)</string>
+    <string name="sb_text_template_message_fallback_description">Can\'t read this message.</string>
+    <string name="sb_text_template_message_fallback_error">Error occurred while rendering template message. Reason: %s</string>
 </resources>

@@ -16,7 +16,8 @@ import com.sendbird.uikit.internal.interfaces.ViewRoundable
 internal open class RoundCornerLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
+    private val autoAdjustHeightWhenInvisible: Boolean = true
 ) : LinearLayout(context, attrs, defStyleAttr), ViewRoundable {
     private val rectF: RectF = RectF()
     private val path: Path = Path()
@@ -50,9 +51,11 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
         // In the template message syntax, the views that are not drawn have to hide.
         // onSizeChanged() and onLayout() do not update the view even if the visibility changes, so the status of the view must be updated once again.
         // Logger.i("-- parent view's width=${(parent as View).width}, x=$x, measureWidth=$width, visible=$visibility")
-        val visibility = if (x <= -width || x >= (parent as View).width) GONE else VISIBLE
-        post {
-            this.visibility = visibility
+        if (autoAdjustHeightWhenInvisible) {
+            val visibility = if (x <= -width || x >= (parent as View).width) GONE else VISIBLE
+            post {
+                this.visibility = visibility
+            }
         }
         rectF.set(0f, 0f, w.toFloat(), h.toFloat())
         resetPath()

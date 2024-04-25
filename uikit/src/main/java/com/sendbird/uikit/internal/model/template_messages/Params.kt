@@ -29,8 +29,8 @@ internal data class ActionData constructor(
 ) {
     fun register(
         view: View,
-        onNotificationTemplateActionHandler: OnNotificationTemplateActionHandler?,
-        message: BaseMessage
+        message: BaseMessage,
+        onNotificationTemplateActionHandler: OnNotificationTemplateActionHandler?
     ) {
         onNotificationTemplateActionHandler?.let { callback ->
             view.setOnClickListener {
@@ -231,4 +231,16 @@ internal data class ImageButtonViewParams constructor(
     val imageUrl: String,
     val metaData: MetaData? = null,
     val imageStyle: ImageStyle = ImageStyle()
+) : ViewParams()
+
+@Serializable
+@SerialName(KeySet.carouselView)
+internal data class CarouselViewParams constructor(
+    override val type: ViewType,
+    override val action: ActionData? = null,
+    override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
+    override val height: SizeSpec = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+    override val viewStyle: ViewStyle = ViewStyle(),
+    val items: List<Params>,
+    val spacing: Int = 10
 ) : ViewParams()

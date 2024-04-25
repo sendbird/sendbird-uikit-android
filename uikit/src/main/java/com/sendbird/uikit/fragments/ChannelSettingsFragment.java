@@ -210,7 +210,7 @@ public class ChannelSettingsFragment extends BaseModuleFragment<ChannelSettingsM
                 startMemberListActivity();
             } else if (menu == ChannelSettingsMenuComponent.Menu.LEAVE_CHANNEL) {
                 leaveChannel();
-            } else {
+            } else if (menu == ChannelSettingsMenuComponent.Menu.SEARCH_IN_CHANNEL) {
                 startMessageSearchActivity();
             }
         });

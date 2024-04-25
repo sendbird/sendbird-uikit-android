@@ -20,7 +20,7 @@ import com.sendbird.uikit.utils.ViewUtils
 internal class MyMessageView @JvmOverloads internal constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
+    defStyle: Int = R.attr.sb_widget_my_message
 ) : BaseMessageView(context, attrs, defStyle) {
     override val binding: SbViewMyMessageComponentBinding
     override val layout: View
@@ -49,6 +49,8 @@ internal class MyMessageView @JvmOverloads internal constructor(
                 R.drawable.sb_shape_chat_bubble_reactions_light
             )
             binding.contentPanel.background =
+                DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint)
+            binding.customContentPanel.background =
                 DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint)
             binding.emojiReactionListBackground.setBackgroundResource(emojiReactionListBackground)
         } finally {

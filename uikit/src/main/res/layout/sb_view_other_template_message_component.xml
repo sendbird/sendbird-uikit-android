@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tvNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/sb_size_50"
+        android:paddingRight="@dimen/sb_size_50"
+        android:paddingBottom="@dimen/sb_size_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/ivProfileView"
+        android:layout_width="@dimen/sb_size_26"
+        android:layout_height="@dimen/sb_size_26"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/sb_sender_profile_description"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:layout_marginBottom="@dimen/sb_size_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/brBottom" />
+
+    <View
+        android:id="@+id/profileRightPadding"
+        android:layout_width="@dimen/sb_size_12"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ivProfileView"
+        app:layout_constraintBottom_toBottomOf="@id/ivProfileView" />
+
+    <com.sendbird.uikit.internal.ui.messages.MessageTemplateView
+        android:id="@+id/messageTemplateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="true"
+        android:background="@android:color/transparent"
+        android:layout_marginStart="@dimen/sb_size_12"
+        app:layout_constraintStart_toEndOf="@id/profileRightPadding"
+        app:layout_constraintBottom_toTopOf="@id/brBottom"
+        app:layout_constraintTop_toBottomOf="@id/tvNickname" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/brBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ivProfileView,messageTemplateView,tvSentAt" />
+
+    <TextView
+        android:id="@+id/tvSentAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_300"
+        android:layout_marginEnd="@dimen/sb_size_0"
+        android:layout_marginStart="@dimen/sb_size_4"
+        app:layout_constraintStart_toEndOf="@+id/messageTemplateView"
+        app:layout_constraintBottom_toBottomOf="@+id/brBottom" />
+
+    <TextView
+        android:id="@+id/tvSentAtForWideContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_4"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/sb_size_2"
+        app:layout_constraintTop_toTopOf="@id/brBottom"
+        app:layout_constraintStart_toEndOf="@id/profileRightPadding" />
+
+    <com.sendbird.uikit.widgets.FeedbackView
+        android:id="@+id/feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_4"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/brBottom"
+        app:layout_constraintStart_toEndOf="@id/ivProfileView"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

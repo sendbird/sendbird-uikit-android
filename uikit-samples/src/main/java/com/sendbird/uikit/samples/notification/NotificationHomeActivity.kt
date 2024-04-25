@@ -44,7 +44,6 @@ class NotificationHomeActivity : ThemeHomeActivity() {
                         getFeedChannelUrl()
                     )
                 )
-
             }
             btSignOut.setOnClickListener { logout() }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

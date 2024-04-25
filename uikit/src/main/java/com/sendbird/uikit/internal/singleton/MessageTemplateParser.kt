@@ -41,7 +41,7 @@ internal object MessageTemplateParser {
     @Throws(Exception::class)
     fun parse(jsonTemplate: String): Params {
         return when (val version = JSONObject(jsonTemplate).getInt(KeySet.version)) {
-            1 -> parseParams(jsonTemplate)
+            1, 2 -> parseParams(jsonTemplate)
             else -> throw RuntimeException("unsupported version. current version = $version")
         }
     }

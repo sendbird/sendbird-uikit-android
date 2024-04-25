@@ -14,12 +14,15 @@ import com.sendbird.android.message.ThreadInfo;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.internal.extensions.MessageTemplateExtensionsKt;
+import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 class MessageDiffCallback extends DiffUtil.Callback {
     @NonNull
@@ -85,9 +88,15 @@ class MessageDiffCallback extends DiffUtil.Callback {
             }
         }
 
-        Map<String, String> oldExtendedMessagePayload = oldMessage.getExtendedMessagePayload();
-        Map<String, String> newExtendedMessagePayload = newMessage.getExtendedMessagePayload();
+        final Map<String, String> oldExtendedMessagePayload = oldMessage.getExtendedMessagePayload();
+        final Map<String, String> newExtendedMessagePayload = newMessage.getExtendedMessagePayload();
         if (!oldExtendedMessagePayload.equals(newExtendedMessagePayload)) {
+            return false;
+        }
+
+        final MessageTemplateStatus oldMessageTemplateStatus = MessageTemplateExtensionsKt.getMessageTemplateStatus(oldMessage);
+        final MessageTemplateStatus newMessageTemplateStatus = MessageTemplateExtensionsKt.getMessageTemplateStatus(newMessage);
+        if (!Objects.equals(oldMessageTemplateStatus, newMessageTemplateStatus)) {
             return false;
         }
 

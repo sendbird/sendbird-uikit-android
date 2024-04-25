@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sb_size_56"
-            android:background="@drawable/logo_notifications"
+            android:background="@drawable/logo_business_messaging"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -32,7 +32,7 @@
             android:textSize="@dimen/sb_text_size_24"
             android:textStyle="bold"
             android:textColor="@color/onlight_01"
-            android:text="@string/text_title_login_activity"
+            android:text="@string/text_title_uikit_sample_app"
             app:layout_constraintTop_toBottomOf="@id/logoImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -168,12 +168,10 @@
             android:layout_height="wrap_content"
             android:text="@string/text_use_feed_channel_only"
             android:buttonTint="@color/primary_300"
-            android:paddingStart="@dimen/sb_size_8"
             android:layout_marginTop="@dimen/sb_size_24"
             app:layout_constraintTop_toBottomOf="@id/nicknameLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/signInButton"
-            style="@android:style/Widget.DeviceDefault.Light.CompoundButton.RadioButton"
             />
 
         <Button
@@ -210,9 +208,9 @@
                 android:layout_width="@dimen/sb_size_18"
                 android:layout_height="@dimen/sb_size_18"
                 android:src="@drawable/icon_chevron_right"
-                android:tint="@color/selector_primary"
                 android:rotation="180"
                 android:layout_marginEnd="@dimen/sb_size_4"
+                app:tint="@color/selector_primary"
                 app:layout_constraintTop_toTopOf="@id/selectSampleText"
                 app:layout_constraintBottom_toBottomOf="@id/selectSampleText"
                 app:layout_constraintStart_toStartOf="parent"

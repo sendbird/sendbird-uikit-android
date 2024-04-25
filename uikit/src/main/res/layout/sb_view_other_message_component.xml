@@ -74,11 +74,11 @@
             android:id="@+id/customContentPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintWidth_max="@dimen/sb_message_max_width"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
             app:layout_constraintBottom_toTopOf="@id/rvEmojiReactionList" />
-
 
         <com.sendbird.uikit.internal.ui.reactions.EmojiReactionListView
             android:id="@+id/rvEmojiReactionList"

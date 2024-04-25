@@ -15,6 +15,7 @@ import com.sendbird.uikit.utils.MessageUtils
 internal fun BaseMessage.hasParentMessage() = parentMessageId != 0L
 
 internal fun BaseMessage.getDisplayMessage(): String {
+    if (this.isTemplateMessage()) return StringSet.message
     return when (val data = MessageDisplayDataManager.getOrNull(this)) {
         is UserMessageDisplayData -> data.message ?: message
         else -> {

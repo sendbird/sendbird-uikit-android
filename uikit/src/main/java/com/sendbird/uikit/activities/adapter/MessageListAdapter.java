@@ -2,6 +2,8 @@ package com.sendbird.uikit.activities.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -9,23 +11,32 @@ import androidx.annotation.VisibleForTesting;
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder;
-import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.FormSubmitButtonClickListener;
-import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
-import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
-import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
+import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.OtherTemplateMessageViewHolder;
+import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
+import com.sendbird.uikit.internal.utils.TemplateViewCachePool;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 
 /**
  * MessageListAdapter provides a binding from a {@link BaseMessage} type data set to views that are displayed within a RecyclerView.
  */
 public class MessageListAdapter extends BaseMessageListAdapter {
+    private final TemplateViewCachePool templateViewCachePool = new TemplateViewCachePool();
     @Nullable
     protected OnItemClickListener<String> suggestedRepliesClickListener;
 
     @Nullable
     protected FormSubmitButtonClickListener formSubmitButtonClickListener;
+
+    @Nullable
+    protected OnMessageTemplateActionHandler messageTemplateActionHandler;
 
     public MessageListAdapter(boolean useMessageGroupUI) {
         this(null, useMessageGroupUI);
@@ -52,6 +63,31 @@ public class MessageListAdapter extends BaseMessageListAdapter {
                 .setUseQuotedView(true)
                 .build(),
             sendbirdUIKit);
+    }
+
+    @NonNull
+    @Override
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        MessageViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        if (viewHolder instanceof OtherTemplateMessageViewHolder) {
+            OtherTemplateMessageViewHolder otherTemplateMessageViewHolder = (OtherTemplateMessageViewHolder) viewHolder;
+            otherTemplateMessageViewHolder.setTemplateViewCachePool(templateViewCachePool);
+            otherTemplateMessageViewHolder.setOnMessageTemplateActionHandler((view, action, message) -> {
+                final OnMessageTemplateActionHandler finalListener = this.messageTemplateActionHandler;
+                if (finalListener != null) {
+                    finalListener.onHandleAction(view, action, message);
+                }
+            });
+
+            otherTemplateMessageViewHolder.setOnFeedbackRatingClickListener((view, rating) -> {
+                final OnFeedbackRatingClickListener finalListener = this.feedbackRatingClickListener;
+                if (finalListener != null) {
+                    finalListener.onFeedbackClicked(view, rating);
+                }
+            });
+        }
+
+        return viewHolder;
     }
 
     @Override
@@ -118,5 +154,26 @@ public class MessageListAdapter extends BaseMessageListAdapter {
      */
     public void setFormSubmitButtonClickListener(@Nullable FormSubmitButtonClickListener formSubmitButtonClickListener) {
         this.formSubmitButtonClickListener = formSubmitButtonClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the message template action is clicked.
+     *
+     * @return {@link OnMessageTemplateActionHandler} to be invoked when the message template action is clicked.
+     * since 3.16.0
+     */
+    @Nullable
+    public OnMessageTemplateActionHandler getMessageTemplateActionHandler() {
+        return messageTemplateActionHandler;
+    }
+
+    /**
+     * Register a callback to be invoked when the message template action is clicked.
+     *
+     * @param messageTemplateActionHandler handler
+     * since 3.16.0
+     */
+    public void setMessageTemplateActionHandler(@Nullable OnMessageTemplateActionHandler messageTemplateActionHandler) {
+        this.messageTemplateActionHandler = messageTemplateActionHandler;
     }
 }

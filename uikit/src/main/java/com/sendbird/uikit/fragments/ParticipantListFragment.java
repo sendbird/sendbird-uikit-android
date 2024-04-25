@@ -1,5 +1,6 @@
 package com.sendbird.uikit.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +33,10 @@ import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ParticipantViewModel;
 import com.sendbird.uikit.widgets.StatusFrameView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment displaying the operators of the channel.
@@ -170,7 +175,7 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      *
      * @param view     The view that was clicked.
      * @param position The position that was clicked.
-     * @param user     The member data that was clicked.
+     * @param user     The user data that was clicked.
      * since 1.2.2
      */
     protected void onProfileClicked(@NonNull View view, int position, @NonNull User user) {
@@ -191,46 +196,13 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
      */
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull User participant, @Nullable OpenChannel channel) {
         if (getContext() == null || channel == null) return;
-        boolean isOperator = channel.isOperator(participant);
-        DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
-        // mute menu is always shown as 'Mute' because there is no way to know user's muted info
-        DialogListItem muteParticipant = new DialogListItem(R.string.sb_text_mute_participant);
-        DialogListItem banParticipant = new DialogListItem(R.string.sb_text_ban_participant, 0, true);
-        DialogListItem[] items = new DialogListItem[]{registerOperator, muteParticipant, banParticipant};
 
-        final ParticipantListModule module = getModule();
-        final ParticipantViewModel viewModel = getViewModel();
-        DialogUtils.showListDialog(getContext(), participant.getNickname(),
-            items, (v, p, item) -> {
-                final int key = item.getKey();
-                final OnCompleteHandler handler = e -> {
-                    module.shouldDismissLoadingDialog();
-                    if (e != null) {
-                        int errorTextResId = R.string.sb_text_error_register_operator;
-                        if (key == R.string.sb_text_unregister_operator) {
-                            errorTextResId = R.string.sb_text_error_unregister_operator;
-                        } else if (key == R.string.sb_text_mute_participant) {
-                            errorTextResId = R.string.sb_text_error_mute_participant;
-                        } else if (key == R.string.sb_text_ban_participant) {
-                            errorTextResId = R.string.sb_text_error_ban_participant;
-                        }
-                        toastError(errorTextResId);
-                    } else {
-                        viewModel.loadInitial();
-                    }
-                };
-                if (getContext() == null) return;
-                module.shouldShowLoadingDialog(getContext());
-                if (key == R.string.sb_text_register_operator) {
-                    viewModel.addOperator(participant.getUserId(), handler);
-                } else if (key == R.string.sb_text_unregister_operator) {
-                    viewModel.removeOperator(participant.getUserId(), handler);
-                } else if (key == R.string.sb_text_mute_participant) {
-                    viewModel.muteUser(participant.getUserId(), handler);
-                } else if (key == R.string.sb_text_ban_participant) {
-                    viewModel.banUser(participant.getUserId(), handler);
-                }
-            });
+        final List<DialogListItem> contextMenuList = makeActionContextMenu(participant, channel);
+        final int size = contextMenuList.size();
+        final DialogListItem[] items = contextMenuList.toArray(new DialogListItem[size]);
+        final String title = getActionContextMenuTitle(participant, channel);
+        DialogUtils.showListDialog(getContext(), title, items, (v, p, item) ->
+            onActionContextMenuItemClicked(participant, item, channel));
     }
 
     /**
@@ -243,6 +215,86 @@ public class ParticipantListFragment extends BaseModuleFragment<ParticipantListM
     protected String getChannelUrl() {
         final Bundle args = getArguments() == null ? new Bundle() : getArguments();
         return args.getString(StringSet.KEY_CHANNEL_URL, "");
+    }
+
+    /**
+     * Returns the title of the user context menu.
+     *
+     * @param participant a user to make the context menu
+     * @param channel a channel to make the context menu
+     * @return the title of the user context menu
+     * since 3.16.0
+     */
+    @NonNull
+    protected String getActionContextMenuTitle(@NonNull User participant, @Nullable OpenChannel channel) {
+        return participant.getNickname();
+    }
+
+    /**
+     * Makes the context menu for the user.
+     *
+     * @param participant a user to make the context menu
+     * @param channel a channel to make the context menu
+     * @return a list of {@link DialogListItem} to show the context menu
+     * since 3.16.0
+     */
+    @NonNull
+    protected List<DialogListItem> makeActionContextMenu(@NonNull User participant, @Nullable OpenChannel channel) {
+        if (getContext() == null || channel == null) return new ArrayList<>();
+        boolean isOperator = channel.isOperator(participant);
+        final DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
+        // mute menu is always shown as 'Mute' because there is no way to know user's muted info
+        final DialogListItem muteParticipant = new DialogListItem(R.string.sb_text_mute_participant);
+        final DialogListItem banParticipant = new DialogListItem(R.string.sb_text_ban_participant, 0, true);
+        final DialogListItem[] items = new DialogListItem[]{registerOperator, muteParticipant, banParticipant};
+        return new ArrayList<>(Arrays.asList(items));
+    }
+
+    /**
+     * Called when the context menu item has been clicked.
+     *
+     * @param participant a user to make the context menu
+     * @param item a context menu item
+     * @param channel a channel to make the context menu
+     * @return True if the callback has consumed the event, false otherwise.
+     * since 3.16.0
+     */
+    protected boolean onActionContextMenuItemClicked(@NonNull User participant, @NonNull DialogListItem item, @Nullable OpenChannel channel) {
+        Logger.d(">> ParticipantListFragment::onActionContextMenuItemClicked(Participant=%s, item.key=%s)", participant, item.getKey());
+        final Context context = getContext();
+        if (context == null || channel == null) return false;
+        final ParticipantListModule module = getModule();
+        final ParticipantViewModel viewModel = getViewModel();
+        final int key = item.getKey();
+        final OnCompleteHandler handler = e -> {
+            module.shouldDismissLoadingDialog();
+            if (e != null) {
+                int errorTextResId = R.string.sb_text_error_register_operator;
+                if (key == R.string.sb_text_unregister_operator) {
+                    errorTextResId = R.string.sb_text_error_unregister_operator;
+                } else if (key == R.string.sb_text_mute_participant) {
+                    errorTextResId = R.string.sb_text_error_mute_participant;
+                } else if (key == R.string.sb_text_ban_participant) {
+                    errorTextResId = R.string.sb_text_error_ban_participant;
+                }
+                toastError(errorTextResId);
+            } else {
+                viewModel.loadInitial();
+            }
+        };
+        module.shouldShowLoadingDialog(getContext());
+        if (key == R.string.sb_text_register_operator) {
+            viewModel.addOperator(participant.getUserId(), handler);
+        } else if (key == R.string.sb_text_unregister_operator) {
+            viewModel.removeOperator(participant.getUserId(), handler);
+        } else if (key == R.string.sb_text_mute_participant) {
+            viewModel.muteUser(participant.getUserId(), handler);
+        } else if (key == R.string.sb_text_ban_participant) {
+            viewModel.banUser(participant.getUserId(), handler);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     /**

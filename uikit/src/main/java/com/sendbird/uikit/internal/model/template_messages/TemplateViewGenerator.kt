@@ -9,6 +9,7 @@ import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.ui.widgets.Box
+import com.sendbird.uikit.internal.ui.widgets.CarouselView
 import com.sendbird.uikit.internal.ui.widgets.Image
 import com.sendbird.uikit.internal.ui.widgets.ImageButton
 import com.sendbird.uikit.internal.ui.widgets.Text
@@ -17,13 +18,16 @@ import com.sendbird.uikit.internal.ui.widgets.TextButton
 internal typealias ViewLifecycleHandler = (view: View, viewParams: ViewParams) -> Unit
 
 internal object TemplateViewGenerator {
+
+    @Throws(RuntimeException::class)
     fun inflateViews(
         context: Context,
         params: Params,
-        onViewCreated: ViewLifecycleHandler? = null
+        onViewCreated: ViewLifecycleHandler? = null,
+        onChildViewCreated: ViewLifecycleHandler? = null
     ): View {
         when (params.version) {
-            1 -> {
+            1, 2 -> {
                 return LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
@@ -32,7 +36,7 @@ internal object TemplateViewGenerator {
                     )
                     params.body.items.forEach {
                         addView(
-                            generateView(context, it, Orientation.Column, onViewCreated)
+                            generateView(context, it, Orientation.Column, onViewCreated, onChildViewCreated)
                         )
                     }
                 }
@@ -47,7 +51,8 @@ internal object TemplateViewGenerator {
         context: Context,
         viewParams: ViewParams,
         orientation: Orientation,
-        onViewCreated: ViewLifecycleHandler? = null
+        onViewCreated: ViewLifecycleHandler? = null,
+        onChildViewCreated: ViewLifecycleHandler? = null
     ): View {
         return when (viewParams) {
             is BoxViewParams -> createBoxView(context, viewParams, orientation, onViewCreated)
@@ -55,6 +60,7 @@ internal object TemplateViewGenerator {
             is TextViewParams -> createTextView(context, viewParams, orientation, onViewCreated)
             is ButtonViewParams -> createButtonView(context, viewParams, orientation, onViewCreated)
             is ImageButtonViewParams -> createImageButtonView(context, viewParams, orientation, onViewCreated)
+            is CarouselViewParams -> createCarouselView(context, viewParams, orientation, onViewCreated, onChildViewCreated)
         }
     }
 
@@ -128,6 +134,19 @@ internal object TemplateViewGenerator {
         }
     }
 
+    private fun createCarouselView(
+        context: Context,
+        params: CarouselViewParams,
+        orientation: Orientation,
+        onViewCreated: ViewLifecycleHandler? = null,
+        onChildViewCreated: ViewLifecycleHandler? = null
+    ): ViewGroup {
+        return CarouselView(context).apply {
+            onViewCreated?.invoke(this, params)
+            apply(params, orientation, onChildViewCreated)
+        }
+    }
+
     @JvmStatic
     fun createDefaultViewParam(
         message: BaseMessage,
@@ -172,6 +191,63 @@ internal object TemplateViewGenerator {
                                 12, 12, 12, 12
                             ),
                             radius = 8
+                        ),
+                        items = textList
+                    ),
+                )
+            )
+        )
+    }
+
+    @JvmStatic
+    fun createMessageTemplateDefaultViewParam(
+        message: String,
+        defaultFallbackTitle: String,
+        defaultFallbackDescription: String
+    ): Params {
+        val hasFallbackMessage = message.isNotEmpty()
+        val textList = mutableListOf(
+            TextViewParams(
+                type = ViewType.Text,
+                width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                textStyle = TextStyle(
+                    size = 14,
+                    color = getTitleColor(NotificationThemeMode.Default)
+                ),
+                text = message.takeIf { it.isNotEmpty() } ?: defaultFallbackTitle,
+            )
+        )
+
+        if (!hasFallbackMessage) {
+            textList.add(
+                TextViewParams(
+                    type = ViewType.Text,
+                    width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                    height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                    textStyle = TextStyle(
+                        size = 14,
+                        color = getDescTextColor(NotificationThemeMode.Default)
+                    ),
+                    text = defaultFallbackDescription
+                )
+            )
+        }
+        return Params(
+            version = 1,
+            body = Body(
+                items = listOf(
+                    BoxViewParams(
+                        type = ViewType.Box,
+                        orientation = Orientation.Column,
+                        width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                        height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                        viewStyle = ViewStyle(
+                            backgroundColor = getBackgroundColor(NotificationThemeMode.Default),
+                            padding = Padding(
+                                6, 6, 12, 12
+                            ),
+                            radius = 16
                         ),
                         items = textList
                     ),

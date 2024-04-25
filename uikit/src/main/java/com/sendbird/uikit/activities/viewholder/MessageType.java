@@ -119,7 +119,13 @@ public enum MessageType {
      *
      * since 3.11.0
      */
-    VIEW_TYPE_TYPING_INDICATOR(21);
+    VIEW_TYPE_TYPING_INDICATOR(21),
+
+    /**
+     * @since 3.16.0
+     */
+    VIEW_TYPE_TEMPLATE_MESSAGE_OTHER(22);
+
     final int value;
 
     MessageType(int value) {

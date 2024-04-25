@@ -22,10 +22,14 @@ import com.sendbird.uikit.samples.customization.channel.showNewMessageTypeSample
 import com.sendbird.uikit.samples.customization.channellist.showChannelItemFilteringSample
 import com.sendbird.uikit.samples.customization.channellist.showChannelItemUISample
 import com.sendbird.uikit.samples.customization.channellist.showNewChannelItemTypeSample
+import com.sendbird.uikit.samples.customization.channelsettings.showAppendNewCustomGroupChannelSettingsMenuSample
+import com.sendbird.uikit.samples.customization.channelsettings.showCustomGroupChannelSettingsMenuSample
+import com.sendbird.uikit.samples.customization.channelsettings.showHidingChannelSettingsMenuSample
 import com.sendbird.uikit.samples.customization.global.showAdapterProvidersSample
 import com.sendbird.uikit.samples.customization.global.showFragmentProvidersSample
 import com.sendbird.uikit.samples.customization.global.showModuleProvidersSample
 import com.sendbird.uikit.samples.customization.global.showViewModelProvidersSample
+import com.sendbird.uikit.samples.customization.userlist.showCustomMemberContextMenuSample
 import com.sendbird.uikit.samples.customization.userlist.showUserItemDataSourceSample
 import com.sendbird.uikit.samples.customization.userlist.showUserItemFilteringSample
 import com.sendbird.uikit.samples.customization.userlist.showUserItemSelectSample
@@ -130,6 +134,25 @@ class CustomizationHomeActivity : ComponentActivity() {
         ) { showChannelItemFilteringSample(this) },
         // endregion
 
+        // region channel settings customization
+        CustomizationItem(
+            isHeader = true,
+            title = getString(R.string.text_list_title_channel_settings)
+        ),
+        CustomizationItem(
+            title = getString(R.string.text_title_custom_channel_settings_menu_sample),
+            description = getString(R.string.text_desc_custom_channel_settings_menu_sample)
+        ) { showCustomGroupChannelSettingsMenuSample(this) },
+        CustomizationItem(
+            title = getString(R.string.text_title_append_new_channel_settings_menu_sample),
+            description = getString(R.string.text_desc_append_new_channel_settings_menu_sample)
+        ) { showAppendNewCustomGroupChannelSettingsMenuSample(this) },
+        CustomizationItem(
+            title = getString(R.string.text_title_hide_channel_settings_menu_sample),
+            description = getString(R.string.text_desc_hide_channel_settings_menu_sample)
+        ) { showHidingChannelSettingsMenuSample(this) },
+        // endregion
+
         // region user list customization
         CustomizationItem(
             isHeader = true,
@@ -150,7 +173,11 @@ class CustomizationHomeActivity : ComponentActivity() {
         CustomizationItem(
             title = getString(R.string.text_title_user_item_custom_datasource),
             description = getString(R.string.text_desc_user_item_custom_datasource),
-        ) { showUserItemDataSourceSample(this) }
+        ) { showUserItemDataSourceSample(this) },
+        CustomizationItem(
+            title = getString(R.string.text_title_custom_member_context_menu),
+            description = getString(R.string.text_desc_custom_member_context_menu),
+        ) { showCustomMemberContextMenuSample(this) }
         // endregion
     )
 

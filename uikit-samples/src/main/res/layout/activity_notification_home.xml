@@ -23,7 +23,7 @@
             android:textStyle="bold"
             android:textColor="@color/onlight_01"
             android:fontFamily="sans-serif"
-            android:text="@string/text_notification_home"/>
+            android:text="@string/text_business_messaging"/>
 
         <com.sendbird.uikit.samples.common.widgets.EntryButton
             android:id="@+id/feedOnlyButton"

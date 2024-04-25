@@ -1,4 +1,38 @@
 # Changelog
+### v3.16.0 (Apr 25, 2024) with Chat SDK `v4.16.2`
+Support a way to customise the menu items in the `ChannelSettingsMenuComponent` and `OpenChannelSettingsMenuComponent`.
+- Added `createMenuView(Context, String, String, SingleMenuType, int, int)` in `ChannelSettingsMenuComponent`
+- Added `setMenuList(List<Menu>, MenuViewProvider) in `ChannelSettingsMenuComponent.Params`
+- Added `MenuViewProvider` to ChannelSettings that allows you to create and make custom menus.
+
+* Simple example for creating custom menu.
+```kotlin
+ModuleProviders.channelSettings = ChannelSettingsModuleProvider { context, _ ->
+    ChannelSettingsModule(context).apply {
+        val customMenuList = ChannelSettingsMenuComponent.defaultMenuSet.toMutableList().apply {
+            add(ChannelSettingsMenuComponent.Menu.CUSTOM)
+        }
+        val component = ChannelSettingsMenuComponent().apply {
+            // set the custom menu list.
+            params.setMenuList(customMenuList) { context, _ -> // create custom menu view.
+                createMenuView(
+                    context,
+                    "Go to Chat",
+                    null,
+                    SingleMenuType.NONE,
+                    R.drawable.icon_chat,
+                    0
+                )
+            }
+        }
+        setChannelSettingsMenuComponent(component)
+    }
+}
+```
+
+- Added `getActionContextMenuTitle(Member, GroupChannel)`, `makeActionContextMenu(Member, GroupChannel)`, and `onActionContextMenuItemClicked(Member, DialogListItem, GroupChannel)` in `MemberListFragment`
+- Added `getActionContextMenuTitle(User, OpenChannel)`, `makeActionContextMenu(User, OpenChannel)`, and `onActionContextMenuItemClicked(User, DialogListItem, OpenChannel)` in `MemberListFragment`
+- Added `Message template` feature for `GroupChannel`.
 ### v3.15.0 (Mar 28, 2024) with Chat SDK `v4.16.0`
 * Added `sendLogViewed(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.
 * Deprecated `sendLogImpression(List<BaseMessage>)` in `FeedNotificationChannelViewModel`.

@@ -1,5 +1,6 @@
 package com.sendbird.uikit.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +36,10 @@ import com.sendbird.uikit.providers.ViewModelProviders;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.MemberListViewModel;
 import com.sendbird.uikit.widgets.StatusFrameView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment displaying the member list in the channel.
@@ -193,50 +198,96 @@ public class MemberListFragment extends BaseModuleFragment<MemberListModule, Mem
      */
     protected void onActionItemClicked(@NonNull View view, int position, @NonNull Member member, @Nullable GroupChannel channel) {
         if (getContext() == null || channel == null) return;
+        final List<DialogListItem> contextMenuList = makeActionContextMenu(member, channel);
+        final int size = contextMenuList.size();
+        final DialogListItem[] items = contextMenuList.toArray(new DialogListItem[size]);
+        final String title = getActionContextMenuTitle(member, channel);
+        DialogUtils.showListDialog(getContext(), title, items, (v, p, item) ->
+            onActionContextMenuItemClicked(member, item, channel));
+    }
+
+    /**
+     * Returns the title of the member context menu.
+     *
+     * @param member a member to make the context menu
+     * @param channel a channel to make the context menu
+     * @return the title of the member context menu
+     * since 3.16.0
+     */
+    @NonNull
+    protected String getActionContextMenuTitle(@NonNull Member member, @Nullable GroupChannel channel) {
+        return member.getNickname();
+    }
+
+    /**
+     * Makes the context menu for the member.
+     *
+     * @param member a member to make the context menu
+     * @param channel a channel to make the context menu
+     * @return a list of {@link DialogListItem} to show the context menu
+     * since 3.16.0
+     */
+    @NonNull
+    protected List<DialogListItem> makeActionContextMenu(@NonNull Member member, @Nullable GroupChannel channel) {
+        if (getContext() == null || channel == null) return new ArrayList<>();
         boolean isMuted = member.isMuted();
         boolean isOperator = member.getRole() == Role.OPERATOR;
-        DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
-        DialogListItem muteMember = new DialogListItem(isMuted ? R.string.sb_text_unmute_member : R.string.sb_text_mute_member);
-        DialogListItem banMember = new DialogListItem(R.string.sb_text_ban_member, 0, true);
-        DialogListItem[] items = !channel.isBroadcast() ?
+        final DialogListItem registerOperator = new DialogListItem(isOperator ? R.string.sb_text_unregister_operator : R.string.sb_text_register_operator);
+        final DialogListItem muteMember = new DialogListItem(isMuted ? R.string.sb_text_unmute_member : R.string.sb_text_mute_member);
+        final DialogListItem banMember = new DialogListItem(R.string.sb_text_ban_member, 0, true);
+        final DialogListItem[] items = !channel.isBroadcast() ?
             new DialogListItem[]{registerOperator, muteMember, banMember} :
             new DialogListItem[]{registerOperator, banMember};
+        return new ArrayList<>(Arrays.asList(items));
+    }
 
+    /**
+     * Called when the context menu item has been clicked.
+     *
+     * @param member a member to make the context menu
+     * @param item a context menu item
+     * @param channel a channel to make the context menu
+     * @return True if the callback has consumed the event, false otherwise.
+     * since 3.16.0
+     */
+    protected boolean onActionContextMenuItemClicked(@NonNull Member member, @NonNull DialogListItem item, @Nullable GroupChannel channel) {
+        Logger.d(">> MemberListFragment::onActionContextMenuItemClicked(member=%s, item.key=%s)", member, item.getKey());
+        final Context context = getContext();
+        if (context == null || channel == null) return false;
         final MemberListModule module = getModule();
         final MemberListViewModel viewModel = getViewModel();
-        DialogUtils.showListDialog(getContext(), member.getNickname(),
-            items, (v, p, item) -> {
-                final int key = item.getKey();
-                final OnCompleteHandler handler = e -> {
-                    module.shouldDismissLoadingDialog();
-                    if (e != null) {
-                        int errorTextResId = R.string.sb_text_error_register_operator;
-                        if (key == R.string.sb_text_unregister_operator) {
-                            errorTextResId = R.string.sb_text_error_unregister_operator;
-                        } else if (key == R.string.sb_text_mute_member) {
-                            errorTextResId = R.string.sb_text_error_mute_member;
-                        } else if (key == R.string.sb_text_unmute_member) {
-                            errorTextResId = R.string.sb_text_error_unmute_member;
-                        } else if (key == R.string.sb_text_ban_member) {
-                            errorTextResId = R.string.sb_text_error_ban_member;
-                        }
-                        toastError(errorTextResId);
-                    }
-                };
-                if (getContext() == null) return;
-                module.shouldShowLoadingDialog(getContext());
-                if (key == R.string.sb_text_register_operator) {
-                    viewModel.addOperator(member.getUserId(), handler);
-                } else if (key == R.string.sb_text_unregister_operator) {
-                    viewModel.removeOperator(member.getUserId(), handler);
+        final int key = item.getKey();
+        final OnCompleteHandler handler = e -> {
+            module.shouldDismissLoadingDialog();
+            if (e != null) {
+                int errorTextResId = R.string.sb_text_error_register_operator;
+                if (key == R.string.sb_text_unregister_operator) {
+                    errorTextResId = R.string.sb_text_error_unregister_operator;
                 } else if (key == R.string.sb_text_mute_member) {
-                    viewModel.muteUser(member.getUserId(), handler);
+                    errorTextResId = R.string.sb_text_error_mute_member;
                 } else if (key == R.string.sb_text_unmute_member) {
-                    viewModel.unmuteUser(member.getUserId(), handler);
+                    errorTextResId = R.string.sb_text_error_unmute_member;
                 } else if (key == R.string.sb_text_ban_member) {
-                    viewModel.banUser(member.getUserId(), handler);
+                    errorTextResId = R.string.sb_text_error_ban_member;
                 }
-            });
+                toastError(errorTextResId);
+            }
+        };
+        if (key == R.string.sb_text_register_operator) {
+            viewModel.addOperator(member.getUserId(), handler);
+        } else if (key == R.string.sb_text_unregister_operator) {
+            viewModel.removeOperator(member.getUserId(), handler);
+        } else if (key == R.string.sb_text_mute_member) {
+            viewModel.muteUser(member.getUserId(), handler);
+        } else if (key == R.string.sb_text_unmute_member) {
+            viewModel.unmuteUser(member.getUserId(), handler);
+        } else if (key == R.string.sb_text_ban_member) {
+            viewModel.banUser(member.getUserId(), handler);
+        } else {
+            return false;
+        }
+        module.shouldShowLoadingDialog(context);
+        return true;
     }
 
     /**

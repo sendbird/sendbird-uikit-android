@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.annotation.VisibleForTesting;
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sendbird.android.AppInfo;
@@ -33,6 +34,7 @@ import com.sendbird.android.internal.sb.SendbirdSdkInfo;
 import com.sendbird.android.params.GroupChannelCreateParams;
 import com.sendbird.android.params.InitParams;
 import com.sendbird.android.params.UserUpdateParams;
+import com.sendbird.android.template.MessageTemplateInfo;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.ChannelActivity;
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter;
@@ -44,6 +46,7 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
+import com.sendbird.uikit.internal.singleton.MessageTemplateManager;
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.singleton.UIKitConfigRepository;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
@@ -64,9 +67,14 @@ import com.sendbird.uikit.utils.UIKitPrefs;
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -244,6 +252,7 @@ public class SendbirdUIKit {
         UIKitPrefs.clearAll();
         NotificationChannelManager.clearAll();
         MessageDisplayDataManager.clearAll();
+        MessageTemplateManager.clearAll();
     }
 
     /**
@@ -320,6 +329,7 @@ public class SendbirdUIKit {
         FileUtils.removeDeletableDir(context.getApplicationContext());
         UIKitPrefs.init(context.getApplicationContext());
         NotificationChannelManager.init(context.getApplicationContext());
+        MessageTemplateManager.init(context.getApplicationContext());
         EmojiManager.init();
     }
 
@@ -611,23 +621,7 @@ public class SendbirdUIKit {
                             updateEmojiList();
                         }
 
-                        final NotificationInfo notificationInfo = appInfo.getNotificationInfo();
-                        if (notificationInfo != null && notificationInfo.isEnabled()) {
-                            // Even if the request fails, it should not affect the result of the connection request.
-                            try {
-                                // if the cache exists or no need to update, blocking is released right away
-                                final String latestToken = notificationInfo.getTemplateListToken();
-                                NotificationChannelManager.requestTemplateListBlocking(latestToken);
-                            } catch (Exception ignore) {
-                            }
-                            try {
-                                // if the cache exists or no need to update, blocking is released right away
-                                final long settingsUpdatedAt = notificationInfo.getSettingsUpdatedAt();
-                                NotificationChannelManager.requestNotificationChannelSettingBlocking(settingsUpdatedAt);
-                            } catch (Exception ignore) {
-                            }
-                        }
-
+                        fetchTemplatesBlocking(sendbirdChat);
                         if (SendbirdUIKit.uikitConfigRepo != null) {
                             try {
                                 SendbirdUIKit.uikitConfigRepo.requestConfigurationsBlocking(sendbirdChat, appInfo.getUiKitConfigInfo());
@@ -651,6 +645,55 @@ public class SendbirdUIKit {
                 }
             }
         });
+    }
+
+    @WorkerThread
+    @VisibleForTesting
+    static void fetchTemplatesBlocking(@NonNull SendbirdChatContract sendbirdChat) {
+        final AppInfo appInfo = sendbirdChat.getAppInfo();
+        if (appInfo != null) {
+            ExecutorService executor = Executors.newFixedThreadPool(3); // 3 threads for 3 requests
+            List<Callable<Object>> tasks = new ArrayList<>();
+
+            final NotificationInfo notificationInfo = appInfo.getNotificationInfo();
+            if (notificationInfo != null && notificationInfo.isEnabled()) {
+                // Even if the request fails, it should not affect the result of the connection request.
+                tasks.add(Executors.callable(() -> {
+                    try {
+                        // if the cache exists or no need to update, blocking is released right away
+                        final String latestToken = notificationInfo.getTemplateListToken();
+                        NotificationChannelManager.requestTemplateListBlocking(latestToken);
+                    } catch (Exception ignore) {
+                    }
+                }));
+                tasks.add(Executors.callable(() -> {
+                    try {
+                        // if the cache exists or no need to update, blocking is released right away
+                        final long settingsUpdatedAt = notificationInfo.getSettingsUpdatedAt();
+                        NotificationChannelManager.requestNotificationChannelSettingBlocking(settingsUpdatedAt);
+                    } catch (Exception ignore) {
+                    }
+                }));
+            }
+
+            final MessageTemplateInfo messageTemplateInfo = appInfo.getMessageTemplateInfo();
+            if (messageTemplateInfo != null && messageTemplateInfo.getToken() != null) { // `token == null` means there are no templates in server.
+                tasks.add(Executors.callable(() -> {
+                    try {
+                        final String latestToken = messageTemplateInfo.getToken();
+                        MessageTemplateManager.syncMessageTemplateListBlocking(latestToken);
+                    } catch (Exception ignore) {
+                    }
+                }));
+            }
+
+            try {
+                executor.invokeAll(tasks);
+            } catch (InterruptedException ignore) {
+            } finally {
+                executor.shutdown();
+            }
+        }
     }
 
     @NonNull

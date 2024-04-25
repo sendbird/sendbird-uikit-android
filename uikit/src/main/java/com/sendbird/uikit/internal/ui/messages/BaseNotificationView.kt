@@ -45,17 +45,21 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                     e?.let { throw e }
                     jsonTemplate?.let {
                         val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
-                        TemplateViewGenerator.inflateViews(context, viewParams) { view, params ->
-                            params.action?.register(
-                                view,
-                                { v, action, message ->
+                        TemplateViewGenerator.inflateViews(
+                            context,
+                            viewParams,
+                            onViewCreated = { view, params ->
+                                params.action?.register(
+                                    view,
+                                    message
+                                ) { v, action, message ->
                                     sendNotificationStats(templateKey, message)
                                     onNotificationTemplateActionHandler?.onHandleAction(
                                         v, action, message
                                     )
-                                }, message
-                            )
-                        }
+                                }
+                            }
+                        )
                     }
                 } catch (e: Throwable) {
                     Logger.w("${e.printStackTrace()}")
@@ -100,9 +104,13 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
             context.getString(R.string.sb_text_notification_fallback_description),
             themeMode
         ).run {
-            TemplateViewGenerator.inflateViews(context, this) { view, params ->
-                params.action?.register(view, onNotificationTemplateActionHandler, message)
-            }
+            TemplateViewGenerator.inflateViews(
+                context,
+                this,
+                onViewCreated = { view, params ->
+                    params.action?.register(view, message, onNotificationTemplateActionHandler)
+                }
+            )
         }
     }
 

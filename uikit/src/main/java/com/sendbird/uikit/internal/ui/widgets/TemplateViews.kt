@@ -5,19 +5,26 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.uikit.R
+import com.sendbird.uikit.internal.adapter.CarouselChildViewAdapter
 import com.sendbird.uikit.internal.extensions.addRipple
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.model.template_messages.BoxViewParams
 import com.sendbird.uikit.internal.model.template_messages.ButtonViewParams
+import com.sendbird.uikit.internal.model.template_messages.CarouselViewParams
 import com.sendbird.uikit.internal.model.template_messages.ImageButtonViewParams
 import com.sendbird.uikit.internal.model.template_messages.ImageViewParams
 import com.sendbird.uikit.internal.model.template_messages.Orientation
 import com.sendbird.uikit.internal.model.template_messages.TextViewParams
+import com.sendbird.uikit.internal.model.template_messages.ViewLifecycleHandler
+import com.sendbird.uikit.internal.utils.CarouselLeftSnapHelper
 
 @SuppressLint("ViewConstructor")
 internal open class Text @JvmOverloads constructor(
@@ -178,5 +185,65 @@ internal open class Box @JvmOverloads constructor(
         params.applyLayoutParams(context, layoutParams, orientation)
         gravity = params.align.gravity
         params.viewStyle.apply(this)
+    }
+}
+
+@SuppressLint("ClickableViewAccessibility")
+internal class CarouselView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : RoundCornerLayout(context, attrs, defStyleAttr) {
+    val recyclerView: RecyclerView
+    var itemDecoration: CarouselViewItemDecoration? = null
+    private val startPadding: Int = context.resources.intToDp(12 + 26 + 12) // left padding of profile + profile width + right padding of profile
+    init {
+        layoutParams = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT
+        )
+
+        recyclerView = object : RecyclerView(context) {
+            // If padding is touched, the event should be dispatched to the parent view.
+            override fun onTouchEvent(e: MotionEvent): Boolean {
+                val layoutManager = this.layoutManager as? LinearLayoutManager
+                val isTouchEventInPadding = e.x < startPadding
+                if (isTouchEventInPadding && layoutManager?.findFirstVisibleItemPosition() == 0) {
+                    return false
+                }
+
+                return super.onTouchEvent(e)
+            }
+        }.apply {
+            layoutParams = LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT
+            )
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+            setPadding(startPadding, paddingTop, paddingRight, paddingBottom)
+            clipToPadding = false
+
+            CarouselLeftSnapHelper().attachToRecyclerView(this)
+        }
+
+        recyclerView.adapter = CarouselChildViewAdapter()
+        this.addView(recyclerView)
+    }
+
+    fun apply(params: CarouselViewParams, orientation: Orientation, onChildViewCreated: ViewLifecycleHandler?) {
+        val spaceInPixel = context.resources.intToDp(params.spacing)
+        itemDecoration?.let { recyclerView.removeItemDecoration(it) }
+        itemDecoration = CarouselViewItemDecoration(spaceInPixel).also {
+            recyclerView.addItemDecoration(it)
+        }
+
+        val adapter = recyclerView.adapter as? CarouselChildViewAdapter ?: return
+        adapter.onChildViewCreated = onChildViewCreated
+        adapter.setChildTemplateParams(params.items)
+        params.applyLayoutParams(context, layoutParams, orientation)
+
+        // Currently, viewStyle is not used in CarouselView.
+        // params.viewStyle.apply(this, true)
     }
 }
