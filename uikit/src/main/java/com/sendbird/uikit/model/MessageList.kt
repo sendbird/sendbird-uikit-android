@@ -1,6 +1,7 @@
 package com.sendbird.uikit.model
 
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.CustomizableMessage
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.utils.DateUtils
 import java.util.TreeSet
@@ -130,6 +131,7 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     @Synchronized
     fun update(message: BaseMessage) {
         Logger.d(">> MessageList::updateMessage()")
+        if (message is CustomizableMessage) return
         if (messages.remove(message)) {
             BaseMessage.clone(message)?.let { messages.add(it) }
         }
