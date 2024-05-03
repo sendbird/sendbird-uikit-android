@@ -1,4 +1,6 @@
 # Changelog
+### v3.16.1 (May 3, 2024) with Chat SDK `v4.16.2`
+* Fixed timeline messages not showing up in the channel.
 ### v3.16.0 (Apr 25, 2024) with Chat SDK `v4.16.2`
 Support a way to customise the menu items in the `ChannelSettingsMenuComponent` and `OpenChannelSettingsMenuComponent`.
 - Added `createMenuView(Context, String, String, SingleMenuType, int, int)` in `ChannelSettingsMenuComponent`
