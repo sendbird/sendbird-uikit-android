@@ -19,9 +19,8 @@ import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherTemplateMessageViewHolder;
-import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
 import com.sendbird.uikit.internal.utils.TemplateViewCachePool;
-import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.model.MessageListUIParams;
 
 /**
@@ -85,33 +84,25 @@ public class MessageListAdapter extends BaseMessageListAdapter {
                     finalListener.onFeedbackClicked(view, rating);
                 }
             });
-        }
-
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-        if (holder instanceof SuggestedRepliesViewHolder) {
-            SuggestedRepliesViewHolder suggestedRepliesViewHolder = (SuggestedRepliesViewHolder) holder;
-            suggestedRepliesViewHolder.setSuggestedRepliesClickedListener((view, pos, data) -> {
-                int messagePosition = holder.getBindingAdapterPosition();
-                if (messagePosition != NO_POSITION && suggestedRepliesClickListener != null) {
-                    suggestedRepliesClickListener.onItemClick(view, pos, data);
-                }
-            });
-        }
-
-        if (holder instanceof FormMessageViewHolder) {
-            FormMessageViewHolder formMessageViewHolder = (FormMessageViewHolder) holder;
+        } else if (viewHolder instanceof FormMessageViewHolder) {
+            FormMessageViewHolder formMessageViewHolder = (FormMessageViewHolder) viewHolder;
             formMessageViewHolder.setOnSubmitClickListener((message, form) -> {
                 final FormSubmitButtonClickListener finalListener = this.formSubmitButtonClickListener;
                 if (finalListener != null) {
                     finalListener.onClicked(message, form);
                 }
             });
+        } else if (viewHolder instanceof OtherUserMessageViewHolder) {
+            OtherUserMessageViewHolder otherUserMessageViewHolder = (OtherUserMessageViewHolder) viewHolder;
+            otherUserMessageViewHolder.setOnSuggestedRepliesClickListener((view, pos, data) -> {
+                final OnItemClickListener<String> finalListener = this.suggestedRepliesClickListener;
+                if (finalListener != null) {
+                    finalListener.onItemClick(view, pos, data);
+                }
+            });
         }
+
+        return viewHolder;
     }
 
     /**

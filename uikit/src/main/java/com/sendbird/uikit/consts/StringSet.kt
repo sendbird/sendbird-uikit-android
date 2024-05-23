@@ -158,4 +158,11 @@ object StringSet {
     const val quote_reply = "quote_reply"
     const val thread = "thread"
     const val parent = "parent"
+    const val all_messages = "all_messages"
+    const val last_message_only = "last_message_only"
+    const val vertical = "vertical"
+    const val horizontal = "horizontal"
+
+    // extras
+    const val should_show_suggested_replies = "should_show_suggested_replies"
 }

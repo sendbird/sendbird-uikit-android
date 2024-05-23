@@ -34,7 +34,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Returns the notification channel header component.
      *
      * @return The channel header component of this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var headerComponent: ChatNotificationHeaderComponent
         private set
@@ -43,7 +43,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Sets a custom notification list component.
      *
      * @param component The notification list component to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var notificationListComponent: ChatNotificationListComponent
         private set
@@ -52,7 +52,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Returns the status component.
      *
      * @return The status component of this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var statusComponent: NotificationStatusComponent
         private set
@@ -61,7 +61,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var loadingDialogHandler: LoadingDialogHandler? = null
         private set
@@ -70,7 +70,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Constructor
      *
      * @param context The `Context` this module is currently associated with
-     * since 3.5.0
+     * @since 3.5.0
      */
     init {
         headerComponent = ChatNotificationHeaderComponent(uiConfig).apply {
@@ -123,7 +123,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun setOnLoadingDialogHandler(loadingDialogHandler: LoadingDialogHandler?) {
         this.loadingDialogHandler = loadingDialogHandler
@@ -133,7 +133,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun shouldShowLoadingDialog(): Boolean {
         return loadingDialogHandler?.shouldShowLoadingDialog() ?: false
@@ -143,7 +143,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun shouldDismissLoadingDialog() {
         loadingDialogHandler?.shouldDismissLoadingDialog()
@@ -162,7 +162,7 @@ internal class ChatNotificationChannelModule @JvmOverloads constructor(
          *
          * @param context    The `Context` this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * since 3.5.0
+         * @since 3.5.0
          */
         constructor(context: Context, @StyleRes themeResId: Int) : super(
             context,

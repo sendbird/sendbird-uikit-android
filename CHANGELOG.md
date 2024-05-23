@@ -1,5 +1,29 @@
 # Changelog
-### v3.16.1 (May 3, 2024) with Chat SDK `v4.16.2`
+### v3.17.0 (May 23, 2024) with Chat SDK `v4.16.3`
+* Deprecated `notifyStatusUpdated(GroupChannel, StatusFrameView)` in `MessageThreadInputComponent`
+* Added a new interface to set the enable state of the message input field
+    * Added `boolean tryToChangeEnableInputView(boolean, String)` in `ChannelFragment`, `MessageThreadFragment`, `OpenChannelFragment`
+    * Added `boolean tryToChangeEnableInputView(boolean, GroupChannel, String)` in `MessageInputComponent`
+    * Added `boolean tryToChangeEnableInputView(boolean, OpenChannel, String)` in `OpenChannelMessageInputComponent`
+
+* A new interface has been added to allow you to customise the items in the RecyclerView
+    * Added `String getActionContextMenuTitle(GroupChannel)`, `List<DialogListItem> makeChannelContextMenu(GroupChannel)`, and `boolean onChannelContextMenuItemClicked(GroupChannel, View, DialogListItem)` in `ChannelListFragment`
+
+* Added a new interface to receive events when a message is clicked or long-clicked on the screen used in Sendbird Business Messaging
+    * Added `setOnItemClickListener(OnItemClickListener<BaseMessage>)` and `setOnItemLongClickListener(OnItemLongClickListener<BaseMessage>)` in `ChatNotificationChannelFragment.Builder` and `FeedNotificationChannelFragment.Builder`
+
+* Added a new feature to support markdown syntax in UserMessage
+    * Added `enableMarkdownForUserMessage: Boolean` in `ChannelConfig`. If you enable this feature, you can use markdown syntax in the UserMessage.
+    * Currently, the following markdown syntax is supported:
+        * Bold: `**bold**`, `__bold__`
+        * Link: `[link](https://sendbird.com)`
+
+* Options for Suggested Replies, Direction and Target, have been added.
+    * These two options only work when `ChannelConfig.enableSuggestedReplies` is enabled, and each flag operates independently.
+    * Added `SuggestedRepliesDirection.VERTICAL` and `SuggestedRepliesDirection.HORIZONTAL` which indicate the direction of the suggested replies in `SuggestedRepliesView`.
+    * Added `SuggestedRepliesFor.ALL_MESSAGES` and `SuggestedRepliesFor.LAST_MESSAGE_ONLY`, which specify the target messages for suggested replies.
+    * Added `suggestedRepliesFor` in `ChannelConfig` to set the target messages for suggested replies.
+    * Added `suggestedRepliesDirection` in `ChannelConfig` to set the direction of the suggested replies.### v3.16.1 (May 3, 2024) with Chat SDK `v4.16.2`
 * Fixed timeline messages not showing up in the channel.
 ### v3.16.0 (Apr 25, 2024) with Chat SDK `v4.16.2`
 Support a way to customise the menu items in the `ChannelSettingsMenuComponent` and `OpenChannelSettingsMenuComponent`.
@@ -177,7 +201,7 @@ ViewModelProviders.channel = ChannelViewModelProvider { owner, channelUrl, param
 * Improved stability
 
 ### v3.6.0 (Jun 23, 2023) with Chat SDK `v4.9.1`
-* Support feature configuration 
+* Support feature configuration
   * Added `UIKitConfig` object
   * Added `setChannelConfig(ChannelConfig)` in `ChannelFragment.Builder`, `MessageThreadFragment.Builder`
   * Added `setChanneListConfig(ChannelListConfig)` in `ChannelListFragment.Builder`
@@ -290,7 +314,7 @@ We’re excited to announce the launch of Sendbird Notifications v1.0! It’s a 
 * Added `setUseBanner(boolean)` in `MessageListComponent.Params`
 * Added `setUseUserIdForNickname(boolean)` and `isUsingUserIdForNickname()` in `SendbirdUIKit`
 
-### v3.2.2 (Oct 27, 2022) with Chat SDK `v4.1.1` 
+### v3.2.2 (Oct 27, 2022) with Chat SDK `v4.1.1`
 * Added `setOnScrollFirstButtonClickListener(OnConsumableClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`
 * Added `scrollToFirst()`, `setOnScrollFirstButtonClickListener(OnConsumableClickListener)`, and `onScrollFirstButtonClicked(View)` in `MessageListComponent` and `OpemChannelMessageListComponent`
 * Deprecated `setOnScrollBottomButtonClickListener(View.OnClickListener)` in `ChannelFragment.Builder` and `OpenChannelFragment.Builder`

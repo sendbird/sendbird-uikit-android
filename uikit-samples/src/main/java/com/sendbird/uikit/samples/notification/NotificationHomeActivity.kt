@@ -13,10 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import com.sendbird.uikit.activities.FeedNotificationChannelActivity
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.ThemeHomeActivity
-import com.sendbird.uikit.samples.common.extensions.getFeedChannelUrl
 import com.sendbird.uikit.samples.common.extensions.logout
 import com.sendbird.uikit.samples.common.extensions.setTextColorResource
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
@@ -38,12 +36,7 @@ class NotificationHomeActivity : ThemeHomeActivity() {
                 startActivity(Intent(this@NotificationHomeActivity, NotificationMainActivity::class.java))
             }
             feedOnlyButton.setOnClickListener {
-                startActivity(
-                    FeedNotificationChannelActivity.newIntent(
-                        this@NotificationHomeActivity,
-                        getFeedChannelUrl()
-                    )
-                )
+                startActivity(Intent(this@NotificationHomeActivity, FeedChannelListMainActivity::class.java))
             }
             btSignOut.setOnClickListener { logout() }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

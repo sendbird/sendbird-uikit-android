@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.sendbird.android.channel.FeedChannel
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.interfaces.OnItemLongClickListener
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
 import com.sendbird.uikit.interfaces.OnNotificationCategorySelectListener
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
@@ -55,6 +57,16 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
                                 message
                             )
                         }
+                }
+                if (value?.onItemClickListener == null) {
+                    value?.onItemClickListener = OnItemClickListener { view: View, position: Int, message: BaseMessage ->
+                        onItemClickListener?.onItemClick(view, position, message)
+                    }
+                }
+                if (value?.onItemLongClickListener == null) {
+                    value?.onItemLongClickListener = OnItemLongClickListener { view: View, position: Int, message: BaseMessage ->
+                        onItemLongClickListener?.onItemLongClick(view, position, message)
+                    }
                 }
                 it.adapter = value
             }
@@ -108,7 +120,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
      * This value is used to compare whether a message has been newly received.
      *
      * @param lastSeenAt the timestamp last viewed by the user.
-     * since 3.5.0
+     * @since 3.5.0
      */
     @SuppressLint("NotifyDataSetChanged")
     fun notifyLastSeenUpdated(lastSeenAt: Long) {
@@ -122,7 +134,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
      * Handles a new channel when data has changed.
      *
      * @param channel The latest group channel
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun notifyChannelChanged(channel: FeedChannel) {
         if (adapter == null) {
@@ -185,7 +197,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
      * @param notificationList The list of messages to be drawn
      * @param channel     The latest group channel
      * @param callback    Callback when the message list is updated
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun notifyDataSetChanged(
         notificationList: List<BaseMessage>,
@@ -222,7 +234,7 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
          * @param context The `Context` this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * since 3.5.0
+         * @since 3.5.0
          */
         override fun apply(context: Context, args: Bundle): Params {
             return this

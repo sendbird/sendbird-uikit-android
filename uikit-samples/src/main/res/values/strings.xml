@@ -12,7 +12,8 @@
     <string name="text_version_info">UI Kit v%1$s &#160;&#160;&#160;&#160; SDK v%2$s</string>
     <string name="text_hint_application_id">App ID</string>
     <string name="text_hint_user_id">User ID</string>
-    <string name="text_hint_nickname">Nickname</string>
+    <string name="text_hint_nickname">User nickname</string>
+    <string name="text_hint_bot_id">Bot ID</string>
     <string name="text_sign_in">SIGN IN</string>
     <string name="text_sign_out">SIGN OUT</string>
     <string name="text_sign_out_lower">Sign out</string>

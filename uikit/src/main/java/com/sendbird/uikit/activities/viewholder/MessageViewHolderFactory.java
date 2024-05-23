@@ -33,7 +33,6 @@ import com.sendbird.uikit.databinding.SbViewOtherTemplateMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageBinding;
 import com.sendbird.uikit.databinding.SbViewOtherVoiceMessageBinding;
 import com.sendbird.uikit.databinding.SbViewParentMessageInfoHolderBinding;
-import com.sendbird.uikit.databinding.SbViewSuggestedRepliesMessageBinding;
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding;
 import com.sendbird.uikit.databinding.SbViewTypingIndicatorMessageBinding;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
@@ -60,11 +59,9 @@ import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVideoFileMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherVoiceMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.ParentMessageInfoViewHolder;
-import com.sendbird.uikit.internal.ui.viewholders.SuggestedRepliesViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.TimelineViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.TypingIndicatorViewHolder;
 import com.sendbird.uikit.model.MessageListUIParams;
-import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -227,9 +224,6 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_VOICE_MESSAGE_OTHER:
                 holder = new OtherVoiceMessageViewHolder(SbViewOtherVoiceMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
-            case VIEW_TYPE_SUGGESTED_REPLIES:
-                holder = new SuggestedRepliesViewHolder(SbViewSuggestedRepliesMessageBinding.inflate(inflater, parent, false), messageListUIParams);
-                break;
             case VIEW_TYPE_FORM_TYPE_MESSAGE:
                 holder = new FormMessageViewHolder(SbViewFormMessageBinding.inflate(inflater, parent, false), messageListUIParams);
                 break;
@@ -340,9 +334,7 @@ public class MessageViewHolderFactory {
             type = MessageType.VIEW_TYPE_TIME_LINE;
         } else if (message instanceof AdminMessage) {
             type = MessageType.VIEW_TYPE_ADMIN_MESSAGE;
-        } else if (message instanceof SuggestedRepliesMessage) {
-            type = MessageType.VIEW_TYPE_SUGGESTED_REPLIES;
-        }  else if (message instanceof TypingIndicatorMessage) {
+        } else if (message instanceof TypingIndicatorMessage) {
             type = MessageType.VIEW_TYPE_TYPING_INDICATOR;
         } else {
             if (MessageUtils.isMine(message)) {

@@ -72,8 +72,6 @@ public class MessageInputComponent {
     private OnInputTextChangedListener editModeTextChangedListener;
     @Nullable
     private OnInputModeChangedListener inputModeChangedListener;
-    @Nullable
-    private CharSequence hintText;
 
     /**
      * Constructor
@@ -154,7 +152,7 @@ public class MessageInputComponent {
         if (params.hintText != null) {
             this.messageInputView.setInputTextHint(params.hintText);
         }
-        hintText = this.messageInputView.getInputEditText().getHint();
+        params.setInputHint(this.messageInputView.getInputTextHint());
         if (params.inputText != null) {
             this.messageInputView.setInputText(params.inputText);
         }
@@ -523,26 +521,74 @@ public class MessageInputComponent {
         this.messageInputView.setInputMode(mode);
     }
 
+    /**
+     * Enables or disables the input view with hint text.
+     * If the user's status is not allowed to send messages, the enable value cannot be changed.
+     *
+     * @param channel  The group channel to be checked for the user's status
+     * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+     * @param hintText The hint text to be displayed
+     * @return <code>true</code> if the enable setting is reflected, <code>false</code> otherwise
+     * since 3.17.0
+     */
+    public boolean tryToChangeEnableStatus(@NonNull GroupChannel channel, boolean enabled, @NonNull String hintText) {
+        if (messageInputView == null) return false;
+
+        params.isViewEnabled = enabled;
+        params.hintText = hintText;
+        boolean shouldEnableInput = calculateViewEnableStatus(channel);
+        messageInputView.setEnabled(shouldEnableInput);
+
+        boolean isMessageSendable = isMessageSendable(channel);
+        boolean isEnableStateChanged = isMessageSendable && shouldEnableInput == enabled;
+        if (isEnableStateChanged) {
+            messageInputView.setInputTextHint(hintText);
+        }
+        return isEnableStateChanged;
+    }
+
+
     void setHintMessageTextInternal(@NonNull MessageInputView inputView, @NonNull GroupChannel channel) {
         boolean isOperator = channel.getMyRole() == Role.OPERATOR;
         boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
         boolean isFrozen = channel.isFrozen() && !isOperator;
-        boolean shouldDisableInput = ChannelExtensionsKt.shouldDisableInput(channel, params.channelConfig);
-        inputView.setEnabled(!isMuted && !isFrozen && !shouldDisableInput);
+        boolean shouldEnableInput = calculateViewEnableStatus(channel);
+        inputView.setEnabled(shouldEnableInput);
 
-        final MessageInputView.Mode mode = inputView.getInputMode();
         // set hint
+        String hintText = getHintText(inputView, isMuted, isFrozen);
+        Logger.dev("++ hint text : " + hintText);
+        inputView.setInputTextHint(hintText);
+    }
+
+    boolean calculateViewEnableStatus(@NonNull GroupChannel channel) {
+        boolean messageSenable = isMessageSendable(channel);
+        if (messageSenable) {
+            return params.isViewEnabled;
+        }
+        return false;
+    }
+
+    private boolean isMessageSendable(@NonNull GroupChannel channel) {
+        boolean isOperator = channel.getMyRole() == Role.OPERATOR;
+        boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
+        boolean isFrozen = channel.isFrozen() && !isOperator;
+        boolean shouldDisableInput = ChannelExtensionsKt.shouldDisableInput(channel, params.channelConfig);
+        return !isMuted && !isFrozen && !shouldDisableInput;
+    }
+
+    @Nullable
+    String getHintText(@NonNull MessageInputView inputView, boolean isMuted, boolean isFrozen) {
         final Context context = inputView.getContext();
-        String hintText = this.hintText != null ? this.hintText.toString() : null;
+        String hintText = params.hintText != null ? params.hintText : null;
         if (isMuted) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
         } else if (isFrozen) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_frozen);
-        } else if (MessageInputView.Mode.QUOTE_REPLY == mode) {
+        } else if (MessageInputView.Mode.QUOTE_REPLY == inputView.getInputMode()) {
             hintText = context.getString(R.string.sb_text_channel_input_reply_text_hint);
         }
-        Logger.dev("++ hint text : " + hintText);
-        inputView.setInputTextHint(hintText);
+        return hintText;
     }
 
     /**
@@ -571,6 +617,8 @@ public class MessageInputComponent {
 
         @Nullable
         private String inputText;
+
+        private boolean isViewEnabled = true;
 
         @NonNull
         private KeyboardDisplayType keyboardDisplayType = KeyboardDisplayType.Plane;
@@ -862,6 +910,26 @@ public class MessageInputComponent {
         @NonNull
         public ChannelConfig getChannelConfig() {
             return channelConfig;
+        }
+
+        /**
+         * Returns whether the input view is enabled.
+         *
+         * @return <code>true</code> if the input view is enabled, <code>false</code> otherwise
+         * since 3.17.0
+         */
+        public boolean isViewEnabled() {
+            return isViewEnabled;
+        }
+
+        /**
+         * Sets whether the input view is enabled.
+         *
+         * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+         * since 3.17.0
+         */
+        public void setViewEnabled(boolean enabled) {
+            this.isViewEnabled = enabled;
         }
 
         /**

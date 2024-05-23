@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sendbird.uikit.internal.ui.messages.SuggestedReplyView
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/suggestedReplyView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <com.sendbird.uikit.internal.ui.messages.SuggestedReplyView
+        android:id="@+id/suggestedReplyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -115,6 +115,7 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
         val enableMention = params.channelConfig.enableMention
         val enableReactions =
             message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
+        val enableMarkdown = params.channelConfig.enableMarkdownForUserMessage
 
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
@@ -145,6 +146,7 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
             message,
             messageUIConfig,
             enableMention,
+            enableMarkdown,
             mentionedCurrentUserUIConfig,
         ) { view, position, user ->
             mentionClickListener?.onItemClick(view, position, user)

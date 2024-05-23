@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/root"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/sb_size_12"
     android:paddingRight="@dimen/sb_size_12"
@@ -164,4 +164,22 @@
         app:layout_constraintStart_toStartOf="@id/contentPanel"
         />
 
+    <ViewStub
+        android:id="@+id/verticalSuggestedRepliesViewStub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_20"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/sb_size_43"
+        android:layout="@layout/sb_view_suggested_replies"
+        app:layout_constraintTop_toBottomOf="@id/feedback" />
+
+    <ViewStub
+        android:id="@+id/horizontalSuggestedRepliesViewStub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_8"
+        android:visibility="gone"
+        android:layout="@layout/sb_view_suggested_replies"
+        app:layout_constraintTop_toBottomOf="@id/feedback" />
 </androidx.constraintlayout.widget.ConstraintLayout>

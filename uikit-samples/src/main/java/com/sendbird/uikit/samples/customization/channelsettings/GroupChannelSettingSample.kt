@@ -15,7 +15,7 @@ fun showAppendNewCustomGroupChannelSettingsMenuSample(activity: Activity) {
     // The following code is an example of how to customize the Group Channel settings menu.
     // If you want to handle the CUSTOM menu click event, you should handle it yourself after creating a custom menu view.
     ModuleProviders.channelSettings = ChannelSettingsModuleProvider { context, _ ->
-        val module = ChannelSettingsModule(context).apply {
+        ChannelSettingsModule(context).apply {
             val customMenuList = ChannelSettingsMenuComponent.defaultMenuSet.toMutableList().apply {
                 add(ChannelSettingsMenuComponent.Menu.CUSTOM)
             }
@@ -26,7 +26,7 @@ fun showAppendNewCustomGroupChannelSettingsMenuSample(activity: Activity) {
                         context,
                         "Go to Chat",
                         null,
-                        SingleMenuType.NEXT,
+                        SingleMenuType.NONE,
                         R.drawable.icon_chat,
                         0
                     ).apply {
@@ -39,7 +39,6 @@ fun showAppendNewCustomGroupChannelSettingsMenuSample(activity: Activity) {
             }
             setChannelSettingsMenuComponent(component)
         }
-        module
     }
 
     GroupChannelRepository.getRandomChannel(activity) { channel ->

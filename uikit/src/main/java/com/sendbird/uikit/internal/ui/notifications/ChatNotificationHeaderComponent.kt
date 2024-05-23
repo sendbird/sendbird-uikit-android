@@ -26,7 +26,7 @@ internal class ChatNotificationHeaderComponent(
      * Returns a collection of parameters applied to this component.
      *
      * @return `Params` applied to this component
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun getParams(): Params {
         return super.getParams() as Params
@@ -42,7 +42,7 @@ internal class ChatNotificationHeaderComponent(
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun onCreateView(context: Context, inflater: LayoutInflater, parent: ViewGroup, args: Bundle?): View {
         val layout = super.onCreateView(context, inflater, parent, args)
@@ -69,7 +69,7 @@ internal class ChatNotificationHeaderComponent(
      * Notifies this component that the channel data has changed.
      *
      * @param channel The latest group channel
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun notifyChannelChanged(channel: GroupChannel) {
         val rootView = rootView as? HeaderView ?: return
@@ -86,7 +86,7 @@ internal class ChatNotificationHeaderComponent(
      * **Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.**
      *
      * @see .getParams
-     * since 3.5.0
+     * @since 3.5.0
      */
     class Params : HeaderComponent.Params()
 }

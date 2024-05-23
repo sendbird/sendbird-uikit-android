@@ -51,8 +51,6 @@ public class OpenChannelMessageInputComponent {
     private OnInputTextChangedListener editModeTextChangedListener;
     @Nullable
     private OnInputModeChangedListener inputModeChangedListener;
-    @Nullable
-    private CharSequence hintText;
     private boolean isMuted;
 
     /**
@@ -128,7 +126,7 @@ public class OpenChannelMessageInputComponent {
         if (params.hintText != null) {
             messageInputView.setInputTextHint(params.hintText);
         }
-        hintText = messageInputView.getInputEditText().getHint();
+        params.setInputHint(messageInputView.getInputTextHint());
         if (params.inputText != null) {
             messageInputView.setInputText(params.inputText);
         }
@@ -391,14 +389,55 @@ public class OpenChannelMessageInputComponent {
         setHintMessageText(inputView, channel);
     }
 
+    /**
+     * Enables or disables the input view with hint text.
+     * If the user's status is not allowed to send messages, the enable value cannot be changed.
+     *
+     * @param channel  The open channel to be checked for the user's status
+     * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+     * @param hintText The hint text to be displayed
+     * @return <code>true</code> if the enable setting is reflected, <code>false</code> otherwise
+     * since 3.17.0
+     */
+    public boolean tryToChangeEnableStatus(@NonNull OpenChannel channel, boolean enabled, @NonNull String hintText) {
+        if (messageInputView == null) return false;
+
+        params.isViewEnabled = enabled;
+        params.hintText = hintText;
+        boolean shouldEnableInput = calculateViewEnableStatus(channel);
+        messageInputView.setEnabled(shouldEnableInput);
+
+        boolean isMessageSendable = isMessageSendable(channel);
+        boolean isEnableStateChanged = isMessageSendable && shouldEnableInput == enabled;
+        if (isEnableStateChanged) {
+            messageInputView.setInputTextHint(hintText);
+        }
+        return isEnableStateChanged;
+    }
+
+    private boolean isMessageSendable(@NonNull OpenChannel channel) {
+        boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
+        boolean isFrozen = channel.isFrozen() && !isOperator;
+        return !isMuted && !isFrozen;
+    }
+
+    private boolean calculateViewEnableStatus(@NonNull OpenChannel channel) {
+        boolean messageSenable = isMessageSendable(channel);
+        if (messageSenable) {
+            return params.isViewEnabled;
+        }
+        return false;
+    }
+
     private void setHintMessageText(@NonNull MessageInputView inputView, @NonNull OpenChannel channel) {
         boolean isOperator = channel.isOperator(SendbirdChat.getCurrentUser());
         boolean isFrozen = channel.isFrozen() && !isOperator;
-        inputView.setEnabled(!isMuted && !isFrozen);
+        boolean shouldEnableInput = calculateViewEnableStatus(channel);
+        inputView.setEnabled(shouldEnableInput);
 
         // set hint
         final Context context = inputView.getContext();
-        String hintText = this.hintText != null ? this.hintText.toString() : null;
+        String hintText = params.hintText != null ? params.hintText : null;
         if (isMuted) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
         } else if (isFrozen) {
@@ -427,16 +466,13 @@ public class OpenChannelMessageInputComponent {
         private ColorStateList leftButtonIconTint;
         @Nullable
         private ColorStateList rightButtonIconTint;
-
         @Nullable
         private String hintText;
-
         @Nullable
         private String inputText;
-
+        private boolean isViewEnabled = true;
         @NonNull
         private KeyboardDisplayType keyboardDisplayType = KeyboardDisplayType.Plane;
-
         @Nullable
         private TextUIConfig textUIConfig;
 
@@ -654,6 +690,26 @@ public class OpenChannelMessageInputComponent {
         @Nullable
         public TextUIConfig getMessageInputTextUIConfig() {
             return textUIConfig;
+        }
+
+        /**
+         * Returns whether the input view is enabled.
+         *
+         * @return <code>true</code> if the input view is enabled, <code>false</code> otherwise
+         * since 3.17.0
+         */
+        public boolean isViewEnabled() {
+            return isViewEnabled;
+        }
+
+        /**
+         * Sets whether the input view is enabled.
+         *
+         * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+         * since 3.17.0
+         */
+        public void setViewEnabled(boolean enabled) {
+            this.isViewEnabled = enabled;
         }
 
         /**

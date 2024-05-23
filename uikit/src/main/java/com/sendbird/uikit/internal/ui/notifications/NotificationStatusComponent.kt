@@ -31,7 +31,7 @@ internal class NotificationStatusComponent(
      * Handles a new channel when data has changed.
      *
      * @param channel The latest group channel
-     * since 3.8.0
+     * @since 3.8.0
      */
     fun notifyChannelChanged(channel: BaseChannel) {
         if (channel is FeedChannel && channel.isCategoryFilterEnabled) {

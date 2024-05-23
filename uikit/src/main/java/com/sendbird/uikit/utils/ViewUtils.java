@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -43,6 +44,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.extensions.MarkdownExtensionsKt;
 import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
@@ -69,6 +71,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import kotlin.Unit;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -98,11 +102,24 @@ public class ViewUtils {
         drawTextMessage(textView, message, uiConfig, enableMention, null, null);
     }
 
+
     public static void drawTextMessage(
         @NonNull TextView textView,
         @Nullable BaseMessage message,
         @Nullable MessageUIConfig uiConfig,
         boolean enableMention,
+        @Nullable TextUIConfig mentionedCurrentUserUIConfig,
+        @Nullable OnItemClickListener<User> mentionClickListener
+    ) {
+        drawTextMessage(textView, message, uiConfig, enableMention, false, mentionedCurrentUserUIConfig, mentionClickListener);
+    }
+
+    public static void drawTextMessage(
+        @NonNull TextView textView,
+        @Nullable BaseMessage message,
+        @Nullable MessageUIConfig uiConfig,
+        boolean enableMention,
+        boolean enableMarkdown,
         @Nullable TextUIConfig mentionedCurrentUserUIConfig,
         @Nullable OnItemClickListener<User> mentionClickListener
     ) {
@@ -126,7 +143,17 @@ public class ViewUtils {
             mentionClickListener,
             enableMention
         );
-        final SpannableStringBuilder builder = new SpannableStringBuilder(text);
+        final SpannableStringBuilder builder;
+        if (enableMarkdown) {
+            builder = new SpannableStringBuilder(MarkdownExtensionsKt.applyMarkdown(text, url -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                context.startActivity(intent);
+                return Unit.INSTANCE;
+            }));
+        } else {
+            builder = new SpannableStringBuilder(text);
+        }
+
         if (message.getUpdatedAt() > 0L) {
             final String edited = textView.getResources().getString(R.string.sb_text_channel_message_badge_edited);
             final Spannable editedString = new SpannableString(edited);

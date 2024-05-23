@@ -2,12 +2,16 @@ package com.sendbird.uikit.activities.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder
+import com.sendbird.uikit.consts.SuggestedRepliesDirection
 import com.sendbird.uikit.databinding.SbViewSuggestedReplyBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 
-internal class SuggestedRepliesAdapter : BaseAdapter<String, BaseViewHolder<String>>() {
+internal class SuggestedRepliesAdapter(
+    internal val direction: SuggestedRepliesDirection
+) : BaseAdapter<String, SuggestedRepliesAdapter.SuggestedReplyViewHolder>() {
     var onItemClickListener: OnItemClickListener<String>? = null
     var suggestedReplies: List<String> = listOf()
         set(value) {
@@ -16,10 +20,17 @@ internal class SuggestedRepliesAdapter : BaseAdapter<String, BaseViewHolder<Stri
             diffResult.dispatchUpdatesTo(this)
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<String> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestedReplyViewHolder {
         return SuggestedReplyViewHolder(
             SbViewSuggestedReplyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         ).apply {
+            this.binding.root.updateLayoutParams {
+                this.width = when (direction) {
+                    SuggestedRepliesDirection.HORIZONTAL -> ViewGroup.LayoutParams.WRAP_CONTENT
+                    SuggestedRepliesDirection.VERTICAL -> ViewGroup.LayoutParams.MATCH_PARENT
+                }
+            }
+
             this.binding.suggestedReplyView.setOnClickListener {
                 val item = getItem(absoluteAdapterPosition)
                 val index = suggestedReplies.indexOf(item)
@@ -27,6 +38,10 @@ internal class SuggestedRepliesAdapter : BaseAdapter<String, BaseViewHolder<Stri
                 onItemClickListener?.onItemClick(binding.root, index, item)
             }
         }
+    }
+
+    override fun onBindViewHolder(holder: SuggestedReplyViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     override fun getItemCount(): Int {
@@ -41,11 +56,7 @@ internal class SuggestedRepliesAdapter : BaseAdapter<String, BaseViewHolder<Stri
         return suggestedReplies.toList()
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<String>, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    private class SuggestedReplyViewHolder(
+    internal class SuggestedReplyViewHolder(
         val binding: SbViewSuggestedReplyBinding
     ) : BaseViewHolder<String>(binding.root) {
         override fun bind(item: String) {

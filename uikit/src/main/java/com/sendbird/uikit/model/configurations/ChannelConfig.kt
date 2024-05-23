@@ -5,9 +5,13 @@ import com.sendbird.android.channel.BaseChannel
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.channel.Role
 import com.sendbird.uikit.consts.ReplyType
+import com.sendbird.uikit.consts.SuggestedRepliesDirection
+import com.sendbird.uikit.consts.SuggestedRepliesFor
 import com.sendbird.uikit.consts.ThreadReplySelectType
 import com.sendbird.uikit.consts.TypingIndicatorType
 import com.sendbird.uikit.internal.model.serializer.ReplyTypeAsStringSerializer
+import com.sendbird.uikit.internal.model.serializer.SuggestedRepliesDirectionAsStringSerializer
+import com.sendbird.uikit.internal.model.serializer.SuggestedRepliesForAsStringSerializer
 import com.sendbird.uikit.internal.model.serializer.ThreadReplySelectTypeAsStringSerializer
 import com.sendbird.uikit.internal.model.template_messages.KeySet
 import com.sendbird.uikit.utils.Available
@@ -53,6 +57,15 @@ data class ChannelConfig internal constructor(
     @SerialName(KeySet.reply_type)
     @Serializable(with = ReplyTypeAsStringSerializer::class)
     private var _replyType: ReplyType = ReplyType.QUOTE_REPLY,
+    @SerialName(KeySet.show_suggested_replies_for)
+    @Serializable(with = SuggestedRepliesForAsStringSerializer::class)
+    private var _suggestedRepliesFor: SuggestedRepliesFor = SuggestedRepliesFor.LAST_MESSAGE_ONLY,
+    @SerialName(KeySet.enable_markdown_for_user_message)
+    private var _enableMarkdownForUserMessage: Boolean = false,
+    @SerialName(KeySet.suggested_replies_direction)
+    @Serializable(with = SuggestedRepliesDirectionAsStringSerializer::class)
+    private var _suggestedRepliesDirection: SuggestedRepliesDirection = SuggestedRepliesDirection.VERTICAL,
+
     /**
      * Returns <code>Input</code>, which is the configuration of the input area.
      *
@@ -86,7 +99,13 @@ data class ChannelConfig internal constructor(
     @Transient
     private var enableFormTypeMessageMutable: Boolean? = null,
     @Transient
-    private var enableFeedbackMutable: Boolean? = null
+    private var enableFeedbackMutable: Boolean? = null,
+    @Transient
+    private var suggestedRepliesForMutable: SuggestedRepliesFor? = null,
+    @Transient
+    private var enableMarkdownForUserMessageMutable: Boolean? = null,
+    @Transient
+    private var suggestedRepliesDirectionMutable: SuggestedRepliesDirection? = null
 ) : Parcelable {
     companion object {
         /**
@@ -376,6 +395,42 @@ data class ChannelConfig internal constructor(
             enableSuggestedRepliesMutable = value
         }
 
+    var suggestedRepliesFor: SuggestedRepliesFor
+        /**
+         * Returns [SuggestedRepliesFor], which is the configuration of the suggested replies.
+         *
+         * @return The value of [SuggestedRepliesFor]
+         * @since 3.17.0
+         */
+        get() = suggestedRepliesForMutable ?: _suggestedRepliesFor
+        /**
+         * Sets [SuggestedRepliesFor], which is the configuration of the suggested replies.
+         *
+         * @param value The value of [SuggestedRepliesFor]
+         * @since 3.17.0
+         */
+        set(value) {
+            suggestedRepliesForMutable = value
+        }
+
+    var suggestedRepliesDirection: SuggestedRepliesDirection
+        /**
+         * Returns [SuggestedRepliesDirection], which is the configuration of the suggested replies direction.
+         *
+         * @return The value of [SuggestedRepliesDirection]
+         * @since 3.17.0
+         */
+        get() = suggestedRepliesDirectionMutable ?: _suggestedRepliesDirection
+        /**
+         * Sets [SuggestedRepliesDirection], which is the configuration of the suggested replies direction.
+         *
+         * @param value The value of [SuggestedRepliesDirection]
+         * @since 3.17.0
+         */
+        set(value) {
+            suggestedRepliesDirectionMutable = value
+        }
+
     var enableFormTypeMessage: Boolean
         /**
          * Returns a value that determines whether to use the form type message or not.
@@ -416,6 +471,26 @@ data class ChannelConfig internal constructor(
             enableFeedbackMutable = value
         }
 
+    var enableMarkdownForUserMessage: Boolean
+        /**
+         * Returns a value that determines whether to use markdown for the [com.sendbird.android.message.UserMessage].
+         * true, if a user message renders markdown if it contains markdown syntax.
+         * false, otherwise.
+         *
+         * @return true if the markdown is enabled, false otherwise
+         * @since 3.17.0
+         */
+        get() = enableMarkdownForUserMessageMutable ?: _enableMarkdownForUserMessage
+        /**
+         * Sets whether to render markdown or not.
+         *
+         * @param value true if the markdown is enabled, false otherwise
+         * @since 3.17.0
+         */
+        set(value) {
+            enableMarkdownForUserMessageMutable = value
+        }
+
     @JvmSynthetic
     internal fun merge(config: ChannelConfig): ChannelConfig {
         this._enableOgTag = config._enableOgTag
@@ -431,6 +506,9 @@ data class ChannelConfig internal constructor(
         this._enableFeedback = config._enableFeedback
         this._threadReplySelectType = config._threadReplySelectType
         this._replyType = config._replyType
+        this._suggestedRepliesFor = config._suggestedRepliesFor
+        this._enableMarkdownForUserMessage = config._enableMarkdownForUserMessage
+        this._suggestedRepliesDirection = config._suggestedRepliesDirection
         this.input.merge(config.input)
         return this
     }
@@ -449,6 +527,9 @@ data class ChannelConfig internal constructor(
         this.threadReplySelectTypeMutable = null
         this.replyTypeMutable = null
         this.enableSuggestedRepliesMutable = null
+        this.suggestedRepliesForMutable = null
+        this.enableMarkdownForUserMessageMutable = null
+        this.suggestedRepliesDirectionMutable = null
         this.input.clear()
     }
 

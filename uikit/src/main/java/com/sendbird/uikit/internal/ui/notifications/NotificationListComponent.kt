@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.fragments.ItemAnimator
+import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.interfaces.OnItemLongClickListener
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.interfaces.OnPagedDataLoader
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * This class creates and performs a view corresponding the notification message list area in Sendbird UIKit.
  *
- * since 3.5.0
+ * @since 3.5.0
  */
 @JvmSuppressWildcards
 internal open class NotificationListComponent @JvmOverloads constructor(
@@ -31,6 +33,9 @@ internal open class NotificationListComponent @JvmOverloads constructor(
 ) {
     private val tooltipCount = AtomicInteger()
     protected var notificationListView: NotificationRecyclerView? = null
+
+    var onItemClickListener: OnItemClickListener<BaseMessage>? = null
+    var onItemLongClickListener: OnItemLongClickListener<BaseMessage>? = null
 
     var onTooltipClickListener: OnClickListener? = null
         set(value) {
@@ -50,7 +55,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
      * Returns the view created by [.onCreateView].
      *
      * @return the topmost view containing this view
-     * since 3.5.0
+     * @since 3.5.0
      */
     val rootView: View?
         get() = notificationListView
@@ -65,7 +70,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
      * @param parent   The ViewGroup into which the new View will be added
      * @param args     The arguments supplied when the component was instantiated, if any
      * @return Return the View for the UI.
-     * since 3.5.0
+     * @since 3.5.0
      */
     open fun onCreateView(context: Context, inflater: LayoutInflater, parent: ViewGroup, args: Bundle?): View {
         if (args != null) params.apply(context, args)
@@ -106,7 +111,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
      * @param view the view that was clicked.
      * @param action the registered Action data
      * @param message the clicked message
-     * since 3.5.0
+     * @since 3.5.0
      */
     protected fun onMessageTemplateActionClicked(view: View, action: Action, message: BaseMessage) {
         onMessageTemplateActionHandler?.onHandleAction(view, action, message)
@@ -178,7 +183,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
      * **Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.**
      *
      * @see .getParams
-     * since 3.5.0
+     * @since 3.5.0
      */
     open class Params {
         /**
@@ -187,7 +192,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
          * @param context The `Context` this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * since 3.5.0
+         * @since 3.5.0
          */
         open fun apply(context: Context, args: Bundle): Params {
             return this

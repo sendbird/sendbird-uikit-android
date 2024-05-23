@@ -1,6 +1,7 @@
 package com.sendbird.uikit.internal.extensions
 
 import android.content.Context
+import com.sendbird.android.annotation.AIChatBotExperimental
 import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
@@ -97,3 +98,10 @@ internal var FormField.lastValidation: Boolean?
 
 private val FormField.identifier: String
     get() = "${this.messageId}_${this.key}"
+
+@OptIn(AIChatBotExperimental::class)
+internal var BaseMessage.shouldShowSuggestedReplies: Boolean
+    get() = this.extras[StringSet.should_show_suggested_replies] as? Boolean ?: false
+    set(value) {
+        this.extras[StringSet.should_show_suggested_replies] = value
+    }

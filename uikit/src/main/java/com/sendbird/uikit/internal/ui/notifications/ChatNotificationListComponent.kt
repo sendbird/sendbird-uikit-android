@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.interfaces.OnItemLongClickListener
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
@@ -27,7 +29,7 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
      * Returns the chat notification list adapter.
      *
      * @return The adapter applied to this list component
-     * since 3.5.0
+     * @since 3.5.0
      */
     private var adapter: ChatNotificationListAdapter? = null
         private set(value) {
@@ -42,6 +44,16 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
                                 message
                             )
                         }
+                }
+                if (value?.onItemClickListener == null) {
+                    value?.onItemClickListener = OnItemClickListener { view: View, position: Int, message: BaseMessage ->
+                        onItemClickListener?.onItemClick(view, position, message)
+                    }
+                }
+                if (value?.onItemLongClickListener == null) {
+                    value?.onItemLongClickListener = OnItemLongClickListener { view: View, position: Int, message: BaseMessage ->
+                        onItemLongClickListener?.onItemLongClick(view, position, message)
+                    }
                 }
                 it.adapter = value
             }
@@ -58,7 +70,7 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
      * Handles a new channel when data has changed.
      *
      * @param channel The latest group channel
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun notifyChannelChanged(channel: GroupChannel) {
         if (adapter == null) {
@@ -72,7 +84,7 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
      * @param notificationList The list of messages to be drawn
      * @param channel     The latest group channel
      * @param callback    Callback when the message list is updated
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun notifyDataSetChanged(
         notificationList: List<BaseMessage>,
@@ -91,7 +103,7 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
      * **Since the onCreateView configuring View uses the values of the set Params, we recommend that you set up for Params before the onCreateView is called.**
      *
      * @see .getParams
-     * since 3.5.0
+     * @since 3.5.0
      */
     open class Params : NotificationListComponent.Params() {
         /**
@@ -100,7 +112,7 @@ internal open class ChatNotificationListComponent @JvmOverloads constructor(
          * @param context The `Context` this component is currently associated with
          * @param args    The sets of arguments to apply at Params.
          * @return This Params object that applied with given data.
-         * since 3.5.0
+         * @since 3.5.0
          */
         override fun apply(context: Context, args: Bundle): Params {
             return this

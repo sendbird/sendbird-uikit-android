@@ -57,6 +57,10 @@
             android:name=".aichatbot.AIChatBotHomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".aichatbot.AiChatBotLoginActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <!-- notification activities -->
         <activity
@@ -69,6 +73,10 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".notification.NotificationLoginActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".notification.FeedChannelListMainActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
