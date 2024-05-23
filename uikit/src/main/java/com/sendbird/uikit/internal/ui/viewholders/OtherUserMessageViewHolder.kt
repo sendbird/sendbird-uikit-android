@@ -56,4 +56,8 @@ internal class OtherUserMessageViewHolder internal constructor(
     fun setOnFeedbackRatingClickListener(listener: OnFeedbackRatingClickListener?) {
         binding.otherMessageView.onFeedbackRatingClickListener = listener
     }
+
+    fun setOnSuggestedRepliesClickListener(listener: OnItemClickListener<String>?) {
+        binding.otherMessageView.onSuggestedRepliesClickListener = listener
+    }
 }

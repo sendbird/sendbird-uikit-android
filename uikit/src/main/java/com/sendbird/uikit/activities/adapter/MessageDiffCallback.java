@@ -16,6 +16,7 @@ import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.internal.extensions.MessageTemplateExtensionsKt;
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -86,6 +87,10 @@ class MessageDiffCallback extends DiffUtil.Callback {
             if (!oldMessage.getMessage().equals(newMessage.getMessage())) {
                 return false;
             }
+        }
+
+        if (MessageExtensionsKt.getShouldShowSuggestedReplies(oldMessage) != MessageExtensionsKt.getShouldShowSuggestedReplies(newMessage)) {
+            return false;
         }
 
         final Map<String, String> oldExtendedMessagePayload = oldMessage.getExtendedMessagePayload();

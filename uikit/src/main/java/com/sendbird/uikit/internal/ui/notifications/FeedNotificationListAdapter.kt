@@ -14,6 +14,8 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.activities.viewholder.MessageType
 import com.sendbird.uikit.databinding.SbViewFeedNotificationBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.interfaces.OnItemLongClickListener
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.model.NotificationDiffCallback
@@ -34,6 +36,8 @@ internal class FeedNotificationListAdapter(
     // the worker must be a single thread.
     private val dataWorker by lazy { Executors.newSingleThreadExecutor() }
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
+    var onItemClickListener: OnItemClickListener<BaseMessage>? = null
+    var onItemLongClickListener: OnItemLongClickListener<BaseMessage>? = null
 
     init {
         this.prevLastSeenAt = channel.myLastRead
@@ -50,7 +54,7 @@ internal class FeedNotificationListAdapter(
      * @return A new [FeedNotificationViewHolder] that holds a View of the given view type.
      * @see .getItemViewType
      * @see .onBindViewHolder
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedNotificationViewHolder {
         val values = TypedValue()
@@ -59,6 +63,15 @@ internal class FeedNotificationListAdapter(
         val inflater = LayoutInflater.from(contextWrapper)
         return FeedNotificationViewHolder(SbViewFeedNotificationBinding.inflate(inflater, parent, false)).apply {
             binding.feedNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
+            binding.feedNotification.binding.contentPanel.setOnClickListener {
+                val position = this.bindingAdapterPosition
+                onItemClickListener?.onItemClick(it, position, getItem(position))
+            }
+            binding.feedNotification.binding.contentPanel.setOnLongClickListener {
+                val position = this.bindingAdapterPosition
+                onItemLongClickListener?.onItemLongClick(it, position, getItem(position))
+                true
+            }
         }
     }
 
@@ -70,7 +83,7 @@ internal class FeedNotificationListAdapter(
      * @param holder   The [FeedNotificationViewHolder] which should be updated to represent
      * the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun onBindViewHolder(holder: FeedNotificationViewHolder, position: Int) {
         holder.bind(channel, getItem(position), currentLastSeenAt, notificationConfig)
@@ -83,7 +96,7 @@ internal class FeedNotificationListAdapter(
      * @param position position to query
      * @return integer value identifying the type of the view needed to represent the item at `position`.
      * @see MessageViewHolderFactory.itemViewType
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun getItemViewType(position: Int): Int {
         return MessageType.VIEW_TYPE_FEED_NOTIFICATION.value
@@ -93,7 +106,7 @@ internal class FeedNotificationListAdapter(
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun setItems(channel: FeedChannel, messageList: List<BaseMessage>, callback: OnMessageListUpdateHandler?) {
         val copiedChannel = FeedChannel.clone(channel)
@@ -141,7 +154,7 @@ internal class FeedNotificationListAdapter(
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun getItemCount(): Int {
         return messageList.size
@@ -152,7 +165,7 @@ internal class FeedNotificationListAdapter(
      *
      * @param position The position of the item within the adapter's data set.
      * @return The [BaseMessage] to retrieve the position of in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun getItem(position: Int): BaseMessage {
         return messageList[position]
@@ -162,7 +175,7 @@ internal class FeedNotificationListAdapter(
      * Returns the {@link List<BaseMessage>} in the data set held by the adapter.
      *
      * @return The {@link List<BaseMessage>} in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun getItems(): List<BaseMessage> {
         return Collections.unmodifiableList(messageList)
@@ -172,7 +185,7 @@ internal class FeedNotificationListAdapter(
      * Set the current user's last read timestamp in channel.
      *
      * @param lastSeenAt the current user's last read timestamp in channel.
-     * since 3.5.0
+     * @since 3.5.0
      */
     @Synchronized
     fun updateLastSeenAt(lastSeenAt: Long) {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/sb_size_16"
+    android:paddingRight="@dimen/sb_size_16"
+    android:paddingTop="@dimen/sb_size_15"
+    android:background="@drawable/selector_rectangle_light"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:layout_width="@dimen/sb_size_32"
+        android:layout_height="@dimen/sb_size_32"
+        android:src="@drawable/icon_feed_channel"
+        android:layout_marginTop="@dimen/sb_size_5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/sb_size_48"
+        />
+
+    <TextView
+        android:id="@+id/tvChannelKey"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="akdaflj"
+        style="@style/SendbirdH2OnLight01"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tvChannelUrl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="akdaflj"
+        style="@style/SendbirdBody2OnLight03"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvChannelKey"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/sb_size_1"
+        android:layout_marginTop="@dimen/sb_size_15"
+        android:background="@color/onlight_04"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvChannelUrl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

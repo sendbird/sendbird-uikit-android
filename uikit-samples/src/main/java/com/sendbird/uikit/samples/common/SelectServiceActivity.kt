@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.sendbird.android.SendbirdChat
 import com.sendbird.uikit.BuildConfig
 import com.sendbird.uikit.samples.R
+import com.sendbird.uikit.samples.aichatbot.AiChatBotLoginActivity
 import com.sendbird.uikit.samples.common.consts.SampleType
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.databinding.ActivitySelectServiceBinding
@@ -36,7 +37,7 @@ class SelectServiceActivity : AppCompatActivity() {
             aiChatBotSampleButton.setOnClickListener {
                 if (enableAiChatBotSample) {
                     PreferenceUtils.selectedSampleType = SampleType.AiChatBot
-                    startActivity(Intent(this@SelectServiceActivity, LoginActivity::class.java))
+                    startActivity(Intent(this@SelectServiceActivity, AiChatBotLoginActivity::class.java))
                     finish()
                 } else {
                     showSampleNotSupported("https://github.com/sendbird/sendbird-uikit-android/tree/main/uikit-samples/src/main/java/com/sendbird/uikit/samples/aichatbot/README.md")

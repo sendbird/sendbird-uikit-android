@@ -1020,6 +1020,22 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
     }
 
     /**
+     * Enables or disables the input view with hint text.
+     * If the user's status is not allowed to send messages, the enable value cannot be changed.
+     *
+     * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+     * @param hintText The hint text to be displayed
+     * @return <code>true</code> if the enable setting is reflected, <code>false</code> otherwise
+     * since 3.17.0
+     */
+    public boolean tryToChangeEnableInputView(boolean enabled, @NonNull String hintText) {
+        Logger.d(">> OpenChannelChannelFragment::tryToChangeEnableInputView(%s, %s)", enabled, hintText);
+        final OpenChannel channel = getViewModel().getChannel();
+        if (channel == null) return false;
+        return getModule().getMessageInputComponent().tryToChangeEnableStatus(channel, enabled, hintText);
+    }
+
+    /**
      * This is a Builder that is able to create the OpenChannel fragment.
      * The builder provides options how the channel is showing and working. Also you can set the event handler what you want to override.
      *

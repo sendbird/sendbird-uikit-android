@@ -19,6 +19,8 @@ import com.sendbird.android.params.MessageListParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler;
 import com.sendbird.uikit.internal.extensions.NotificationExtensionsKt;
 import com.sendbird.uikit.internal.ui.notifications.ChatNotificationChannelModule;
@@ -37,6 +39,10 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
 
     @Nullable
     private OnNotificationTemplateActionHandler actionHandler;
+    @Nullable
+    private OnItemClickListener<BaseMessage> itemClickListener;
+    @Nullable
+    private OnItemLongClickListener<BaseMessage> itemLongClickListener;
     @Nullable
     private MessageListParams params;
 
@@ -124,6 +130,8 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
         Logger.d(">> ChatNotificationChannelFragment::onBindChatNotificationListComponent()");
         listComponent.setOnMessageTemplateActionHandler(actionHandler != null ? actionHandler : this::handleAction);
         listComponent.setOnTooltipClickListener(v -> listComponent.scrollToFirst());
+        listComponent.setOnItemClickListener(this::onItemClicked);
+        listComponent.setOnItemLongClickListener(this::onItemLongClicked);
 
         viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), listComponent::notifyChannelChanged);
         viewModel.getNotificationList().observeAlways(getViewLifecycleOwner(), notificationData -> {
@@ -264,6 +272,34 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
         return args.getString(StringSet.KEY_CHANNEL_URL, "");
     }
 
+    /**
+     * Called when the item of the notification message is clicked.
+     *
+     * @param view     The View clicked.
+     * @param position The position clicked.
+     * @param message  The message that the clicked item displays
+     * since 3.17.0
+     */
+    protected void onItemClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
+        if (itemClickListener != null) {
+            itemClickListener.onItemClick(view, position, message);
+        }
+    }
+
+    /**
+     * Called when the item of the notification message is long-clicked.
+     *
+     * @param view     The View long-clicked.
+     * @param position The position long-clicked.
+     * @param message  The message that the long-clicked item displays
+     * since 3.17.0
+     */
+    protected void onItemLongClicked(@NonNull View view, int position, @NonNull BaseMessage message) {
+        if (itemLongClickListener != null) {
+            itemLongClickListener.onItemLongClick(view, position, message);
+        }
+    }
+
     public static class Builder {
         @NonNull
         private final Bundle bundle;
@@ -273,6 +309,11 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
         private OnNotificationTemplateActionHandler actionHandler;
         @Nullable
         private MessageListParams params;
+
+        @Nullable
+        private OnItemClickListener<BaseMessage> itemClickListener;
+        @Nullable
+        private OnItemLongClickListener<BaseMessage> itemLongClickListener;
 
         /**
          * Constructor
@@ -445,6 +486,32 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
         }
 
         /**
+         * Sets the click listener on the item of the notification message.
+         *
+         * @param itemClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.17.0
+         */
+        @NonNull
+        public Builder setOnItemClickListener(@NonNull OnItemClickListener<BaseMessage> itemClickListener) {
+            this.itemClickListener = itemClickListener;
+            return this;
+        }
+
+        /**
+         * Sets the long click listener on the item of the notification message.
+         *
+         * @param itemLongClickListener The callback that will run.
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.17.0
+         */
+        @NonNull
+        public Builder setOnItemLongClickListener(@NonNull OnItemLongClickListener<BaseMessage> itemLongClickListener) {
+            this.itemLongClickListener = itemLongClickListener;
+            return this;
+        }
+
+        /**
          * Creates an {@link ChatNotificationChannelFragment} with the arguments supplied to this
          * builder.
          *
@@ -457,6 +524,8 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
             fragment.setArguments(bundle);
             fragment.params = params;
             fragment.actionHandler = actionHandler;
+            fragment.itemClickListener = itemClickListener;
+            fragment.itemLongClickListener = itemLongClickListener;
             return fragment;
         }
     }

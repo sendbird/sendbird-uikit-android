@@ -302,11 +302,6 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
                 ((MessageThreadInputComponent) inputComponent).notifyParentMessageUpdated(channel, parentMessage);
             }
         });
-        viewModel.getStatusFrame().observe(getViewLifecycleOwner(), status -> {
-            if (inputComponent instanceof MessageThreadInputComponent) {
-                ((MessageThreadInputComponent) inputComponent).notifyStatusUpdated(channel, status);
-            }
-        });
 
         inputComponent.setOnInputLeftButtonClickListener(inputLeftButtonClickListener != null ? inputLeftButtonClickListener : v -> showMediaSelectDialog());
         inputComponent.setOnInputRightButtonClickListener(inputRightButtonClickListener != null ? inputRightButtonClickListener : this::onInputRightButtonClicked);

@@ -35,6 +35,7 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.consts.SuggestedRepliesFor;
 import com.sendbird.uikit.consts.TypingIndicatorType;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.internal.contracts.MessageCollectionContract;
@@ -43,9 +44,9 @@ import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
 import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.model.SuggestedRepliesMessage;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
@@ -552,6 +553,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         // The reason why updates message template status here instead of buildMessageList(),
         // it's difficult for customers to handle message template values by themselves when they override the `buildMessageList()` for their message list customization.
         processMessageTemplate(messages, traceName);
+        markMessagesAsShouldShowSuggestedReplies(cachedMessages.toList());
         final List<BaseMessage> finalMessageList = buildMessageList();
 
         if (finalMessageList.size() == 0) {
@@ -623,11 +625,6 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             copiedList.addAll(0, pendingMessages);
             copiedList.addAll(0, failedMessages);
 
-            SuggestedRepliesMessage suggestedRepliesMessage = createSuggestedRepliesMessage();
-            if (suggestedRepliesMessage != null) {
-                copiedList.add(0, suggestedRepliesMessage);
-            }
-
             TypingIndicatorMessage typingIndicatorMessage = createTypingIndicatorMessage();
             if (typingIndicatorMessage != null) {
                 copiedList.add(0, typingIndicatorMessage);
@@ -646,26 +643,41 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         }
     }
 
-    @Nullable
-    private SuggestedRepliesMessage createSuggestedRepliesMessage() {
-        if (!channelConfig.getEnableSuggestedReplies()) return null;
-        if (hasNext()) return null;
+    private void markMessagesAsShouldShowSuggestedReplies(List<BaseMessage> messages) {
+        if (messages.isEmpty()) return;
+        if (!channelConfig.getEnableSuggestedReplies() || hasNext()) return;
 
-        if (collection != null) {
-            List<BaseMessage> pendingMessages = collection.getPendingMessages();
-            List<BaseMessage> failedMessages = collection.getFailedMessages();
-            if (!pendingMessages.isEmpty() || !failedMessages.isEmpty()) return null;
-        }
-
-        GroupChannel groupChannel = channel;
-        if (groupChannel != null) {
-            BaseMessage lastMessage = groupChannel.getLastMessage();
-            if (lastMessage != null && !lastMessage.getSuggestedReplies().isEmpty()) {
-                return new SuggestedRepliesMessage(lastMessage);
+        // reset
+        for (BaseMessage message : messages) {
+            boolean shouldShowSuggestedReplies = MessageExtensionsKt.getShouldShowSuggestedReplies(message);
+            if (shouldShowSuggestedReplies) {
+                MessageExtensionsKt.setShouldShowSuggestedReplies(message, false);
+                cachedMessages.update(message);
             }
         }
 
-        return null;
+        // find messages that have suggested replies
+        SuggestedRepliesFor suggestedRepliesFor = channelConfig.getSuggestedRepliesFor();
+        if (suggestedRepliesFor == SuggestedRepliesFor.LAST_MESSAGE_ONLY) {
+            if (collection != null) {
+                List<BaseMessage> pendingMessages = collection.getPendingMessages();
+                List<BaseMessage> failedMessages = collection.getFailedMessages();
+                if (!pendingMessages.isEmpty() || !failedMessages.isEmpty()) return;
+            }
+
+            BaseMessage lastMessage = messages.get(0);
+            if (lastMessage != null && !lastMessage.getSuggestedReplies().isEmpty()) {
+                MessageExtensionsKt.setShouldShowSuggestedReplies(lastMessage, true);
+                cachedMessages.update(lastMessage);
+            }
+        } else if (suggestedRepliesFor == SuggestedRepliesFor.ALL_MESSAGES) {
+            for (BaseMessage message : messages) {
+                if (!message.getSuggestedReplies().isEmpty()) {
+                    MessageExtensionsKt.setShouldShowSuggestedReplies(message, true);
+                    cachedMessages.update(message);
+                }
+            }
+        }
     }
 
     @Nullable

@@ -21,7 +21,7 @@ import com.sendbird.uikit.modules.BaseModule
  * A module for notification channel.
  * All composed components are created when the module is created. After than those components can replace.
  *
- * since 3.5.0
+ * @since 3.5.0
  */
 @JvmSuppressWildcards
 internal class FeedNotificationChannelModule @JvmOverloads constructor(
@@ -34,7 +34,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * Returns the notification channel header component.
      *
      * @return The channel header component of this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var headerComponent: FeedNotificationHeaderComponent
         private set
@@ -43,7 +43,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * Sets a custom notification list component.
      *
      * @param component The notification list component to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var notificationListComponent: FeedNotificationListComponent
         private set
@@ -52,7 +52,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * Returns the status component.
      *
      * @return The status component of this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var statusComponent: NotificationStatusComponent
         private set
@@ -61,7 +61,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * Returns the handler for loading dialog.
      *
      * @return Loading dialog handler to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     var loadingDialogHandler: LoadingDialogHandler? = null
         private set
@@ -118,7 +118,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * Sets the handler for the loading dialog.
      *
      * @param loadingDialogHandler Loading dialog handler to be used in this module
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun setOnLoadingDialogHandler(loadingDialogHandler: LoadingDialogHandler?) {
         this.loadingDialogHandler = loadingDialogHandler
@@ -128,7 +128,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
      * It will be called when the loading dialog needs displaying.
      *
      * @return True if the callback has consumed the event, false otherwise.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun shouldShowLoadingDialog(): Boolean {
         return loadingDialogHandler?.shouldShowLoadingDialog() ?: false
@@ -138,7 +138,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
     /**
      * It will be called when the loading dialog needs dismissing.
      *
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun shouldDismissLoadingDialog() {
         loadingDialogHandler?.shouldDismissLoadingDialog()
@@ -157,7 +157,7 @@ internal class FeedNotificationChannelModule @JvmOverloads constructor(
          *
          * @param context    The `Context` this module is currently associated with
          * @param themeResId The theme resource ID to be applied to this module
-         * since 3.5.0
+         * @since 3.5.0
          */
         constructor(context: Context, @StyleRes themeResId: Int) : super(
             context,

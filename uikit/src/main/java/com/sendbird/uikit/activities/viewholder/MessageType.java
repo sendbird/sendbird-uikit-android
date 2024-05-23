@@ -100,13 +100,13 @@ public enum MessageType {
      */
     VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER(18),
 
-    /**
-     * Type of suggested replies.
-     *
-     * since 3.10.0
-     */
-    VIEW_TYPE_SUGGESTED_REPLIES(19),
-
+//    Remove VIEW_TYPE_SUGGESTED_REPLIES because it is moved into message view and there are currently no customers using it.
+//    /**
+//     * Type of suggested replies.
+//     *
+//     * since 3.10.0
+//     */
+//    VIEW_TYPE_SUGGESTED_REPLIES(19),
     /**
      * Type of forms message.
      *

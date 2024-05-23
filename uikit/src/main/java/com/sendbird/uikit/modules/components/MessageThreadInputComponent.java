@@ -1,16 +1,17 @@
 package com.sendbird.uikit.modules.components;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
-import com.sendbird.android.channel.Role;
 import com.sendbird.android.message.BaseMessage;
-import com.sendbird.android.user.MutedState;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
-import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
@@ -22,8 +23,18 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 public class MessageThreadInputComponent extends MessageInputComponent {
     @NonNull
     private BaseMessage parentMessage;
+
     @NonNull
-    private StatusFrameView.Status status = StatusFrameView.Status.NONE;
+    @Override
+    public View onCreateView(@NonNull Context context, @NonNull LayoutInflater inflater, @NonNull ViewGroup parent, @Nullable Bundle args) {
+        // set initial hint text
+        // The reason why initialize here is that making hint text needs Context and parentMessage.
+        final String defaultHintText = parentMessage.getThreadInfo().getReplyCount() > 0 ?
+            context.getString(R.string.sb_text_channel_input_reply_to_thread_hint) :
+            context.getString(R.string.sb_text_channel_input_reply_in_thread_hint);
+        getParams().setInputHint(defaultHintText);
+        return super.onCreateView(context, inflater, parent, args);
+    }
 
     /**
      * Constructor
@@ -69,42 +80,28 @@ public class MessageThreadInputComponent extends MessageInputComponent {
      * @param channel The latest group channel
      * @param status The latest status
      * since 3.3.0
+     *
+     * @deprecated 3.17.0
      */
+    @Deprecated
     public void notifyStatusUpdated(@NonNull GroupChannel channel, @NonNull StatusFrameView.Status status) {
-        if (!(getRootView() instanceof MessageInputView)) return;
-        final MessageInputView inputView = (MessageInputView) this.getRootView();
-
-        this.status = status;
-        setHintMessageTextInternal(inputView, channel);
+        // Do nothing any more since 3.17.0
     }
 
     @Override
-    void setHintMessageTextInternal(@NonNull MessageInputView inputView, @NonNull GroupChannel channel) {
-        boolean isOperator = channel.getMyRole() == Role.OPERATOR;
-        boolean isMuted = channel.getMyMutedState() == MutedState.MUTED;
-        boolean isFrozen = channel.isFrozen() && !isOperator;
-        boolean shouldDisableInput = ChannelExtensionsKt.shouldDisableInput(channel, getParams().getChannelConfig());
-        inputView.setEnabled(!isMuted && !isFrozen && !shouldDisableInput &&
-            status != StatusFrameView.Status.ERROR &&
-            status != StatusFrameView.Status.CONNECTION_ERROR);
-
+    String getHintText(@NonNull MessageInputView inputView, boolean isMuted, boolean isFrozen) {
         final MessageInputView.Mode mode = inputView.getInputMode();
         // set hint
         final Context context = inputView.getContext();
-        String hintText;
+        String hintText = getParams().getHintText() != null ? getParams().getHintText() : null;
         if (isMuted) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_muted);
         } else if (isFrozen) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint_frozen);
         } else if (MessageInputView.Mode.EDIT == mode) {
             hintText = context.getString(R.string.sb_text_channel_input_text_hint);
-        } else if (parentMessage.getThreadInfo().getReplyCount() > 0) {
-            hintText = context.getString(R.string.sb_text_channel_input_reply_to_thread_hint);
-        } else {
-            hintText = context.getString(R.string.sb_text_channel_input_reply_in_thread_hint);
         }
-        Logger.dev("++ hint text : " + hintText);
-        inputView.setInputTextHint(hintText);
+        return hintText;
     }
 
     /**

@@ -243,7 +243,11 @@ class MessageInputView @JvmOverloads constructor(
     }
 
     fun setInputTextHint(hint: CharSequence?) {
-        binding.etInputText.hint = hint
+        hint?.let { binding.etInputText.hint = it }
+    }
+
+    fun getInputTextHint(): String {
+        return binding.etInputText.hint.toString()
     }
 
     fun applyTextUIConfig(textUIConfig: TextUIConfig) {

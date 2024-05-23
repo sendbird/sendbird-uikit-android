@@ -43,6 +43,10 @@ import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.ChannelListViewModel;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Fragment displaying the list of channels.
  */
@@ -181,31 +185,71 @@ public class ChannelListFragment extends BaseModuleFragment<ChannelListModule, C
         }
     }
 
-    private void showListContextMenu(@NonNull GroupChannel channel) {
-        if (channel.isChatNotification()) return;
+    /**
+     * Returns the title of the context menu.
+     *
+     * @param channel a channel to make the context menu
+     * @return the title of the context menu
+     * since 3.17.0
+     */
+    @NonNull
+    protected String getActionContextMenuTitle(@NonNull GroupChannel channel) {
+        return ChannelUtils.makeTitleText(requireContext(), channel);
+    }
+
+    /**
+     * Makes the context menu for the channel.
+     *
+     * @param channel a channel to make the context menu
+     * @return a list of {@link DialogListItem} to show the context menu
+     * since 3.17.0
+     */
+    @NonNull
+    protected List<DialogListItem> makeChannelContextMenu(@NonNull GroupChannel channel) {
+        if (channel.isChatNotification()) return Collections.emptyList();
         DialogListItem pushOnOff = new DialogListItem(ChannelUtils.isChannelPushOff(channel) ? R.string.sb_text_channel_list_push_on : R.string.sb_text_channel_list_push_off);
         DialogListItem leaveChannel = new DialogListItem(R.string.sb_text_channel_list_leave);
-        DialogListItem[] items = {pushOnOff, leaveChannel};
+        return Arrays.asList(pushOnOff, leaveChannel);
+    }
 
-        if (isFragmentAlive()) {
+    /**
+     * It will be called when the message context menu was clicked.
+     *
+     * @param channel  A clicked channel.
+     * @param view     The view that was clicked.
+     * @param position The position that was clicked.
+     * @param item     {@link DialogListItem} that was clicked.
+     * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
+     * since 3.17.0
+     */
+    protected boolean onChannelContextMenuItemClicked(@NonNull GroupChannel channel, @NonNull View view, int position, @NonNull DialogListItem item) {
+        final int key = item.getKey();
+        if (key == R.string.sb_text_channel_list_leave) {
+            Logger.dev("leave channel");
+            leaveChannel(channel);
+            return true;
+        } else if (key == R.string.sb_text_channel_list_push_on || key == R.string.sb_text_channel_list_push_off) {
+            Logger.dev("change push notifications");
+            final boolean enable = ChannelUtils.isChannelPushOff(channel);
+            getViewModel().setPushNotification(channel, ChannelUtils.isChannelPushOff(channel), e -> {
+                if (e != null) {
+                    int message = enable ? R.string.sb_text_error_push_notification_on : R.string.sb_text_error_push_notification_off;
+                    toastError(message);
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    private void showListContextMenu(@NonNull GroupChannel channel) {
+        final List<DialogListItem> items = makeChannelContextMenu(channel);
+        final int size = items.size();
+
+        if (isFragmentAlive() && size > 0) {
             DialogUtils.showListDialog(requireContext(),
-                ChannelUtils.makeTitleText(requireContext(), channel),
-                items, (v, p, item) -> {
-                    final int key = item.getKey();
-                    if (key == R.string.sb_text_channel_list_leave) {
-                        Logger.dev("leave channel");
-                        leaveChannel(channel);
-                    } else {
-                        Logger.dev("change push notifications");
-                        final boolean enable = ChannelUtils.isChannelPushOff(channel);
-                        getViewModel().setPushNotification(channel, ChannelUtils.isChannelPushOff(channel), e -> {
-                            if (e != null) {
-                                int message = enable ? R.string.sb_text_error_push_notification_on : R.string.sb_text_error_push_notification_off;
-                                toastError(message);
-                            }
-                        });
-                    }
-                });
+                getActionContextMenuTitle(channel),
+                items.toArray(new DialogListItem[size]), (v, p, item) -> onChannelContextMenuItemClicked(channel, v, p, item));
         }
     }
 

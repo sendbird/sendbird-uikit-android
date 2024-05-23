@@ -2,6 +2,8 @@ package com.sendbird.uikit.internal.model.serializer
 
 import android.graphics.Color
 import com.sendbird.uikit.consts.ReplyType
+import com.sendbird.uikit.consts.SuggestedRepliesDirection
+import com.sendbird.uikit.consts.SuggestedRepliesFor
 import com.sendbird.uikit.consts.ThreadReplySelectType
 import com.sendbird.uikit.internal.model.notifications.CSVColor
 import kotlinx.serialization.KSerializer
@@ -65,6 +67,32 @@ internal object ReplyTypeAsStringSerializer : KSerializer<ReplyType> {
     }
 
     override fun serialize(encoder: Encoder, value: ReplyType) {
+        encoder.encodeString(value.value)
+    }
+}
+
+internal object SuggestedRepliesForAsStringSerializer : KSerializer<SuggestedRepliesFor> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SuggestedRepliesFor enum class", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): SuggestedRepliesFor {
+        val decoded = decoder.decodeString()
+        return SuggestedRepliesFor.from(decoded)
+    }
+
+    override fun serialize(encoder: Encoder, value: SuggestedRepliesFor) {
+        encoder.encodeString(value.value)
+    }
+}
+
+internal object SuggestedRepliesDirectionAsStringSerializer : KSerializer<SuggestedRepliesDirection> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SuggestedRepliesDirection enum class", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): SuggestedRepliesDirection {
+        val decoded = decoder.decodeString()
+        return SuggestedRepliesDirection.from(decoded)
+    }
+
+    override fun serialize(encoder: Encoder, value: SuggestedRepliesDirection) {
         encoder.encodeString(value.value)
     }
 }

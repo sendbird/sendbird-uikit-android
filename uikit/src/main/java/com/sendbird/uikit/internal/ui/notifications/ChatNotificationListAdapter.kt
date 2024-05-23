@@ -15,6 +15,8 @@ import com.sendbird.uikit.activities.viewholder.MessageType
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory
 import com.sendbird.uikit.databinding.SbViewChatNotificationBinding
 import com.sendbird.uikit.databinding.SbViewTimeLineMessageBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.interfaces.OnItemLongClickListener
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.model.NotificationDiffCallback
@@ -36,6 +38,8 @@ internal class ChatNotificationListAdapter(
     // the worker must be a single thread.
     private val differWorker by lazy { Executors.newSingleThreadExecutor() }
     var onMessageTemplateActionHandler: OnNotificationTemplateActionHandler? = null
+    var onItemClickListener: OnItemClickListener<BaseMessage>? = null
+    var onItemLongClickListener: OnItemLongClickListener<BaseMessage>? = null
 
     /**
      * Called when RecyclerView needs a new [NotificationViewHolder] of the given type to represent
@@ -47,7 +51,7 @@ internal class ChatNotificationListAdapter(
      * @return A new [NotificationViewHolder] that holds a View of the given view type.
      * @see .getItemViewType
      * @see .onBindViewHolder
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val values = TypedValue()
@@ -59,6 +63,15 @@ internal class ChatNotificationListAdapter(
         }
         return ChatNotificationViewHolder(SbViewChatNotificationBinding.inflate(inflater, parent, false)).apply {
             binding.chatNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
+            binding.chatNotification.binding.contentPanel.setOnClickListener {
+                val position = this.bindingAdapterPosition
+                onItemClickListener?.onItemClick(it, position, getItem(position))
+            }
+            binding.chatNotification.binding.contentPanel.setOnLongClickListener {
+                val position = this.bindingAdapterPosition
+                onItemLongClickListener?.onItemLongClick(it, position, getItem(position))
+                true
+            }
         }
     }
 
@@ -70,7 +83,7 @@ internal class ChatNotificationListAdapter(
      * @param holder   The [NotificationViewHolder] which should be updated to represent
      * the contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val message = getItem(position)
@@ -84,7 +97,7 @@ internal class ChatNotificationListAdapter(
      * @param position position to query
      * @return integer value identifying the type of the view needed to represent the item at `position`.
      * @see MessageViewHolderFactory.getViewType
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position) is TimelineMessage) {
@@ -98,7 +111,7 @@ internal class ChatNotificationListAdapter(
      * Sets the {@link List<BaseMessage>} to be displayed.
      *
      * @param messageList list to be displayed
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun setItems(channel: GroupChannel, messageList: List<BaseMessage>, callback: OnMessageListUpdateHandler?) {
         val copiedChannel = GroupChannel.clone(channel)
@@ -129,7 +142,7 @@ internal class ChatNotificationListAdapter(
      * Returns the total number of items in the data set held by the adapter.
      *
      * @return The total number of items in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     override fun getItemCount(): Int {
         return messageList.size
@@ -140,7 +153,7 @@ internal class ChatNotificationListAdapter(
      *
      * @param position The position of the item within the adapter's data set.
      * @return The [BaseMessage] to retrieve the position of in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun getItem(position: Int): BaseMessage {
         return messageList[position]
@@ -150,7 +163,7 @@ internal class ChatNotificationListAdapter(
      * Returns the {@link List<BaseMessage>} in the data set held by the adapter.
      *
      * @return The {@link List<BaseMessage>} in this adapter.
-     * since 3.5.0
+     * @since 3.5.0
      */
     fun getItems(): List<BaseMessage> {
         return Collections.unmodifiableList(messageList)

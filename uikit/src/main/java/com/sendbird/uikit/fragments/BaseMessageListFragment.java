@@ -1120,6 +1120,22 @@ abstract public class BaseMessageListFragment<
     }
 
     /**
+     * Enables or disables the input view with hint text.
+     * If the user's status is not allowed to send messages, the enable value cannot be changed.
+     *
+     * @param enabled <code>true</code> if the input view is enabled, <code>false</code> otherwise
+     * @param hintText The hint text to be displayed
+     * @return <code>true</code> if the enable setting is reflected, <code>false</code> otherwise
+     * since 3.17.0
+     */
+    public boolean tryToChangeEnableInputView(boolean enabled, @NonNull String hintText) {
+        Logger.d(">> BaseMessageListFragment::tryToChangeEnableInputView(%s, %s)", enabled, hintText);
+        final GroupChannel channel = getViewModel().getChannel();
+        if (channel == null) return false;
+        return getModule().getMessageInputComponent().tryToChangeEnableStatus(channel, enabled, hintText);
+    }
+
+    /**
      * Returns the URL of the channel with the required data to use this fragment.
      *
      * @return The URL of a channel this fragment is currently associated with

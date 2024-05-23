@@ -5,6 +5,7 @@ import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.ThemeHomeActivity
 import com.sendbird.uikit.samples.common.extensions.logout
+import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 import com.sendbird.uikit.samples.databinding.ActivityAiChatbotHomeBinding
 import com.sendbird.uikit.utils.ContextUtils
@@ -35,7 +36,7 @@ class AIChatBotHomeActivity : ThemeHomeActivity() {
                 ContextUtils.toastError(this, "Connection must be made. ${e.message}")
                 return@connect
             }
-            val botId = "client_bot"
+            val botId = PreferenceUtils.botId
             SendbirdUIKit.startChatWithAiBot(this, botId, true) { error ->
                 if (error != null) {
                     ContextUtils.toastError(this, "Failed to start chat with ai bot. ${error.message}")

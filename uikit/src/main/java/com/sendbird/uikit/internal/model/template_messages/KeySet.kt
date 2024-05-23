@@ -114,6 +114,9 @@ internal object KeySet {
     const val camera = "camera"
     const val gallery = "gallery"
     const val label = "label"
+    const val show_suggested_replies_for = "show_suggested_replies_for"
+    const val enable_markdown_for_user_message = "enable_markdown_for_user_message"
+    const val suggested_replies_direction = "suggested_replies_direction"
 
     // analytics
     const val noti_stats = "noti:stats"

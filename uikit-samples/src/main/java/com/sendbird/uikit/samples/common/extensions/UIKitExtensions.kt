@@ -14,7 +14,6 @@ import com.sendbird.android.handler.ConnectHandler
 import com.sendbird.android.handler.PushRequestCompleteHandler
 import com.sendbird.android.push.SendbirdPushHelper
 import com.sendbird.uikit.SendbirdUIKit
-import com.sendbird.uikit.activities.FeedNotificationChannelActivity
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.providers.AdapterProviders
 import com.sendbird.uikit.providers.FragmentProviders
@@ -22,6 +21,7 @@ import com.sendbird.uikit.providers.ModuleProviders
 import com.sendbird.uikit.providers.ViewModelProviders
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.aichatbot.AIChatBotHomeActivity
+import com.sendbird.uikit.samples.aichatbot.AiChatBotLoginActivity
 import com.sendbird.uikit.samples.basic.BasicHomeActivity
 import com.sendbird.uikit.samples.basic.GroupChannelMainActivity
 import com.sendbird.uikit.samples.common.LoginActivity
@@ -31,6 +31,7 @@ import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 import com.sendbird.uikit.samples.customization.CustomizationHomeActivity
+import com.sendbird.uikit.samples.notification.FeedChannelListMainActivity
 import com.sendbird.uikit.samples.notification.NotificationHomeActivity
 import com.sendbird.uikit.samples.notification.NotificationLoginActivity
 import com.sendbird.uikit.samples.notification.NotificationMainActivity
@@ -42,7 +43,7 @@ internal fun SampleType?.getLogoDrawable(context: Context): Drawable? {
         SampleType.Basic -> R.drawable.logo_sendbird
         SampleType.Notification -> R.drawable.logo_business_messaging
         SampleType.Customization -> R.drawable.logo_sendbird
-        SampleType.AiChatBot -> R.drawable.logo_sendbird
+        SampleType.AiChatBot -> R.drawable.logo_ai_chatbot
     }.let { ContextCompat.getDrawable(context, it) }
 }
 
@@ -75,7 +76,7 @@ internal fun SampleType?.startingIntent(context: Context): Intent {
             if (userId.isNotEmpty()) {
                 Intent(context, AIChatBotHomeActivity::class.java)
             } else {
-                Intent(context, LoginActivity::class.java)
+                Intent(context, AiChatBotLoginActivity::class.java)
             }
         }
     }
@@ -100,8 +101,11 @@ internal fun SampleType?.newRedirectToChannelIntent(
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
             } else {
-                FeedNotificationChannelActivity.newIntent(context, channelUrl).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                FeedChannelListMainActivity.newRedirectToChannelIntent(
+                    context,
+                    channelUrl,
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
             }
         }

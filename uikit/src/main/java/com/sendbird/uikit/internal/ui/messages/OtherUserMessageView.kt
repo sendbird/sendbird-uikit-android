@@ -13,10 +13,12 @@ import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.consts.ReplyType
+import com.sendbird.uikit.consts.SuggestedRepliesDirection
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
+import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.model.MessageListUIParams
@@ -31,7 +33,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = R.attr.sb_widget_other_user_message
 ) : GroupChannelMessageView(context, attrs, defStyle) {
-    override val binding: SbViewOtherUserMessageComponentBinding
+    override val binding: SbViewOtherUserMessageComponentBinding = SbViewOtherUserMessageComponentBinding.inflate(LayoutInflater.from(context), this, true)
     override val layout: View
         get() = binding.root
 
@@ -43,11 +45,19 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
     private val nicknameAppearance: Int
     var mentionClickListener: OnItemClickListener<User>? = null
     var onFeedbackRatingClickListener: OnFeedbackRatingClickListener? = null
+    var onSuggestedRepliesClickListener: OnItemClickListener<String>? = null
+
+    private val horizontalSuggestedRepliesViews: SuggestedRepliesView? by lazy {
+        binding.horizontalSuggestedRepliesViewStub.inflate() as? SuggestedRepliesView
+    }
+
+    private val verticalSuggestedRepliesView: SuggestedRepliesView? by lazy {
+        binding.verticalSuggestedRepliesViewStub.inflate() as? SuggestedRepliesView
+    }
 
     init {
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0)
         try {
-            binding = SbViewOtherUserMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true)
             sentAtAppearance = a.getResourceId(
                 R.styleable.MessageView_User_sb_message_time_text_appearance,
                 R.style.SendbirdCaption4OnLight03
@@ -129,6 +139,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
         val enableMention = params.channelConfig.enableMention
         val enableReactions =
             message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
+        val enableMarkdown = params.channelConfig.enableMarkdownForUserMessage
         val showProfile =
             messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL
         val showNickname =
@@ -166,6 +177,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
             message,
             messageUIConfig,
             enableMention,
+            enableMarkdown,
             mentionedCurrentUserUIConfig
         ) { view, position, user ->
             mentionClickListener?.onItemClick(view, position, user)
@@ -199,6 +211,23 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
 
         binding.feedback.drawFeedback(message, shouldHideFeedback) { _, rating ->
             onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+        }
+
+        if (message.shouldShowSuggestedReplies) {
+            val suggestedRepliesListener = OnItemClickListener<String> { v, position, data ->
+                onSuggestedRepliesClickListener?.onItemClick(v, position, data)
+            }
+
+            when (val direction = params.channelConfig.suggestedRepliesDirection) {
+                SuggestedRepliesDirection.VERTICAL -> {
+                    verticalSuggestedRepliesView?.drawSuggestedReplies(message, direction)
+                    verticalSuggestedRepliesView?.onItemClickListener = suggestedRepliesListener
+                }
+                SuggestedRepliesDirection.HORIZONTAL -> {
+                    horizontalSuggestedRepliesViews?.drawSuggestedReplies(message, direction)
+                    horizontalSuggestedRepliesViews?.onItemClickListener = suggestedRepliesListener
+                }
+            }
         }
     }
 }
