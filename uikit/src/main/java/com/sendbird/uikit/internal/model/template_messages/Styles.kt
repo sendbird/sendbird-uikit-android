@@ -2,7 +2,6 @@ package com.sendbird.uikit.internal.model.template_messages
 
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -60,13 +59,9 @@ internal data class ViewStyle(
     val padding: Padding? = null
 ) {
     fun apply(view: View, useRipple: Boolean = false): ViewStyle {
-        val resources = view.context.resources
         backgroundImageUrl?.let { view.loadToBackground(it, radius ?: 0, useRipple) }
         if (backgroundColor != null || (borderWidth != null && borderWidth > 0)) {
-            view.background = GradientDrawable().apply {
-                backgroundColor?.let { setColor(it) }
-                cornerRadius = resources.intToDp(radius ?: 0).toFloat()
-            }
+            view.setBackgroundColor(backgroundColor ?: Color.TRANSPARENT)
         }
 
         margin?.apply(view)

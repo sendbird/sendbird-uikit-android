@@ -46,5 +46,11 @@ internal class BaseSharedPreference(
 
     fun getLong(key: String): Long = preferences.getLong(key, 0L)
 
+    fun putInt(key: String, value: Int) {
+        preferences.edit().putInt(key, value).apply()
+    }
+
+    fun getInt(key: String): Int = preferences.getInt(key, 0)
+
     fun contains(key: String): Boolean = preferences.contains(key)
 }

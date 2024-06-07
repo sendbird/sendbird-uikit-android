@@ -170,7 +170,9 @@
                 android:hint="@string/text_hint_user_id"
                 android:maxLines="1"
                 android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                android:textSize="@dimen/sb_text_size_16"/>
+                android:textSize="@dimen/sb_text_size_16">
+                <requestFocus />
+            </com.google.android.material.textfield.TextInputEditText>
 
         </com.google.android.material.textfield.TextInputLayout>
 

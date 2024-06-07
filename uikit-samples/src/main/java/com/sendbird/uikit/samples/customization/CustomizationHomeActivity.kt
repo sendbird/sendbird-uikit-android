@@ -29,6 +29,8 @@ import com.sendbird.uikit.samples.customization.global.showAdapterProvidersSampl
 import com.sendbird.uikit.samples.customization.global.showFragmentProvidersSample
 import com.sendbird.uikit.samples.customization.global.showModuleProvidersSample
 import com.sendbird.uikit.samples.customization.global.showViewModelProvidersSample
+import com.sendbird.uikit.samples.customization.moderation.showModerationGroupChannelSample
+import com.sendbird.uikit.samples.customization.moderation.showModerationOpenChannelSample
 import com.sendbird.uikit.samples.customization.userlist.showCustomMemberContextMenuSample
 import com.sendbird.uikit.samples.customization.userlist.showUserItemDataSourceSample
 import com.sendbird.uikit.samples.customization.userlist.showUserItemFilteringSample
@@ -177,7 +179,22 @@ class CustomizationHomeActivity : ComponentActivity() {
         CustomizationItem(
             title = getString(R.string.text_title_custom_member_context_menu),
             description = getString(R.string.text_desc_custom_member_context_menu),
-        ) { showCustomMemberContextMenuSample(this) }
+        ) { showCustomMemberContextMenuSample(this) },
+        // endregion
+
+        // region user list customization
+        CustomizationItem(
+            isHeader = true,
+            title = getString(R.string.text_title_moderation)
+        ),
+        CustomizationItem(
+            title = getString(R.string.text_title_moderation_group_channel),
+            description = getString(R.string.text_moderation_custom_group_channel_sample),
+        ) { showModerationGroupChannelSample(activity = this) },
+        CustomizationItem(
+            title = getString(R.string.text_title_moderation_open_channel),
+            description = getString(R.string.text_moderation_custom_open_channel_sample),
+        ) { showModerationOpenChannelSample(activity = this) },
         // endregion
     )
 

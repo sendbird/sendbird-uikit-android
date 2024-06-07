@@ -2,7 +2,6 @@ package com.sendbird.uikit.internal.ui.widgets
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -30,14 +29,22 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr), ViewRoundable {
-    private lateinit var rectF: RectF
     private val path: Path = Path()
-    private var strokePaint: Paint? = null
+    private val rectF = RectF()
     override var radius: Float = 0F
     private var imageRatio: Float = 0F
     private var targetWidth: Int = 0
     private var targetHeight: Int = 0
     var viewParams: ViewParams? = null
+
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        setWillNotDraw(false)
+    }
 
     fun setSize(width: Int, height: Int) {
         if (width > 0 && height > 0) {
@@ -48,25 +55,15 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
         }
     }
 
-    init {
-        setBorder(0, Color.TRANSPARENT)
-    }
-
     override fun setRadiusIntSize(radius: Int) {
         this.radius = context.resources.intToDp(radius).toFloat()
+        invalidate()
     }
 
     final override fun setBorder(borderWidth: Int, @ColorInt borderColor: Int) {
-        if (borderWidth <= 0)
-            strokePaint = null
-        else {
-            strokePaint = Paint().apply {
-                style = Paint.Style.STROKE
-                isAntiAlias = true
-                strokeWidth = context.resources.intToDp(borderWidth).toFloat()
-                color = borderColor
-            }
-        }
+        borderPaint.color = borderColor
+        borderPaint.strokeWidth = context.resources.intToDp(borderWidth).toFloat()
+        invalidate()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -79,27 +76,27 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
         post {
             this.visibility = visibility
         }
-
-        rectF = RectF(0f, 0f, w.toFloat(), h.toFloat())
-        resetPath()
     }
 
     override fun draw(canvas: Canvas) {
-        val save = canvas.save()
-        canvas.clipPath(path)
-        super.draw(canvas)
-        strokePaint?.let {
-            val inlineWidth = it.strokeWidth
-            rectF.set(inlineWidth / 2, inlineWidth / 2, width - inlineWidth / 2, height - inlineWidth / 2)
-            canvas.drawRoundRect(rectF, radius, radius, it)
-        }
-        canvas.restoreToCount(save)
-    }
+        rectF.set(0f, 0f, width.toFloat(), height.toFloat())
 
-    private fun resetPath() {
+        // clip the imageview with round corner
         path.reset()
         path.addRoundRect(rectF, radius, radius, Path.Direction.CW)
-        path.close()
+        val save = canvas.save()
+        canvas.clipPath(path)
+
+        // draw the buffer and restore canvas settings.
+        super.draw(canvas)
+        // draw border
+        val hasBorder = borderPaint.strokeWidth > 0
+        if (hasBorder) {
+            val halfBorder: Float = borderPaint.strokeWidth / 2
+            rectF.inset(halfBorder, halfBorder)
+            canvas.drawRect(rectF, borderPaint)
+        }
+        canvas.restoreToCount(save)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

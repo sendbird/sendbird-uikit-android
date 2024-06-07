@@ -1,5 +1,7 @@
 # Changelog
-### v3.17.0 (May 23, 2024) with Chat SDK `v4.16.3`
+### v3.17.1 (Jun 7, 2024) with Chat SDK `v4.16.4`
+* Fixed an intermittent crash due to variable initialization when entering a notification channel.
+* Optimized ChatBot streaming message animation.### v3.17.0 (May 23, 2024) with Chat SDK `v4.16.3`
 * Deprecated `notifyStatusUpdated(GroupChannel, StatusFrameView)` in `MessageThreadInputComponent`
 * Added a new interface to set the enable state of the message input field
     * Added `boolean tryToChangeEnableInputView(boolean, String)` in `ChannelFragment`, `MessageThreadFragment`, `OpenChannelFragment`

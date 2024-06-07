@@ -14,7 +14,9 @@ import java.util.concurrent.atomic.AtomicReference
 
 private const val TEMPLATE_KEY_PREFIX = "SB_TEMPLATE_"
 private const val LAST_UPDATED_TEMPLATE_LIST_TOKEN = "LAST_UPDATED_TEMPLATE_LIST_AT"
+private const val TEMPLATE_COUNT = "TEMPLATE_COUNT"
 private const val PREFERENCE_FILE_NAME = "com.sendbird.notifications.templates"
+private const val MAX_CACHED_TEMPLATE_COUNT = 1000
 
 internal class NotificationTemplateRepository(context: Context) {
     private val templateCache: MutableMap<String, NotificationTemplate> = ConcurrentHashMap()
@@ -34,21 +36,34 @@ internal class NotificationTemplateRepository(context: Context) {
         }
 
     init {
+        checkCountLimit()
         preferences.loadAll({ key ->
             key.startsWith(TEMPLATE_KEY_PREFIX)
         }, { key, value ->
             templateCache[key] = NotificationTemplate.fromJson(value.toString())
-        })
+        }).also {
+            preferences.putInt(TEMPLATE_COUNT, templateCache.size)
+        }
+    }
+
+    private fun checkCountLimit() {
+        val count = preferences.getInt(TEMPLATE_COUNT)
+        Logger.d("++ cached template count = $count")
+        if (count > MAX_CACHED_TEMPLATE_COUNT) {
+            clearAll()
+        }
     }
 
     private fun getTemplateKey(key: String) = "${TEMPLATE_KEY_PREFIX}$key"
 
     @WorkerThread
+    @Synchronized
     private fun saveToCache(template: NotificationTemplate) {
         Logger.d(">> NotificationTemplateRepository::saveToCache() key=${template.templateKey}")
         val key = getTemplateKey(template.templateKey)
         templateCache[key] = template
         preferences.putString(key, template.toString())
+        preferences.putInt(TEMPLATE_COUNT, templateCache.size)
     }
 
     fun needToUpdateTemplateList(latestUpdatedToken: String?): Boolean {
@@ -89,6 +104,7 @@ internal class NotificationTemplateRepository(context: Context) {
         latch.await()
         error?.let { throw it }
         return result.get().also {
+            Logger.i("++ request response template list size=${it.templates.size}")
             it?.templates?.forEach { template ->
                 // convert list to map
                 saveToCache(template)

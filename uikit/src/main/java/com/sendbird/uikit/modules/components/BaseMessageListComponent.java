@@ -33,6 +33,7 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
@@ -60,6 +61,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     MessageRecyclerView messageRecyclerView;
     private final boolean useMessageTooltip;
     private final boolean useScrollFirstButton;
+    private final ItemAnimator itemAnimator = new ItemAnimator();
 
     @Nullable
     private LA adapter;
@@ -206,7 +208,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         recyclerView.setHasFixedSize(true);
         recyclerView.setClipToPadding(false);
         recyclerView.setThreshold(5);
-        recyclerView.setItemAnimator(new ItemAnimator());
+        recyclerView.setItemAnimator(itemAnimator);
         recyclerView.useReverseData();
         messageRecyclerView.setOnScrollFirstButtonClickListener(this::onScrollFirstButtonClicked);
         recyclerView.setOnScrollEndDetectListener(direction -> onScrollEndReaches(direction, messageRecyclerView));
@@ -483,6 +485,11 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
 
         if (params.shouldUseBanner()) {
             drawFrozenBanner(channel.isFrozen());
+        }
+        if (ChannelExtensionsKt.getContainsBot(channel)) {
+            messageRecyclerView.getRecyclerView().setItemAnimator(null);
+        } else {
+            messageRecyclerView.getRecyclerView().setItemAnimator(itemAnimator);
         }
     }
 

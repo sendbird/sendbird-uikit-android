@@ -2,7 +2,6 @@ package com.sendbird.uikit.internal.ui.widgets
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -21,28 +20,25 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr), ViewRoundable {
     private val rectF: RectF = RectF()
     private val path: Path = Path()
-    private var strokePaint: Paint? = null
     override var radius: Float = 0F
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+    }
 
-    init {
-        setBorder(0, Color.TRANSPARENT)
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        setWillNotDraw(false)
     }
 
     override fun setRadiusIntSize(radius: Int) {
         this.radius = context.resources.intToDp(radius).toFloat()
+        invalidate()
     }
 
     final override fun setBorder(borderWidth: Int, @ColorInt borderColor: Int) {
-        if (borderWidth <= 0)
-            strokePaint = null
-        else {
-            strokePaint = Paint().apply {
-                style = Paint.Style.STROKE
-                isAntiAlias = true
-                strokeWidth = context.resources.intToDp(borderWidth).toFloat()
-                color = borderColor
-            }
-        }
+        borderPaint.color = borderColor
+        borderPaint.strokeWidth = context.resources.intToDp(borderWidth).toFloat()
+        invalidate()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -57,25 +53,33 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
                 this.visibility = visibility
             }
         }
-        rectF.set(0f, 0f, w.toFloat(), h.toFloat())
-        resetPath()
     }
 
     override fun draw(canvas: Canvas) {
-        val save = canvas.save()
-        canvas.clipPath(path)
-        super.draw(canvas)
-        strokePaint?.let {
-            val inlineWidth = it.strokeWidth
-            rectF.set(inlineWidth / 2, inlineWidth / 2, width - inlineWidth / 2, height - inlineWidth / 2)
-            canvas.drawRoundRect(rectF, radius, radius, it)
+        rectF.set(0f, 0f, width.toFloat(), height.toFloat())
+        var save: Int? = null
+        if (radius > 0) {
+            path.reset()
+            path.addRoundRect(rectF, radius, radius, Path.Direction.CW)
+            save = canvas.save()
+            canvas.clipPath(path)
         }
-        canvas.restoreToCount(save)
+
+        val hasBorder = borderPaint.strokeWidth > 0
+        val halfBorder: Float = borderPaint.strokeWidth / 2
+        if (radius > 0 || hasBorder) {
+            rectF.inset(halfBorder, halfBorder)
+        }
+
+        super.draw(canvas)
+        save?.let { canvas.restoreToCount(it) }
     }
 
-    private fun resetPath() {
-        path.reset()
-        path.addRoundRect(rectF, radius, radius, Path.Direction.CW)
-        path.close()
+    override fun dispatchDraw(canvas: Canvas) {
+        super.dispatchDraw(canvas)
+        val hasBorder = borderPaint.strokeWidth > 0
+        if (hasBorder) {
+            canvas.drawRoundRect(rectF, radius, radius, borderPaint)
+        }
     }
 }

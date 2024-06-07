@@ -12,6 +12,7 @@ import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.MessageMetaArray;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.message.UserMessage;
+import com.sendbird.android.shadow.com.google.gson.JsonParser;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;

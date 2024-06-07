@@ -32,7 +32,9 @@ internal object NotificationChannelManager {
      * To avoid sending an unintended exception, if the NotificationChannelManager hasn't been initialized it tries to initialize automatically.
      * This is very defensive code and only works when creating a Fragment and attempting to reference NotificationChannelManager in exceptional cases.
      */
+    @Synchronized
     internal fun checkAndInit(context: Context) {
+        Logger.i(">> NotificationChannelManager::checkAndInit() isInitialized=${isInitialized.get()}")
         if (!isInitialized.get()) {
             init(context)
         }
@@ -41,10 +43,12 @@ internal object NotificationChannelManager {
     @JvmStatic
     @Synchronized
     fun init(context: Context) {
-        if (isInitialized.getAndSet(true)) return
+        Logger.d("++ NotificationChannelManager init start ${Thread.currentThread().name}, isInitialized=${isInitialized.get()}")
+        if (isInitialized.get()) return
         worker.submit {
-            templateRepository = NotificationTemplateRepository(context.applicationContext)
             channelSettingsRepository = NotificationChannelRepository(context.applicationContext)
+            templateRepository = NotificationTemplateRepository(context.applicationContext)
+            isInitialized.set(true)
         }.get()
     }
 
