@@ -7,6 +7,7 @@ import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.FormField
 import com.sendbird.android.message.MultipleFilesMessage
+import com.sendbird.android.shadow.com.google.gson.JsonParser
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager
@@ -104,4 +105,17 @@ internal var BaseMessage.shouldShowSuggestedReplies: Boolean
     get() = this.extras[StringSet.should_show_suggested_replies] as? Boolean ?: false
     set(value) {
         this.extras[StringSet.should_show_suggested_replies] = value
+    }
+
+internal val BaseMessage.isStreamMessage: Boolean
+    get() {
+        val data = this.data
+        if (data.isBlank()) {
+            return false
+        }
+        return try {
+            JsonParser.parseString(data).asJsonObject[StringSet.stream].asBoolean
+        } catch (e: Exception) {
+            false
+        }
     }

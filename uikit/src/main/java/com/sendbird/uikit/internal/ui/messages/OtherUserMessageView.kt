@@ -18,6 +18,7 @@ import com.sendbird.uikit.databinding.SbViewOtherUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
+import com.sendbird.uikit.internal.extensions.isStreamMessage
 import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
@@ -185,7 +186,15 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
         ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, false)
         if (enableOgTag) ViewUtils.drawOgtag(binding.ovOgtag, message.ogMetaData)
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel, params.channelConfig)
-        ViewUtils.drawProfile(binding.ivProfileView, message)
+
+        val skipUpdateProfile: Boolean = message.sender?.isBot == true &&
+                message.isStreamMessage &&
+                binding.ivProfileView.drawable != null
+
+        if (!skipUpdateProfile) {
+            ViewUtils.drawProfile(binding.ivProfileView, message)
+        }
+
         ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
 
         val paddingTop =

@@ -106,6 +106,7 @@ object StringSet {
     const val DEFAULT_CHANNEL_COVER_URL = "https://static.sendbird.com/sample/cover/cover_"
     const val Voice_message = "Voice_message"
     const val message = "message"
+    const val stream = "stream"
 
     // attributes list
     const val reactions = "reactions"
