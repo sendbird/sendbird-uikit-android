@@ -309,7 +309,7 @@ public class ViewUtils {
     }
 
     public static void drawNotificationProfile(@NonNull ImageView ivProfile, @Nullable BaseMessage message) {
-        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_text_high_emphasis : R.color.ondark_text_high_emphasis;
         int backgroundTint = R.color.background_300;
         int inset = ivProfile.getContext().getResources().getDimensionPixelSize(R.dimen.sb_size_6);
         final Drawable profile = DrawableUtils.createOvalIconWithInset(ivProfile.getContext(), backgroundTint, R.drawable.icon_channels, iconTint, inset);
@@ -333,7 +333,7 @@ public class ViewUtils {
     }
 
     public static void drawProfile(@NonNull ImageView ivProfile, @Nullable String url, @Nullable String plainUrl) {
-        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_01 : R.color.ondark_01;
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.onlight_text_high_emphasis : R.color.ondark_text_high_emphasis;
         int backgroundTint = R.color.background_300;
         Drawable errorDrawable = DrawableUtils.createOvalIcon(ivProfile.getContext(), backgroundTint, R.drawable.icon_user, iconTint);
 
@@ -420,7 +420,7 @@ public class ViewUtils {
 
         if (fileType.toLowerCase().contains(StringSet.image) && !fileType.toLowerCase().contains(StringSet.gif)) {
             view.getContent().setScaleType(ImageView.ScaleType.CENTER);
-            int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+            int thumbnailIconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_text_mid_emphasis : R.color.onlight_text_mid_emphasis;
             builder = builder.placeholder(DrawableUtils.setTintList(ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_photo), iconSize, iconSize), AppCompatResources.getColorStateList(context, thumbnailIconTint))).error(DrawableUtils.setTintList(ImageUtils.resize(context.getResources(), AppCompatResources.getDrawable(context, R.drawable.icon_thumbnail_none), iconSize, iconSize), AppCompatResources.getColorStateList(context, thumbnailIconTint)));
         }
 
@@ -458,8 +458,8 @@ public class ViewUtils {
 
     public static void drawThumbnailIcon(@NonNull ImageView imageView, @NonNull String fileType) {
         Context context = imageView.getContext();
-        int backgroundTint = R.color.ondark_01;
-        int iconTint = R.color.onlight_02;
+        int backgroundTint = R.color.ondark_text_high_emphasis;
+        int iconTint = R.color.onlight_text_mid_emphasis;
         if (fileType.toLowerCase().contains(StringSet.gif)) {
             imageView.setImageDrawable(DrawableUtils.createOvalIcon(context, backgroundTint, R.drawable.icon_gif, iconTint));
         } else if (fileType.toLowerCase().contains(StringSet.video)) {
@@ -495,7 +495,7 @@ public class ViewUtils {
     public static void drawFileMessageIconToReply(@NonNull ImageView imageView, @NonNull String fileType) {
         Context context = imageView.getContext();
         int backgroundTint = SendbirdUIKit.isDarkMode() ? R.color.background_500 : R.color.background_100;
-        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_02 : R.color.onlight_02;
+        int iconTint = SendbirdUIKit.isDarkMode() ? R.color.ondark_text_mid_emphasis : R.color.onlight_text_mid_emphasis;
         int inset = (int) context.getResources().getDimension(R.dimen.sb_size_8);
         Drawable background = DrawableUtils.setTintList(context, R.drawable.sb_rounded_rectangle_light_corner_10, backgroundTint);
 

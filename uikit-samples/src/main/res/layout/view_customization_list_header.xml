@@ -29,7 +29,7 @@
         android:layout_width="@dimen/sb_size_16"
         android:layout_height="@dimen/sb_size_16"
         android:src="@drawable/icon_chevron_down"
-        android:tint="@color/onlight_01"
+        android:tint="@color/onlight_text_high_emphasis"
         android:alpha="0.5"
         android:layout_marginEnd="@dimen/sb_size_16"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
         android:id="@+id/bottomDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -50,7 +50,7 @@
         android:id="@+id/topDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

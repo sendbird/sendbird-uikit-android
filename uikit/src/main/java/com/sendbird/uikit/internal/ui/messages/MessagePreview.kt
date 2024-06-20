@@ -61,7 +61,7 @@ internal class MessagePreview @JvmOverloads constructor(
                 R.style.SendbirdCaption2OnLight02
             )
             val dividerColor =
-                a.getResourceId(R.styleable.MessagePreview_sb_message_preview_divider_color, R.color.onlight_04)
+                a.getResourceId(R.styleable.MessagePreview_sb_message_preview_divider_color, R.color.onlight_text_disabled)
             val metaphorBackgroundColor =
                 a.getResourceId(R.styleable.MessagePreview_sb_message_preview_message_metaphor_background_color, 0)
             metaphorTintColor =

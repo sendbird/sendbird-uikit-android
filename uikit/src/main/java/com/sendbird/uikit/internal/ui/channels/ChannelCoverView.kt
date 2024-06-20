@@ -64,7 +64,7 @@ internal class ChannelCoverView @JvmOverloads constructor(
         } else {
             @ColorRes
             val iconTint: Int =
-                if (SendbirdUIKit.isDarkMode()) R.color.onlight_01 else R.color.ondark_01
+                if (SendbirdUIKit.isDarkMode()) R.color.onlight_text_high_emphasis else R.color.ondark_text_high_emphasis
 
             @ColorRes
             val backgroundTint: Int = R.color.background_300
@@ -79,7 +79,7 @@ internal class ChannelCoverView @JvmOverloads constructor(
         val imageView: ImageView = prepareSingleImageView()
 
         @ColorRes
-        val iconTint: Int = if (SendbirdUIKit.isDarkMode()) R.color.onlight_01 else R.color.ondark_01
+        val iconTint: Int = if (SendbirdUIKit.isDarkMode()) R.color.onlight_text_high_emphasis else R.color.ondark_text_high_emphasis
 
         @ColorRes
         val backgroundTint = SendbirdUIKit.getDefaultThemeMode().secondaryTintResId

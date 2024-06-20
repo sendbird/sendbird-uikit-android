@@ -193,7 +193,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
             )
             val moreIconTint = a.getResourceId(
                 R.styleable.ParentMessageInfoView_sb_parent_message_info_more_icon_tint,
-                R.color.onlight_02
+                R.color.onlight_text_mid_emphasis
             )
             val fileMessageBackground = a.getResourceId(
                 R.styleable.ParentMessageInfoView_sb_parent_message_info_file_message_background,
@@ -213,12 +213,12 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
             )
             val dividerColor = a.getResourceId(
                 R.styleable.ParentMessageInfoView_sb_parent_message_info_divider_line_color,
-                R.color.onlight_04
+                R.color.onlight_text_disabled
             )
             val progressColor =
                 a.getResourceId(
                     R.styleable.ParentMessageInfoView_sb_parent_message_info_voice_message_progress_color,
-                    R.color.ondark_03
+                    R.color.ondark_text_low_emphasis
                 )
             val progressTrackColor =
                 a.getResourceId(
@@ -268,8 +268,8 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
             binding.tvTextMessage.setLinkTextColor(
                 if (SendbirdUIKit.isDarkMode()) ContextCompat.getColor(
                     context,
-                    R.color.ondark_02
-                ) else ContextCompat.getColor(context, R.color.onlight_02)
+                    R.color.ondark_text_mid_emphasis
+                ) else ContextCompat.getColor(context, R.color.onlight_text_mid_emphasis)
             )
             binding.voiceMessage.setProgressCornerRadius(context.resources.getDimension(R.dimen.sb_size_16))
             binding.voiceMessage.setProgressTrackColor(
@@ -281,7 +281,7 @@ internal class ParentMessageInfoView @JvmOverloads constructor(
             binding.voiceMessage.setProgressProgressColor(AppCompatResources.getColorStateList(context, progressColor))
             binding.voiceMessage.setTimelineTextAppearance(timelineTextAppearance)
             val buttonBackgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.background_600 else R.color.background_50
-            val buttonTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_200 else R.color.primary_300
+            val buttonTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_light else R.color.primary_main
             val inset = context.resources.getDimension(R.dimen.sb_size_12).toInt()
             val playIcon =
                 DrawableUtils.createOvalIcon(

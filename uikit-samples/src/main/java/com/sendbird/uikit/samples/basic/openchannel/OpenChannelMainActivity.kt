@@ -37,12 +37,12 @@ class OpenChannelMainActivity : AppCompatActivity() {
             titleBar.setBackgroundResource(if (isDarkMode) R.color.background_500 else R.color.background_50)
             titleBar.setTitleTextColor(
                 ResourcesCompat.getColor(
-                    resources, if (isDarkMode) R.color.ondark_01 else R.color.onlight_01, null
+                    resources, if (isDarkMode) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis, null
                 )
             )
             description.setTextColor(
                 ResourcesCompat.getColor(
-                    resources, if (isDarkMode) R.color.ondark_02 else R.color.onlight_02, null
+                    resources, if (isDarkMode) R.color.ondark_text_mid_emphasis else R.color.onlight_text_mid_emphasis, null
                 )
             )
             setSupportActionBar(titleBar)

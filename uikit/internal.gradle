@@ -12,7 +12,6 @@ android {
     }
     buildTypes {
         debug {
-            debuggable true
             buildConfigField "String", "AUTHORIZATION", "$System.env.MESSAGING_ANDROID_BASIC_AUTH"
             buildConfigField "String", "SECRET_KEY", "$System.env.MESSAGING_ANDROID_SECRET_KEY"
             buildConfigField "String", "WS_HOST", "\"wss://ws-preprod.sendbird.com\""
@@ -29,19 +28,18 @@ dependencies {
         }
     }
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation "androidx.test:rules:1.4.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation "androidx.test:rules:1.5.0"
     androidTestImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
     androidTestImplementation 'io.kotest:kotest-assertions-core:5.3.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.robolectric:robolectric:4.8'
+    testImplementation 'org.robolectric:robolectric:4.10'
     testImplementation 'androidx.test:core:1.5.0'
     testImplementation 'io.kotest:kotest-assertions-core:5.6.0'
     testImplementation "io.mockk:mockk:1.13.4"
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:1.8.20"
     testImplementation("pl.pragmatists:JUnitParams:1.1.0")
 }
 

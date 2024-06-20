@@ -51,7 +51,7 @@ internal class OpenChannelUserMessageView @JvmOverloads internal constructor(
                 a.getResourceId(R.styleable.MessageView_sb_message_text_appearance, R.style.SendbirdBody3OnLight01)
             val contentBackground =
                 a.getResourceId(R.styleable.MessageView_sb_message_background, R.drawable.selector_rectangle_light)
-            val linkTextColor = a.getResourceId(R.styleable.MessageView_sb_message_link_text_color, R.color.ondark_01)
+            val linkTextColor = a.getResourceId(R.styleable.MessageView_sb_message_link_text_color, R.color.ondark_text_high_emphasis)
             val ogtagBackground = a.getResourceId(
                 R.styleable.MessageView_sb_message_ogtag_background,
                 R.drawable.selector_open_channel_message_bg_light

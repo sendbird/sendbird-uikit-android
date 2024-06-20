@@ -16,7 +16,7 @@
         android:id="@+id/vgHeader"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
-        android:background="@color/overlay_01"
+        android:background="@color/overlay_dark"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -47,7 +47,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="0sp"
                 android:textAppearance="@style/SendbirdCaption2OnDark01"
-                android:textColor="@color/ondark_01"
+                android:textColor="@color/ondark_text_high_emphasis"
                 android:textSize="@dimen/sb_text_size_12"
                 android:textStyle="normal"
                 android:ellipsize="end"
@@ -62,7 +62,7 @@
             android:layout_margin="@dimen/sb_size_16"
             android:src="@drawable/icon_close"
             android:contentDescription="@string/sb_fragment_photo_view_close_description"
-            app:tint="@color/ondark_01" />
+            app:tint="@color/ondark_text_high_emphasis" />
     </FrameLayout>
 
     <RelativeLayout
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
         android:layout_alignParentBottom="true"
-        android:background="@color/overlay_01"
+        android:background="@color/overlay_dark"
         android:paddingLeft="@dimen/sb_size_16"
         android:paddingRight="@dimen/sb_size_16">
 
@@ -83,7 +83,7 @@
             android:layout_marginBottom="@dimen/sb_size_16"
             android:src="@drawable/icon_download"
             android:contentDescription="@string/sb_fragment_photo_view_save_description"
-            app:tint="@color/ondark_01" />
+            app:tint="@color/ondark_text_high_emphasis" />
 
         <ImageView
             android:id="@+id/ivDelete"
@@ -95,7 +95,7 @@
             android:layout_marginBottom="@dimen/sb_size_16"
             android:src="@drawable/icon_delete"
             android:contentDescription="@string/sb_fragment_photo_view_delete_description"
-            app:tint="@color/ondark_01" />
+            app:tint="@color/ondark_text_high_emphasis" />
     </RelativeLayout>
 
     <com.sendbird.uikit.internal.ui.widgets.ProgressView

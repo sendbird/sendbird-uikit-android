@@ -76,7 +76,7 @@ internal class ThreadInfoView @JvmOverloads internal constructor(
                         context,
                         R.color.background_300,
                         R.drawable.icon_user,
-                        if (SendbirdUIKit.isDarkMode()) R.color.onlight_01 else R.color.ondark_01
+                        if (SendbirdUIKit.isDarkMode()) R.color.onlight_text_high_emphasis else R.color.ondark_text_high_emphasis
                     )
                 )
                 .transform(transformation)
@@ -108,13 +108,13 @@ internal class ThreadInfoView @JvmOverloads internal constructor(
             )
             val moreIconTint = a.getResourceId(
                 R.styleable.ThreadInfoView_sb_thread_info_more_icon_tint,
-                R.color.ondark_01
+                R.color.ondark_text_high_emphasis
             )
             binding.tvReplyCount.setAppearance(context, replyCountTextAppearance)
 
             moreDrawable = DrawableUtils.createOvalIcon(
                 context,
-                R.color.overlay_01,
+                R.color.overlay_dark,
                 140,
                 moreIconRes,
                 moreIconTint

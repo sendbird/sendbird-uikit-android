@@ -4,7 +4,7 @@
         <layer-list>
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@color/ondark_02"/>
+                    <solid android:color="@color/ondark_text_mid_emphasis"/>
                 </shape>
             </item>
 
@@ -23,7 +23,7 @@
         <layer-list>
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@color/ondark_03"/>
+                    <solid android:color="@color/ondark_text_low_emphasis"/>
                 </shape>
             </item>
 

@@ -36,7 +36,7 @@ class FeedChannelListFragment : Fragment() {
 
         SendbirdChat.appInfo?.notificationInfo?.feedChannels?.let { feedChannels ->
             val background = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.drawable.selector_rectangle_light else R.drawable.selector_rectangle_dark600
-            val dividerColor = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.color.onlight_04 else R.color.ondark_04
+            val dividerColor = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.color.onlight_text_disabled else R.color.ondark_text_disabled
             val channelKeyStyle = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.style.SendbirdSubtitle1OnLight01 else R.style.SendbirdSubtitle1OnDark01
             val channelUrlStyle = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.style.SendbirdBody3OnLight03 else R.style.SendbirdBody3OnDark03
             feedChannels.entries.forEach { entry ->

@@ -377,7 +377,7 @@ class MessageInputView @JvmOverloads constructor(
             binding.ivQuoteReplyClose.setImageResource(replyRightButtonIcon)
             binding.ivQuoteReplyClose.imageTintList = replyRightButtonTint
             binding.ivQuoteReplyClose.setBackgroundResource(replyRightButtonBackground)
-            val dividerColor = if (SendbirdUIKit.isDarkMode()) R.color.ondark_04 else R.color.onlight_04
+            val dividerColor = if (SendbirdUIKit.isDarkMode()) R.color.ondark_text_disabled else R.color.onlight_text_disabled
             binding.ivReplyDivider.setBackgroundColor(ContextCompat.getColor(context, dividerColor))
             binding.etInputText.setOnClickListener { showKeyboard() }
             binding.etInputText.addTextChangedListener(object : TextWatcher {

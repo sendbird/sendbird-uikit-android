@@ -52,7 +52,7 @@
         android:id="@+id/timelineView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/ondark_01"
+        android:textColor="@color/ondark_text_high_emphasis"
         android:text="00:00"
         android:layout_marginEnd="@dimen/sb_size_12"
         app:layout_constraintTop_toTopOf="parent"

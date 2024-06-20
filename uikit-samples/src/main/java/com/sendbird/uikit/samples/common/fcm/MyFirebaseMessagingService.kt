@@ -118,7 +118,7 @@ class MyFirebaseMessagingService : SendbirdPushHandler() {
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val notificationBuilder = NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.icon_push_lollipop)
-                .setColor(ContextCompat.getColor(context, R.color.primary_300)) // small icon background color
+                .setColor(ContextCompat.getColor(context, R.color.primary_main)) // small icon background color
                 .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.icon_push_oreo))
                 .setContentTitle(pushTitle)
                 .setAutoCancel(true)

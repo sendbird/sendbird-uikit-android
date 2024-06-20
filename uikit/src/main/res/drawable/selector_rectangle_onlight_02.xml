@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_pressed="true"
-        android:drawable="@color/onlight_02"/>
+        android:drawable="@color/onlight_text_mid_emphasis"/>
 
     <item
         android:state_pressed="false"

@@ -21,7 +21,6 @@
             android:layout_marginBottom="@dimen/sb_size_24"
             android:textSize="@dimen/sb_text_size_24"
             android:textStyle="bold"
-            android:textColor="@color/onlight_01"
             android:fontFamily="sans-serif"
             android:text="@string/text_title_basic_sample"/>
 
@@ -54,9 +53,8 @@
             android:textSize="@dimen/sb_text_size_14"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
-            android:textColor="@color/onlight_01"
+            android:textColor="@color/onlight_text_high_emphasis"
             android:lineSpacingExtra="@dimen/sb_size_2"
-            android:background="@drawable/selector_home_signout_button"
             android:text="@string/text_sign_out" />
     </LinearLayout>
 </ScrollView>

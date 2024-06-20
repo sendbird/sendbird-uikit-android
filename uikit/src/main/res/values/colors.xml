@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- deprecated color set -->
     <color name="primary_500">#491389</color>
     <color name="primary_400">#6211c8</color>
     <color name="primary_300">#742ddd</color>
@@ -15,14 +16,6 @@
     <color name="error_300">#de360b</color>
     <color name="error_200">#f66161</color>
     <color name="error_100">#fdaaaa</color>
-    <color name="background_700">#000000</color>
-    <color name="background_600">#161616</color>
-    <color name="background_500">#2c2c2c</color>
-    <color name="background_400">#393939</color>
-    <color name="background_300">#bdbdbd</color>
-    <color name="background_200">#e0e0e0</color>
-    <color name="background_100">#eeeeee</color>
-    <color name="background_50">#ffffff</color>
     <color name="overlay_01">#8c000000</color>
     <color name="overlay_02">#51000000</color>
     <color name="onlight_01">#e1000000</color>
@@ -33,6 +26,48 @@
     <color name="ondark_02">#80ffffff</color>
     <color name="ondark_03">#61ffffff</color>
     <color name="ondark_04">#1effffff</color>
-    <color name="information">#adc9ff</color>
+    <color name="information">#a9bbfa</color>
+
+    <!-- improved color set -->
+    <color name="primary_extra_dark">@color/primary_500</color>
+    <color name="primary_dark">@color/primary_400</color>
+    <color name="primary_main">@color/primary_300</color>
+    <color name="primary_light">@color/primary_200</color>
+    <color name="primary_extra_light">@color/primary_100</color>
+    <color name="secondary_extra_dark">@color/secondary_500</color>
+    <color name="secondary_dark">@color/secondary_400</color>
+    <color name="secondary_main">@color/secondary_300</color>
+    <color name="secondary_light">@color/secondary_200</color>
+    <color name="secondary_extra_light">@color/secondary_100</color>
+    <color name="error_extra_dark">@color/error_500</color>
+    <color name="error_dark">@color/error_400</color>
+    <color name="error_main">@color/error_300</color>
+    <color name="error_light">@color/error_200</color>
+    <color name="error_extra_light">@color/error_100</color>
+    <color name="overlay_dark">@color/overlay_01</color>
+    <color name="overlay_light">@color/overlay_02</color>
+    <color name="information_extra_dark">#241389</color>
+    <color name="information_dark">#362ca9</color>
+    <color name="information_main">#4a48cd</color>
+    <color name="information_light">@color/information</color>
+    <color name="information_extra_light">#d1dbff</color>
+    <color name="onlight_text_high_emphasis">@color/onlight_01</color>
+    <color name="onlight_text_mid_emphasis">@color/onlight_02</color>
+    <color name="onlight_text_low_emphasis">@color/onlight_03</color>
+    <color name="onlight_text_disabled">@color/onlight_04</color>
+    <color name="ondark_text_high_emphasis">@color/ondark_01</color>
+    <color name="ondark_text_mid_emphasis">@color/ondark_02</color>
+    <color name="ondark_text_low_emphasis">@color/ondark_03</color>
+    <color name="ondark_text_disabled">@color/ondark_04</color>
+
+    <!-- common color set -->
     <color name="highlight">#fff2b6</color>
+    <color name="background_700">#000000</color>
+    <color name="background_600">#161616</color>
+    <color name="background_500">#2c2c2c</color>
+    <color name="background_400">#393939</color>
+    <color name="background_300">#bdbdbd</color>
+    <color name="background_200">#e0e0e0</color>
+    <color name="background_100">#eeeeee</color>
+    <color name="background_50">#ffffff</color>
 </resources>

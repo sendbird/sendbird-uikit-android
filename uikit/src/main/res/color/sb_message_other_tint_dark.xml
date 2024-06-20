@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_pressed="true"
-        android:color="@color/primary_500"/>
+        android:color="@color/primary_extra_dark"/>
 
     <item android:color="@color/background_400"/>
 </selector>

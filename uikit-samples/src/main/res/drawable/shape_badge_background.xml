@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <solid
-        android:color="@color/error_300"/>
+        android:color="@color/error_main"/>
 
     <corners
         android:radius="@dimen/sb_size_20"/>

@@ -17,7 +17,7 @@
             <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="@dimen/sb_size_1"
-                android:color="@color/ondark_04" />
+                android:color="@color/ondark_text_disabled" />
         </shape>
     </item>
 </layer-list>

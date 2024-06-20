@@ -20,79 +20,79 @@
 <!--  <style name="SendbirdH1OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH1OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">18sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnLight04">-->
@@ -100,7 +100,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnDark02">-->
@@ -108,7 +108,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnLight02">-->
@@ -116,7 +116,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnDark01">-->
@@ -124,7 +124,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Secondary200">-->
@@ -132,7 +132,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnDark04">-->
@@ -140,7 +140,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Error300">-->
@@ -148,7 +148,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Primary300">-->
@@ -156,7 +156,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnLight03">-->
@@ -164,7 +164,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnDark03">-->
@@ -172,7 +172,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2OnLight01">-->
@@ -180,7 +180,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Primary200">-->
@@ -188,7 +188,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Secondary300">-->
@@ -196,7 +196,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdH2Error200">-->
@@ -204,7 +204,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnLight01">-->
@@ -212,7 +212,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Error300">-->
@@ -220,7 +220,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnDark03">-->
@@ -228,7 +228,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnLight02">-->
@@ -236,7 +236,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Error200">-->
@@ -244,7 +244,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnDark04">-->
@@ -252,7 +252,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Primary200">-->
@@ -260,7 +260,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnDark02">-->
@@ -268,7 +268,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnDark01">-->
@@ -276,7 +276,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Secondary200">-->
@@ -284,7 +284,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnLight04">-->
@@ -292,7 +292,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Secondary300">-->
@@ -300,7 +300,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1Primary300">-->
@@ -308,7 +308,7 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle1OnLight03">-->
@@ -316,203 +316,203 @@
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:letterSpacing">-0.01</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody1OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">4sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdSubtitle2Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">16sp</item>-->
 <!--    <item name="android:lineSpacingExtra">8sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnLight02">-->
@@ -520,7 +520,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnDark01">-->
@@ -528,7 +528,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnLight01">-->
@@ -536,7 +536,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnDark03">-->
@@ -544,7 +544,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnDark02">-->
@@ -552,7 +552,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnDark04">-->
@@ -560,7 +560,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonSecondary200">-->
@@ -568,7 +568,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonError300">-->
@@ -576,7 +576,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonError200">-->
@@ -584,7 +584,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnLight04">-->
@@ -592,7 +592,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonOnLight03">-->
@@ -601,7 +601,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonPrimary200">-->
@@ -609,7 +609,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonSecondary300">-->
@@ -617,7 +617,7 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdButtonPrimary300">-->
@@ -625,594 +625,594 @@
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:letterSpacing">0.03</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody2OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_medium</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">2sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdBody3OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">14sp</item>-->
 <!--    <item name="android:lineSpacingExtra">6sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption1OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption2OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">12sp</item>-->
 <!--    <item name="android:lineSpacingExtra">0sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnDark02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_02</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption3Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_bold</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Error200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/error_200</item>-->
+<!--    <item name="android:textColor">@color/error_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Secondary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_200</item>-->
+<!--    <item name="android:textColor">@color/secondary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Secondary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/secondary_300</item>-->
+<!--    <item name="android:textColor">@color/secondary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Primary300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/primary_300</item>-->
+<!--    <item name="android:textColor">@color/primary_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnDark01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_01</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnDark04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_04</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnDark03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/ondark_03</item>-->
+<!--    <item name="android:textColor">@color/ondark_text_low_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Primary200">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/primary_200</item>-->
+<!--    <item name="android:textColor">@color/primary_light</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnLight01">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_01</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_high_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnLight04">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_04</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_disabled</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4Error300">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/error_300</item>-->
+<!--    <item name="android:textColor">@color/error_main</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnLight02">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_02</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_mid_emphasis</item>-->
 <!--  </style>-->
 
 <!--  <style name="SendbirdCaption4OnLight03">-->
 <!--    <item name="android:fontFamily">@font/roboto_slab_regular</item>-->
 <!--    <item name="android:textSize">11sp</item>-->
 <!--    <item name="android:lineSpacingExtra">1sp</item>-->
-<!--    <item name="android:textColor">@color/onlight_03</item>-->
+<!--    <item name="android:textColor">@color/onlight_text_low_emphasis</item>-->
 <!--  </style>-->
 </resources>

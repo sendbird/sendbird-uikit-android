@@ -107,11 +107,11 @@ public class SendbirdUIKit {
         /**
          * Light mode.
          */
-        Light(R.style.AppTheme_Sendbird, R.color.primary_300, R.color.secondary_300, R.color.onlight_03, R.color.error_300),
+        Light(R.style.AppTheme_Sendbird, R.color.primary_main, R.color.secondary_main, R.color.onlight_text_low_emphasis, R.color.error_main),
         /**
          * Dark mode.
          */
-        Dark(R.style.AppTheme_Dark_Sendbird, R.color.primary_200, R.color.secondary_200, R.color.ondark_03, R.color.error_200);
+        Dark(R.style.AppTheme_Dark_Sendbird, R.color.primary_light, R.color.secondary_light, R.color.ondark_text_low_emphasis, R.color.error_light);
 
         @StyleRes
         final int resId;

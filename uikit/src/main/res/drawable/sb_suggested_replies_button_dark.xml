@@ -5,7 +5,7 @@
             <corners android:radius="@dimen/sb_size_16"/>
             <stroke
                 android:width="@dimen/sb_size_1"
-                android:color="@color/primary_200"/>
+                android:color="@color/primary_light"/>
 
             <solid android:color="@color/background_100"/>
         </shape>
@@ -16,7 +16,7 @@
             <corners android:radius="@dimen/sb_size_16"/>
             <stroke
                 android:width="@dimen/sb_size_1"
-                android:color="@color/primary_200"/>
+                android:color="@color/primary_light"/>
 
             <solid android:color="@color/background_500"/>
         </shape>

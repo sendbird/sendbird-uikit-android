@@ -68,7 +68,7 @@ internal class FormFieldView @JvmOverloads internal constructor(
         )
 
         binding.etFormField.setHintTextColor(
-            ContextCompat.getColor(context, if (isDarkMode) R.color.ondark_03 else R.color.onlight_03)
+            ContextCompat.getColor(context, if (isDarkMode) R.color.ondark_text_low_emphasis else R.color.onlight_text_low_emphasis)
         )
 
         binding.tvFormFieldError.setAppearance(
@@ -83,7 +83,7 @@ internal class FormFieldView @JvmOverloads internal constructor(
             ResourcesCompat.getDrawable(resources, R.drawable.sb_shape_round_rect_background_ondark_02, null)
         }
         binding.iconDone.setColorFilter(
-            ContextCompat.getColor(context, if (isDarkMode) R.color.secondary_300 else R.color.secondary_200)
+            ContextCompat.getColor(context, if (isDarkMode) R.color.secondary_main else R.color.secondary_light)
         )
 
         binding.tvAnswer.setAppearance(

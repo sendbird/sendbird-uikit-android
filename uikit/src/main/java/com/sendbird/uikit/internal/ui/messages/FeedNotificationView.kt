@@ -59,7 +59,7 @@ internal class FeedNotificationView @JvmOverloads internal constructor(
             )
             val unreadIndicatorColor = a.getResourceId(
                 R.styleable.MessageView_FeedNotification_sb_feed_notification_unread_indicator_color,
-                R.color.secondary_300
+                R.color.secondary_main
             )
 
             binding.contentPanel.setBackgroundResource(messageBackground)

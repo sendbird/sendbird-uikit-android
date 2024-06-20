@@ -244,7 +244,7 @@ public class OpenChannelSettingsMenuComponent {
                 menuView.setName(context.getString(R.string.sb_text_channel_settings_delete_channel));
                 menuView.setMenuType(SingleMenuType.NONE);
                 menuView.setIcon(R.drawable.icon_delete);
-                menuView.setIconTint(AppCompatResources.getColorStateList(context, SendbirdUIKit.isDarkMode() ? R.color.error_200 : R.color.error_300));
+                menuView.setIconTint(AppCompatResources.getColorStateList(context, SendbirdUIKit.isDarkMode() ? R.color.error_light : R.color.error_main));
                 break;
         }
         return menuView;

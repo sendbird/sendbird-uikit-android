@@ -13,7 +13,7 @@
 
     <style name="Component.Overlay.List">
         <item name="sb_recycler_view_background">@color/background_600</item>
-        <item name="sb_recycler_view_divide_line_color">@color/ondark_04</item>
+        <item name="sb_recycler_view_divide_line_color">@color/ondark_text_disabled</item>
         <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
         <item name="sb_recycler_view_divide_margin_left">0dp</item>
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
@@ -23,9 +23,9 @@
         <item name="sb_appbar_title"/>
         <item name="sb_appbar_title_appearance">@style/SendbirdH2OnDark01</item>
         <item name="sb_appbar_left_button_icon">@drawable/icon_arrow_left</item>
-        <item name="sb_appbar_left_button_tint">@color/ondark_01</item>
+        <item name="sb_appbar_left_button_tint">@color/ondark_text_high_emphasis</item>
         <item name="sb_appbar_left_button_background">@drawable/sb_button_uncontained_background_dark</item>
-        <item name="sb_appbar_divider_color">@color/ondark_04</item>
+        <item name="sb_appbar_divider_color">@color/ondark_text_disabled</item>
     </style>
     <style name="Component.Overlay.Status">
         <item name="sb_status_frame_background">@android:color/transparent</item>
@@ -34,15 +34,15 @@
         <item name="sb_status_frame_action_background">@drawable/selector_button_retry_dark</item>
         <item name="sb_status_frame_action_icon">@drawable/icon_refresh</item>
         <item name="sb_status_frame_error_icon">@drawable/icon_error</item>
-        <item name="sb_status_frame_error_icon_tint">@color/ondark_03</item>
-        <item name="sb_status_frame_action_icon_tint">@color/ondark_03</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/ondark_03</item>
+        <item name="sb_status_frame_error_icon_tint">@color/ondark_text_low_emphasis</item>
+        <item name="sb_status_frame_action_icon_tint">@color/ondark_text_low_emphasis</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/ondark_text_low_emphasis</item>
     </style>
 
     <style name="Component.Overlay.Header.OpenChannel">
         <item name="sb_appbar_description_appearance">@style/SendbirdCaption2OnDark03</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_members</item>
-        <item name="sb_appbar_right_button_tint">@color/ondark_01</item>
+        <item name="sb_appbar_right_button_tint">@color/ondark_text_high_emphasis</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_dark</item>
     </style>
     <style name="Component.Overlay.List.OpenChannel">
@@ -54,7 +54,7 @@
         <item name="sb_message_typing_indicator_textappearance">@style/SendbirdCaption1OnDark02</item>
         <item name="sb_message_scroll_bottom_background">@drawable/selector_scroll_bottom_dark</item>
         <item name="sb_message_scroll_bottom_icon">@drawable/icon_chevron_down</item>
-        <item name="sb_message_scroll_bottom_icon_tint">@color/ondark_01</item>
+        <item name="sb_message_scroll_bottom_icon_tint">@color/ondark_text_high_emphasis</item>
 
         <item name="sb_widget_ogtag">@style/Widget.Sendbird.Overlay.OpenChannel.OgTag</item>
         <item name="sb_widget_user_message">@style/Widget.Sendbird.Overlay.OpenChannel.Message.User</item>
@@ -74,7 +74,7 @@
         <item name="sb_message_input_left_button_tint">@color/sb_selector_input_add_color_overlay</item>
         <item name="sb_message_input_left_button_background">@drawable/sb_button_uncontained_background_dark</item>
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
-        <item name="sb_message_input_right_button_tint">@color/ondark_01</item>
+        <item name="sb_message_input_right_button_tint">@color/ondark_text_high_emphasis</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_dark</item>
         <item name="sb_message_input_edit_save_button_text_appearance">@style/SendbirdButtonOnLight01</item>
         <item name="sb_message_input_edit_save_button_text_color">@color/sb_button_contained_text_color_dark</item>
@@ -86,7 +86,7 @@
         <item name="sb_message_input_quote_reply_title_text_appearance">@style/SendbirdCaption1OnDark01</item>
         <item name="sb_message_input_quoted_message_text_appearance">@style/SendbirdCaption2OnDark03</item>
         <item name="sb_message_input_quote_reply_right_icon">@drawable/icon_close</item>
-        <item name="sb_message_input_quote_reply_right_icon_tint">@color/ondark_02</item>
+        <item name="sb_message_input_quote_reply_right_icon_tint">@color/ondark_text_mid_emphasis</item>
         <item name="sb_message_input_quote_reply_right_icon_background">@drawable/sb_button_uncontained_background_dark</item>
     </style>
     <style name="Component.Overlay.Status.OpenChannel">
@@ -106,9 +106,9 @@
         <item name="sb_dialog_view_list_item_text_color">@color/sb_selector_enabled_01_dark</item>
         <item name="sb_dialog_view_list_item_background">@drawable/selector_rectangle_dark500</item>
         <item name="sb_dialog_view_edit_text_appearance">@style/SendbirdSubtitle2OnDark01</item>
-        <item name="sb_dialog_view_edit_text_tint">@color/ondark_01</item>
+        <item name="sb_dialog_view_edit_text_tint">@color/ondark_text_high_emphasis</item>
         <item name="sb_dialog_view_edit_text_cursor_drawable">@drawable/sb_message_input_cursor_overlay</item>
-        <item name="sb_dialog_view_edit_text_hint_color">@color/ondark_03</item>
+        <item name="sb_dialog_view_edit_text_hint_color">@color/ondark_text_low_emphasis</item>
         <item name="sb_dialog_view_icon_tint">@color/sb_selector_enabled_primary_dark</item>
 
         <item name="sb_dialog_view_positive_button_text_appearance">@style/SendbirdButtonPrimary200</item>
@@ -127,7 +127,7 @@
         <item name="sb_user_profile_user_name_text_appearance">@style/SendbirdCaption1OnDark01</item>
         <item name="sb_user_profile_button_background">@drawable/selector_button_default_dark</item>
         <item name="sb_user_profile_button_text_appearance">@style/SendbirdButtonOnDark01</item>
-        <item name="sb_user_profile_divider_color">@color/ondark_04</item>
+        <item name="sb_user_profile_divider_color">@color/ondark_text_disabled</item>
         <item name="sb_user_profile_information_title_text_appearance">@style/SendbirdBody2OnDark02</item>
         <item name="sb_user_profile_information_text_appearance">@style/SendbirdBody3OnDark01</item>
     </style>
@@ -158,7 +158,7 @@
         <item name="sb_message_ogtag_title_appearance">@style/SendbirdBody2Primary200</item>
         <item name="sb_message_ogtag_description_appearance">@style/SendbirdCaption2OnDark01</item>
         <item name="sb_message_ogtag_url_appearance">@style/SendbirdCaption2OnDark02</item>
-        <item name="sb_message_link_text_color">@color/primary_200</item>
+        <item name="sb_message_link_text_color">@color/primary_light</item>
         <item name="sb_message_edited_mark_text_appearance">@style/SendbirdBody3OnDark02</item>
     </style>
 

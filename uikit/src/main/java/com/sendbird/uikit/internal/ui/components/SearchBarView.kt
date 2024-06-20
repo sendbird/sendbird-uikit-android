@@ -43,7 +43,7 @@ internal class SearchBarView @JvmOverloads constructor(
             binding = SbViewSearchBarBinding.inflate(LayoutInflater.from(getContext()))
             addView(binding.root, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             val itemBackground = a.getResourceId(R.styleable.SearchBar_sb_search_bar_background, R.color.background_50)
-            val dividerColor = a.getResourceId(R.styleable.SearchBar_sb_search_divider_color, R.color.onlight_04)
+            val dividerColor = a.getResourceId(R.styleable.SearchBar_sb_search_divider_color, R.color.onlight_text_disabled)
             val inputBackground = a.getResourceId(
                 R.styleable.SearchBar_sb_search_bar_text_input_background,
                 R.drawable.sb_shape_search_background

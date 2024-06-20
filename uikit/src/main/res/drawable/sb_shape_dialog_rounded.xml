@@ -3,7 +3,7 @@
     <corners
         android:radius="@dimen/sb_size_7" />
 
-    <solid android:color="@color/onlight_04" />
+    <solid android:color="@color/onlight_text_disabled" />
 
     <padding
         android:left="@dimen/sb_size_2"

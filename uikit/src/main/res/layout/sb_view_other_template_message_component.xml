@@ -56,7 +56,7 @@
         android:id="@+id/tvSentAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_300"
+        android:textColor="@color/primary_main"
         android:layout_marginEnd="@dimen/sb_size_0"
         android:layout_marginStart="@dimen/sb_size_4"
         app:layout_constraintStart_toEndOf="@+id/messageTemplateView"

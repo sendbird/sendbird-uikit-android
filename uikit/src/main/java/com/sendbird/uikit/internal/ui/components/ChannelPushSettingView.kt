@@ -89,7 +89,7 @@ internal class ChannelPushSettingView @JvmOverloads constructor(
             )
             val dividerColor = a.getResourceId(
                 R.styleable.ChannelPushSettings_sb_channel_push_option_item_divider_color,
-                R.color.onlight_04
+                R.color.onlight_text_disabled
             )
             val switchTrackTint = a.getResourceId(
                 R.styleable.ChannelPushSettings_sb_channel_switch_track_tint,

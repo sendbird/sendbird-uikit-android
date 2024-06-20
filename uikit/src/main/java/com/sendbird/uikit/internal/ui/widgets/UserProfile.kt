@@ -53,7 +53,7 @@ internal class UserProfile @JvmOverloads constructor(
                 R.style.SendbirdButtonOnLight01
             )
             val dividerColor =
-                a.getResourceId(R.styleable.UserProfile_sb_user_profile_divider_color, R.color.onlight_04)
+                a.getResourceId(R.styleable.UserProfile_sb_user_profile_divider_color, R.color.onlight_text_disabled)
             val infoTitleTextAppearance = a.getResourceId(
                 R.styleable.UserProfile_sb_user_profile_information_title_text_appearance,
                 R.style.SendbirdBody2OnLight02

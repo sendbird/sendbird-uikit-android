@@ -46,11 +46,11 @@ internal class TypingMemberView @JvmOverloads internal constructor(
 
         if (SendbirdUIKit.isDarkMode()) {
             backgroundResourceId = R.drawable.sb_typing_member_message_background_light
-            textColorResourceId = R.color.ondark_02
+            textColorResourceId = R.color.ondark_text_mid_emphasis
             textBackgroundResourceId = R.color.background_400
         } else {
             backgroundResourceId = R.drawable.sb_typing_member_message_background_dark
-            textColorResourceId = R.color.onlight_02
+            textColorResourceId = R.color.onlight_text_mid_emphasis
             textBackgroundResourceId = R.color.background_100
         }
 

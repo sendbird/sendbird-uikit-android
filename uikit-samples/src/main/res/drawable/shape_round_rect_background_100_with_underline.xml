@@ -12,7 +12,7 @@
             <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="2dp"
-                android:color="@color/primary_300" />
+                android:color="@color/primary_main" />
         </shape>
     </item>
 </layer-list>

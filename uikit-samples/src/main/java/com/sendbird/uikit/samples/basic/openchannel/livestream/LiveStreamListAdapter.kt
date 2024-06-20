@@ -35,9 +35,9 @@ class LiveStreamListAdapter : OpenChannelListAdapter() {
             with(binding) {
                 val isDark = PreferenceUtils.themeMode.isUsingDarkTheme()
                 background.setBackgroundResource(if (isDark) R.drawable.selector_list_background_dark else R.drawable.selector_list_background_light)
-                tvLiveTitle.setTextColorResource(if (isDark) R.color.ondark_01 else R.color.onlight_01)
-                tvCreator.setTextColorResource(if (isDark) R.color.ondark_02 else R.color.onlight_02)
-                tvBadge.setTextColorResource(if (isDark) R.color.ondark_02 else R.color.onlight_02)
+                tvLiveTitle.setTextColorResource(if (isDark) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis)
+                tvCreator.setTextColorResource(if (isDark) R.color.ondark_text_mid_emphasis else R.color.onlight_text_mid_emphasis)
+                tvBadge.setTextColorResource(if (isDark) R.color.ondark_text_mid_emphasis else R.color.onlight_text_mid_emphasis)
                 tvBadge.setBackgroundResource(if (isDark) R.drawable.shape_live_badge_dark else R.drawable.shape_live_badge_light)
             }
         }
@@ -68,7 +68,7 @@ class LiveStreamListAdapter : OpenChannelListAdapter() {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .error(R.color.background_600)
                             .into(ivLiveThumbnail)
-                        val iconTint = if (SendbirdUIKit.isDarkMode()) R.color.onlight_01 else R.color.ondark_01
+                        val iconTint = if (SendbirdUIKit.isDarkMode()) R.color.onlight_text_high_emphasis else R.color.ondark_text_high_emphasis
                         val backgroundTint =
                             if (SendbirdUIKit.isDarkMode()) R.color.background_400 else R.color.background_300
                         val errorIcon = context.createOvalIcon(backgroundTint, R.drawable.icon_channels, iconTint)
