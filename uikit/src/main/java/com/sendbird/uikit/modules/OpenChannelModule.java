@@ -87,7 +87,7 @@ public class OpenChannelModule extends BaseModule {
         parent.setOrientation(LinearLayout.VERTICAL);
 
         if (params.useOverlayMode) {
-            parent.setBackgroundResource(R.color.onlight_03);
+            parent.setBackgroundResource(R.color.onlight_text_low_emphasis);
         }
 
         final TypedValue values = new TypedValue();

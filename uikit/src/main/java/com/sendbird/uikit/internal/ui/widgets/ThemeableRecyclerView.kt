@@ -69,7 +69,7 @@ internal open class ThemeableRecyclerView @JvmOverloads constructor(
                 a.getResourceId(R.styleable.ListComponent_sb_recycler_view_background, R.color.background_50)
             dividerColor = a.getColor(
                 R.styleable.ListComponent_sb_recycler_view_divide_line_color,
-                ContextCompat.getColor(context, R.color.onlight_04)
+                ContextCompat.getColor(context, R.color.onlight_text_disabled)
             )
             dividerHeight = a.getDimension(
                 R.styleable.ListComponent_sb_recycler_view_divide_line_height,

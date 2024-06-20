@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="@id/progress"
         app:layout_constraintBottom_toBottomOf="@id/progress"
         app:layout_constraintEnd_toStartOf="@id/tvTimeline"
-        app:tint="@color/error_300" />
+        app:tint="@color/error_main" />
 
     <TextView
         android:id="@+id/tvTimeline"

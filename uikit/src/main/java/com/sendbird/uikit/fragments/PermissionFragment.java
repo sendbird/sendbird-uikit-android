@@ -133,7 +133,7 @@ public abstract class PermissionFragment extends BaseFragment {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary_300));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary_main));
     }
 
     private static final class PermissionInformation {

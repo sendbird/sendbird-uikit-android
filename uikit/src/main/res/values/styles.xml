@@ -1,9 +1,9 @@
 <resources>
     <!-- THEME -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary_300</item>
-        <item name="colorPrimaryDark">@color/primary_500</item>
-        <item name="colorAccent">@color/secondary_300</item>
+        <item name="colorPrimary">@color/primary_main</item>
+        <item name="colorPrimaryDark">@color/primary_extra_dark</item>
+        <item name="colorAccent">@color/secondary_main</item>
     </style>
 
     <style name="AppTheme.Sendbird">
@@ -186,7 +186,7 @@
     <style name="Component"/>
     <style name="Component.List">
         <item name="sb_recycler_view_background">@color/background_50</item>
-        <item name="sb_recycler_view_divide_line_color">@color/onlight_04</item>
+        <item name="sb_recycler_view_divide_line_color">@color/onlight_text_disabled</item>
         <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
         <item name="sb_recycler_view_divide_margin_left">0dp</item>
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
@@ -196,9 +196,9 @@
         <item name="sb_appbar_title"/>
         <item name="sb_appbar_title_appearance">@style/SendbirdH2OnLight01</item>
         <item name="sb_appbar_left_button_icon">@drawable/icon_arrow_left</item>
-        <item name="sb_appbar_left_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_left_button_tint">@color/primary_main</item>
         <item name="sb_appbar_left_button_background">@drawable/sb_button_uncontained_background_light</item>
-        <item name="sb_appbar_divider_color">@color/onlight_04</item>
+        <item name="sb_appbar_divider_color">@color/onlight_text_disabled</item>
     </style>
     <style name="Component.Header.State">
         <item name="sb_appbar_right_button_text"/>
@@ -213,9 +213,9 @@
         <item name="sb_status_frame_action_background">@drawable/selector_button_retry_light</item>
         <item name="sb_status_frame_action_icon">@drawable/icon_refresh</item>
         <item name="sb_status_frame_error_icon">@drawable/icon_error</item>
-        <item name="sb_status_frame_error_icon_tint">@color/onlight_03</item>
-        <item name="sb_status_frame_action_icon_tint">@color/onlight_03</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_error_icon_tint">@color/onlight_text_low_emphasis</item>
+        <item name="sb_status_frame_action_icon_tint">@color/onlight_text_low_emphasis</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
     </style>
 
     <style name="Component.Header.BannedUserList">
@@ -226,7 +226,7 @@
     </style>
     <style name="Component.Status.BannedUserList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_ban</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_users</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -234,7 +234,7 @@
     <style name="Component.Header.ChannelList">
         <item name="sb_appbar_title">@string/sb_text_header_channel_list</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_create</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_widget_select_channel_type">@style/Widget.Sendbird.SelectChannelTypeView</item>
     </style>
@@ -250,7 +250,7 @@
     <style name="Component.Header.Channel">
         <item name="sb_appbar_description_appearance">@style/SendbirdCaption2OnLight02</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_info</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.Channel">
@@ -262,7 +262,7 @@
         <item name="sb_message_typing_indicator_textappearance">@style/SendbirdCaption1OnLight02</item>
         <item name="sb_message_scroll_bottom_background">@drawable/selector_scroll_bottom_light</item>
         <item name="sb_message_scroll_bottom_icon">@drawable/icon_chevron_down</item>
-        <item name="sb_message_scroll_bottom_icon_tint">@color/primary_300</item>
+        <item name="sb_message_scroll_bottom_icon_tint">@color/primary_main</item>
 
         <item name="sb_widget_ogtag">@style/Widget.Sendbird.OgTagView</item>
         <item name="sb_widget_my_message">@style/Widget.Sendbird.Message.Me</item>
@@ -293,7 +293,7 @@
         <item name="sb_message_input_left_button_tint">@color/sb_selector_input_add_color_light</item>
         <item name="sb_message_input_left_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
-        <item name="sb_message_input_right_button_tint">@color/primary_300</item>
+        <item name="sb_message_input_right_button_tint">@color/primary_main</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_voice_recorder_button_icon">@drawable/icon_voice_message_on</item>
         <item name="sb_message_input_voice_recorder_button_tint">@color/sb_selector_input_voice_color_light</item>
@@ -308,12 +308,12 @@
         <item name="sb_message_input_quote_reply_title_text_appearance">@style/SendbirdCaption1OnLight01</item>
         <item name="sb_message_input_quoted_message_text_appearance">@style/SendbirdCaption2OnLight03</item>
         <item name="sb_message_input_quote_reply_right_icon">@drawable/icon_close</item>
-        <item name="sb_message_input_quote_reply_right_icon_tint">@color/onlight_02</item>
+        <item name="sb_message_input_quote_reply_right_icon_tint">@color/onlight_text_mid_emphasis</item>
         <item name="sb_message_input_quote_reply_right_icon_background">@drawable/sb_button_uncontained_background_light</item>
 
         <!-- mention -->
         <item name="sb_recycler_view_background">@drawable/sb_suggested_mention_list_background_light</item>
-        <item name="sb_recycler_view_divide_line_color">@color/onlight_04</item>
+        <item name="sb_recycler_view_divide_line_color">@color/onlight_text_disabled</item>
         <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
         <item name="sb_recycler_view_divide_margin_left">@dimen/sb_size_52</item>
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
@@ -341,7 +341,7 @@
         <item name="sb_menu_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_menu_item_name_appearance">@style/SendbirdSubtitle2OnLight01</item>
         <item name="sb_menu_item_description_appearance">@style/SendbirdSubtitle2OnLight02</item>
-        <item name="sb_menu_item_icon_tint">@color/primary_300</item>
+        <item name="sb_menu_item_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Component.Header.State.CreateChannel">
@@ -371,7 +371,7 @@
     <style name="Component.Header.MemberList">
         <item name="sb_appbar_title">@string/sb_text_header_member_list</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_plus</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.MemberList">
@@ -379,7 +379,7 @@
     </style>
     <style name="Component.Status.MemberList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_user_list_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -389,27 +389,27 @@
 
     <style name="Component.MessageSearchHeader">
         <item name="sb_search_bar_background">@color/background_50</item>
-        <item name="sb_search_divider_color">@color/onlight_04</item>
+        <item name="sb_search_divider_color">@color/onlight_text_disabled</item>
         <item name="sb_search_bar_text_input_background">@drawable/sb_shape_search_background</item>
         <item name="sb_search_bar_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_search_bar_hint_text">@string/sb_text_button_search</item>
-        <item name="sb_search_bar_hint_text_color">@color/onlight_03</item>
+        <item name="sb_search_bar_hint_text_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_search_bar_clear_icon">@drawable/icon_remove</item>
-        <item name="sb_search_bar_clear_icon_tint_color">@color/onlight_03</item>
+        <item name="sb_search_bar_clear_icon_tint_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_search_bar_search_text">@string/sb_text_button_search</item>
         <item name="sb_search_bar_search_text_appearance">@style/SendbirdButtonPrimary300</item>
         <item name="sb_search_bar_search_text_color">@color/sb_button_uncontained_text_color_light</item>
         <item name="sb_search_bar_search_text_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_search_bar_cursor_drawable">@drawable/sb_message_input_cursor_light</item>
         <item name="sb_search_bar_search_icon">@drawable/icon_search</item>
-        <item name="sb_search_bar_search_icon_tint_color">@color/onlight_03</item>
+        <item name="sb_search_bar_search_icon_tint_color">@color/onlight_text_low_emphasis</item>
     </style>
     <style name="Component.List.MessageSearch">
         <item name="sb_widget_message_preview">@style/Widget.Sendbird.MessagePreview</item>
     </style>
     <style name="Component.Status.MessageSearch">
         <item name="sb_status_frame_empty_icon">@drawable/icon_search</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_search_result_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_search_failure</item>
     </style>
@@ -420,7 +420,7 @@
     <style name="Component.ModerationList">
         <item name="sb_menu_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_menu_item_name_appearance">@style/SendbirdSubtitle2OnLight01</item>
-        <item name="sb_menu_item_icon_tint">@color/primary_300</item>
+        <item name="sb_menu_item_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Component.Header.MutedMemberList">
@@ -431,7 +431,7 @@
     </style>
     <style name="Component.Status.MutedMemberList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_mute</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_muted_member</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -439,7 +439,7 @@
     <style name="Component.Header.OpenChannel">
         <item name="sb_appbar_description_appearance">@style/SendbirdCaption2OnLight02</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_members</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.OpenChannel">
@@ -451,7 +451,7 @@
         <item name="sb_message_typing_indicator_textappearance">@style/SendbirdCaption1OnLight02</item>
         <item name="sb_message_scroll_bottom_background">@drawable/selector_scroll_bottom_light</item>
         <item name="sb_message_scroll_bottom_icon">@drawable/icon_chevron_down</item>
-        <item name="sb_message_scroll_bottom_icon_tint">@color/primary_300</item>
+        <item name="sb_message_scroll_bottom_icon_tint">@color/primary_main</item>
 
         <item name="sb_widget_ogtag">@style/Widget.Sendbird.OpenChannel.OgTag</item>
         <item name="sb_widget_user_message">@style/Widget.Sendbird.OpenChannel.Message.User</item>
@@ -471,7 +471,7 @@
         <item name="sb_message_input_left_button_tint">@color/sb_selector_input_add_color_light</item>
         <item name="sb_message_input_left_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
-        <item name="sb_message_input_right_button_tint">@color/primary_300</item>
+        <item name="sb_message_input_right_button_tint">@color/primary_main</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_edit_save_button_text_appearance">@style/SendbirdButtonOnDark01</item>
         <item name="sb_message_input_edit_save_button_text_color">@color/sb_button_contained_text_color_light</item>
@@ -483,7 +483,7 @@
         <item name="sb_message_input_quote_reply_title_text_appearance">@style/SendbirdCaption1OnLight01</item>
         <item name="sb_message_input_quoted_message_text_appearance">@style/SendbirdCaption2OnLight03</item>
         <item name="sb_message_input_quote_reply_right_icon">@drawable/icon_close</item>
-        <item name="sb_message_input_quote_reply_right_icon_tint">@color/onlight_02</item>
+        <item name="sb_message_input_quote_reply_right_icon_tint">@color/onlight_text_mid_emphasis</item>
         <item name="sb_message_input_quote_reply_right_icon_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.Status.OpenChannel">
@@ -505,13 +505,13 @@
         <item name="sb_menu_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_menu_item_name_appearance">@style/SendbirdSubtitle2OnLight01</item>
         <item name="sb_menu_item_description_appearance">@style/SendbirdSubtitle2OnLight02</item>
-        <item name="sb_menu_item_icon_tint">@color/primary_300</item>
+        <item name="sb_menu_item_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Component.Header.OperatorList">
         <item name="sb_appbar_title">@string/sb_text_menu_operators</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_plus</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.OperatorList">
@@ -519,7 +519,7 @@
     </style>
     <style name="Component.Status.OperatorList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_operator_member</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -532,7 +532,7 @@
     </style>
     <style name="Component.Status.ParticipantList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_participants_list_empty</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -557,7 +557,7 @@
         <item name="sb_channel_push_settings_option_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_channel_push_settings_title_appearance">@style/SendbirdSubtitle2OnLight01</item>
         <item name="sb_channel_push_settings_description_appearance">@style/SendbirdBody3OnLight02</item>
-        <item name="sb_channel_push_option_item_divider_color">@color/onlight_04</item>
+        <item name="sb_channel_push_option_item_divider_color">@color/onlight_text_disabled</item>
         <item name="sb_channel_push_option_item_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_channel_switch_track_tint">@color/sb_switch_track_light</item>
         <item name="sb_channel_switch_thumb_tint">@color/sb_switch_thumb_light</item>
@@ -570,7 +570,7 @@
     <style name="Component.OpenChannelModerationList">
         <item name="sb_menu_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_menu_item_name_appearance">@style/SendbirdSubtitle2OnLight01</item>
-        <item name="sb_menu_item_icon_tint">@color/primary_300</item>
+        <item name="sb_menu_item_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Component.Header.State.OpenChannelRegisterOperator">
@@ -588,7 +588,7 @@
     <style name="Component.Header.OpenChannelOperatorList">
         <item name="sb_appbar_title">@string/sb_text_menu_operators</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_plus</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
     </style>
     <style name="Component.List.OpenChannelOperatorList">
@@ -596,7 +596,7 @@
     </style>
     <style name="Component.Status.OpenChannelOperatorList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_members</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_operator_participant</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -609,7 +609,7 @@
     </style>
     <style name="Component.Status.OpenChannelMutedParticipantList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_mute</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_muted_participant</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
@@ -622,14 +622,14 @@
     </style>
     <style name="Component.Status.OpenChannelBannedUserList">
         <item name="sb_status_frame_empty_icon">@drawable/icon_ban</item>
-        <item name="sb_status_frame_empty_icon_tint">@color/onlight_03</item>
+        <item name="sb_status_frame_empty_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_status_frame_empty_text">@string/sb_text_empty_no_banned_users</item>
         <item name="sb_status_frame_error_text">@string/sb_text_error_get_user_list</item>
     </style>
     <style name="Component.Header.OpenChannelList">
         <item name="sb_appbar_title">@string/sb_text_header_channel_list</item>
         <item name="sb_appbar_right_button_icon">@drawable/icon_create</item>
-        <item name="sb_appbar_right_button_tint">@color/primary_300</item>
+        <item name="sb_appbar_right_button_tint">@color/primary_main</item>
         <item name="sb_appbar_right_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_widget_select_channel_type">@style/Widget.Sendbird.SelectChannelTypeView</item>
     </style>
@@ -647,13 +647,13 @@
         <item name="sb_channel_profile_input_text_input_background">@drawable/sb_shape_edit_text_background_light</item>
         <item name="sb_channel_profile_input_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_channel_profile_input_hint_text">@string/text_input_channel_name_hint</item>
-        <item name="sb_channel_profile_input_hint_text_color">@color/onlight_03</item>
+        <item name="sb_channel_profile_input_hint_text_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_channel_profile_input_clear_icon">@drawable/icon_remove</item>
-        <item name="sb_channel_profile_input_clear_icon_tint_color">@color/onlight_03</item>
+        <item name="sb_channel_profile_input_clear_icon_tint_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_channel_profile_input_cursor_drawable">@drawable/sb_message_input_cursor_light</item>
         <item name="sb_channel_profile_input_media_select_icon_background">@drawable/sb_shape_circle_background_300</item>
         <item name="sb_channel_profile_input_camera_icon">@drawable/icon_camera</item>
-        <item name="sb_channel_profile_input_camera_icon_tint">@color/ondark_01</item>
+        <item name="sb_channel_profile_input_camera_icon_tint">@color/ondark_text_high_emphasis</item>
     </style>
 
     <style name="Component.Header.MessageThread">
@@ -693,7 +693,7 @@
         <item name="sb_message_input_left_button_tint">@color/sb_selector_input_add_color_light</item>
         <item name="sb_message_input_left_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_right_button_icon">@drawable/icon_send</item>
-        <item name="sb_message_input_right_button_tint">@color/primary_300</item>
+        <item name="sb_message_input_right_button_tint">@color/primary_main</item>
         <item name="sb_message_input_right_button_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_message_input_voice_recorder_button_icon">@drawable/icon_voice_message_on</item>
         <item name="sb_message_input_voice_recorder_button_tint">@color/sb_selector_input_voice_color_light</item>
@@ -707,7 +707,7 @@
 
         <!-- mention -->
         <item name="sb_recycler_view_background">@drawable/sb_suggested_mention_list_background_light</item>
-        <item name="sb_recycler_view_divide_line_color">@color/onlight_04</item>
+        <item name="sb_recycler_view_divide_line_color">@color/onlight_text_disabled</item>
         <item name="sb_recycler_view_divide_line_height">@dimen/sb_size_1</item>
         <item name="sb_recycler_view_divide_margin_left">@dimen/sb_size_52</item>
         <item name="sb_recycler_view_divide_margin_right">0dp</item>
@@ -727,7 +727,7 @@
     <style name="Component.List.FeedNotificationChannel">
         <item name="sb_widget_feed_notification">@style/Widget.Sendbird.Message.FeedNotificationChannel</item>
         <item name="sb_notification_recyclerview_background">@color/background_50</item>
-        <item name="sb_notification_recyclerview_tooltip_background">@color/primary_300</item>
+        <item name="sb_notification_recyclerview_tooltip_background">@color/primary_main</item>
         <item name="sb_notification_recyclerview_tooltip_text_appearance">@style/SendbirdBody2OnDark01</item>
         <item name="sb_category_filter_background">@drawable/selector_category_filter_menu_light</item>
         <item name="sb_category_filter_text_color">@drawable/selector_category_filter_menu_text_color_light</item>
@@ -744,7 +744,7 @@
     <style name="Component.List.ChatNotificationChannel">
         <item name="sb_widget_chat_notification">@style/Widget.Sendbird.Message.ChatNotificationChannel</item>
         <item name="sb_notification_recyclerview_background">@color/background_50</item>
-        <item name="sb_notification_recyclerview_tooltip_background">@color/primary_300</item>
+        <item name="sb_notification_recyclerview_tooltip_background">@color/primary_main</item>
         <item name="sb_notification_recyclerview_tooltip_text_appearance">@style/SendbirdBody2OnDark01</item>
     </style>
     <style name="Component.Status.ChatNotificationChannel">
@@ -793,11 +793,11 @@
     </style>
 
     <style name="Widget.Sendbird.Snackbar">
-        <item name="sb_snackbar_roof_line_color">@color/onlight_04</item>
+        <item name="sb_snackbar_roof_line_color">@color/onlight_text_disabled</item>
         <item name="sb_snackbar_background">@color/background_50</item>
         <item name="sb_snackbar_text_appearance">@style/SendbirdBody3OnLight02</item>
         <item name="sb_snackbar_icon">@drawable/icon_info</item>
-        <item name="sb_snackbar_icon_tint">@color/onlight_02</item>
+        <item name="sb_snackbar_icon_tint">@color/onlight_text_mid_emphasis</item>
     </style>
 
     <!-- Message -->
@@ -815,7 +815,7 @@
     <style name="Widget.Sendbird.Message.FeedNotificationChannel">
         <item name="sb_feed_notification_background">@color/background_100</item>
         <item name="sb_feed_notification_radius">@dimen/sb_size_8</item>
-        <item name="sb_feed_notification_unread_indicator_color">@color/secondary_300</item>
+        <item name="sb_feed_notification_unread_indicator_color">@color/secondary_main</item>
     </style>
     <style name="Widget.Sendbird.Message.ChatNotificationChannel">
         <item name="sb_chat_notification_background">@color/background_100</item>
@@ -824,11 +824,11 @@
 
     <style name="Widget.Sendbird.Message.Me">
         <item name="sb_quoted_message_me_title_icon">@drawable/icon_reply_filled</item>
-        <item name="sb_quoted_message_me_title_icon_tint">@color/onlight_03</item>
+        <item name="sb_quoted_message_me_title_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_quoted_message_me_title_text_appearance">@style/SendbirdCaption1OnLight03</item>
         <item name="sb_quoted_message_me_background">@drawable/sb_shape_chat_bubble</item>
         <item name="sb_quoted_message_me_background_tint">@color/background_100</item>
-        <item name="sb_quoted_message_me_file_icon_tint">@color/onlight_03</item>
+        <item name="sb_quoted_message_me_file_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_quoted_message_me_text_appearance">@style/SendbirdCaption2OnLight03</item>
 
         <item name="sb_message_emoji_reaction_list_background">@drawable/sb_shape_chat_bubble_reactions_light</item>
@@ -836,11 +836,11 @@
 
     <style name="Widget.Sendbird.Message.Other">
         <item name="sb_quoted_message_other_title_icon">@drawable/icon_reply_filled</item>
-        <item name="sb_quoted_message_other_title_icon_tint">@color/onlight_03</item>
+        <item name="sb_quoted_message_other_title_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_quoted_message_other_title_text_appearance">@style/SendbirdCaption1OnLight03</item>
         <item name="sb_quoted_message_other_background">@drawable/sb_shape_chat_bubble</item>
         <item name="sb_quoted_message_other_background_tint">@color/background_100</item>
-        <item name="sb_quoted_message_other_file_icon_tint">@color/onlight_03</item>
+        <item name="sb_quoted_message_other_file_icon_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_quoted_message_other_text_appearance">@style/SendbirdCaption2OnLight03</item>
 
         <item name="sb_message_emoji_reaction_list_background">@drawable/sb_shape_chat_bubble_reactions_light</item>
@@ -854,8 +854,8 @@
         <item name="sb_message_me_ogtag_background">@drawable/sb_message_og_background</item>
         <item name="sb_message_me_ogtag_background_tint">@color/sb_message_other_tint_light</item>
 
-        <item name="sb_message_me_link_text_color">@color/ondark_01</item>
-        <item name="sb_message_me_clicked_link_background_color">@color/primary_400</item>
+        <item name="sb_message_me_link_text_color">@color/ondark_text_high_emphasis</item>
+        <item name="sb_message_me_clicked_link_background_color">@color/primary_dark</item>
 
         <item name="sb_message_my_edited_mark_text_appearance">@style/SendbirdBody3OnDark02</item>
         <item name="sb_message_my_mentioned_text_appearance">@style/SendbirdMentionLightMe</item>
@@ -871,8 +871,8 @@
         <item name="sb_message_other_ogtag_background">@drawable/sb_message_og_background</item>
         <item name="sb_message_other_ogtag_background_tint">@color/sb_message_other_tint_light</item>
 
-        <item name="sb_message_other_link_text_color">@color/onlight_01</item>
-        <item name="sb_message_other_clicked_link_background_color">@color/primary_100</item>
+        <item name="sb_message_other_link_text_color">@color/onlight_text_high_emphasis</item>
+        <item name="sb_message_other_clicked_link_background_color">@color/primary_extra_light</item>
         <item name="sb_message_other_edited_mark_text_appearance">@style/SendbirdBody3OnLight02</item>
         <item name="sb_message_other_mentioned_text_appearance">@style/SendbirdMentionLightOther</item>
         <item name="sb_message_mentioned_current_user_text_background">@color/highlight</item>
@@ -905,16 +905,16 @@
     <style name="Widget.Sendbird.Emoji">
         <item name="sb_emoji_background">@drawable/sb_emoji_background_light</item>
         <item name="sb_emoji_more_button_src">@drawable/icon_emoji_more</item>
-        <item name="sb_emoji_more_button_src_tint">@color/onlight_03</item>
+        <item name="sb_emoji_more_button_src_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_emoji_reaction_background">@drawable/sb_emoji_reaction_background_light</item>
         <item name="sb_emoji_reaction_text_appearance">@style/SendbirdCaption4OnLight01</item>
         <item name="sb_emoji_reaction_more_button_src">@drawable/icon_emoji_more</item>
-        <item name="sb_emoji_reaction_more_button_src_tint">@color/onlight_03</item>
+        <item name="sb_emoji_reaction_more_button_src_tint">@color/onlight_text_low_emphasis</item>
         <item name="sb_emoji_reaction_count_text_appearance">@style/SendbirdButtonOnLight03</item>
         <item name="sb_emoji_reaction_count_tab_layout_background">@drawable/sb_tab_layout_border_background_light</item>
-        <item name="sb_emoji_reaction_count_tab_indicator_color">@color/primary_300</item>
+        <item name="sb_emoji_reaction_count_tab_indicator_color">@color/primary_main</item>
         <item name="sb_emoji_failed_src">@drawable/icon_question</item>
-        <item name="sb_emoji_failed_src_tint">@color/onlight_03</item>
+        <item name="sb_emoji_failed_src_tint">@color/onlight_text_low_emphasis</item>
     </style>
 
     <style name="Widget.Sendbird.SelectChannelTypeView">
@@ -922,7 +922,7 @@
         <item name="sb_select_channel_type_menu_background">@drawable/sb_button_uncontained_background_light</item>
         <item name="sb_select_channel_type_menu_title_appearance">@style/SendbirdH1OnLight01</item>
         <item name="sb_select_channel_type_menu_name_appearance">@style/SendbirdCaption2OnLight01</item>
-        <item name="sb_select_channel_type_menu_icon_tint">@color/primary_300</item>
+        <item name="sb_select_channel_type_menu_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Widget.Sendbird.UserProfile">
@@ -930,7 +930,7 @@
         <item name="sb_user_profile_user_name_text_appearance">@style/SendbirdH1OnLight01</item>
         <item name="sb_user_profile_button_background">@drawable/selector_button_default_light</item>
         <item name="sb_user_profile_button_text_appearance">@style/SendbirdButtonOnLight01</item>
-        <item name="sb_user_profile_divider_color">@color/onlight_04</item>
+        <item name="sb_user_profile_divider_color">@color/onlight_text_disabled</item>
         <item name="sb_user_profile_information_title_text_appearance">@style/SendbirdBody2OnLight02</item>
         <item name="sb_user_profile_information_text_appearance">@style/SendbirdBody3OnLight01</item>
     </style>
@@ -943,19 +943,19 @@
         <item name="sb_open_channel_preview_background">@drawable/selector_rectangle_light</item>
         <item name="sb_open_channel_preview_cover_image_background">@drawable/sb_shape_circle_background_300</item>
         <item name="sb_open_channel_preview_default_icon">@drawable/icon_channels</item>
-        <item name="sb_open_channel_preview_default_icon_tint">@color/ondark_01</item>
+        <item name="sb_open_channel_preview_default_icon_tint">@color/ondark_text_high_emphasis</item>
         <item name="sb_open_channel_preview_title_appearance">@style/SendbirdSubtitle1OnLight01</item>
         <item name="sb_open_channel_preview_participants_count_appearance">@style/SendbirdCaption1OnLight02</item>
         <item name="sb_open_channel_preview_participants_icon">@drawable/icon_members</item>
-        <item name="sb_open_channel_preview_participants_icon_tint">@color/onlight_02</item>
+        <item name="sb_open_channel_preview_participants_icon_tint">@color/onlight_text_mid_emphasis</item>
         <item name="sb_open_channel_preview_frozen_icon">@drawable/icon_freeze</item>
-        <item name="sb_open_channel_preview_frozen_icon_tint">@color/primary_300</item>
+        <item name="sb_open_channel_preview_frozen_icon_tint">@color/primary_main</item>
     </style>
 
     <style name="Widget.Sendbird.ThreadInfoView">
         <item name="sb_thread_info_reply_count_text_appearance">@style/SendbirdCaption3Primary300</item>
         <item name="sb_thread_info_more_icon">@drawable/icon_plus</item>
-        <item name="sb_thread_info_more_icon_tint">@color/ondark_01</item>
+        <item name="sb_thread_info_more_icon_tint">@color/ondark_text_high_emphasis</item>
     </style>
 
     <style name="Widget.Sendbird.ParentMessageInfo">
@@ -963,14 +963,14 @@
         <item name="sb_parent_message_info_sent_at_appearance">@style/SendbirdCaption2OnLight03</item>
         <item name="sb_parent_message_info_text_message_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_parent_message_info_more_icon">@drawable/icon_more</item>
-        <item name="sb_parent_message_info_more_icon_tint">@color/onlight_02</item>
+        <item name="sb_parent_message_info_more_icon_tint">@color/onlight_text_mid_emphasis</item>
         <item name="sb_parent_message_info_file_message_background">@drawable/sb_shape_chat_bubble</item>
         <item name="sb_parent_message_info_file_message_background_tint">@color/background_100</item>
         <item name="sb_parent_message_info_file_name_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_parent_message_info_reply_count_appearance">@style/SendbirdBody3OnLight03</item>
         <item name="sb_message_recyclerview_background">@color/background_50</item>
-        <item name="sb_parent_message_info_divider_line_color">@color/onlight_04</item>
-        <item name="sb_parent_message_info_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_parent_message_info_divider_line_color">@color/onlight_text_disabled</item>
+        <item name="sb_parent_message_info_voice_message_progress_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_parent_message_info_voice_message_progress_track_color">@color/sb_message_other_tint_light</item>
         <item name="sb_parent_message_info_voice_message_timeline_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_widget_emoji_message">@style/Widget.Sendbird.Emoji</item>
@@ -980,7 +980,7 @@
     <style name="Widget.Sendbird.Message.Me.VoiceMessage">
         <item name="sb_message_me_background">@drawable/sb_shape_chat_bubble</item>
         <item name="sb_message_me_background_tint">@color/sb_message_me_tint_light</item>
-        <item name="sb_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_progress_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_voice_message_progress_track_color">@color/sb_message_me_tint_light</item>
         <item name="sb_voice_message_timeline_text_appearance">@style/SendbirdBody3OnDark01</item>
     </style>
@@ -988,31 +988,31 @@
     <style name="Widget.Sendbird.Message.Other.VoiceMessage">
         <item name="sb_message_other_background">@drawable/sb_shape_chat_bubble</item>
         <item name="sb_message_other_background_tint">@color/sb_message_other_tint_light</item>
-        <item name="sb_voice_message_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_progress_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_voice_message_progress_track_color">@color/sb_message_other_tint_light</item>
         <item name="sb_voice_message_timeline_text_appearance">@style/SendbirdBody3OnLight01</item>
     </style>
 
     <style name="Widget.Sendbird.VoiceMessageInputView">
         <item name="sb_voice_message_input_background">@android:color/transparent</item>
-        <item name="sb_voice_message_input_progress_color">@color/onlight_03</item>
+        <item name="sb_voice_message_input_progress_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_voice_message_input_progress_track_color">@color/sb_voice_message_recorder_progress_background_light</item>
         <item name="sb_voice_message_input_timeline_text_appearance">@style/SendbirdCaption1OnDark01</item>
         <item name="sb_voice_message_input_timeline_text_color">@color/sb_voice_message_recorder_timeline_light</item>
         <item name="sb_voice_message_input_record_button_icon">@drawable/icon_recording</item>
-        <item name="sb_voice_message_input_record_button_tint">@color/error_300</item>
+        <item name="sb_voice_message_input_record_button_tint">@color/error_main</item>
         <item name="sb_voice_message_input_record_button_background">@drawable/sb_shape_oval_button</item>
         <item name="sb_voice_message_input_record_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
         <item name="sb_voice_message_input_play_button_icon">@drawable/icon_play</item>
-        <item name="sb_voice_message_input_play_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_play_button_tint">@color/onlight_text_high_emphasis</item>
         <item name="sb_voice_message_input_play_button_background">@drawable/sb_shape_oval_button</item>
         <item name="sb_voice_message_input_play_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
         <item name="sb_voice_message_input_pause_button_icon">@drawable/icon_pause</item>
-        <item name="sb_voice_message_input_pause_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_pause_button_tint">@color/onlight_text_high_emphasis</item>
         <item name="sb_voice_message_input_pause_button_background">@drawable/sb_shape_oval_button</item>
         <item name="sb_voice_message_input_pause_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
         <item name="sb_voice_message_input_stop_button_icon">@drawable/icon_stop</item>
-        <item name="sb_voice_message_input_stop_button_tint">@color/onlight_01</item>
+        <item name="sb_voice_message_input_stop_button_tint">@color/onlight_text_high_emphasis</item>
         <item name="sb_voice_message_input_stop_button_background">@drawable/sb_shape_oval_button</item>
         <item name="sb_voice_message_input_stop_button_background_tint">@color/sb_voice_message_recorder_oval_button_background_light</item>
         <item name="sb_voice_message_input_send_button_icon">@drawable/icon_send</item>
@@ -1056,9 +1056,9 @@
         <item name="sb_dialog_view_list_item_text_color">@color/sb_selector_enabled_01_light</item>
         <item name="sb_dialog_view_list_item_background">@drawable/selector_rectangle_light</item>
         <item name="sb_dialog_view_edit_text_appearance">@style/SendbirdSubtitle2OnLight01</item>
-        <item name="sb_dialog_view_edit_text_tint">@color/primary_300</item>
+        <item name="sb_dialog_view_edit_text_tint">@color/primary_main</item>
         <item name="sb_dialog_view_edit_text_cursor_drawable">@drawable/sb_message_input_cursor_light</item>
-        <item name="sb_dialog_view_edit_text_hint_color">@color/onlight_03</item>
+        <item name="sb_dialog_view_edit_text_hint_color">@color/onlight_text_low_emphasis</item>
         <item name="sb_dialog_view_icon_tint">@color/sb_selector_enabled_primary_light</item>
 
         <item name="sb_dialog_view_positive_button_text_appearance">@style/SendbirdButtonPrimary300</item>
@@ -1107,9 +1107,9 @@
         <item name="sb_message_preview_message_text_appearance">@style/SendbirdBody3OnLight03</item>
         <item name="sb_message_preview_message_file_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_message_preview_sent_at_text_appearance">@style/SendbirdCaption2OnLight02</item>
-        <item name="sb_message_preview_divider_color">@color/onlight_04</item>
+        <item name="sb_message_preview_divider_color">@color/onlight_text_disabled</item>
         <item name="sb_message_preview_message_metaphor_background_color">@color/background_100</item>
-        <item name="sb_message_preview_message_metaphor_icon_tint_color">@color/primary_300</item>
+        <item name="sb_message_preview_message_metaphor_icon_tint_color">@color/primary_main</item>
     </style>
 
     <!-- OpenChannel -->
@@ -1130,7 +1130,7 @@
         <item name="sb_message_background">@drawable/selector_rectangle_light</item>
         <item name="sb_message_text_appearance">@style/SendbirdBody3OnLight01</item>
         <item name="sb_message_ogtag_background">@drawable/selector_open_channel_message_bg_light</item>
-        <item name="sb_message_link_text_color">@color/primary_300</item>
+        <item name="sb_message_link_text_color">@color/primary_main</item>
         <item name="sb_message_edited_mark_text_appearance">@style/SendbirdBody3OnLight02</item>
     </style>
 

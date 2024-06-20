@@ -29,7 +29,7 @@
         android:textSize="@dimen/sb_text_size_14"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textColor="@color/onlight_02"
+        android:textColor="@color/onlight_text_mid_emphasis"
         android:lineSpacingExtra="@dimen/sb_text_size_2"
         android:layout_marginStart="@dimen/sb_size_24"
         android:layout_marginTop="@dimen/sb_size_4"

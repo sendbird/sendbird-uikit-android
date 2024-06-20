@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector  xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true">
-        <bitmap android:src="@drawable/icon_radio_button_on" android:tint="@color/primary_200"/>
+        <bitmap android:src="@drawable/icon_radio_button_on" android:tint="@color/primary_light"/>
     </item>
     <item android:state_checked="false">
-        <bitmap android:src="@drawable/icon_radio_button_off" android:tint="@color/ondark_03"/>
+        <bitmap android:src="@drawable/icon_radio_button_off" android:tint="@color/ondark_text_low_emphasis"/>
     </item>
 </selector>

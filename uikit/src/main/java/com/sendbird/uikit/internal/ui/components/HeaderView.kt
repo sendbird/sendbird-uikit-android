@@ -111,7 +111,7 @@ internal class HeaderView @JvmOverloads constructor(
                 R.styleable.HeaderComponent_sb_appbar_right_button_background,
                 R.drawable.sb_button_uncontained_background_light
             )
-            val dividerColor = a.getResourceId(R.styleable.HeaderComponent_sb_appbar_divider_color, R.color.onlight_04)
+            val dividerColor = a.getResourceId(R.styleable.HeaderComponent_sb_appbar_divider_color, R.color.onlight_text_disabled)
             binding.getRoot().setBackgroundResource(background)
             binding.title.text = titleText
             binding.title.setAppearance(context, titleTextAppearance)

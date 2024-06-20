@@ -5,6 +5,7 @@ import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.ThemeHomeActivity
 import com.sendbird.uikit.samples.common.extensions.logout
+import com.sendbird.uikit.samples.common.extensions.setTextColorResource
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 import com.sendbird.uikit.samples.databinding.ActivityAiChatbotHomeBinding
@@ -20,6 +21,7 @@ class AIChatBotHomeActivity : ThemeHomeActivity() {
 
     override fun applyTheme() {
         super.applyTheme()
+        binding.mainTitle.setTextColorResource(if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis)
         binding.btSignOut.setBackgroundResource(
             if (isDarkTheme) R.drawable.selector_home_signout_button_dark
             else R.drawable.selector_home_signout_button

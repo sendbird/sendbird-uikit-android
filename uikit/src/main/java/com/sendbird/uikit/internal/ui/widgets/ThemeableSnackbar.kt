@@ -70,7 +70,7 @@ internal class ThemeableSnackbar @JvmOverloads constructor(
             val background =
                 a.getResourceId(R.styleable.ThemeableSnackbar_sb_snackbar_background, R.color.background_50)
             val rooflineColor =
-                a.getResourceId(R.styleable.ThemeableSnackbar_sb_snackbar_roof_line_color, R.color.onlight_04)
+                a.getResourceId(R.styleable.ThemeableSnackbar_sb_snackbar_roof_line_color, R.color.onlight_text_disabled)
             val textAppearance = a.getResourceId(
                 R.styleable.ThemeableSnackbar_sb_snackbar_text_appearance,
                 R.style.SendbirdBody3OnLight02

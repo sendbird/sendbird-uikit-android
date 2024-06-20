@@ -90,7 +90,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
             val linkTextColor = a.getColorStateList(R.styleable.MessageView_User_sb_message_other_link_text_color)
             val clickedLinkBackgroundColor = a.getResourceId(
                 R.styleable.MessageView_User_sb_message_other_clicked_link_background_color,
-                R.color.primary_100
+                R.color.primary_extra_light
             )
             editedAppearance = a.getResourceId(
                 R.styleable.MessageView_User_sb_message_other_edited_mark_text_appearance,

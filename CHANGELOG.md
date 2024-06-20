@@ -1,4 +1,11 @@
 # Changelog
+### v3.18.0 (Jun 20, 2024) with Chat SDK `v4.16.4`
+* Updated dependencies
+  * update compileSdkVersion to 34
+  * [Gradle Plugin] Gradle 8.6
+  * [Gradle Plugin] Android Gradle Plugin 8.4.1
+* Deprecated `enableReactionsSupergroup(Boolean)` in `ChannelConfig`, which is not allowed by default. If you wish to use this feature, [contact us](https://dashboard.sendbird.com/settings/contact_us?category=feedback_and_feature_requests&product=UIKit&subject=%5BFeature%20Request%5D%20Enable%20reactions%20for%20supergroup%20in%20UIKit).
+* Added a new set of `color` resources for UIKit.
 ### v3.17.1 (Jun 7, 2024) with Chat SDK `v4.16.4`
 * Fixed an intermittent crash due to variable initialization when entering a notification channel.
 * Optimized ChatBot streaming message animation.### v3.17.0 (May 23, 2024) with Chat SDK `v4.16.3`

@@ -107,7 +107,7 @@ internal class SingleMenuItemView @JvmOverloads constructor(
             binding.tvDescription.setAppearance(context, descriptionAppearance)
             binding.vgMenuItem.setBackgroundResource(itemBackground)
             val useDarkTheme = SendbirdUIKit.isDarkMode()
-            val nextTint = if (useDarkTheme) R.color.ondark_01 else R.color.onlight_01
+            val nextTint = if (useDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis
             val divider = if (useDarkTheme) R.drawable.sb_line_divider_dark else R.drawable.sb_line_divider_light
             val switchTrackTint = if (useDarkTheme) R.color.sb_switch_track_dark else R.color.sb_switch_track_light
             val switchThumbTint = if (useDarkTheme) R.color.sb_switch_thumb_dark else R.color.sb_switch_thumb_light

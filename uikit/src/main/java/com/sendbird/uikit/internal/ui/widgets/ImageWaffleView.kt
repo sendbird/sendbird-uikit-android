@@ -158,7 +158,7 @@ internal open class ImageWaffleView @JvmOverloads internal constructor(
         val paddingBottom = paddingBottom
         canvasBounds.set(0f, 0f, width.toFloat(), height.toFloat())
         borderPaint.color =
-            ContextCompat.getColor(context, if (SendbirdUIKit.isDarkMode()) R.color.ondark_04 else R.color.onlight_04)
+            ContextCompat.getColor(context, if (SendbirdUIKit.isDarkMode()) R.color.ondark_text_disabled else R.color.onlight_text_disabled)
         canvas.drawRoundRect(
             canvasBounds,
             (width / 2).toFloat(),

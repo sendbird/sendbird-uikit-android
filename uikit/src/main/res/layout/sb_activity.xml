@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:importantForAccessibility="no"/>

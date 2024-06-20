@@ -299,8 +299,9 @@ data class ChannelConfig internal constructor(
          * @param value true if the reactions is enabled in the supergroup channel, false otherwise
          * @since 3.15.0
          */
+        @Deprecated("This method is deprecated since 3.18.0. If you wish to use this feature, contact us.", level = DeprecationLevel.HIDDEN)
         set(value) {
-            enableReactionsSupergroupMutable = value
+            enableReactionsSupergroupMutable = null
         }
     var enableVoiceMessage: Boolean
         /**

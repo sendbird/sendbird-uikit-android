@@ -139,7 +139,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                 val requestListener: RequestListener<Drawable?> = object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         e: GlideException?,
-                        model: Any,
+                        model: Any?,
                         target: Target<Drawable?>,
                         isFirstResource: Boolean
                     ): Boolean {
@@ -148,7 +148,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     }
 
                     override fun onResourceReady(
-                        resource: Drawable?,
+                        resource: Drawable,
                         model: Any,
                         target: Target<Drawable?>,
                         dataSource: DataSource,
@@ -174,7 +174,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageDrawable(
                         DrawableUtils.createOvalIcon(
-                            context, R.color.background_50, R.drawable.icon_gif, R.color.onlight_03
+                            context, R.color.background_50, R.drawable.icon_gif, R.color.onlight_text_low_emphasis
                         )
                     )
                     when (parentMessage) {
@@ -204,7 +204,7 @@ internal class OtherQuotedMessageView @JvmOverloads constructor(
                     binding.quoteReplyThumbnailPanel.visibility = VISIBLE
                     binding.ivQuoteReplyThumbnailIcon.setImageDrawable(
                         DrawableUtils.createOvalIcon(
-                            context, R.color.background_50, R.drawable.icon_play, R.color.onlight_03
+                            context, R.color.background_50, R.drawable.icon_play, R.color.onlight_text_low_emphasis
                         )
                     )
                     when (parentMessage) {

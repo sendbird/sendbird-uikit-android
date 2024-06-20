@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector  xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <bitmap android:src="@drawable/icon_bad" android:tint="@color/onlight_01"/>
+        <bitmap android:src="@drawable/icon_bad" android:tint="@color/onlight_text_high_emphasis"/>
     </item>
     <item android:state_enabled="false">
-        <bitmap android:src="@drawable/icon_bad" android:tint="@color/ondark_04"/>
+        <bitmap android:src="@drawable/icon_bad" android:tint="@color/ondark_text_disabled"/>
     </item>
     <item>
-        <bitmap android:src="@drawable/icon_bad" android:tint="@color/ondark_02"/>
+        <bitmap android:src="@drawable/icon_bad" android:tint="@color/ondark_text_mid_emphasis"/>
     </item>
 </selector>

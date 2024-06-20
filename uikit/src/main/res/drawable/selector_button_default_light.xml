@@ -4,14 +4,14 @@
         <shape>
             <corners android:radius="@dimen/sb_size_4"/>
             <solid android:color="@color/background_100" />
-            <stroke android:color="@color/onlight_01" android:width="@dimen/sb_size_1" />
+            <stroke android:color="@color/onlight_text_high_emphasis" android:width="@dimen/sb_size_1" />
         </shape>
     </item>
     <item android:state_pressed="false">
         <shape>
             <corners android:radius="@dimen/sb_size_4"/>
             <solid android:color="@android:color/transparent" />
-            <stroke android:color="@color/onlight_01" android:width="@dimen/sb_size_1" />
+            <stroke android:color="@color/onlight_text_high_emphasis" android:width="@dimen/sb_size_1" />
         </shape>
     </item>
 </selector>

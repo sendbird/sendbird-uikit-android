@@ -46,7 +46,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:background="@color/onlight_04"/>
+        android:background="@color/onlight_text_disabled"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/customizationList"

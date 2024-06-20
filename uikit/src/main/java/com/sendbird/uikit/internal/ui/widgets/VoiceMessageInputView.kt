@@ -78,7 +78,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             )
             val recordButtonTint = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_record_button_tint,
-                R.color.error_300
+                R.color.error_main
             )
             val recordButtonBackground = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_record_button_background,
@@ -94,7 +94,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             )
             val playButtonTint = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_play_button_tint,
-                R.color.onlight_01
+                R.color.onlight_text_high_emphasis
             )
             val playButtonBackground = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_play_button_background,
@@ -110,7 +110,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             )
             val pauseButtonTint = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_pause_button_tint,
-                R.color.onlight_01
+                R.color.onlight_text_high_emphasis
             )
             val pauseButtonBackground = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_pause_button_background,
@@ -126,7 +126,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             )
             val stopButtonTint = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_stop_button_tint,
-                R.color.onlight_01
+                R.color.onlight_text_high_emphasis
             )
             val stopButtonBackground = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_stop_button_background,
@@ -142,7 +142,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             )
             val sendButtonTint = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_send_button_tint,
-                R.color.primary_300
+                R.color.primary_main
             )
             val sendButtonBackground = a.getResourceId(
                 R.styleable.VoiceMessageInputView_sb_voice_message_input_send_button_background,
@@ -184,7 +184,7 @@ internal class VoiceMessageInputView @JvmOverloads constructor(
             binding.btnCancel.setTextColor(AppCompatResources.getColorStateList(context, cancelButtonTextColor))
             binding.recordingIcon.imageTintList = AppCompatResources.getColorStateList(
                 context,
-                if (SendbirdUIKit.isDarkMode()) R.color.error_200 else R.color.error_300
+                if (SendbirdUIKit.isDarkMode()) R.color.error_light else R.color.error_main
             )
             binding.ibtnRecord.background =
                 DrawableUtils.setTintList(

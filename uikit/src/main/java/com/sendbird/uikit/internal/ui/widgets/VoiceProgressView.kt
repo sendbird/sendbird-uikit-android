@@ -57,9 +57,9 @@ internal class VoiceProgressView @JvmOverloads constructor(
         progressRectF.set(0F, 0F, progress * w.toFloat() / max, h.toFloat())
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas?.apply {
+        canvas.apply {
             clipPath(trackRectPath)
             drawRect(trackRectF, trackPaint)
             drawRect(progressRectF, progressPaint)

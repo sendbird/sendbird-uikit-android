@@ -26,8 +26,8 @@ internal class ToastView @JvmOverloads constructor(
                     a.getResourceId(R.styleable.ToastView_sb_toast_background, R.drawable.sb_toast_background_light)
                 val textAppearance =
                     a.getResourceId(R.styleable.ToastView_sb_toast_text_appearance, R.style.SendbirdBody3OnDark01)
-                val successTint = if (SendbirdUIKit.isDarkMode()) R.color.secondary_500 else R.color.secondary_200
-                val errorTint = if (SendbirdUIKit.isDarkMode()) R.color.error_300 else R.color.error_200
+                val successTint = if (SendbirdUIKit.isDarkMode()) R.color.secondary_extra_dark else R.color.secondary_light
+                val errorTint = if (SendbirdUIKit.isDarkMode()) R.color.error_main else R.color.error_light
                 toastPanel.setBackgroundResource(background)
                 toastPanel.background.alpha = 163
                 tvToastText.setAppearance(context, textAppearance)

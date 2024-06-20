@@ -91,7 +91,7 @@
             android:resource="@drawable/icon_push_lollipop" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/primary_300" />
+            android:resource="@color/primary_main" />
     </application>
 
 </manifest>

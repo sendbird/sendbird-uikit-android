@@ -23,7 +23,7 @@
     <ImageView
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_0"
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         app:layout_constraintTop_toTopOf="@id/ivLiveThumbnail"
         app:layout_constraintBottom_toBottomOf="@id/ivLiveThumbnail"
         app:layout_constraintStart_toStartOf="@id/ivLiveThumbnail"
@@ -48,7 +48,7 @@
         android:textSize="@dimen/sb_text_size_12"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
-        android:textColor="@color/ondark_01"
+        android:textColor="@color/ondark_text_high_emphasis"
         app:layout_constraintStart_toEndOf="@id/liveIndicator"
         app:layout_constraintTop_toTopOf="@id/liveIndicator"
         app:layout_constraintBottom_toBottomOf="@id/liveIndicator"/>

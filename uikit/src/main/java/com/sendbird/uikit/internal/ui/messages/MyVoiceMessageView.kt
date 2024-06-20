@@ -46,9 +46,9 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
                 R.drawable.sb_shape_chat_bubble_reactions_light
             )
             val progressColor =
-                a.getResourceId(R.styleable.MessageView_File_sb_voice_message_progress_color, R.color.onlight_03)
+                a.getResourceId(R.styleable.MessageView_File_sb_voice_message_progress_color, R.color.onlight_text_low_emphasis)
             val progressTrackColor =
-                a.getResourceId(R.styleable.MessageView_File_sb_voice_message_progress_track_color, R.color.primary_300)
+                a.getResourceId(R.styleable.MessageView_File_sb_voice_message_progress_track_color, R.color.primary_main)
             val timelineTextAppearance =
                 a.getResourceId(
                     R.styleable.MessageView_File_sb_voice_message_timeline_text_appearance,
@@ -68,11 +68,11 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
             )
             binding.voiceMessage.setProgressProgressColor(AppCompatResources.getColorStateList(context, progressColor))
             binding.voiceMessage.setTimelineTextAppearance(timelineTextAppearance)
-            val loadingTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_300 else R.color.primary_200
+            val loadingTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_main else R.color.primary_light
             val loading = DrawableUtils.setTintList(context, R.drawable.sb_progress, loadingTint)
             binding.voiceMessage.setLoadingDrawable(loading)
             val buttonBackgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.background_600 else R.color.background_50
-            val buttonTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_200 else R.color.primary_300
+            val buttonTint = if (SendbirdUIKit.isDarkMode()) R.color.primary_light else R.color.primary_main
             val inset = context.resources.getDimension(R.dimen.sb_size_12).toInt()
             val playIcon =
                 DrawableUtils.createOvalIcon(

@@ -72,6 +72,6 @@ class SelectServiceActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(ContextCompat.getColor(this@SelectServiceActivity, com.sendbird.uikit.R.color.secondary_300))
+            .setTextColor(ContextCompat.getColor(this@SelectServiceActivity, com.sendbird.uikit.R.color.secondary_main))
     }
 }

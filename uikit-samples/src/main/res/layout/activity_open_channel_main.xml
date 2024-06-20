@@ -24,7 +24,7 @@
         android:id="@+id/border"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_1"
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         app:layout_constraintTop_toBottomOf="@id/titleBar"
         app:layout_constraintBottom_toTopOf="@id/description"
         app:layout_constraintStart_toStartOf="parent"

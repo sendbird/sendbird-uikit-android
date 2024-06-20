@@ -46,7 +46,7 @@ internal class EmojiReactionUserListView @JvmOverloads constructor(
             )
             val indicatorColor = a.getColor(
                 R.styleable.EmojiReactionCountList_sb_emoji_reaction_count_tab_indicator_color,
-                ContextCompat.getColor(context, R.color.primary_300)
+                ContextCompat.getColor(context, R.color.primary_main)
             )
             binding.tabLayoutPanel.setBackgroundResource(tabLayoutBackgroundResId)
             binding.tabLayout.setSelectedTabIndicatorColor(indicatorColor)

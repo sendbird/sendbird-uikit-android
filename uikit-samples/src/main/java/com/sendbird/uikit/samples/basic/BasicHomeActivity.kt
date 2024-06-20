@@ -66,7 +66,7 @@ class BasicHomeActivity : ThemeHomeActivity() {
 
     override fun applyTheme() {
         super.applyTheme()
-        binding.mainTitle.setTextColorResource(if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01)
+        binding.mainTitle.setTextColorResource(if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis)
         binding.btSignOut.setBackgroundResource(
             if (isDarkTheme) R.drawable.selector_home_signout_button_dark
             else R.drawable.selector_home_signout_button
@@ -133,7 +133,7 @@ class BasicHomeActivity : ThemeHomeActivity() {
         val dialog = builder.create()
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(ContextCompat.getColor(this, com.sendbird.uikit.R.color.secondary_300))
+            .setTextColor(ContextCompat.getColor(this, com.sendbird.uikit.R.color.secondary_main))
     }
 
     companion object {

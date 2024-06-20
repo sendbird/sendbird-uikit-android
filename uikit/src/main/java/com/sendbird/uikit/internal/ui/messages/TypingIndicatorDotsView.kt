@@ -31,14 +31,14 @@ internal class TypingIndicatorDotsView @JvmOverloads internal constructor(
     init {
         val messageBackground = R.drawable.sb_shape_chat_bubble
         val messageBackgroundTint = if (SendbirdUIKit.isDarkMode()) {
-            AppCompatResources.getColorStateList(context, R.color.ondark_04)
+            AppCompatResources.getColorStateList(context, R.color.ondark_text_disabled)
         } else {
-            AppCompatResources.getColorStateList(context, R.color.onlight_04)
+            AppCompatResources.getColorStateList(context, R.color.onlight_text_disabled)
         }
         val dotImageTintList = if (SendbirdUIKit.isDarkMode()) {
-            AppCompatResources.getColorStateList(context, R.color.ondark_01)
+            AppCompatResources.getColorStateList(context, R.color.ondark_text_high_emphasis)
         } else {
-            AppCompatResources.getColorStateList(context, R.color.onlight_01)
+            AppCompatResources.getColorStateList(context, R.color.onlight_text_high_emphasis)
         }
 
         binding.root.background =

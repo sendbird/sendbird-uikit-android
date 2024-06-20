@@ -15,7 +15,7 @@
         android:paddingEnd="@dimen/sb_size_12"
         android:background="@drawable/sb_suggested_replies_button_light"
         android:textSize="@dimen/sb_text_size_14"
-        android:textColor="@color/primary_300"
+        android:textColor="@color/primary_main"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

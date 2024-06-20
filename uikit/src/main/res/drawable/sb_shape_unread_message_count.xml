@@ -6,7 +6,7 @@
     <corners android:radius="@dimen/sb_size_20"/>
 
     <solid
-        android:color="@color/primary_300"/>
+        android:color="@color/primary_main"/>
 
     <padding
         android:left="@dimen/sb_size_8"

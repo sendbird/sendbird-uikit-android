@@ -130,7 +130,7 @@ class SampleSettingsFragment : Fragment() {
             text.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDark) R.color.primary_200 else R.color.primary_300,
+                    if (isDark) R.color.primary_light else R.color.primary_main,
                     null
                 )
             )
@@ -194,7 +194,7 @@ class SampleSettingsFragment : Fragment() {
         val dialog = builder.create()
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(ContextCompat.getColor(requireContext(), com.sendbird.uikit.R.color.secondary_300))
+            .setTextColor(ContextCompat.getColor(requireContext(), com.sendbird.uikit.R.color.secondary_main))
     }
 
     private fun initPage() {
@@ -208,7 +208,7 @@ class SampleSettingsFragment : Fragment() {
             tvNickname.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01,
+                    if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis,
                     null
                 )
             )
@@ -216,14 +216,14 @@ class SampleSettingsFragment : Fragment() {
             tvUserIdBadge.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_02 else R.color.onlight_02,
+                    if (isDarkTheme) R.color.ondark_text_mid_emphasis else R.color.onlight_text_mid_emphasis,
                     null
                 )
             )
             tvUserId.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01,
+                    if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis,
                     null
                 )
             )
@@ -232,7 +232,7 @@ class SampleSettingsFragment : Fragment() {
             tvDarkThemeName.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01,
+                    if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis,
                     null
                 )
             )
@@ -241,7 +241,7 @@ class SampleSettingsFragment : Fragment() {
             tvDisturbName.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01,
+                    if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis,
                     null
                 )
             )
@@ -250,7 +250,7 @@ class SampleSettingsFragment : Fragment() {
             tvHomeName.setTextColor(
                 ResourcesCompat.getColor(
                     resources,
-                    if (isDarkTheme) R.color.ondark_01 else R.color.onlight_01,
+                    if (isDarkTheme) R.color.ondark_text_high_emphasis else R.color.onlight_text_high_emphasis,
                     null
                 )
             )
@@ -300,7 +300,7 @@ class SampleSettingsFragment : Fragment() {
                 Logger.d("++ dark theme clicked")
                 updateDarkTheme()
             }
-            val disturbBackgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.secondary_200 else R.color.secondary_300
+            val disturbBackgroundTint = if (SendbirdUIKit.isDarkMode()) R.color.secondary_light else R.color.secondary_main
             binding.ivDisturbIcon.setImageDrawable(
                 requireContext().getDrawable(R.drawable.icon_notifications_filled, iconTint)
             )

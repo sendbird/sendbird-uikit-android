@@ -79,7 +79,7 @@
         android:id="@+id/ivDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:background="@color/onlight_04"
+        android:background="@color/onlight_text_disabled"
         app:layout_constraintBottom_toBottomOf="parent"
         android:importantForAccessibility="no"
         />

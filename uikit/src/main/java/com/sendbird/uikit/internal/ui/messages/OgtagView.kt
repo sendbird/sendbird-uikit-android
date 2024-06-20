@@ -54,7 +54,7 @@ internal class OgtagView private constructor(
             } else {
                 ogMetaData.ogImage?.url
             }
-            val thumbnailIconTint = if (SendbirdUIKit.isDarkMode()) R.color.ondark_02 else R.color.onlight_02
+            val thumbnailIconTint = if (SendbirdUIKit.isDarkMode()) R.color.ondark_text_mid_emphasis else R.color.onlight_text_mid_emphasis
             val builder = Glide.with(context)
                 .asDrawable()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -84,7 +84,7 @@ internal class OgtagView private constructor(
             builder.load(ogImageUrl).centerCrop().listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     e: GlideException?,
-                    model: Any,
+                    model: Any?,
                     target: Target<Drawable?>,
                     isFirstResource: Boolean
                 ): Boolean {
@@ -92,7 +92,7 @@ internal class OgtagView private constructor(
                 }
 
                 override fun onResourceReady(
-                    resource: Drawable?,
+                    resource: Drawable,
                     model: Any,
                     target: Target<Drawable?>,
                     dataSource: DataSource,
