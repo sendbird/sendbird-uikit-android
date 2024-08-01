@@ -152,8 +152,8 @@ internal open class ImageWaffleView @JvmOverloads internal constructor(
                 BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         }
 
-        val paddingLeft = paddingLeft
-        val paddingRight = paddingRight
+        val paddingStart = paddingStart
+        val paddingEnd = paddingEnd
         val paddingTop = paddingTop
         val paddingBottom = paddingBottom
         canvasBounds.set(0f, 0f, width.toFloat(), height.toFloat())
@@ -166,9 +166,9 @@ internal open class ImageWaffleView @JvmOverloads internal constructor(
             borderPaint
         )
         canvasBounds.set(
-            ROUND_BORDER + paddingLeft.toFloat(),
+            ROUND_BORDER + paddingStart.toFloat(),
             ROUND_BORDER + paddingTop.toFloat(),
-            (width - ROUND_BORDER - paddingRight).toFloat(),
+            (width - ROUND_BORDER - paddingEnd).toFloat(),
             (height - ROUND_BORDER - paddingBottom).toFloat()
         )
         canvas.drawRoundRect(

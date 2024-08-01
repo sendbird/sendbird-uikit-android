@@ -33,7 +33,7 @@ internal class ThemeableSnackbar @JvmOverloads constructor(
         }
         val snackbarLayout = snackbar.view as SnackbarLayout
         snackbarLayout.removeAllViews()
-        snackbarLayout.setPadding(0, 0, 0, 0)
+        snackbarLayout.setPaddingRelative(0, 0, 0, 0)
         snackbarLayout.addView(this)
         this.snackbar = snackbar
     }

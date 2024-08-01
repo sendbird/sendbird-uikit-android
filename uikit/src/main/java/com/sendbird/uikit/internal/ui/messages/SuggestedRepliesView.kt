@@ -56,10 +56,10 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
                     val layoutManager = binding.rvSuggestedReplies.layoutManager as? LinearLayoutManager
                     layoutManager?.orientation = LinearLayoutManager.VERTICAL
 
-                    binding.rvSuggestedReplies.setPadding(
+                    binding.rvSuggestedReplies.setPaddingRelative(
                         0,
                         binding.rvSuggestedReplies.paddingTop,
-                        binding.rvSuggestedReplies.paddingRight,
+                        binding.rvSuggestedReplies.paddingEnd,
                         binding.rvSuggestedReplies.paddingBottom
                     )
                     binding.rvSuggestedReplies.clipToPadding = true
@@ -68,10 +68,10 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
                     val layoutManager = binding.rvSuggestedReplies.layoutManager as? LinearLayoutManager
                     layoutManager?.orientation = LinearLayoutManager.HORIZONTAL
 
-                    binding.rvSuggestedReplies.setPadding(
+                    binding.rvSuggestedReplies.setPaddingRelative(
                         resources.getDimensionPixelSize(R.dimen.sb_size_38),
                         binding.rvSuggestedReplies.paddingTop,
-                        binding.rvSuggestedReplies.paddingRight,
+                        binding.rvSuggestedReplies.paddingEnd,
                         binding.rvSuggestedReplies.paddingBottom
                     )
                     binding.rvSuggestedReplies.clipToPadding = false

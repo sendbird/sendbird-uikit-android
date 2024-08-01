@@ -78,14 +78,14 @@ class BasicHomeActivity : ThemeHomeActivity() {
         // initialize total unread count
         SendbirdChat.getTotalUnreadMessageCount(
             GroupChannelTotalUnreadMessageCountParams(),
-            UnreadMessageCountHandler { totalCount: Int, _: Int, e: SendbirdException? ->
+            UnreadMessageCountHandler { groupChannelCount: Int, _: Int, e: SendbirdException? ->
                 if (e != null) {
                     return@UnreadMessageCountHandler
                 }
-                if (totalCount > 0) {
+                if (groupChannelCount > 0) {
                     binding.groupChannelButton.unreadCountVisibility = View.VISIBLE
                     binding.groupChannelButton.unreadCount =
-                        if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString()
+                        if (groupChannelCount > 99) getString(R.string.text_tab_badge_max_count) else groupChannelCount.toString()
                 } else {
                     binding.groupChannelButton.unreadCountVisibility = View.GONE
                 }
@@ -94,11 +94,11 @@ class BasicHomeActivity : ThemeHomeActivity() {
         SendbirdChat.addUserEventHandler(USER_EVENT_HANDLER_KEY, object : UserEventHandler() {
             override fun onFriendsDiscovered(users: List<User>) {}
             override fun onTotalUnreadMessageCountChanged(unreadMessageCount: UnreadMessageCount) {
-                val totalCount = unreadMessageCount.groupChannelCount
-                if (totalCount > 0) {
+                val groupChannelCount = unreadMessageCount.groupChannelCount
+                if (groupChannelCount > 0) {
                     binding.groupChannelButton.unreadCountVisibility = View.VISIBLE
                     binding.groupChannelButton.unreadCount =
-                        if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString()
+                        if (groupChannelCount > 99) getString(R.string.text_tab_badge_max_count) else groupChannelCount.toString()
                 } else {
                     binding.groupChannelButton.unreadCountVisibility = View.GONE
                 }

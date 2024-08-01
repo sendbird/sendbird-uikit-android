@@ -19,8 +19,6 @@ class NotificationLoginActivity : LoginActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.useFeedOnly.visibility = View.VISIBLE
-        binding.title.visibility = View.GONE
-        binding.notificationTitle.visibility = View.VISIBLE
     }
 
     override fun onSignUp(userId: String, nickname: String) {
@@ -36,7 +34,7 @@ class NotificationLoginActivity : LoginActivity() {
             }
             PreferenceUtils.userId = userId
             PreferenceUtils.nickname = nickname
-            SendbirdPushHelper.registerPushHandler(MyFirebaseMessagingService())
+            SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
             val intent = PreferenceUtils.selectedSampleType.startingIntent(this)
             startActivity(intent)
             finish()

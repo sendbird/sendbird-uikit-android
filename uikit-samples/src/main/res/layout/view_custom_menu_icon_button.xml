@@ -9,8 +9,8 @@
         android:layout_width="@dimen/sb_size_40"
         android:layout_height="@dimen/sb_size_40"
         android:padding="@dimen/sb_size_8"
-        android:layout_marginRight="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
+        android:layout_marginEnd="@dimen/sb_size_12"
+        android:layout_marginStart="@dimen/sb_size_12"
         android:src="@drawable/icon_create" />
 
 </FrameLayout>

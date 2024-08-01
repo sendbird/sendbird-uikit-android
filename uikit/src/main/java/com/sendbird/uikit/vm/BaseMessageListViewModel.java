@@ -218,9 +218,7 @@ abstract public class BaseMessageListViewModel extends BaseViewModel implements 
                 Logger.i("__ resent message : %s", userMessage);
             });
         } else if (message instanceof FileMessage) {
-            FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
-            final File file = info == null ? null : info.getFile();
-            channel.resendMessage((FileMessage) message, file, (fileMessage, e) -> {
+            channel.resendMessage((FileMessage) message, (fileMessage, e) -> {
                 if (handler != null) handler.onComplete(e);
                 Logger.i("__ resent file message : %s", fileMessage);
             });

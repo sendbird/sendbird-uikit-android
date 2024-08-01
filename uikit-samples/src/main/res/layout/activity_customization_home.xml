@@ -9,8 +9,8 @@
     <LinearLayout
         android:id="@+id/header"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/sb_size_12"
-        android:paddingRight="@dimen/sb_size_12"
+        android:paddingStart="@dimen/sb_size_12"
+        android:paddingEnd="@dimen/sb_size_12"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56">
@@ -22,7 +22,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/sb_size_8"
+            android:layout_marginEnd="@dimen/sb_size_8"
             android:text="@string/text_title_customization_sample"
             android:textAppearance="@style/SendbirdH1OnLight01"
             />

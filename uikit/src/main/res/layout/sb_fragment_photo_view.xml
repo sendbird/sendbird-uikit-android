@@ -25,8 +25,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingRight="@dimen/sb_size_64"
-            android:paddingLeft="@dimen/sb_size_64">
+            android:paddingEnd="@dimen/sb_size_64"
+            android:paddingStart="@dimen/sb_size_64">
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -71,8 +71,8 @@
         android:layout_height="@dimen/sb_size_56"
         android:layout_alignParentBottom="true"
         android:background="@color/overlay_dark"
-        android:paddingLeft="@dimen/sb_size_16"
-        android:paddingRight="@dimen/sb_size_16">
+        android:paddingStart="@dimen/sb_size_16"
+        android:paddingEnd="@dimen/sb_size_16">
 
         <ImageView
             android:id="@+id/ivDownload"

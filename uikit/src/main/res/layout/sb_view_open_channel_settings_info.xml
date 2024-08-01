@@ -11,8 +11,8 @@
         android:layout_height="@dimen/sb_channel_setting_height_132"
         android:orientation="vertical"
         android:gravity="center"
-        android:paddingLeft="@dimen/sb_size_16"
-        android:paddingRight="@dimen/sb_size_16">
+        android:paddingStart="@dimen/sb_size_16"
+        android:paddingEnd="@dimen/sb_size_16">
 
         <com.sendbird.uikit.internal.ui.channels.ChannelCoverView
             android:id="@+id/ccvChannelImage"
@@ -31,12 +31,12 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:layout_marginLeft="@dimen/sb_size_16"
-        android:layout_marginRight="@dimen/sb_size_16"/>
+        android:layout_marginStart="@dimen/sb_size_16"
+        android:layout_marginEnd="@dimen/sb_size_16"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingLeft="@dimen/sb_size_24"
-        android:paddingRight="@dimen/sb_size_24"
+        android:paddingStart="@dimen/sb_size_24"
+        android:paddingEnd="@dimen/sb_size_24"
         android:paddingTop="@dimen/sb_size_16"
         android:paddingBottom="@dimen/sb_size_16"
         android:layout_width="match_parent"
@@ -63,8 +63,8 @@
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_1"
-        android:layout_marginLeft="@dimen/sb_size_16"
-        android:layout_marginRight="@dimen/sb_size_16"/>
+        android:layout_marginStart="@dimen/sb_size_16"
+        android:layout_marginEnd="@dimen/sb_size_16"/>
 
 
 </LinearLayout>

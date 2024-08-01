@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -43,6 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * since 3.0.0
  */
 public class MentionEditText extends AppCompatEditText {
+    private final char LRM = '\u200E';
+    private final char RLM = '\u200F';
     final private int FLAG_NO_SPELLING_SUGGESTION = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
     @NonNull
     private final AtomicBoolean isDelKeyEventAlreadyHandled = new AtomicBoolean(false);
@@ -242,17 +245,43 @@ public class MentionEditText extends AppCompatEditText {
         if (cursorStart == cursorEnd) {
             final Editable buffer = getText();
             if (buffer != null && buffer.length() > 0) {
+                if (cursorStart > 0) {
+                    char charBefore = buffer.charAt(cursorStart - 1);
+                    if (charBefore == RLM || charBefore == LRM) {
+                        int newStartSelection = cursorStart > 1 ? cursorStart - 2 : 0;
+                        buffer.delete(newStartSelection, cursorStart);
+                        setSelection(newStartSelection);
+                        onBackspacePressed();
+                        return true;
+                    }
+                }
+
                 MentionSpan[] span = buffer.getSpans(cursorStart, cursorEnd, MentionSpan.class);
                 if (span.length > 0) {
                     int start = buffer.getSpanStart(span[0]);
                     int end = buffer.getSpanEnd(span[0]);
-                    buffer.replace(start, end, "");
-                    buffer.removeSpan(span[0]);
-                    return true;
+                    if (end <= cursorStart) {
+                        buffer.replace(start, end, "");
+                        buffer.removeSpan(span[0]);
+                        return true;
+                    }
                 }
             }
         }
         return false;
+    }
+
+    private int getCharacterDirectionAtCursor(int cursorPosition) {
+        final Layout layout = getLayout();
+        if (layout == null || getText() == null) {
+            return 0;
+        }
+
+        if (cursorPosition > 0 && cursorPosition <= getText().length()) {
+            int line = layout.getLineForOffset(cursorPosition);
+            return layout.getParagraphDirection(line);
+        }
+        return 0;
     }
 
     /**
@@ -340,8 +369,15 @@ public class MentionEditText extends AppCompatEditText {
                 MentionSpan mentionSpan = new MentionSpan(getContext(), token, nickname, user, mentionUIConfig);
                 final SpannableString mentionText = new SpannableString(mentionSpan.getDisplayText());
                 mentionText.setSpan(mentionSpan, 0, mentionText.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-                text.replace(index, endCursorPosition, TextUtils.concat(mentionText, config.getDelimiter()));
-                setSelection(index + mentionSpan.getLength() + 1);
+
+                // for RTL language, the delimiter should be added before the mention text
+                // If "input" text has been written once selecting mention, it should be "input userId@" not "userIdinput@ in RTL language"
+                // wrong result in RTL : "userIdinput@" <-- It's a default behavior in EditText of Android framework
+                // expected result in RTL : "input userId@"
+                // "\u200F" means RIGHT-TO-LEFT MARK (RLM)
+                char direction = getCharacterDirectionAtCursor(startCursorPosition) == Layout.DIR_RIGHT_TO_LEFT ? RLM : LRM;
+                text.replace(index, endCursorPosition, TextUtils.concat(mentionText, direction + config.getDelimiter()));
+                setSelection(index + mentionSpan.getLength() + 1 + config.getDelimiter().length());
             }
         });
     }

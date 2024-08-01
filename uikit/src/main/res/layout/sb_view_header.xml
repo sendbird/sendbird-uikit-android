@@ -11,8 +11,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sb_size_56"
-        android:paddingLeft="@dimen/sb_size_8"
-        android:paddingRight="@dimen/sb_size_8">
+        android:paddingStart="@dimen/sb_size_8"
+        android:paddingEnd="@dimen/sb_size_8">
 
         <ImageButton
             android:id="@+id/leftButton"
@@ -44,8 +44,8 @@
             android:layout_width="@dimen/sb_size_0"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="@dimen/sb_size_8"
-            android:layout_marginRight="@dimen/sb_size_8"
+            android:layout_marginStart="@dimen/sb_size_8"
+            android:layout_marginEnd="@dimen/sb_size_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/profileView"

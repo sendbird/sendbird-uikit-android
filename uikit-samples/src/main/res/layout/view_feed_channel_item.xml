@@ -3,8 +3,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_16"
-    android:paddingRight="@dimen/sb_size_16"
+    android:paddingStart="@dimen/sb_size_16"
+    android:paddingEnd="@dimen/sb_size_16"
     android:paddingTop="@dimen/sb_size_15"
     android:background="@drawable/selector_rectangle_light"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +15,7 @@
         android:layout_height="@dimen/sb_size_32"
         android:src="@drawable/icon_feed_channel"
         android:layout_marginTop="@dimen/sb_size_5"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:text="akdaflj"
+        android:textAlignment="viewStart"
         style="@style/SendbirdH2OnLight01"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
         android:id="@+id/tvChannelUrl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="akdaflj"
+        android:textAlignment="viewStart"
         style="@style/SendbirdBody2OnLight03"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/tvChannelKey"

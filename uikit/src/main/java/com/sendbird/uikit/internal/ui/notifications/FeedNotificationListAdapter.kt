@@ -65,10 +65,12 @@ internal class FeedNotificationListAdapter(
             binding.feedNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
             binding.feedNotification.binding.contentPanel.setOnClickListener {
                 val position = this.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return@setOnClickListener
                 onItemClickListener?.onItemClick(it, position, getItem(position))
             }
             binding.feedNotification.binding.contentPanel.setOnLongClickListener {
                 val position = this.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return@setOnLongClickListener true
                 onItemLongClickListener?.onItemLongClick(it, position, getItem(position))
                 true
             }

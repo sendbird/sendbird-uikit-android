@@ -91,7 +91,7 @@ public class DialogListAdapter extends RecyclerView.Adapter<DialogListAdapter.Li
                 buttonTint = a.getColorStateList(R.styleable.DialogView_sb_dialog_view_icon_tint);
                 this.binding.clItem.setBackgroundResource(listItemBackground);
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) binding.name.getLayoutParams();
-                params.setMargins((int) context.getResources().getDimension(nameMarginLeft), 0, 0, 0);
+                params.setMarginStart((int) context.getResources().getDimension(nameMarginLeft));
 
                 binding.name.setTextAppearance(context, listItemAppearance);
                 if (listItemTextColor != null) binding.name.setTextColor(listItemTextColor);

@@ -39,8 +39,8 @@
             android:layout_gravity="center"
             android:ellipsize="end"
             android:singleLine="true"
-            android:paddingLeft="@dimen/sb_size_20"
-            android:paddingRight="@dimen/sb_size_20"
+            android:paddingStart="@dimen/sb_size_20"
+            android:paddingEnd="@dimen/sb_size_20"
             />
     </FrameLayout>
 
@@ -60,8 +60,8 @@
         android:id="@+id/tvTypingIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/sb_size_12"
-        android:paddingRight="@dimen/sb_size_12"
+        android:paddingStart="@dimen/sb_size_12"
+        android:paddingEnd="@dimen/sb_size_12"
         android:paddingBottom="@dimen/sb_size_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

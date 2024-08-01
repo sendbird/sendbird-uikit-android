@@ -6,8 +6,8 @@
     android:layout_margin="@dimen/sb_size_2"
     android:paddingTop="@dimen/sb_size_5"
     android:paddingBottom="@dimen/sb_size_5"
-    android:paddingLeft="@dimen/sb_size_8"
-    android:paddingRight="@dimen/sb_size_8"
+    android:paddingStart="@dimen/sb_size_8"
+    android:paddingEnd="@dimen/sb_size_8"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

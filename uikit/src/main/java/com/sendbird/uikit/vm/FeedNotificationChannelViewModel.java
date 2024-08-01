@@ -81,7 +81,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
      */
     @Override
     public void authenticate(@NonNull AuthenticateHandler handler) {
-        SendbirdUIKit.authenticateFeed((user, e) -> {
+        SendbirdUIKit.authenticate((user, e) -> {
             if (user != null) {
                 FeedChannel.getChannel(channelUrl, (channel, e1) -> {
                     FeedNotificationChannelViewModel.this.channel = channel;

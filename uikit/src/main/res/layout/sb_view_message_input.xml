@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/sb_size_12"
         android:paddingBottom="@dimen/sb_size_12"
-        android:paddingLeft="@dimen/sb_size_16"
-        android:paddingRight="@dimen/sb_size_16"
+        android:paddingStart="@dimen/sb_size_16"
+        android:paddingEnd="@dimen/sb_size_16"
         android:visibility="gone"
         >
 
@@ -31,11 +31,11 @@
             android:id="@+id/ivQuoteReplyMessageImage"
             android:layout_width="@dimen/sb_size_32"
             android:layout_height="@dimen/sb_size_32"
-            android:layout_marginEnd="@dimen/sb_size_8"
             android:background="@drawable/sb_shape_image_message_background"
             android:scaleType="centerInside"
-            app:layout_constraintEnd_toStartOf="@id/tvQuoteReplyTitle"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toStartOf="@id/quoteReplyPanelContent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -51,35 +51,38 @@
             app:layout_constraintTop_toTopOf="@id/ivQuoteReplyMessageImage"
             app:layout_constraintBottom_toBottomOf="@id/ivQuoteReplyMessageImage" />
 
-        <TextView
-            android:id="@+id/tvQuoteReplyTitle"
-            android:layout_width="@dimen/sb_size_0"
+        <LinearLayout
+            android:id="@+id/quoteReplyPanelContent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textAppearance="@style/SendbirdCaption1OnLight01"
-            app:layout_constraintHorizontal_bias="0"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/sb_size_16"
+            android:paddingEnd="@dimen/sb_size_16"
+            app:layout_constrainedWidth="true"
             app:layout_constraintStart_toEndOf="@id/ivQuoteReplyMessageImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tvQuoteReplyMessage"
             app:layout_constraintEnd_toStartOf="@id/ivQuoteReplyClose"
-            />
+            >
 
-        <TextView
-            android:id="@+id/tvQuoteReplyMessage"
-            android:layout_width="@dimen/sb_size_0"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textAppearance="@style/SendbirdCaption2OnLight03"
-            android:layout_marginTop="@dimen/sb_size_4"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@id/tvQuoteReplyTitle"
-            app:layout_constraintEnd_toEndOf="@id/tvQuoteReplyTitle"
-            app:layout_constraintStart_toEndOf="@id/ivQuoteReplyMessageImage"
-            app:layout_constraintTop_toBottomOf="@id/tvQuoteReplyTitle"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                android:id="@+id/tvQuoteReplyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="@style/SendbirdCaption1OnLight01"
+                />
+
+            <TextView
+                android:id="@+id/tvQuoteReplyMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="@style/SendbirdCaption2OnLight03"
+                android:layout_marginTop="@dimen/sb_size_4"
+                />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ivQuoteReplyClose"
@@ -87,11 +90,10 @@
             android:layout_height="@dimen/sb_size_22"
             android:src="@drawable/icon_close"
             android:contentDescription="@string/sb_view_message_input_close_reply_description"
-            app:layout_constraintStart_toEndOf="@id/tvQuoteReplyTitle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="@dimen/sb_size_16" />
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -132,8 +134,8 @@
                 android:maxLines="3"
                 android:layout_marginTop="@dimen/sb_size_10"
                 android:layout_marginBottom="@dimen/sb_size_10"
-                android:paddingLeft="@dimen/sb_size_20"
-                android:paddingRight="@dimen/sb_size_20"
+                android:paddingStart="@dimen/sb_size_20"
+                android:paddingEnd="@dimen/sb_size_20"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="textCapSentences|textMultiLine"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -181,8 +183,8 @@
             android:id="@+id/editPanel"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16"
+            android:paddingStart="@dimen/sb_size_16"
+            android:paddingEnd="@dimen/sb_size_16"
             android:visibility="gone">
 
             <Button
@@ -190,8 +192,8 @@
                 android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/sb_size_40"
-                android:paddingRight="@dimen/sb_size_4"
-                android:paddingLeft="@dimen/sb_size_4"
+                android:paddingEnd="@dimen/sb_size_4"
+                android:paddingStart="@dimen/sb_size_4"
                 android:text="@string/sb_text_button_cancel"/>
 
             <Button
@@ -199,8 +201,8 @@
                 android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/sb_size_40"
-                android:paddingRight="@dimen/sb_size_4"
-                android:paddingLeft="@dimen/sb_size_4"
+                android:paddingEnd="@dimen/sb_size_4"
+                android:paddingStart="@dimen/sb_size_4"
                 android:text="@string/sb_text_button_save"/>
 
         </FrameLayout>

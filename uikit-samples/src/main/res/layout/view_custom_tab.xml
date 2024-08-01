@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/sb_size_2"
         android:paddingBottom="@dimen/sb_size_2"
-        android:paddingLeft="@dimen/sb_size_6"
-        android:paddingRight="@dimen/sb_size_6"
+        android:paddingStart="@dimen/sb_size_6"
+        android:paddingEnd="@dimen/sb_size_6"
         android:includeFontPadding="false" />
 </FrameLayout>

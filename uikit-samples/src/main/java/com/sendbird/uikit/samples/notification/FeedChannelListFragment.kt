@@ -40,22 +40,23 @@ class FeedChannelListFragment : Fragment() {
             val channelKeyStyle = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.style.SendbirdSubtitle1OnLight01 else R.style.SendbirdSubtitle1OnDark01
             val channelUrlStyle = if (themeMode == SendbirdUIKit.ThemeMode.Light) R.style.SendbirdBody3OnLight03 else R.style.SendbirdBody3OnDark03
             feedChannels.entries.forEach { entry ->
-                val itemBinding = ViewFeedChannelItemBinding.inflate(inflater)
-                itemBinding.root.setBackgroundResource(background)
-                itemBinding.divider.setBackgroundResource(dividerColor)
-                itemBinding.tvChannelKey.text = entry.key
-                itemBinding.tvChannelUrl.text = entry.value
-                itemBinding.tvChannelKey.setAppearance(requireContext(), channelKeyStyle)
-                itemBinding.tvChannelUrl.setAppearance(requireContext(), channelUrlStyle)
-                itemBinding.root.setOnClickListener {
-                    startActivity(
-                        FeedNotificationChannelActivity.newIntent(
-                            requireContext(),
-                            entry.value
+                ViewFeedChannelItemBinding.inflate(inflater).apply {
+                    root.setBackgroundResource(background)
+                    divider.setBackgroundResource(dividerColor)
+                    tvChannelKey.text = entry.key
+                    tvChannelUrl.text = entry.value
+                    tvChannelKey.setAppearance(requireContext(), channelKeyStyle)
+                    tvChannelUrl.setAppearance(requireContext(), channelUrlStyle)
+                    root.setOnClickListener {
+                        startActivity(
+                            FeedNotificationChannelActivity.newIntent(
+                                requireContext(),
+                                entry.value
+                            )
                         )
-                    )
+                    }
+                    binding.feedChannelContainer.addView(root)
                 }
-                binding.feedChannelContainer.addView(itemBinding.root)
             }
         }
         return binding.root

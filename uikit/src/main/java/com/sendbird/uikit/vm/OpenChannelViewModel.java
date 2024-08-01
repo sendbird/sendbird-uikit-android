@@ -715,10 +715,7 @@ public class OpenChannelViewModel extends BaseViewModel implements OnPagedDataLo
             PendingMessageRepository.getInstance().updatePendingMessage(channelUrl, pendingMessage);
             notifyDataSetChanged();
         } else if (message instanceof FileMessage) {
-            FileInfo info = PendingMessageRepository.getInstance().getFileInfo(message);
-            Logger.d("++ file info=%s", info);
-            final File file = info == null ? null : info.getFile();
-            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, file, (resentMessage, e) -> {
+            FileMessage pendingMessage = channel.resendMessage((FileMessage) message, (resentMessage, e) -> {
                 if (e != null) {
                     Logger.e(e);
                     if (handler != null) handler.onComplete(e);

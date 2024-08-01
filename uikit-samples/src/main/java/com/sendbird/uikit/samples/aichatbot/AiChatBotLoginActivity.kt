@@ -19,9 +19,7 @@ class AiChatBotLoginActivity : LoginActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.apply {
-            title.visibility = View.GONE
             botIdLayout.visibility = View.VISIBLE
-            notificationTitle.visibility = View.VISIBLE
             botId.setText(PreferenceUtils.botId.ifEmpty { "client_bot" })
         }
     }
@@ -43,7 +41,7 @@ class AiChatBotLoginActivity : LoginActivity() {
             }
             PreferenceUtils.userId = userId
             PreferenceUtils.nickname = nickname
-            SendbirdPushHelper.registerPushHandler(MyFirebaseMessagingService())
+            SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
             val intent = PreferenceUtils.selectedSampleType.startingIntent(this)
             startActivity(intent)
             finish()

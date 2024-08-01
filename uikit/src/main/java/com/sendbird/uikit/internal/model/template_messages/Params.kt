@@ -1,12 +1,10 @@
 package com.sendbird.uikit.internal.model.template_messages
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.sendbird.android.message.BaseMessage
-import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.model.Action
@@ -22,7 +20,7 @@ const val FILL_PARENT = 0
 const val WRAP_CONTENT = 1
 
 @Serializable
-internal data class ActionData constructor(
+internal data class ActionData(
     val type: ActionType = ActionType.Web,
     val data: String,
     val alterData: String? = null
@@ -55,7 +53,7 @@ internal data class ActionData constructor(
 }
 
 @Serializable
-internal data class SizeSpec constructor(
+internal data class SizeSpec(
     val type: SizeType,
     @SerialName(KeySet.value)
     private val _value: Int
@@ -87,7 +85,7 @@ internal data class SizeSpec constructor(
 }
 
 @Serializable
-internal data class Align constructor(
+internal data class Align(
     private val horizontal: HorizontalAlign = HorizontalAlign.Left,
     private val vertical: VerticalAlign = VerticalAlign.Top
 ) {
@@ -108,7 +106,7 @@ internal data class Align constructor(
 }
 
 @Serializable
-internal data class MetaData constructor(
+internal data class MetaData(
     val pixelWidth: Int,
     val pixelHeight: Int
 )
@@ -162,7 +160,7 @@ internal sealed class ViewParams {
 
 @Serializable
 @SerialName(KeySet.box)
-internal data class BoxViewParams constructor(
+internal data class BoxViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
@@ -176,7 +174,7 @@ internal data class BoxViewParams constructor(
 
 @Serializable
 @SerialName(KeySet.text)
-internal data class TextViewParams constructor(
+internal data class TextViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
@@ -190,7 +188,7 @@ internal data class TextViewParams constructor(
 
 @Serializable
 @SerialName(KeySet.image)
-internal data class ImageViewParams constructor(
+internal data class ImageViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
@@ -203,7 +201,7 @@ internal data class ImageViewParams constructor(
 
 @Serializable
 @SerialName(KeySet.textButton)
-internal data class ButtonViewParams constructor(
+internal data class ButtonViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
@@ -211,18 +209,12 @@ internal data class ButtonViewParams constructor(
     override val viewStyle: ViewStyle = ViewStyle(),
     val text: String,
     val maxTextLines: Int = 1,
-    val textStyle: TextStyle = TextStyle(
-        color = when (SendbirdUIKit.getDefaultThemeMode()) {
-            SendbirdUIKit.ThemeMode.Light -> Color.parseColor("#742ddd")
-            SendbirdUIKit.ThemeMode.Dark -> Color.parseColor("#c2a9fa")
-        },
-        weight = Weight.Bold
-    )
+    val textStyle: TextStyle? = null
 ) : ViewParams()
 
 @Serializable
 @SerialName(KeySet.imageButton)
-internal data class ImageButtonViewParams constructor(
+internal data class ImageButtonViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),
@@ -235,7 +227,7 @@ internal data class ImageButtonViewParams constructor(
 
 @Serializable
 @SerialName(KeySet.carouselView)
-internal data class CarouselViewParams constructor(
+internal data class CarouselViewParams(
     override val type: ViewType,
     override val action: ActionData? = null,
     override val width: SizeSpec = SizeSpec(SizeType.Flex, FILL_PARENT),

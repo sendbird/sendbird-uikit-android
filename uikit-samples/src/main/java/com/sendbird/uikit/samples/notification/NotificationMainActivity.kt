@@ -156,14 +156,15 @@ class NotificationMainActivity : AppCompatActivity() {
         if (intent == null) return
         Logger.i("++ intent: %s, %s", intent, intent.extras)
         if (intent.hasExtra(StringSet.PUSH_NOTIFICATION_DATA)) {
-            intent.getSerializable(StringSet.PUSH_NOTIFICATION_DATA, HashMap::class.java)?.let {
-                val resultMap = HashMap<String, String>()
-                for ((key, value) in it) {
-                    if (key is String && value is String) {
-                        resultMap[key] = value
+            intent.getSerializable(StringSet.PUSH_NOTIFICATION_DATA, HashMap::class.java)?.let { hashMap ->
+                val data: Map<String, String> = hashMap.mapNotNull {
+                    if (it.key is String && it.value is String) {
+                        it.key as String to it.value as String
+                    } else {
+                        null
                     }
-                }
-                SendbirdPushHelper.markPushNotificationAsClicked(resultMap)
+                }.toMap()
+                SendbirdPushHelper.markPushNotificationAsClicked(data)
             }
             intent.removeExtra(StringSet.PUSH_NOTIFICATION_DATA)
         }

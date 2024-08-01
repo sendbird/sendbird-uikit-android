@@ -45,6 +45,7 @@ import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.internal.extensions.MarkdownExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MarkdownType;
 import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.messages.BaseQuotedMessageView;
@@ -66,6 +67,7 @@ import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -145,7 +147,7 @@ public class ViewUtils {
         );
         final SpannableStringBuilder builder;
         if (enableMarkdown) {
-            builder = new SpannableStringBuilder(MarkdownExtensionsKt.applyMarkdown(text, url -> {
+            builder = new SpannableStringBuilder(MarkdownExtensionsKt.applyMarkdown(text, Arrays.asList(MarkdownType.BOLD, MarkdownType.LINK), url -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 context.startActivity(intent);
                 return Unit.INSTANCE;

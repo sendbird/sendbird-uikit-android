@@ -2,6 +2,7 @@ package com.sendbird.uikit.internal.ui.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
@@ -9,13 +10,17 @@ import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.uikit.R
+import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.internal.adapter.CarouselChildViewAdapter
 import com.sendbird.uikit.internal.extensions.addRipple
+import com.sendbird.uikit.internal.extensions.applyTextAlignment
 import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.extensions.setAppearance
+import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.model.template_messages.BoxViewParams
 import com.sendbird.uikit.internal.model.template_messages.ButtonViewParams
 import com.sendbird.uikit.internal.model.template_messages.CarouselViewParams
@@ -55,6 +60,7 @@ internal open class Text @JvmOverloads constructor(
         params.textStyle.apply(textView)
 
         textView.gravity = params.align.gravity
+        textView.applyTextAlignment(params.align.gravity)
         params.maxTextLines?.let { textView.maxLines = it }
         textView.text = params.text
     }
@@ -108,7 +114,7 @@ internal open class TextButton @JvmOverloads constructor(
         gravity = Gravity.CENTER
         // default button padding.
         val padding = resources.intToDp(10)
-        this.setPadding(padding, padding, padding, padding)
+        this.setPaddingRelative(padding, padding, padding, padding)
         this.setBackgroundResource(R.drawable.sb_shape_round_rect_background_200)
         setRadiusIntSize(6)
         addRipple(background)
@@ -120,13 +126,18 @@ internal open class TextButton @JvmOverloads constructor(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             )
+            setTypeface(Typeface.BOLD)
+            setTextColor(ContextCompat.getColor(context, when (SendbirdUIKit.getDefaultThemeMode()) {
+                SendbirdUIKit.ThemeMode.Light -> R.color.primary_300
+                SendbirdUIKit.ThemeMode.Dark -> R.color.primary_200
+            }))
         }
         this.addView(textView)
     }
 
     fun apply(params: ButtonViewParams, orientation: Orientation) {
         params.applyLayoutParams(context, layoutParams, orientation)
-        params.textStyle.apply(textView)
+        params.textStyle?.apply(textView)
         params.viewStyle.apply(this, true)
         textView.maxLines = params.maxTextLines
         textView.text = params.text
@@ -150,7 +161,6 @@ internal open class ImageButton @JvmOverloads constructor(
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         scaleType = ScaleType.FIT_CENTER
-        setRadiusIntSize(6)
         addRipple(background)
     }
 
@@ -194,8 +204,9 @@ internal class CarouselView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RoundCornerLayout(context, attrs, defStyleAttr) {
+    private val maxChildrenCount = 10 // (it's default value, not available to change at this point)
     val recyclerView: RecyclerView
-    var itemDecoration: CarouselViewItemDecoration? = null
+    private var itemDecoration: CarouselViewItemDecoration? = null
     private val startPadding: Int = context.resources.intToDp(12 + 26 + 12) // left padding of profile + profile width + right padding of profile
     init {
         layoutParams = LayoutParams(
@@ -221,7 +232,7 @@ internal class CarouselView @JvmOverloads constructor(
             )
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-            setPadding(startPadding, paddingTop, paddingRight, paddingBottom)
+            setPaddingRelative(startPadding, paddingTop, paddingEnd, paddingBottom)
             clipToPadding = false
 
             CarouselLeftSnapHelper().attachToRecyclerView(this)
@@ -240,7 +251,7 @@ internal class CarouselView @JvmOverloads constructor(
 
         val adapter = recyclerView.adapter as? CarouselChildViewAdapter ?: return
         adapter.onChildViewCreated = onChildViewCreated
-        adapter.setChildTemplateParams(params.items)
+        adapter.setChildTemplateParams(params.items.take(maxChildrenCount)) // platform synced
         params.applyLayoutParams(context, layoutParams, orientation)
 
         // Currently, viewStyle is not used in CarouselView.

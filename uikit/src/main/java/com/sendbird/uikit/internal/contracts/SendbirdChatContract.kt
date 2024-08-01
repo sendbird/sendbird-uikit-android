@@ -19,7 +19,7 @@ internal interface SendbirdChatContract {
     fun removeChannelHandler(identifier: String): BaseChannelHandler?
     fun removeConnectionHandler(identifier: String): ConnectionHandler?
     fun init(params: InitParams, handler: InitResultHandler)
-    fun connect(userId: String, accessToken: String?, handler: ConnectHandler?)
+    fun connect(userId: String, accessToken: String?, apiHost: String?, wsHost: String?, handler: ConnectHandler?)
     fun updateCurrentUserInfo(params: UserUpdateParams, handler: CompletionHandler?)
     fun addExtension(key: String, version: String)
 
@@ -28,5 +28,5 @@ internal interface SendbirdChatContract {
     fun getConnectionState(): ConnectionState
     fun getUIKitConfiguration(handler: UIKitConfigurationHandler?)
 
-    fun authenticateFeed(userId: String, accessToken: String?, apiHost: String?, handler: AuthenticationHandler?)
+    fun authenticate(userId: String, accessToken: String?, apiHost: String?, handler: AuthenticationHandler?)
 }

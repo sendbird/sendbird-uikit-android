@@ -66,13 +66,13 @@ class GroupChannelMainActivity : AppCompatActivity() {
         super.onResume()
         SendbirdChat.getTotalUnreadMessageCount(
             GroupChannelTotalUnreadMessageCountParams(),
-            UnreadMessageCountHandler { totalCount: Int, _: Int, e: SendbirdException? ->
+            UnreadMessageCountHandler { groupChannelCount: Int, _: Int, e: SendbirdException? ->
                 if (e != null) {
                     return@UnreadMessageCountHandler
                 }
-                if (totalCount > 0) {
+                if (groupChannelCount > 0) {
                     unreadCountTab.setBadgeVisibility(View.VISIBLE)
-                    unreadCountTab.setBadgeCount(if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString())
+                    unreadCountTab.setBadgeCount(if (groupChannelCount > 99) getString(R.string.text_tab_badge_max_count) else groupChannelCount.toString())
                 } else {
                     unreadCountTab.setBadgeVisibility(View.GONE)
                 }
@@ -80,10 +80,10 @@ class GroupChannelMainActivity : AppCompatActivity() {
         SendbirdChat.addUserEventHandler(USER_EVENT_HANDLER_KEY, object : UserEventHandler() {
             override fun onFriendsDiscovered(users: List<User>) {}
             override fun onTotalUnreadMessageCountChanged(unreadMessageCount: UnreadMessageCount) {
-                val totalCount = unreadMessageCount.groupChannelCount
-                if (totalCount > 0) {
+                val groupChannelCount = unreadMessageCount.groupChannelCount
+                if (groupChannelCount > 0) {
                     unreadCountTab.setBadgeVisibility(View.VISIBLE)
-                    unreadCountTab.setBadgeCount(if (totalCount > 99) getString(R.string.text_tab_badge_max_count) else totalCount.toString())
+                    unreadCountTab.setBadgeCount(if (groupChannelCount > 99) getString(R.string.text_tab_badge_max_count) else groupChannelCount.toString())
                 } else {
                     unreadCountTab.setBadgeVisibility(View.GONE)
                 }

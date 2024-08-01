@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_12"
-    android:paddingRight="@dimen/sb_size_12"
+    android:paddingStart="@dimen/sb_size_12"
+    android:paddingEnd="@dimen/sb_size_12"
     android:paddingTop="@dimen/sb_size_8"
     android:paddingBottom="@dimen/sb_size_8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/contentPanel"

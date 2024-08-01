@@ -3,9 +3,9 @@
     android:id="@+id/vgMemberItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_16"
+    android:paddingStart="@dimen/sb_size_16"
     android:paddingTop="@dimen/sb_size_8"
-    android:paddingRight="@dimen/sb_size_16"
+    android:paddingEnd="@dimen/sb_size_16"
     android:paddingBottom="@dimen/sb_size_8"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -16,7 +16,7 @@
         android:layout_height="@dimen/sb_size_28"
         android:scaleType="centerCrop"
         android:contentDescription="@string/sb_view_suggested_mention_item_profile_description"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -28,8 +28,8 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toRightOf="@+id/ivProfile"
-        app:layout_constraintRight_toLeftOf="@+id/tvDescription"
+        app:layout_constraintStart_toEndOf="@+id/ivProfile"
+        app:layout_constraintEnd_toStartOf="@+id/tvDescription"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

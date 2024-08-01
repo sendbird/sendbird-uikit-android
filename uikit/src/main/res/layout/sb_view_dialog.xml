@@ -17,8 +17,8 @@
         android:id="@+id/sbTopPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/sb_size_24"
-        android:paddingRight="@dimen/sb_size_24">
+        android:paddingStart="@dimen/sb_size_24"
+        android:paddingEnd="@dimen/sb_size_24">
 
         <TextView
             android:id="@+id/tvDialogTitle"
@@ -46,8 +46,8 @@
             android:id="@+id/tvDialogMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sb_size_24"
-            android:layout_marginRight="@dimen/sb_size_24"
+            android:layout_marginStart="@dimen/sb_size_24"
+            android:layout_marginEnd="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_12"
             android:maxLines="3"
             android:ellipsize="end"
@@ -57,8 +57,8 @@
             android:id="@+id/etInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sb_size_24"
-            android:layout_marginRight="@dimen/sb_size_24"
+            android:layout_marginStart="@dimen/sb_size_24"
+            android:layout_marginEnd="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_20"
             android:imeOptions="flagNoExtractUi"
             android:inputType="text"
@@ -84,8 +84,8 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/sb_size_12"
         android:paddingBottom="@dimen/sb_size_12"
-        android:paddingLeft="@dimen/sb_size_8"
-        android:paddingRight="@dimen/sb_size_8"
+        android:paddingStart="@dimen/sb_size_8"
+        android:paddingEnd="@dimen/sb_size_8"
         android:visibility="gone">
 
         <TextView
@@ -96,8 +96,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/sb_size_8"
-            android:layout_marginLeft="@dimen/sb_size_4"
-            android:layout_marginRight="@dimen/sb_size_4"
+            android:layout_marginStart="@dimen/sb_size_4"
+            android:layout_marginEnd="@dimen/sb_size_4"
             android:visibility="gone"
             />
 
@@ -109,8 +109,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/sb_size_8"
-            android:layout_marginLeft="@dimen/sb_size_4"
-            android:layout_marginRight="@dimen/sb_size_4"
+            android:layout_marginStart="@dimen/sb_size_4"
+            android:layout_marginEnd="@dimen/sb_size_4"
             android:visibility="gone"
             />
 
@@ -122,8 +122,8 @@
             android:padding="@dimen/sb_size_8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sb_size_4"
-            android:layout_marginRight="@dimen/sb_size_4"
+            android:layout_marginStart="@dimen/sb_size_4"
+            android:layout_marginEnd="@dimen/sb_size_4"
             android:visibility="gone"
             />
 

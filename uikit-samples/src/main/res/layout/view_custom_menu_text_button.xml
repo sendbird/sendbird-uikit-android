@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/sb_size_4"
-        android:layout_marginRight="@dimen/sb_size_12"
-        android:layout_marginLeft="@dimen/sb_size_12"
+        android:layout_marginEnd="@dimen/sb_size_12"
+        android:layout_marginStart="@dimen/sb_size_12"
         android:textAppearance="@style/SendbirdButtonPrimary300"/>
 </FrameLayout>
