@@ -1,5 +1,8 @@
 # Changelog
-### v3.18.0 (Jun 20, 2024) with Chat SDK `v4.16.4`
+### v3.19.0 (Aug 1, 2024) with Chat SDK `v4.17.0`
+* Deprecated `authenticateFeed(AuthenticationHandler)` in `SendbirdUIKit`, which is replaced by `authenticate(AuthenticationHandler)`.
+* Fixed the crash issue caused by the `bindingAdapterPosition` in the RecyclerView not being returned correctly.
+* Support Right-to-Left (RTL) languages.### v3.18.0 (Jun 20, 2024) with Chat SDK `v4.16.4`
 * Updated dependencies
   * update compileSdkVersion to 34
   * [Gradle Plugin] Gradle 8.6

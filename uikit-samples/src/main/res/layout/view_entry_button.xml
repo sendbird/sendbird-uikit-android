@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="@dimen/sb_size_0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
@@ -17,6 +17,9 @@
         android:layout_marginBottom="@dimen/sb_size_4"
         android:layout_marginEnd="@dimen/sb_size_8"
         app:layout_goneMarginBottom="@dimen/sb_size_24"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/description"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +27,7 @@
 
     <TextView
         android:id="@+id/description"
-        android:layout_width="@dimen/sb_size_0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sb_text_size_14"
         android:fontFamily="sans-serif-medium"
@@ -36,6 +39,9 @@
         android:layout_marginBottom="@dimen/sb_size_24"
         android:layout_marginEnd="@dimen/sb_size_8"
         android:visibility="gone"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,8 +55,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/sb_size_4"
         android:paddingBottom="@dimen/sb_size_4"
-        android:paddingLeft="@dimen/sb_size_6"
-        android:paddingRight="@dimen/sb_size_6"
+        android:paddingStart="@dimen/sb_size_6"
+        android:paddingEnd="@dimen/sb_size_6"
         android:includeFontPadding="false"
         android:layout_marginEnd="@dimen/sb_size_4"
         android:visibility="gone"

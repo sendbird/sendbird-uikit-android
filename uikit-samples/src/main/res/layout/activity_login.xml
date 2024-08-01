@@ -10,15 +10,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/sb_size_24"
-        android:paddingRight="@dimen/sb_size_24">
+        android:paddingStart="@dimen/sb_size_24"
+        android:paddingEnd="@dimen/sb_size_24">
 
         <ImageView
             android:id="@+id/logoImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sb_size_56"
-            android:background="@drawable/logo_business_messaging"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -28,84 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/sb_size_24"
             android:layout_marginTop="@dimen/sb_size_4"
-            android:layout_marginBottom="@dimen/sb_size_44"
             android:textSize="@dimen/sb_text_size_16"
             android:textStyle="bold"
             android:textColor="@color/onlight_text_high_emphasis"
-            android:text="@string/text_title_uikit_sample_app"
             app:layout_constraintTop_toBottomOf="@id/logoImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/applicationIdLayout"
-            />
-
-        <TextView
-            android:id="@+id/notificationTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/sb_size_4"
-            android:textSize="@dimen/sb_text_size_16"
-            android:textStyle="bold"
-            android:textColor="@color/onlight_text_high_emphasis"
-            android:text="@string/text_title_uikit_sample_app"
-            android:layout_marginBottom="@dimen/sb_size_32"
-            app:layout_constraintTop_toBottomOf="@id/logoImageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/applicationIdLayout"
-            />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/titleBarrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="title, notificationTitle"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/applicationIdLayout"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/sb_size_56"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16"
-            app:hintTextColor="@color/primary_main"
-            app:boxBackgroundMode="outline"
-            android:background="@drawable/selector_edittext_background_with_focusable"
-            android:layout_marginTop="@dimen/sb_size_24"
-            app:layout_constraintTop_toBottomOf="@id/titleBarrier"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/saveButton">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/applicationId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_rect_transparent"
-                android:textSize="@dimen/sb_text_size_16"
-                android:hint="@string/text_hint_application_id"
-                android:textCursorDrawable="@drawable/shape_cursor_drawable"
-                android:imeOptions="actionDone|flagNoExtractUi"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/saveButton"
-            android:text="@string/text_save"
-            android:layout_marginLeft="@dimen/sb_size_10"
-            android:background="@drawable/selector_button_primary_300"
-            android:textSize="@dimen/sb_text_size_14"
-            android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:textColor="@color/ondark_text_high_emphasis"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/sb_size_56"
-            android:textAllCaps="false"
-            app:layout_constraintTop_toTopOf="@id/applicationIdLayout"
-            app:layout_constraintStart_toEndOf="@id/applicationIdLayout"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/botIdLayout"
             />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -113,15 +41,15 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
             android:gravity="center_vertical"
+            android:visibility="gone"
             android:paddingLeft="@dimen/sb_size_16"
             android:paddingRight="@dimen/sb_size_16"
             android:layout_marginTop="@dimen/sb_size_24"
-            android:visibility="gone"
             app:boxStrokeColor="@color/primary_main"
             android:background="@drawable/selector_edittext_background_with_focusable"
             app:hintTextColor="@color/primary_main"
             app:boxBackgroundMode="outline"
-            app:layout_constraintTop_toBottomOf="@id/applicationIdLayout"
+            app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/userIdLayout"
@@ -146,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16"
+            android:paddingStart="@dimen/sb_size_16"
+            android:paddingEnd="@dimen/sb_size_16"
             android:layout_marginTop="@dimen/sb_size_24"
             app:boxStrokeColor="@color/primary_main"
             android:background="@drawable/selector_edittext_background_with_focusable"
@@ -181,8 +109,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/sb_size_16"
-            android:paddingRight="@dimen/sb_size_16"
+            android:paddingStart="@dimen/sb_size_16"
+            android:paddingEnd="@dimen/sb_size_16"
             app:hintTextColor="@color/primary_main"
             app:boxBackgroundMode="outline"
             android:background="@drawable/selector_edittext_background_with_focusable"

@@ -16,7 +16,7 @@
         android:scaleType="centerCrop"
         android:layout_marginStart="@dimen/sb_size_16"
         android:contentDescription="@string/sb_sender_profile_description"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -39,13 +39,15 @@
         android:id="@+id/tvUserName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="start|center_vertical"
         app:layout_constrainedWidth="true"
         android:singleLine="true"
         android:ellipsize="end"
+        android:textAlignment="viewStart"
+        android:text="Leo"
         app:flow_horizontalBias="0.0"
-        app:layout_constraintLeft_toRightOf="@+id/leftGL"
-        app:layout_constraintRight_toLeftOf="@+id/tvSentAt"
+        app:layout_constraintStart_toEndOf="@+id/leftGL"
+        app:layout_constraintEnd_toStartOf="@+id/tvSentAt"
         app:layout_constraintBottom_toTopOf="@id/brMiddle"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -55,7 +57,7 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         app:layout_constraintBottom_toTopOf="@id/brMiddle"
-        app:layout_constraintRight_toLeftOf="@id/rightGL"
+        app:layout_constraintEnd_toStartOf="@id/rightGL"
         app:layout_constraintTop_toTopOf="parent"
         android:paddingStart="@dimen/sb_size_10"
         android:paddingEnd="@dimen/sb_size_0" />
@@ -88,6 +90,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         android:layout_marginTop="@dimen/sb_size_4"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toEndOf="@id/ivIcon"

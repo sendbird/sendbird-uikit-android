@@ -60,7 +60,7 @@ internal fun EditText.setCursorDrawable(cursor: Drawable) {
             val f = TextView::class.java.getDeclaredField(StringSet.mCursorDrawableRes)
             f.isAccessible = true
             f[this] = cursor
-        } catch (t: Throwable) {
+        } catch (ignore: Throwable) {
         }
     }
 }
@@ -116,7 +116,7 @@ internal fun View.addRipple(background: Drawable?) = with(TypedValue()) {
     this@addRipple.background = createRippleDrawable(color, background)
 }
 
-internal fun View.addRipple(pressedColor: Int) = with(TypedValue()) {
+internal fun View.addRipple(pressedColor: Int) {
     this@addRipple.background = createRippleDrawable(pressedColor, background)
 }
 
@@ -193,4 +193,12 @@ internal fun Context.createFallbackViewParams(message: String): Params {
         this.getString(R.string.sb_text_template_message_fallback_title),
         this.getString(R.string.sb_text_template_message_fallback_description),
     )
+}
+
+internal fun TextView.applyTextAlignment(gravity: Int) {
+    if ((gravity and Gravity.START) == Gravity.START) {
+        textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+    } else if ((gravity and Gravity.END) == Gravity.END) {
+        textAlignment = View.TEXT_ALIGNMENT_VIEW_END
+    }
 }

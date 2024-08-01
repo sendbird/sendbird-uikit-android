@@ -1,10 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.7.20'
+    ext.paparazzi_version = '1.3.1'
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // It will force the kotlin compiler version to be changed to a higher one, so it should only include the plugin in real tests.
+        if (project.hasProperty('withSnapshotTest')) {
+            classpath "app.cash.paparazzi:paparazzi-gradle-plugin:$paparazzi_version"
+        }
     }
 }
 plugins {

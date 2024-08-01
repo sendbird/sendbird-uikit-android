@@ -29,10 +29,9 @@ object EmojiManager {
     @JvmStatic
     fun init() {
         val emojiContainerStr = UIKitPrefs.getString(StringSet.KEY_EMOJI_CONTAINER)
-        if (emojiContainerStr.isNotEmpty()) {
-            decodeEmojiContainer(emojiContainerStr)?.let {
-                upsertEmojiContainer(it, false)
-            }
+        if (emojiContainerStr.isNullOrEmpty()) return
+        decodeEmojiContainer(emojiContainerStr)?.let {
+            upsertEmojiContainer(it, false)
         }
     }
 

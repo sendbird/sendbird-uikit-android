@@ -38,7 +38,7 @@ internal class NotificationStatusComponent(
             rootView?.let {
                 val frameLayout: View = it
                 val layoutParams = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                val marginTop = it.resources.getDimensionPixelSize(R.dimen.sb_size_62)
+                val marginTop = it.resources.getDimensionPixelSize(R.dimen.sb_size_50)
                 layoutParams.topMargin = marginTop
                 frameLayout.layoutParams = layoutParams
             }

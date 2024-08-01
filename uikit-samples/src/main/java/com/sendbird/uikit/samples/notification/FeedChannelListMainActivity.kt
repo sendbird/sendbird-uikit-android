@@ -9,11 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import com.sendbird.android.SendbirdChat.addUserEventHandler
-import com.sendbird.android.SendbirdChat.getTotalUnreadMessageCount
-import com.sendbird.android.SendbirdChat.removeUserEventHandler
-import com.sendbird.android.exception.SendbirdException
-import com.sendbird.android.handler.UnreadMessageCountHandler
+import com.sendbird.android.SendbirdChat
+import com.sendbird.android.handler.CountHandler
 import com.sendbird.android.handler.UserEventHandler
 import com.sendbird.android.push.SendbirdPushHelper
 import com.sendbird.android.user.UnreadMessageCount
@@ -59,7 +56,7 @@ class FeedChannelListMainActivity : AppCompatActivity() {
                 InitState.MIGRATING -> WaitingDialog.show(this@FeedChannelListMainActivity)
                 InitState.FAILED, InitState.SUCCEED -> {
                     WaitingDialog.dismiss()
-                    SendbirdUIKit.connect { _, _ -> initPage() }
+                    SendbirdUIKit.authenticate { _, _ -> initPage() }
                 }
             }
         }
@@ -67,7 +64,7 @@ class FeedChannelListMainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        removeUserEventHandler(USER_EVENT_HANDLER_KEY)
+        SendbirdChat.removeUserEventHandler(USER_EVENT_HANDLER_KEY)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -95,17 +92,17 @@ class FeedChannelListMainActivity : AppCompatActivity() {
         }.attach()
         redirectChannelIfNeeded(intent)
 
-        getTotalUnreadMessageCount(
-            handler = UnreadMessageCountHandler { groupChannelCount: Int, feedChannelTotalCount: Int, e: SendbirdException? ->
+        SendbirdChat.getTotalUnreadNotificationCount(
+            handler = CountHandler { feedChannelTotalCount, e ->
                 if (e != null) {
-                    return@UnreadMessageCountHandler
+                    return@CountHandler
                 }
-                Logger.i("updateChannelListTab [API] groupChannelCount=$groupChannelCount, feedChannelUnreadCount=$feedChannelTotalCount")
+                Logger.i("updateChannelListTab [API] feedChannelUnreadCount=$feedChannelTotalCount")
                 drawUnreadCount(feedChannelListTab, feedChannelTotalCount)
             }
         )
 
-        addUserEventHandler(USER_EVENT_HANDLER_KEY, object : UserEventHandler() {
+        SendbirdChat.addUserEventHandler(USER_EVENT_HANDLER_KEY, object : UserEventHandler() {
             override fun onFriendsDiscovered(users: List<User>) {}
             override fun onTotalUnreadMessageCountChanged(unreadMessageCount: UnreadMessageCount) {
                 val groupChannelCount = unreadMessageCount.groupChannelCount

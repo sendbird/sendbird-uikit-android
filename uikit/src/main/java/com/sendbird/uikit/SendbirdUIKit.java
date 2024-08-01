@@ -45,15 +45,15 @@ import com.sendbird.uikit.fragments.UIKitFragmentFactory;
 import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
+import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
+import com.sendbird.uikit.internal.contracts.TaskQueueContract;
+import com.sendbird.uikit.internal.contracts.TaskQueueImpl;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.singleton.MessageTemplateManager;
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.internal.singleton.UIKitConfigRepository;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
-import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
-import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
-import com.sendbird.uikit.internal.contracts.TaskQueueImpl;
-import com.sendbird.uikit.internal.contracts.TaskQueueContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.UserMentionConfig;
@@ -560,12 +560,37 @@ public class SendbirdUIKit {
      * Unlike {@link #connect(ConnectHandler)}, it is used to issue the necessary credentials when using the API required for FeedNotification.
      *
      * @param handler Callback handler.
+     * @deprecated As of 3.19.0, replaced by {@link #authenticate(AuthenticationHandler)}.
      * since 3.7.0
      */
+    @Deprecated
     public static void authenticateFeed(@Nullable AuthenticationHandler handler) {
+        authenticate(handler);
+    }
+
+    /**
+     * Authenticate to Sendbird with given <code>UserInfo</code>.
+     * Unlike {@link #connect(ConnectHandler)}, it is used to issue the necessary credentials when using the API required for FeedNotification.
+     *
+     * @param handler Callback handler.
+     * since 3.19.0
+     */
+    public static void authenticate(@Nullable AuthenticationHandler handler) {
         connectInternal(ConnectType.AUTHENTICATE_FEED, new SendbirdChatImpl(), new TaskQueueImpl(), (user, e1) -> {
             if (handler != null) handler.onAuthenticated(user, e1);
         });
+    }
+
+    /**
+     * This method is used only internally.
+     *
+     * @param apiHost Custom API Host. Internal use only.
+     * @param wsHost  Custom WS Host. Internal use only.
+     * since 3.19.0
+     */
+    public static synchronized void setCustomHosts(@Nullable String apiHost, @Nullable String wsHost) {
+        UIKitPrefs.putString(StringSet.KEY_CUSTOM_API_HOST, apiHost);
+        UIKitPrefs.putString(StringSet.KEY_CUSTOM_WS_HOST, wsHost);
     }
 
     private enum ConnectType {
@@ -698,14 +723,16 @@ public class SendbirdUIKit {
 
     @NonNull
     private static Pair<User, SendbirdException> connectBlocking(@NonNull SendbirdChatContract sendbirdChat) throws InterruptedException {
-        AtomicReference<User> result = new AtomicReference<>();
-        AtomicReference<SendbirdException> error = new AtomicReference<>();
-        CountDownLatch latch = new CountDownLatch(1);
-        UserInfo userInfo = adapter.getUserInfo();
-        String userId = userInfo.getUserId();
-        String accessToken = adapter.getAccessToken();
+        final AtomicReference<User> result = new AtomicReference<>();
+        final AtomicReference<SendbirdException> error = new AtomicReference<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        final UserInfo userInfo = adapter.getUserInfo();
+        final String userId = userInfo.getUserId();
+        final String accessToken = adapter.getAccessToken();
+        final String apiHost = UIKitPrefs.getString(StringSet.KEY_CUSTOM_API_HOST, null);
+        final String wsHost = UIKitPrefs.getString(StringSet.KEY_CUSTOM_WS_HOST, null);
 
-        sendbirdChat.connect(userId, accessToken, (user, e) -> {
+        sendbirdChat.connect(userId, accessToken, apiHost, wsHost, (user, e) -> {
             result.set(user);
             if (e != null) {
                 error.set(e);
@@ -726,7 +753,8 @@ public class SendbirdUIKit {
         String userId = userInfo.getUserId();
         String accessToken = adapter.getAccessToken();
 
-        sendbirdChat.authenticateFeed(userId, accessToken, null, (user, e) -> {
+        final String apiHost = UIKitPrefs.getString(StringSet.KEY_CUSTOM_API_HOST, null);
+        sendbirdChat.authenticate(userId, accessToken, apiHost, (user, e) -> {
             result.set(user);
             if (e != null) {
                 error.set(e);

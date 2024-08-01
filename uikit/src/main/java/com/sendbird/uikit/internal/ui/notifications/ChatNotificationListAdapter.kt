@@ -65,10 +65,12 @@ internal class ChatNotificationListAdapter(
             binding.chatNotification.onNotificationTemplateActionHandler = onMessageTemplateActionHandler
             binding.chatNotification.binding.contentPanel.setOnClickListener {
                 val position = this.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return@setOnClickListener
                 onItemClickListener?.onItemClick(it, position, getItem(position))
             }
             binding.chatNotification.binding.contentPanel.setOnLongClickListener {
                 val position = this.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return@setOnLongClickListener true
                 onItemLongClickListener?.onItemLongClick(it, position, getItem(position))
                 true
             }

@@ -59,10 +59,12 @@ internal data class ViewStyle(
     val padding: Padding? = null
 ) {
     fun apply(view: View, useRipple: Boolean = false): ViewStyle {
-        backgroundImageUrl?.let { view.loadToBackground(it, radius ?: 0, useRipple) }
         if (backgroundColor != null || (borderWidth != null && borderWidth > 0)) {
             view.setBackgroundColor(backgroundColor ?: Color.TRANSPARENT)
         }
+
+        // backgroundImageUrl has higher priority than backgroundColor (platform synced)
+        backgroundImageUrl?.let { view.loadToBackground(it, radius ?: 0, useRipple) }
 
         margin?.apply(view)
         padding?.apply(view)
@@ -76,7 +78,7 @@ internal data class ViewStyle(
 }
 
 @Serializable
-internal data class Margin constructor(
+internal data class Margin(
     val top: Int = 0,
     val bottom: Int = 0,
     val left: Int = 0,
@@ -85,18 +87,17 @@ internal data class Margin constructor(
     fun apply(view: View) {
         val resources = view.context.resources
         val layoutParams = view.layoutParams as LinearLayout.LayoutParams
-        layoutParams.setMargins(
-            resources.intToDp(left),
-            resources.intToDp(top),
-            resources.intToDp(right),
-            resources.intToDp(bottom)
-        )
-        view.layoutParams = layoutParams
+        view.layoutParams = layoutParams.also {
+            it.topMargin = resources.intToDp(top)
+            it.bottomMargin = resources.intToDp(bottom)
+            it.marginStart = resources.intToDp(left)
+            it.marginEnd = resources.intToDp(right)
+        }
     }
 }
 
 @Serializable
-internal data class Padding constructor(
+internal data class Padding(
     val top: Int = 0,
     val bottom: Int = 0,
     val left: Int = 0,
@@ -104,7 +105,7 @@ internal data class Padding constructor(
 ) {
     fun apply(view: View) {
         val resources = view.context.resources
-        view.setPadding(
+        view.setPaddingRelative(
             resources.intToDp(left),
             resources.intToDp(top),
             resources.intToDp(right),

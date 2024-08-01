@@ -5,8 +5,8 @@
     android:layout_height="@dimen/sb_size_56"
     android:clickable="true"
     android:focusable="true"
-    android:paddingLeft="@dimen/sb_size_16"
-    android:paddingRight="@dimen/sb_size_16"
+    android:paddingStart="@dimen/sb_size_16"
+    android:paddingEnd="@dimen/sb_size_16"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -14,7 +14,6 @@
         android:id="@+id/vgAction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvName"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -33,8 +32,8 @@
                 android:id="@+id/tvDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/sb_size_8"
-                android:layout_marginRight="@dimen/sb_size_8"
+                android:layout_marginStart="@dimen/sb_size_8"
+                android:layout_marginEnd="@dimen/sb_size_8"
                 />
 
             <ImageView
@@ -52,19 +51,25 @@
         android:layout_width="@dimen/sb_size_24"
         android:layout_height="@dimen/sb_size_24"
         android:scaleType="centerCrop"
+        android:src="@drawable/icon_search"
         android:importantForAccessibility="no"
         android:layout_marginEnd="@dimen/sb_size_16"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintEnd_toStartOf="@id/tvName"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="@dimen/sb_size_0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/sb_size_16"
-        android:gravity="center_vertical"
+        android:gravity="start|center_vertical"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/vgAction"
         app:layout_constraintStart_toEndOf="@id/ivIcon"

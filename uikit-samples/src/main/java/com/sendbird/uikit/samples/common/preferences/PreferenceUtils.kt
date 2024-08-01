@@ -3,6 +3,7 @@ package com.sendbird.uikit.samples.common.preferences
 import android.content.Context
 import com.sendbird.uikit.SendbirdUIKit.ThemeMode
 import com.sendbird.uikit.samples.BaseApplication
+import com.sendbird.uikit.samples.common.consts.Region
 import com.sendbird.uikit.samples.common.consts.SampleType
 
 /**
@@ -18,6 +19,7 @@ internal object PreferenceUtils {
     private const val PREFERENCE_KEY_DO_NOT_DISTURB = "PREFERENCE_KEY_DO_NOT_DISTURB"
     private const val PREFERENCE_KEY_LATEST_USED_SAMPLE = "PREFERENCE_KEY_LATEST_USED_SAMPLE"
     private const val PREFERENCE_KEY_NOTIFICATION_USE_FEED_CHANNEL_ONLY = "PREFERENCE_KEY_NOTIFICATION_USE_FEED_CHANNEL_ONLY"
+    private const val PREFERENCE_KEY_REGION = "PREFERENCE_KEY_REGION"
 
     private lateinit var pref: Preference
     fun init(context: Context) {
@@ -52,7 +54,7 @@ internal object PreferenceUtils {
 
     var botId: String
         get() = pref.getString(PREFERENCE_KEY_BOT_ID) ?: ""
-        set(nickname) = pref.putString(PREFERENCE_KEY_BOT_ID, nickname)
+        set(botId) = pref.putString(PREFERENCE_KEY_BOT_ID, botId)
 
     var isUsingFeedChannelOnly: Boolean
         get() = pref.getBoolean(PREFERENCE_KEY_NOTIFICATION_USE_FEED_CHANNEL_ONLY, false)
@@ -73,5 +75,20 @@ internal object PreferenceUtils {
             BaseApplication.setupConfigurations()
         }
 
+    var region: Region
+        get() = pref.getString(PREFERENCE_KEY_REGION)?.let {
+            return Region.valueOf(it)
+        } ?: Region.PRODUCTION
+        set(value) {
+            pref.putString(PREFERENCE_KEY_REGION, value.name)
+        }
+
     fun clearAll() = pref.clear()
+    fun clearUserConfiguration() {
+        pref.remove(PREFERENCE_KEY_USER_ID)
+        pref.remove(PREFERENCE_KEY_NICKNAME)
+        pref.remove(PREFERENCE_KEY_PROFILE_URL)
+        pref.remove(PREFERENCE_KEY_DO_NOT_DISTURB)
+        pref.remove(PREFERENCE_KEY_NOTIFICATION_USE_FEED_CHANNEL_ONLY)
+    }
 }

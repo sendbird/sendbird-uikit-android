@@ -23,24 +23,15 @@ import com.sendbird.uikit.samples.common.fcm.MyFirebaseMessagingService
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 
 private const val APP_ID = "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768"
-internal const val enableAiChatBotSample = false
-internal const val enableNotificationSample = false
+internal const val enableAiChatBotSample = true
+internal const val enableNotificationSample = true
 
 class BaseApplication : MultiDexApplication() {
     companion object {
         internal val initState = MutableLiveData(InitState.NONE)
 
-        /**
-         * Returns the state of the result from initialization of Sendbird UIKit.
-         *
-         * @return the [InitState] instance
-         */
-        fun initStateChanges(): LiveData<InitState> {
-            return initState
-        }
-
-        private fun initUIKit(context: Context) {
-            SendbirdUIKit.init(object : SendbirdUIKitAdapter {
+        internal val adapter by lazy {
+            object : SendbirdUIKitAdapter {
                 override fun getAppId(): String = PreferenceUtils.appId.ifEmpty { APP_ID }
 
                 override fun getAccessToken(): String? = null
@@ -64,12 +55,25 @@ class BaseApplication : MultiDexApplication() {
                         initState.value = InitState.SUCCEED
                     }
                 }
-            }, context)
+            }
+        }
+
+        /**
+         * Returns the state of the result from initialization of Sendbird UIKit.
+         *
+         * @return the [InitState] instance
+         */
+        fun initStateChanges(): LiveData<InitState> {
+            return initState
+        }
+
+        private fun initUIKit(context: Context) {
+            SendbirdUIKit.init(adapter, context)
 
             // set theme mode
             SendbirdUIKit.setDefaultThemeMode(PreferenceUtils.themeMode)
             // register push notification
-            SendbirdPushHelper.registerPushHandler(MyFirebaseMessagingService())
+            SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
             // set logger
             SendbirdUIKit.setLogLevel(SendbirdUIKit.LogLevel.ALL)
         }
@@ -98,6 +102,7 @@ class BaseApplication : MultiDexApplication() {
                     UIKitConfig.groupChannelConfig.typingIndicatorTypes = setOf(TypingIndicatorType.BUBBLE, TypingIndicatorType.TEXT)
                     // set whether to use feedback
                     UIKitConfig.groupChannelConfig.enableFeedback = true
+
                     // set custom params
                     SendbirdUIKit.setCustomParamsHandler(object : CustomParamsHandler {
                         override fun onBeforeCreateOpenChannel(params: OpenChannelCreateParams) {

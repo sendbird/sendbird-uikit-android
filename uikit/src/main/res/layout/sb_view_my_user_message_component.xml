@@ -3,8 +3,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_12"
-    android:paddingRight="@dimen/sb_size_12"
+    android:paddingStart="@dimen/sb_size_12"
+    android:paddingEnd="@dimen/sb_size_12"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -99,8 +99,6 @@
             android:maxWidth="@dimen/sb_message_max_width"
             android:paddingTop="@dimen/sb_size_7"
             android:paddingBottom="@dimen/sb_size_7"
-            android:paddingRight="@dimen/sb_size_12"
-            android:paddingLeft="@dimen/sb_size_12"
             android:paddingStart="@dimen/sb_size_12"
             android:paddingEnd="@dimen/sb_size_12"
             app:sb_auto_link_text_view_linkify_mask="all"
@@ -126,9 +124,7 @@
             android:id="@+id/rvEmojiReactionList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/sb_size_7"
             android:paddingStart="@dimen/sb_size_7"
-            android:paddingRight="@dimen/sb_size_7"
             android:paddingEnd="@dimen/sb_size_7"
             android:paddingBottom="@dimen/sb_size_7"
             android:paddingTop="@dimen/sb_size_7"
@@ -146,7 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintRight_toRightOf="@id/contentPanel"
+        app:layout_constraintEnd_toEndOf="@id/contentPanel"
         app:layout_constraintTop_toBottomOf="@id/contentPanel"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

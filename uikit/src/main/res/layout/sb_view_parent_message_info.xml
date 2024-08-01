@@ -31,34 +31,41 @@
         android:layout_width="@dimen/sb_size_34"
         android:layout_height="@dimen/sb_size_34"
         android:importantForAccessibility="no"
-        app:layout_constraintLeft_toLeftOf="@id/guidelineStart"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintBottom_toBottomOf="@id/senderBarrier"/>
 
     <TextView
         android:id="@+id/tvNickname"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
-        android:layout_marginLeft="@dimen/sb_size_8"
-        android:layout_marginRight="@dimen/sb_size_8"
+        android:layout_marginStart="@dimen/sb_size_8"
+        android:layout_marginEnd="@dimen/sb_size_8"
         android:layout_marginBottom="@dimen/sb_size_2"
-        app:layout_constraintLeft_toRightOf="@id/ivProfile"
-        app:layout_constraintRight_toLeftOf="@id/ivMoreIcon"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/ivProfile"
+        app:layout_constraintEnd_toStartOf="@id/ivMoreIcon"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintBottom_toTopOf="@id/tvSentAt"/>
 
     <TextView
         android:id="@+id/tvSentAt"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
-        android:layout_marginLeft="@dimen/sb_size_8"
-        android:layout_marginRight="@dimen/sb_size_8"
-        app:layout_constraintLeft_toRightOf="@id/ivProfile"
-        app:layout_constraintRight_toLeftOf="@id/ivMoreIcon"
+        android:gravity="start|center_vertical"
+        android:layout_marginStart="@dimen/sb_size_8"
+        android:layout_marginEnd="@dimen/sb_size_8"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/ivProfile"
+        app:layout_constraintEnd_toStartOf="@id/ivMoreIcon"
         app:layout_constraintTop_toBottomOf="@id/tvNickname"
         app:layout_constraintBottom_toTopOf="@id/senderBarrier"/>
 
@@ -67,7 +74,7 @@
         android:layout_width="@dimen/sb_size_24"
         android:layout_height="@dimen/sb_size_24"
         app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintRight_toRightOf="@id/guidelineEnd"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         android:contentDescription="@string/sb_view_parent_message_info_menu_icon_description"/>
 
     <androidx.constraintlayout.widget.Group
@@ -104,6 +111,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="visible"
+        android:textAlignment="viewStart"
         app:layout_constraintStart_toStartOf="@id/contentPanel"
         app:layout_constraintEnd_toEndOf="@id/contentPanel"
         app:layout_constraintTop_toTopOf="@id/contentPanel"
@@ -259,6 +267,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sb_size_12"
         android:layout_marginBottom="@dimen/sb_size_12"
+        android:textAlignment="viewStart"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintTop_toBottomOf="@id/reactionBarrier"

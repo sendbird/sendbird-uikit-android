@@ -16,8 +16,10 @@ import com.sendbird.android.message.UserMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.internal.extensions.getDisplayMessage
+import com.sendbird.uikit.internal.extensions.removeMarkdownFormatting
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.internal.extensions.toDisplayText
+import com.sendbird.uikit.model.configurations.UIKitConfig.groupChannelConfig
 import com.sendbird.uikit.utils.ChannelUtils
 import com.sendbird.uikit.utils.DateUtils
 import com.sendbird.uikit.utils.DrawableUtils
@@ -200,7 +202,10 @@ internal class ChannelPreview @JvmOverloads constructor(
                     is UserMessage -> {
                         textView.maxLines = 2
                         textView.ellipsize = TextUtils.TruncateAt.END
-                        message = it.getDisplayMessage()
+                        message = it.getDisplayMessage().run {
+                            if (!groupChannelConfig.enableMarkdownForUserMessage) this
+                            else this.removeMarkdownFormatting()
+                        }
                     }
 
                     is BaseFileMessage -> {

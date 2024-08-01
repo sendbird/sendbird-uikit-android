@@ -87,7 +87,7 @@ data class OpenChannelConfig internal constructor(
         val gallery: MediaMenu = MediaMenu(),
 
         @Transient
-        var enableDocumentMutable: Boolean? = null
+        private var enableDocumentMutable: Boolean? = null
     ) : Parcelable {
         var enableDocument: Boolean
             /**

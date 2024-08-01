@@ -20,8 +20,8 @@
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/sb_size_24"
-            android:layout_marginRight="@dimen/sb_size_24"
+            android:layout_marginStart="@dimen/sb_size_24"
+            android:layout_marginEnd="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_24"
             android:textSize="@dimen/sb_text_size_24"
             android:textStyle="bold"
@@ -31,7 +31,55 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/basicSampleButton"/>
+            app:layout_constraintBottom_toTopOf="@id/regionSpinner"/>
+
+        <Spinner
+            android:id="@+id/regionSpinner"
+            android:background="@drawable/spinner_background"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/sb_size_24"
+            android:layout_marginEnd="@dimen/sb_size_24"
+            android:layout_marginBottom="@dimen/sb_size_16"
+            android:entries="@array/sb_regions"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/applicationIdLayout"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/applicationIdLayout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/sb_size_65"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/sb_size_16"
+            android:paddingRight="@dimen/sb_size_16"
+            android:layout_marginStart="@dimen/sb_size_24"
+            android:layout_marginEnd="@dimen/sb_size_24"
+            android:layout_marginBottom="@dimen/sb_size_16"
+            android:background="@drawable/selector_home_channel_type_button"
+            app:boxBackgroundMode="outline"
+            app:hintTextColor="@color/primary_main"
+            app:layout_constraintTop_toBottomOf="@id/regionSpinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/basicSampleButton"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/applicationId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rect_transparent"
+                android:textSize="@dimen/sb_text_size_16"
+                android:hint="@string/text_hint_application_id"
+                android:paddingTop="10dp"
+                android:textCursorDrawable="@drawable/shape_cursor_drawable"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.sendbird.uikit.samples.common.widgets.EntryButton
             android:id="@+id/basicSampleButton"
@@ -41,7 +89,7 @@
             android:layout_marginStart="@dimen/sb_size_24"
             android:layout_marginEnd="@dimen/sb_size_24"
             android:layout_marginBottom="@dimen/sb_size_16"
-            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/applicationIdLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/customizationSampleButton"
@@ -82,6 +130,7 @@
             app:title="@string/text_title_notification_sample"
             android:layout_marginStart="@dimen/sb_size_24"
             android:layout_marginEnd="@dimen/sb_size_24"
+            android:layout_marginBottom="@dimen/sb_size_16"
             app:layout_constraintTop_toBottomOf="@id/aiChatBotSampleButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

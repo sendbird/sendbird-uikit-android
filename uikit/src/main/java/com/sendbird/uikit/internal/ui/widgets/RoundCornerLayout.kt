@@ -65,21 +65,18 @@ internal open class RoundCornerLayout @JvmOverloads constructor(
             canvas.clipPath(path)
         }
 
-        val hasBorder = borderPaint.strokeWidth > 0
-        val halfBorder: Float = borderPaint.strokeWidth / 2
-        if (radius > 0 || hasBorder) {
-            rectF.inset(halfBorder, halfBorder)
-        }
-
         super.draw(canvas)
         save?.let { canvas.restoreToCount(it) }
     }
 
     override fun dispatchDraw(canvas: Canvas) {
-        super.dispatchDraw(canvas)
         val hasBorder = borderPaint.strokeWidth > 0
+        val halfBorder: Float = borderPaint.strokeWidth / 2
+        super.dispatchDraw(canvas)
         if (hasBorder) {
-            canvas.drawRoundRect(rectF, radius, radius, borderPaint)
+            rectF.set(0f, 0f, width.toFloat(), height.toFloat())
+            rectF.inset(halfBorder, halfBorder)
+            canvas.drawRoundRect(rectF, radius - halfBorder, radius - halfBorder, borderPaint)
         }
     }
 }

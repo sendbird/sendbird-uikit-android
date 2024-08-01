@@ -26,6 +26,7 @@ import com.sendbird.uikit.samples.basic.BasicHomeActivity
 import com.sendbird.uikit.samples.basic.GroupChannelMainActivity
 import com.sendbird.uikit.samples.common.LoginActivity
 import com.sendbird.uikit.samples.common.SelectServiceActivity
+import com.sendbird.uikit.samples.common.consts.Region
 import com.sendbird.uikit.samples.common.consts.SampleType
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
@@ -122,11 +123,11 @@ internal fun SampleType?.newRedirectToChannelIntent(
 
 internal fun Activity.logout() {
     WaitingDialog.show(this)
-    SendbirdPushHelper.unregisterPushHandler(object : PushRequestCompleteHandler {
+    SendbirdPushHelper.unregisterHandler(handler = object : PushRequestCompleteHandler {
         override fun onComplete(isRegistered: Boolean, token: String?) {
             SendbirdUIKit.disconnect {
                 WaitingDialog.dismiss()
-                PreferenceUtils.clearAll()
+                PreferenceUtils.clearUserConfiguration()
                 cleanUpPreviousSampleSettings()
                 val notificationManager =
                     getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
@@ -162,7 +163,7 @@ internal fun cleanUpPreviousSampleSettings() {
 
 internal fun authenticate(handler: ConnectHandler) {
     if (PreferenceUtils.isUsingFeedChannelOnly) {
-        SendbirdUIKit.authenticateFeed(handler::onConnected)
+        SendbirdUIKit.authenticate(handler::onConnected)
         return
     }
     SendbirdUIKit.connect(handler)
@@ -183,5 +184,25 @@ internal fun <T : Serializable?> Intent.getSerializable(key: String, clazz: Clas
     } else {
         @Suppress("UNCHECKED_CAST")
         this.getSerializableExtra(key) as? T
+    }
+}
+
+internal fun Region.apiHost(): String? {
+    return when (this) {
+        Region.NO1 -> "https://api-no1.sendbirdtest.com"
+        Region.NO2 -> "https://api-no2.sendbirdtest.com"
+        Region.NO3 -> "https://api-no3.sendbirdtest.com"
+        Region.NO4 -> "https://api-no4.sendbirdtest.com"
+        else -> null
+    }
+}
+
+internal fun Region.wsHost(): String? {
+    return when (this) {
+        Region.NO1 -> "wss://ws-no1.sendbirdtest.com"
+        Region.NO2 -> "wss://ws-no2.sendbirdtest.com"
+        Region.NO3 -> "wss://ws-no3.sendbirdtest.com"
+        Region.NO4 -> "wss://ws-no4.sendbirdtest.com"
+        else -> null
     }
 }

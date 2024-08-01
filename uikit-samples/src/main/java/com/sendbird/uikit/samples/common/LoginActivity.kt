@@ -2,8 +2,6 @@ package com.sendbird.uikit.samples.common
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Process
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sendbird.android.SendbirdChat.sdkVersion
 import com.sendbird.android.exception.SendbirdException
@@ -12,9 +10,11 @@ import com.sendbird.android.user.User
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.samples.R
+import com.sendbird.uikit.samples.common.extensions.apiHost
 import com.sendbird.uikit.samples.common.extensions.authenticate
 import com.sendbird.uikit.samples.common.extensions.getLogoDrawable
 import com.sendbird.uikit.samples.common.extensions.startingIntent
+import com.sendbird.uikit.samples.common.extensions.wsHost
 import com.sendbird.uikit.samples.common.fcm.MyFirebaseMessagingService
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
@@ -30,8 +30,6 @@ open class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding.apply {
             val context = this@LoginActivity
-            applicationId.visibility = View.VISIBLE
-            saveButton.visibility = View.VISIBLE
             userId.setSelectAllOnFocus(true)
             nickname.setSelectAllOnFocus(true)
             versionInfo.text = String.format(
@@ -39,21 +37,10 @@ open class LoginActivity : AppCompatActivity() {
                 com.sendbird.uikit.BuildConfig.VERSION_NAME,
                 sdkVersion
             )
-            SendbirdUIKit.getAdapter()?.appId?.let { applicationId.setText(it) }
 
             val sampleType = PreferenceUtils.selectedSampleType
             logoImageView.background = sampleType.getLogoDrawable(context)
             title.text = "${sampleType?.name} Sample"
-            saveButton.setOnClickListener {
-                val appId = applicationId.text
-                if (!appId.isNullOrEmpty()) {
-                    PreferenceUtils.appId = appId.toString()
-                    saveButton.postDelayed({
-                        finish()
-                        Process.killProcess(Process.myPid())
-                    }, 500)
-                }
-            }
             signInButton.setOnClickListener {
                 // Remove all spaces from userID
                 val userId = binding.userId.text.toString().replace("\\s".toRegex(), "")
@@ -63,10 +50,15 @@ open class LoginActivity : AppCompatActivity() {
                 }
                 PreferenceUtils.userId = userId
                 PreferenceUtils.nickname = nickname
+                // set region
+                val region = PreferenceUtils.region
+                SendbirdUIKit.setCustomHosts(
+                    region.apiHost(),
+                    region.wsHost()
+                )
                 onSignUp(userId, nickname)
             }
             selectSampleLayout.setOnClickListener {
-                PreferenceUtils.clearAll()
                 startActivity(Intent(context, SelectServiceActivity::class.java))
                 finish()
             }
@@ -80,6 +72,8 @@ open class LoginActivity : AppCompatActivity() {
         authenticate { _: User?, e: SendbirdException? ->
             if (e != null) {
                 Logger.e(e)
+                PreferenceUtils.userId = ""
+                PreferenceUtils.nickname = ""
                 ContextUtils.toastError(this@LoginActivity, "${e.message}")
                 WaitingDialog.dismiss()
                 return@authenticate
@@ -87,7 +81,7 @@ open class LoginActivity : AppCompatActivity() {
             WaitingDialog.dismiss()
             PreferenceUtils.userId = userId
             PreferenceUtils.nickname = nickname
-            SendbirdPushHelper.registerPushHandler(MyFirebaseMessagingService())
+            SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
             val intent = PreferenceUtils.selectedSampleType.startingIntent(this)
             startActivity(intent)
             finish()

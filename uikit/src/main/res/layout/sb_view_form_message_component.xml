@@ -87,8 +87,6 @@
             android:maxWidth="@dimen/sb_message_max_width"
             android:paddingTop="@dimen/sb_size_7"
             android:paddingBottom="@dimen/sb_size_7"
-            android:paddingRight="@dimen/sb_size_12"
-            android:paddingLeft="@dimen/sb_size_12"
             android:paddingStart="@dimen/sb_size_12"
             android:paddingEnd="@dimen/sb_size_12"
             app:sb_auto_link_text_view_linkify_mask="all"

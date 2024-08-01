@@ -130,6 +130,7 @@ class StatusFrameView @JvmOverloads constructor(
             binding.frameParentPanel.setBackgroundResource(background)
             binding.progressPanel.setBackgroundResource(background)
             setStatus(Status.NONE)
+            binding.frameParentPanel.isClickable = true
         } finally {
             a.recycle()
         }

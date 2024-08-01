@@ -89,14 +89,16 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
 
         // draw the buffer and restore canvas settings.
         super.draw(canvas)
+        canvas.restoreToCount(save)
+
         // draw border
         val hasBorder = borderPaint.strokeWidth > 0
         if (hasBorder) {
             val halfBorder: Float = borderPaint.strokeWidth / 2
+            rectF.set(0f, 0f, width.toFloat(), height.toFloat())
             rectF.inset(halfBorder, halfBorder)
-            canvas.drawRect(rectF, borderPaint)
+            canvas.drawRoundRect(rectF, radius - halfBorder, radius - halfBorder, borderPaint)
         }
-        canvas.restoreToCount(save)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -125,7 +127,7 @@ internal open class MessageTemplateImageView @JvmOverloads constructor(
     }
 
     fun load(url: String) {
-        var glide = Glide.with(context).load(url)
+        var glide = Glide.with(this).load(url)
         if (targetWidth > 0 && targetHeight > 0) {
             val deviceWidth = MetricsUtils.getDeviceWidth(context)
             if (targetWidth > deviceWidth) {

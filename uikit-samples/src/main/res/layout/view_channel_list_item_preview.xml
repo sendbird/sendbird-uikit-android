@@ -4,9 +4,9 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_16"
+    android:paddingStart="@dimen/sb_size_16"
     android:paddingTop="@dimen/sb_size_10"
-    android:paddingRight="@dimen/sb_size_16"
+    android:paddingEnd="@dimen/sb_size_16"
     android:paddingBottom="@dimen/sb_size_10">
 
     <ImageView
@@ -21,8 +21,8 @@
         android:layout_marginEnd="@dimen/sb_size_4"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintRight_toLeftOf="@id/tvTitle"
-        app:layout_constraintLeft_toRightOf="@+id/vgCoverView"
+        app:layout_constraintEnd_toStartOf="@id/tvTitle"
+        app:layout_constraintStart_toEndOf="@+id/vgCoverView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
         />
@@ -38,8 +38,8 @@
         android:singleLine="true"
         android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@id/brBottom"
-        app:layout_constraintLeft_toRightOf="@+id/ivBroadcastIcon"
-        app:layout_constraintRight_toLeftOf="@+id/tvMemberCount"
+        app:layout_constraintStart_toEndOf="@+id/ivBroadcastIcon"
+        app:layout_constraintEnd_toStartOf="@+id/tvMemberCount"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/sb_size_4"
         android:layout_marginEnd="@dimen/sb_size_4" />
@@ -111,8 +111,8 @@
         android:layout_marginEnd="@dimen/sb_size_10"
         android:layout_marginTop="@dimen/sb_size_2"
         android:maxLines="1"
-        app:layout_constraintLeft_toRightOf="@id/vgCoverView"
-        app:layout_constraintRight_toLeftOf="@+id/tvUnreadMentionCount"
+        app:layout_constraintStart_toEndOf="@id/vgCoverView"
+        app:layout_constraintEnd_toStartOf="@+id/tvUnreadMentionCount"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <TextView
@@ -123,8 +123,8 @@
         android:layout_marginEnd="@dimen/sb_size_4"
         android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@id/tvLastMessage"
-        app:layout_constraintRight_toLeftOf="@+id/tvUnreadCount"
+        app:layout_constraintStart_toEndOf="@id/tvLastMessage"
+        app:layout_constraintEnd_toStartOf="@+id/tvUnreadCount"
         app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
     <TextView
@@ -134,8 +134,8 @@
         android:layout_marginTop="@dimen/sb_size_5"
         android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@id/tvUnreadMentionCount"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvUnreadMentionCount"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvUpdatedAt" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -157,7 +157,7 @@
             android:layout_width="@dimen/sb_size_56"
             android:layout_height="@dimen/sb_size_56"
             android:scaleType="centerCrop"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </FrameLayout>
 

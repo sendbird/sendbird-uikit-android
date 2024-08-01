@@ -52,16 +52,15 @@ final public class UIKitPrefs {
         editor.putString(key, value).apply();
     }
 
-    @NonNull
+    @Nullable
     public static String getString(@NonNull String key) {
         return getString(key, "");
     }
 
-    @NonNull
+    @Nullable
     public static String getString(@NonNull String key, @Nullable String defValue) {
         if (preferences == null) return defValue == null ? "" : defValue;
-        final String value = preferences.getString(key, defValue);
-        return value == null ? "" : value;
+        return preferences.getString(key, defValue);
     }
 
     public static void putLong(@NonNull String key, long value) {

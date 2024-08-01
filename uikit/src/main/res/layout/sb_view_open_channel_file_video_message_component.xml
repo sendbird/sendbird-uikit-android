@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/sb_size_12"
+    android:paddingStart="@dimen/sb_size_12"
     android:paddingTop="@dimen/sb_size_5"
-    android:paddingRight="@dimen/sb_size_12"
+    android:paddingEnd="@dimen/sb_size_12"
     android:paddingBottom="@dimen/sb_size_5"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"

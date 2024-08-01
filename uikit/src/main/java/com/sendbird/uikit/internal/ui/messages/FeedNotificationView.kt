@@ -82,17 +82,17 @@ internal class FeedNotificationView @JvmOverloads internal constructor(
 
         // UI padding is different when category filter is enabled
         if (channel.isCategoryFilterEnabled && channel.notificationCategories.isNotEmpty()) {
-            binding.root.setPadding(
-                binding.root.paddingLeft,
+            binding.root.setPaddingRelative(
+                binding.root.paddingStart,
                 0,
-                binding.root.paddingRight,
+                binding.root.paddingEnd,
                 context.resources.getDimensionPixelSize(R.dimen.sb_size_16)
             )
         } else {
-            binding.root.setPadding(
-                binding.root.paddingLeft,
+            binding.root.setPaddingRelative(
+                binding.root.paddingStart,
                 context.resources.getDimensionPixelSize(R.dimen.sb_size_8),
-                binding.root.paddingRight,
+                binding.root.paddingEnd,
                 context.resources.getDimensionPixelSize(R.dimen.sb_size_8)
             )
         }

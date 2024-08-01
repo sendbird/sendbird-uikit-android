@@ -100,7 +100,7 @@ internal class SBLinkMovementMethod constructor(
         }
         var touchX = event.x.toInt()
         var touchY = event.y.toInt()
-        touchX -= widget.totalPaddingLeft
+        touchX -= widget.totalPaddingStart
         touchY -= widget.totalPaddingTop
         touchX += widget.scrollX
         touchY += widget.scrollY

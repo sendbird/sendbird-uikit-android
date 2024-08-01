@@ -100,7 +100,7 @@ internal class NotificationRecyclerView @JvmOverloads constructor(
             setAppearance(context, categoryMenuTextAppearance)
             setBackgroundResource(categoryMenuBackground)
             buttonDrawable = null
-            setPadding(
+            setPaddingRelative(
                 resources.intToDp(12),
                 resources.intToDp(7),
                 resources.intToDp(12),

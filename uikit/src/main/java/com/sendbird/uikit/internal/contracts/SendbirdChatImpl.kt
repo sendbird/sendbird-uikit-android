@@ -33,8 +33,8 @@ internal class SendbirdChatImpl : SendbirdChatContract {
         SendbirdChat.init(params, handler)
     }
 
-    override fun connect(userId: String, accessToken: String?, handler: ConnectHandler?) {
-        SendbirdChat.connect(userId, accessToken, handler)
+    override fun connect(userId: String, accessToken: String?, apiHost: String?, wsHost: String?, handler: ConnectHandler?) {
+        SendbirdChat.connect(userId, accessToken, apiHost, wsHost, handler)
     }
 
     override fun updateCurrentUserInfo(params: UserUpdateParams, handler: CompletionHandler?) {
@@ -60,12 +60,12 @@ internal class SendbirdChatImpl : SendbirdChatContract {
         SendbirdChat.getUIKitConfiguration(handler)
     }
 
-    override fun authenticateFeed(
+    override fun authenticate(
         userId: String,
         accessToken: String?,
         apiHost: String?,
         handler: AuthenticationHandler?
     ) {
-        SendbirdChat.authenticateFeed(userId, accessToken, apiHost, handler)
+        SendbirdChat.authenticate(userId, accessToken, apiHost, handler)
     }
 }

@@ -52,9 +52,9 @@ import com.sendbird.uikit.utils.FileUtils
 import com.sendbird.uikit.utils.IntentUtils
 import com.sendbird.uikit.utils.PermissionUtils
 import com.sendbird.uikit.utils.TextUtils
+import java.io.File
 import java.util.Locale
 import java.util.TimeZone
-import java.io.File
 
 /**
  * Displays a settings screen.

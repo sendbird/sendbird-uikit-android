@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/rootView"
         android:padding="@dimen/sb_size_16"
@@ -19,7 +19,8 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:textAlignment="viewStart"
+                android:gravity="start|center_vertical"
                 android:layout_weight="1"
                 android:text="@string/sb_text_channel_settings_notification"
                 />
@@ -36,6 +37,7 @@
             android:layout_marginTop="@dimen/sb_size_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
             android:text="@string/sb_text_push_setting_description"
             />
 
@@ -61,6 +63,7 @@
                 <TextView
                     android:id="@+id/tvOptionAll"
                     android:text="@string/sb_text_push_setting_option_all"
+                    android:textAlignment="viewStart"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
@@ -88,6 +91,7 @@
                 <TextView
                     android:id="@+id/tvOptionMentionsOnly"
                     android:text="@string/sb_text_push_setting_mentions_only"
+                    android:textAlignment="viewStart"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>

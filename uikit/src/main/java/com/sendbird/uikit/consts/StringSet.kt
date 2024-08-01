@@ -82,6 +82,8 @@ object StringSet {
     const val KEY_OPEN_CHANNEL_CONFIG = "KEY_OPEN_CHANNEL_CONFIG"
     const val KEY_EMOJI_REACTION_USER_LIST_SIZE = "KEY_EMOJI_REACTION_USER_LIST_SIZE"
     const val KEY_EMOJI_REACTION_USER_ = "KEY_EMOJI_REACTION_USER_"
+    const val KEY_CUSTOM_API_HOST = "KEY_CUSTOM_API_HOST"
+    const val KEY_CUSTOM_WS_HOST = "KEY_CUSTOM_WS_HOST"
     const val sb_uikit = "sb_uikit"
     const val sbu_type = "sbu_type"
     const val audio = "audio"

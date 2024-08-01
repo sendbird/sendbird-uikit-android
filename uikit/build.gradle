@@ -6,6 +6,7 @@ plugins {
     id 'org.jetbrains.dokka' version "$kotlin_version"
 }
 
+
 version = UIKIT_VERSION
 android {
     namespace 'com.sendbird.uikit'
@@ -53,6 +54,10 @@ android {
         targetCompatibility = 1.8
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
@@ -65,17 +70,17 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Sendbird
-    api 'com.sendbird.sdk:sendbird-chat:4.16.4'
+    api 'com.sendbird.sdk:sendbird-chat:4.17.0'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "androidx.viewpager2:viewpager2:1.1.0"
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -86,7 +91,7 @@ dokkaHtml {
     print "uikit doc path=$System.env.UIKIT_DOC_PATH"
     outputDirectory.set(file("$System.env.UIKIT_DOC_PATH"))
     // Set module name displayed in the final output
-    moduleName.set("Sendbird UIKit")
+    moduleName.set("SendbirdUIKit")
     suppressInheritedMembers.set(true)
 
     String dokkaBaseConfiguration = """

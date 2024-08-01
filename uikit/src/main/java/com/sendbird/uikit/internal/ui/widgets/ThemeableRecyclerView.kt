@@ -86,8 +86,8 @@ internal open class ThemeableRecyclerView @JvmOverloads constructor(
             )
             dividerDecoration = object : DividerItemDecoration(context, LinearLayout.VERTICAL) {
                 override fun onDraw(canvas: Canvas, parent: RecyclerView, state: State) {
-                    val dividerLeft = parent.paddingLeft
-                    val dividerRight = parent.width - parent.paddingRight
+                    val dividerLeft = parent.paddingStart
+                    val dividerRight = parent.width - parent.paddingEnd
                     val childCount = parent.childCount
                     for (i in 0..childCount - 2) {
                         val child = parent.getChildAt(i)

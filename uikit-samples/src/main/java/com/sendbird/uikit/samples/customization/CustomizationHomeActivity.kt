@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sendbird.uikit.samples.R
@@ -40,7 +40,7 @@ import com.sendbird.uikit.samples.databinding.ActivityCustomizationHomeBinding
 import com.sendbird.uikit.samples.databinding.ViewCustomizationListHeaderBinding
 import com.sendbird.uikit.samples.databinding.ViewCustomizationListItemBinding
 
-class CustomizationHomeActivity : ComponentActivity() {
+class CustomizationHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityCustomizationHomeBinding.inflate(layoutInflater).apply {

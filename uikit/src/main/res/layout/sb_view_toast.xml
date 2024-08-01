@@ -11,8 +11,8 @@
         android:id="@+id/iconPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/sb_size_8"
-        android:layout_marginLeft="@dimen/sb_size_8">
+        android:layout_marginEnd="@dimen/sb_size_8"
+        android:layout_marginStart="@dimen/sb_size_8">
 
         <ImageView
             android:id="@+id/ivSuccess"
@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/sb_size_16"
         android:maxLines="2"
+        android:textAlignment="viewStart"
         android:ellipsize="end"/>
 
 </LinearLayout>
