@@ -144,13 +144,18 @@
     <string name="text_report_inappropriate">Inappropriate</string>
     <string name="text_report_error">Couldn\&#39;t report message.</string>
 
+    <!-- AI ChatBot -->
+    <string name="text_title_ai_chatbot_features">AI ChatBot Feature</string>
+    <string name="text_webview_chatbot_widget">WebView ChatBot Widget</string>
+    <string name="text_webview_custom_chatbot_widget_sample">Embed an AI chatbot in WebView</string>
+
     <string name="text_list_item_nickname_format">#%d. %s</string>
 
     <string name="text_resend">Resend</string>
     <string name="text_delete">Delete</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_custom_header">Custom Header</string>
-    <string name="text_menu_thumbs_up" >Thumbs Up</string>
+    <string name="text_menu_thumbs_up">Thumbs Up</string>
     <string name="text_menu_thumbs_down">Thumbs Down</string>
     <string name="text_choose_report_category_dialog">Choose the report category</string>
 
