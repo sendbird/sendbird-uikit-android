@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.extensions.cleanUpPreviousSampleSettings
 import com.sendbird.uikit.samples.common.extensions.logout
+import com.sendbird.uikit.samples.customization.aichatbot.showWebViewAiChatBotSample
 import com.sendbird.uikit.samples.customization.channel.showChannelHeaderSample
 import com.sendbird.uikit.samples.customization.channel.showChannelLayoutSample
 import com.sendbird.uikit.samples.customization.channel.showInputMenuSample
@@ -195,6 +196,17 @@ class CustomizationHomeActivity : AppCompatActivity() {
             title = getString(R.string.text_title_moderation_open_channel),
             description = getString(R.string.text_moderation_custom_open_channel_sample),
         ) { showModerationOpenChannelSample(activity = this) },
+        // endregion
+
+        // region ai chatbot customization
+        CustomizationItem(
+            isHeader = true,
+            title = getString(R.string.text_title_ai_chatbot_features)
+        ),
+        CustomizationItem(
+            title = getString(R.string.text_webview_chatbot_widget),
+            description = getString(R.string.text_webview_custom_chatbot_widget_sample),
+        ) { showWebViewAiChatBotSample(activity = this) },
         // endregion
     )
 
