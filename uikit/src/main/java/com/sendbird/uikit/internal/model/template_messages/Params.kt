@@ -7,6 +7,10 @@ import android.widget.LinearLayout
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
+import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
+import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.backgroundColor
+import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.descTextColor
+import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.titleColor
 import com.sendbird.uikit.model.Action
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -15,6 +19,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import org.json.JSONObject
 
 const val FILL_PARENT = 0
 const val WRAP_CONTENT = 1
@@ -236,3 +241,156 @@ internal data class CarouselViewParams(
     val items: List<Params>,
     val spacing: Int = 10
 ) : ViewParams()
+
+internal object TemplateParamsCreator {
+    @JvmStatic
+    @Throws(Exception::class)
+    internal fun createDataTemplateViewParams(
+        dataTemplate: String,
+        themeMode: NotificationThemeMode
+    ): Params {
+        val textParams = mutableListOf<ViewParams>().apply {
+            val json = JSONObject(dataTemplate)
+            json.keys().forEach { key ->
+                add(
+                    TextViewParams(
+                        type = ViewType.Text,
+                        textStyle = TextStyle(
+                            size = 14,
+                            color = themeMode.descTextColor
+                        ),
+                        text = "$key : ${json.getString(key)}"
+                    )
+                )
+            }
+        }
+        return Params(
+            version = 1,
+            body = Body(
+                items = listOf(
+                    BoxViewParams(
+                        type = ViewType.Box,
+                        orientation = Orientation.Column,
+                        viewStyle = ViewStyle(
+                            backgroundColor = themeMode.backgroundColor,
+                            padding = Padding(
+                                12, 12, 12, 12
+                            ),
+                            radius = 8
+                        ),
+                        items = textParams
+                    ),
+                )
+            )
+        )
+    }
+
+    @JvmStatic
+    fun createDefaultViewParam(
+        message: BaseMessage,
+        defaultFallbackTitle: String,
+        defaultFallbackDescription: String,
+        themeMode: NotificationThemeMode
+    ): Params {
+        val hasFallbackMessage = message.message.isNotEmpty()
+        val textList = mutableListOf(
+            TextViewParams(
+                type = ViewType.Text,
+                textStyle = TextStyle(
+                    size = 14,
+                    color = themeMode.titleColor
+                ),
+                text = message.message.takeIf { it.isNotEmpty() } ?: defaultFallbackTitle
+            )
+        )
+
+        if (!hasFallbackMessage) {
+            textList.add(
+                TextViewParams(
+                    type = ViewType.Text,
+                    textStyle = TextStyle(
+                        size = 14,
+                        color = themeMode.descTextColor
+                    ),
+                    text = defaultFallbackDescription
+                )
+            )
+        }
+        return Params(
+            version = 1,
+            body = Body(
+                items = listOf(
+                    BoxViewParams(
+                        type = ViewType.Box,
+                        orientation = Orientation.Column,
+                        viewStyle = ViewStyle(
+                            backgroundColor = themeMode.backgroundColor,
+                            padding = Padding(
+                                12, 12, 12, 12
+                            ),
+                            radius = 8
+                        ),
+                        items = textList
+                    ),
+                )
+            )
+        )
+    }
+
+    @JvmStatic
+    fun createMessageTemplateDefaultViewParam(
+        message: String,
+        defaultFallbackTitle: String,
+        defaultFallbackDescription: String
+    ): Params {
+        val hasFallbackMessage = message.isNotEmpty()
+        val textList = mutableListOf(
+            TextViewParams(
+                type = ViewType.Text,
+                width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                textStyle = TextStyle(
+                    size = 14,
+                    color = NotificationThemeMode.Default.titleColor
+                ),
+                text = message.takeIf { it.isNotEmpty() } ?: defaultFallbackTitle,
+            )
+        )
+
+        if (!hasFallbackMessage) {
+            textList.add(
+                TextViewParams(
+                    type = ViewType.Text,
+                    width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                    height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                    textStyle = TextStyle(
+                        size = 14,
+                        color = NotificationThemeMode.Default.descTextColor
+                    ),
+                    text = defaultFallbackDescription
+                )
+            )
+        }
+        return Params(
+            version = 1,
+            body = Body(
+                items = listOf(
+                    BoxViewParams(
+                        type = ViewType.Box,
+                        orientation = Orientation.Column,
+                        width = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                        height = SizeSpec(SizeType.Flex, WRAP_CONTENT),
+                        viewStyle = ViewStyle(
+                            backgroundColor = NotificationThemeMode.Default.backgroundColor,
+                            padding = Padding(
+                                6, 6, 12, 12
+                            ),
+                            radius = 16
+                        ),
+                        items = textList
+                    ),
+                )
+            )
+        )
+    }
+}

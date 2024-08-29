@@ -65,6 +65,7 @@ internal object KeySet {
     const val created_at = "created_at"
     const val updated_at = "updated_at"
     const val ui_template = "ui_template"
+    const val data_template = "data_template"
     const val color_variables = "color_variables"
     const val template_variables = "template_variables"
     const val variables = "variables"

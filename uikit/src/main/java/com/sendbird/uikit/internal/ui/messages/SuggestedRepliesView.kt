@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.android.message.BaseMessage
@@ -51,9 +52,10 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
         adapter.suggestedReplies = message.suggestedReplies
 
         if (isDirectionChanged) {
+            val layoutManager = binding.rvSuggestedReplies.layoutManager as? LinearLayoutManager
+            val layoutParams = layoutParams as ConstraintLayout.LayoutParams
             when (direction) {
                 SuggestedRepliesDirection.VERTICAL -> {
-                    val layoutManager = binding.rvSuggestedReplies.layoutManager as? LinearLayoutManager
                     layoutManager?.orientation = LinearLayoutManager.VERTICAL
 
                     binding.rvSuggestedReplies.setPaddingRelative(
@@ -62,10 +64,15 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
                         binding.rvSuggestedReplies.paddingEnd,
                         binding.rvSuggestedReplies.paddingBottom
                     )
-                    binding.rvSuggestedReplies.clipToPadding = true
+
+                    layoutParams.setMargins(
+                        resources.getDimensionPixelSize(R.dimen.sb_size_42),
+                        resources.getDimensionPixelSize(R.dimen.sb_size_20),
+                        layoutParams.rightMargin,
+                        layoutParams.bottomMargin
+                    )
                 }
                 SuggestedRepliesDirection.HORIZONTAL -> {
-                    val layoutManager = binding.rvSuggestedReplies.layoutManager as? LinearLayoutManager
                     layoutManager?.orientation = LinearLayoutManager.HORIZONTAL
 
                     binding.rvSuggestedReplies.setPaddingRelative(
@@ -74,9 +81,16 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
                         binding.rvSuggestedReplies.paddingEnd,
                         binding.rvSuggestedReplies.paddingBottom
                     )
-                    binding.rvSuggestedReplies.clipToPadding = false
+
+                    layoutParams.setMargins(
+                        layoutParams.leftMargin,
+                        resources.getDimensionPixelSize(R.dimen.sb_size_8),
+                        layoutParams.rightMargin,
+                        layoutParams.bottomMargin
+                    )
                 }
             }
+            binding.rvSuggestedReplies.clipToPadding = false
         }
     }
 

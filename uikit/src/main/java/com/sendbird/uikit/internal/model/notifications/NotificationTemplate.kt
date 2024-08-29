@@ -31,6 +31,9 @@ internal data class NotificationTemplate constructor(
     @SerialName(KeySet.ui_template)
     @Serializable(with = JsonElementToStringSerializer::class)
     private val _uiTemplate: String,
+    @SerialName(KeySet.data_template)
+    @Serializable(with = JsonElementToStringSerializer::class)
+    private val _dataTemplate: String,
     @SerialName(KeySet.color_variables)
     private val _colorVariables: Map<String, String>
 ) {
@@ -42,9 +45,26 @@ internal data class NotificationTemplate constructor(
         }
     }
 
+    /**
+     * If the data template is empty, it returns the UI template.
+     */
+    private fun validTemplateSyntax(): String {
+        if (_uiTemplate.length > 2) {
+            return _uiTemplate
+        }
+        return _dataTemplate
+    }
+
+    /**
+     * If the data template is not empty, it returns true.
+     */
+    val isDataTemplate: Boolean
+        get() = _dataTemplate.length > 2
+
     fun getTemplateSyntax(variables: Map<String, String>, themeMode: NotificationThemeMode): String {
         val regex = "\\{([^{}]+)\\}".toRegex()
-        return regex.replace(_uiTemplate) { matchResult ->
+        val template = validTemplateSyntax()
+        return regex.replace(template) { matchResult ->
             val variable = matchResult.groups[1]?.value
             var converted = false
 

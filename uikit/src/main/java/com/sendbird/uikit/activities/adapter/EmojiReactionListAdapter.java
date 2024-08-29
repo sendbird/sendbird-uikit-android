@@ -11,11 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.sendbird.android.SendbirdChat;
+import com.sendbird.android.message.Emoji;
 import com.sendbird.android.message.Reaction;
 import com.sendbird.uikit.activities.viewholder.BaseViewHolder;
 import com.sendbird.uikit.databinding.SbViewEmojiReactionBinding;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
+import com.sendbird.uikit.internal.extensions.EmojiExtensionsKt;
 import com.sendbird.uikit.internal.ui.reactions.EmojiReactionView;
 import com.sendbird.uikit.internal.ui.viewholders.EmojiReactionMoreViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.EmojiReactionViewHolder;
@@ -45,6 +47,8 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
     private boolean useMoreButton = true;
     private boolean clickable = true;
     private boolean longClickable = true;
+    @NonNull
+    private List<Emoji> totalEmojiList = EmojiManager.getAllEmojis();
 
     /**
      * Called when RecyclerView needs a new {@link BaseViewHolder<Reaction>} of the given type to represent
@@ -144,7 +148,7 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
      */
     @Override
     public int getItemCount() {
-        if (reactionList.size() >= EmojiManager.getAllEmojis().size()) {
+        if (EmojiExtensionsKt.hasAllEmoji(reactionList, totalEmojiList)) {
             return reactionList.size();
         } else {
             return reactionList.size() + (useMoreButton ? 1 : 0);
@@ -193,6 +197,16 @@ public class EmojiReactionListAdapter extends BaseAdapter<Reaction, BaseViewHold
             return VIEW_EMOJI_REACTION_MORE;
         }
         return VIEW_EMOJI_REACTION;
+    }
+
+    /**
+     * Sets the total emoji list that can be added to the current message.
+     * This value is used to compare whether `add` button should be displayed from the reactions view.
+     * @param totalEmojiList The total emoji list that can be added to the current message. Defaults to {@link EmojiManager#getAllEmojis()}.
+     * @since 3.20.0
+     */
+    public void setTotalEmojiList(@NonNull List<Emoji> totalEmojiList) {
+        this.totalEmojiList = totalEmojiList;
     }
 
     /**

@@ -80,6 +80,10 @@ class MessageDiffCallback extends DiffUtil.Callback {
             return false;
         }
 
+        if (MessageExtensionsKt.getEmojiCategories(oldMessage) != MessageExtensionsKt.getEmojiCategories(newMessage)) {
+            return false;
+        }
+
         // In the case of Bot message stream mode, the `message` is updated, but `updated_at` is not updated.
         boolean isBotOld = oldMessage.getSender() != null && oldMessage.getSender().isBot();
         boolean isBotNew = newMessage.getSender() != null && newMessage.getSender().isBot();
@@ -89,7 +93,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
             }
         }
 
-        if (MessageExtensionsKt.getShouldShowSuggestedReplies(oldMessage) != MessageExtensionsKt.getShouldShowSuggestedReplies(newMessage)) {
+        if (MessageExtensionsKt.isSuggestedRepliesVisible(oldMessage) != MessageExtensionsKt.getShouldShowSuggestedReplies(newMessage)) {
             return false;
         }
 

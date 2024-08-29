@@ -31,12 +31,13 @@ import com.sendbird.uikit.interfaces.OnIdentifiableItemClickListener;
 import com.sendbird.uikit.interfaces.OnIdentifiableItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
+import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager;
 import com.sendbird.uikit.internal.ui.viewholders.MyUserMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
-import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
-import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.MessageUIConfig;
@@ -240,7 +241,7 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
         if (ChannelConfig.getEnableReactions(messageListUIParams.getChannelConfig(), channel) && holder instanceof EmojiReactionHandler) {
             EmojiReactionHandler emojiReactionHandler = (EmojiReactionHandler) holder;
             List<Reaction> reactionList = current.getReactions();
-            emojiReactionHandler.setEmojiReaction(reactionList, (view, reactionPosition, reactionKey) -> {
+            emojiReactionHandler.setEmojiReaction(reactionList, MessageExtensionsKt.allowedEmojiList(current), (view, reactionPosition, reactionKey) -> {
                 int messagePosition = holder.getBindingAdapterPosition();
                 if (messagePosition != NO_POSITION && emojiReactionClickListener != null) {
                     emojiReactionClickListener.onEmojiReactionClick(
@@ -358,12 +359,14 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
         if (messageDisplayDataProvider == null || messageDisplayDataProvider.shouldRunOnUIThread()) {
             if (messageDisplayDataProvider != null)
                 MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
+            MessageExtensionsKt.updateMessageEmojiCategories(messageList, this::getEmojiCategories);
             notifyMessageListChanged(channel, messageList, callback);
             return;
         }
 
         messageDisplayDataProvider.threadPool().submit(() -> {
             MessageDisplayDataManager.checkAndGenerateDisplayData(messageList, messageDisplayDataProvider);
+            MessageExtensionsKt.updateMessageEmojiCategories(messageList, this::getEmojiCategories);
             notifyMessageListChanged(channel, messageList, callback);
         });
     }
@@ -625,6 +628,19 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
     @Override
     public List<BaseMessage> getItems() {
         return Collections.unmodifiableList(messageList);
+    }
+
+    /**
+     * Returns the list of {@link com.sendbird.android.message.EmojiCategory} ids which should be available for the given {@link BaseMessage}.
+     * If the list is null, all the available emoji categories will be shown.
+     *
+     * @param message The {@link BaseMessage} to get the emoji category for.
+     * @return The list of {@link com.sendbird.android.message.EmojiCategory} ids which is available for the given {@link BaseMessage}.
+     * @since 3.20.0
+     */
+    @Nullable
+    public List<Long> getEmojiCategories(@NonNull BaseMessage message) {
+        return null;
     }
 
     @TestOnly

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.FeedbackStatus
 import com.sendbird.android.message.SendingStatus
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
@@ -94,11 +95,16 @@ internal class OtherTemplateMessageView @JvmOverloads internal constructor(
         binding.root.setPaddingRelative(binding.root.paddingStart, paddingTop, binding.root.paddingEnd, paddingBottom)
         drawTemplateView(message, viewCachePool, shouldShowSentAt, handler)
 
-        val shouldHideFeedback = !params.channelConfig.enableFeedback ||
-            (message.hasParentMessage() && params.channelConfig.replyType == ReplyType.THREAD)
+        val shouldShowFeedback = params.channelConfig.enableFeedback &&
+            !(message.hasParentMessage() && params.channelConfig.replyType == ReplyType.THREAD)
 
-        binding.feedback.drawFeedback(message, shouldHideFeedback) { _, rating ->
-            onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+        if (shouldShowFeedback && message.myFeedbackStatus != FeedbackStatus.NOT_APPLICABLE) {
+            binding.feedback.visibility = View.VISIBLE
+            binding.feedback.drawFeedback(message) { _, rating ->
+                onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+            }
+        } else {
+            binding.feedback.visibility = View.GONE
         }
     }
 

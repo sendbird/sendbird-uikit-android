@@ -106,6 +106,14 @@ object EmojiManager {
         }
     }
 
+    internal fun getEmojis(emojiCategoryIds: List<Long>): List<Emoji>? {
+        return synchronized(emojiLock) {
+            emojiCategoryIds.distinct().mapNotNull { emojiCategoryId ->
+                emojiCategoryMap[emojiCategoryId]?.emojis?.toList()
+            }.flatten()
+        }
+    }
+
     private fun encodeEmojiContainer(container: EmojiContainer): String {
         return Base64.encodeToString(container.serialize(), Base64.DEFAULT)
     }

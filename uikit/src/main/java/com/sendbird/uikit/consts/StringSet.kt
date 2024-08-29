@@ -168,4 +168,5 @@ object StringSet {
 
     // extras
     const val should_show_suggested_replies = "should_show_suggested_replies"
+    const val is_suggested_replies_visible = "is_suggested_replies_visible"
 }
