@@ -1,7 +1,9 @@
 package com.sendbird.uikit.internal.singleton
 
+import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.template_messages.KeySet
 import com.sendbird.uikit.internal.model.template_messages.Params
+import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -39,10 +41,16 @@ internal object MessageTemplateParser {
 
     @JvmStatic
     @Throws(Exception::class)
-    fun parse(jsonTemplate: String): Params {
-        return when (val version = JSONObject(jsonTemplate).getInt(KeySet.version)) {
-            1, 2 -> parseParams(jsonTemplate)
+    fun parse(template: String): Params {
+        return when (val version = JSONObject(template).getInt(KeySet.version)) {
+            1, 2 -> parseParams(template)
             else -> throw RuntimeException("unsupported version. current version = $version")
         }
+    }
+
+    @JvmStatic
+    @Throws(Exception::class)
+    fun parseDataTemplate(template: String): Params {
+        return TemplateParamsCreator.createDataTemplateViewParams(template, NotificationThemeMode.Default)
     }
 }

@@ -4,6 +4,7 @@ import android.view.View
 import com.sendbird.android.channel.BaseChannel
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.Reaction
 import com.sendbird.uikit.activities.viewholder.GroupChannelMessageViewHolder
 import com.sendbird.uikit.consts.ClickableViewIdentifier
@@ -30,11 +31,19 @@ internal class MyVoiceMessageViewHolder internal constructor(
         emojiReactionLongClickListener: OnItemLongClickListener<String>?,
         moreButtonClickListener: View.OnClickListener?
     ) {
+        // not-used anymore
+    }
+
+    override fun setEmojiReaction(
+        reactionList: List<Reaction>,
+        totalEmojiList: List<Emoji>,
+        emojiReactionClickListener: OnItemClickListener<String>?,
+        emojiReactionLongClickListener: OnItemLongClickListener<String>?,
+        moreButtonClickListener: View.OnClickListener?
+    ) {
         binding.myVoiceMessageView.binding.rvEmojiReactionList.apply {
-            setReactionList(reactionList)
-            setEmojiReactionClickListener(emojiReactionClickListener)
-            setEmojiReactionLongClickListener(emojiReactionLongClickListener)
-            setMoreButtonClickListener(moreButtonClickListener)
+            setReactionList(reactionList, totalEmojiList)
+            setClickListeners(emojiReactionClickListener, emojiReactionLongClickListener, moreButtonClickListener)
         }
     }
 

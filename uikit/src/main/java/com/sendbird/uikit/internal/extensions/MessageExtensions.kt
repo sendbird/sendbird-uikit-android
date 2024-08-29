@@ -4,6 +4,7 @@ import android.content.Context
 import com.sendbird.android.annotation.AIChatBotExperimental
 import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.FormField
 import com.sendbird.android.message.MultipleFilesMessage
@@ -11,6 +12,8 @@ import com.sendbird.android.shadow.com.google.gson.JsonParser
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager
+import com.sendbird.uikit.log.Logger
+import com.sendbird.uikit.model.EmojiManager
 import com.sendbird.uikit.model.UserMessageDisplayData
 import com.sendbird.uikit.utils.MessageUtils
 
@@ -97,6 +100,38 @@ internal var FormField.lastValidation: Boolean?
         }
     }
 
+private val emojiCategoriesMap: MutableMap<Long, List<Long>> = mutableMapOf()
+internal var BaseMessage.emojiCategories: List<Long>?
+    get() = emojiCategoriesMap[this.messageId]
+    set(value) {
+        if (value == null) {
+            emojiCategoriesMap.remove(this.messageId)
+        } else {
+            emojiCategoriesMap[this.messageId] = value
+        }
+    }
+
+internal fun allowedEmojiList(message: BaseMessage): List<Emoji> {
+    val categories = message.emojiCategories
+    Logger.d("emoji categories for message: $categories")
+    return if (categories == null) {
+        EmojiManager.allEmojis
+    } else {
+        EmojiManager.getEmojis(categories) ?: emptyList()
+    }
+}
+
+internal fun updateMessageEmojiCategories(messageList: List<BaseMessage>, emojiCategories: (BaseMessage) -> List<Long>?) {
+    messageList.forEach { message ->
+        if (message.reactions.isEmpty()) {
+            // If there is no reaction, total emoji category allowed is not needed
+            message.emojiCategories = null
+            return@forEach
+        }
+        message.emojiCategories = emojiCategories(message)
+    }
+}
+
 private val FormField.identifier: String
     get() = "${this.messageId}_${this.key}"
 
@@ -105,6 +140,13 @@ internal var BaseMessage.shouldShowSuggestedReplies: Boolean
     get() = this.extras[StringSet.should_show_suggested_replies] as? Boolean ?: false
     set(value) {
         this.extras[StringSet.should_show_suggested_replies] = value
+    }
+
+@OptIn(AIChatBotExperimental::class)
+internal var BaseMessage.isSuggestedRepliesVisible: Boolean
+    get() = this.extras[StringSet.is_suggested_replies_visible] as? Boolean ?: false
+    set(value) {
+        this.extras[StringSet.is_suggested_replies_visible] = value
     }
 
 internal val BaseMessage.isStreamMessage: Boolean

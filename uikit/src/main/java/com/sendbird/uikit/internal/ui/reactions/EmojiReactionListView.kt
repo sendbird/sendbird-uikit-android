@@ -5,11 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.Reaction
 import com.sendbird.uikit.activities.adapter.EmojiReactionListAdapter
 import com.sendbird.uikit.databinding.SbViewEmojiReactionListBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.interfaces.OnItemLongClickListener
+import com.sendbird.uikit.model.EmojiManager
 import kotlin.math.min
 
 internal class EmojiReactionListView @JvmOverloads constructor(
@@ -34,8 +36,9 @@ internal class EmojiReactionListView @JvmOverloads constructor(
         binding.rvEmojiReactionList.adapter = adapter
     }
 
-    fun setReactionList(reactionList: List<Reaction?>) {
-        adapter.setReactionList(reactionList)
+    fun setReactionList(reactionList: List<Reaction?>, totalEmojiList: List<Emoji> = EmojiManager.allEmojis) {
+        adapter.setTotalEmojiList(totalEmojiList)
+        adapter.setReactionList(reactionList.filterNotNull())
         resetSpanSize()
     }
 
@@ -56,6 +59,16 @@ internal class EmojiReactionListView @JvmOverloads constructor(
 
     fun setMoreButtonClickListener(moreButtonClickListener: OnClickListener?) {
         adapter.setMoreButtonClickListener(moreButtonClickListener)
+    }
+
+    internal fun setClickListeners(
+        emojiReactionClickListener: OnItemClickListener<String>?,
+        emojiReactionLongClickListener: OnItemLongClickListener<String>?,
+        moreButtonClickListener: OnClickListener?
+    ) {
+        setEmojiReactionClickListener(emojiReactionClickListener)
+        setEmojiReactionLongClickListener(emojiReactionLongClickListener)
+        setMoreButtonClickListener(moreButtonClickListener)
     }
 
     fun setUseMoreButton(useMoreButton: Boolean) {

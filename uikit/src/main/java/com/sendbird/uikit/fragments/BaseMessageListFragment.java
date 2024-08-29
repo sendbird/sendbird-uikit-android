@@ -56,6 +56,8 @@ import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnResultHandler;
+import com.sendbird.uikit.internal.extensions.EmojiExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.internal.ui.messages.VoiceMessageView;
@@ -64,7 +66,6 @@ import com.sendbird.uikit.internal.ui.reactions.EmojiReactionUserListView;
 import com.sendbird.uikit.internal.ui.widgets.VoiceMessageInputView;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.DialogListItem;
-import com.sendbird.uikit.model.EmojiManager;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.VoiceMessageInfo;
@@ -109,8 +110,12 @@ abstract public class BaseMessageListFragment<
     private OnItemClickListener<User> messageMentionClickListener;
     @Nullable
     private LoadingDialogHandler loadingDialogHandler;
+    /**
+     * This is custom adapter set from {@link #setAdapter(BaseMessageListAdapter)}.
+     * The actual adapter is from {@link BaseMessageListModule#getMessageListComponent()} -> {@link BaseMessageListComponent#getAdapter()}.
+     */
     @Nullable
-    private LA adapter;
+    private LA customAdapter;
     @Nullable
     private SuggestedMentionListAdapter suggestedMentionListAdapter;
     @NonNull
@@ -185,8 +190,8 @@ abstract public class BaseMessageListFragment<
     protected void onBeforeReady(@NonNull ReadyStatus status, @NonNull MT module, @NonNull VM viewModel) {
         Logger.d(">> BaseMessageListFragment::onBeforeReady()");
         module.getMessageListComponent().setPagedDataLoader(viewModel);
-        if (this.adapter != null) {
-            module.getMessageListComponent().setAdapter(adapter);
+        if (this.customAdapter != null) {
+            module.getMessageListComponent().setAdapter(customAdapter);
         }
         module.getMessageInputComponent().setSuggestedMentionListAdapter(suggestedMentionListAdapter == null ? new SuggestedMentionListAdapter() : suggestedMentionListAdapter);
     }
@@ -436,22 +441,38 @@ abstract public class BaseMessageListFragment<
 
     void showEmojiActionsDialog(@NonNull BaseMessage message, @NonNull DialogListItem[] actions) {
         boolean showMoreButton = false;
-        List<Emoji> emojiList = EmojiManager.getAllEmojis();
+
+        final BaseMessageListAdapter adapter = getModule().getMessageListComponent().getAdapter();
+        if (adapter == null) {
+            return;
+        }
+
+        MessageExtensionsKt.setEmojiCategories(message, adapter.getEmojiCategories(message));
+        final List<Emoji> emojiList = MessageExtensionsKt.allowedEmojiList(message);
         int shownEmojiSize = emojiList.size();
         if (emojiList.size() > 6) {
             showMoreButton = true;
             shownEmojiSize = 5;
         }
-        emojiList = emojiList.subList(0, shownEmojiSize);
+        List<Emoji> shownEmojiList = emojiList.subList(0, shownEmojiSize);
 
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(requireContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), showMoreButton);
+        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, shownEmojiList, message.getReactions(), showMoreButton);
         hideKeyboard();
-        if (actions.length > 0 || emojiList.size() > 0) {
+        if (actions.length > 0 || shownEmojiList.size() > 0) {
             final AlertDialog dialog = DialogUtils.showContentViewAndListDialog(requireContext(), emojiListView, actions, createMessageActionListener(message));
 
             emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
                 dialog.dismiss();
+
+                if (!view.isSelected()) {
+                    // when adding emoji, check if it's allowed
+                    if (!EmojiExtensionsKt.containsEmoji(emojiList, emojiKey)) {
+                        toastError(R.string.sb_text_error_add_reaction);
+                        return;
+                    }
+                }
+
                 getViewModel().toggleReaction(view, message, emojiKey, e -> {
                     if (e != null)
                         toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
@@ -533,13 +554,28 @@ abstract public class BaseMessageListFragment<
             return;
         }
 
+        final BaseMessageListAdapter adapter = getModule().getMessageListComponent().getAdapter();
+        if (adapter == null) {
+            return;
+        }
+
+        MessageExtensionsKt.setEmojiCategories(message, adapter.getEmojiCategories(message));
+        final List<Emoji> emojiList = MessageExtensionsKt.allowedEmojiList(message);
         final Context contextThemeWrapper = ContextUtils.extractModuleThemeContext(getContext(), getModule().getParams().getTheme(), R.attr.sb_component_list);
-        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, EmojiManager.getAllEmojis(), message.getReactions(), false);
+        final EmojiListView emojiListView = EmojiListView.create(contextThemeWrapper, emojiList, message.getReactions(), false);
         hideKeyboard();
         final AlertDialog dialog = DialogUtils.showContentDialog(requireContext(), emojiListView);
 
         emojiListView.setEmojiClickListener((view, position, emojiKey) -> {
             dialog.dismiss();
+
+            if (!view.isSelected()) {
+                // when adding emoji, check if it's allowed
+                if (!EmojiExtensionsKt.containsEmoji(emojiList, emojiKey)) {
+                    toastError(R.string.sb_text_error_add_reaction);
+                    return;
+                }
+            }
             getViewModel().toggleReaction(view, message, emojiKey, e -> {
                 if (e != null)
                     toastError(view.isSelected() ? R.string.sb_text_error_delete_reaction : R.string.sb_text_error_add_reaction);
@@ -1224,7 +1260,7 @@ abstract public class BaseMessageListFragment<
      * since 3.3.0
      */
     void setAdapter(@Nullable LA adapter) {
-        this.adapter = adapter;
+        this.customAdapter = adapter;
     }
 
     /**

@@ -18,8 +18,9 @@ import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.interfaces.GetTemplateResultHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.template_messages.KeySet
-import com.sendbird.uikit.internal.model.template_messages.Params
+import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
 import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator
+import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.spinnerColor
 import com.sendbird.uikit.internal.singleton.MessageTemplateParser
 import com.sendbird.uikit.internal.singleton.NotificationChannelManager
 import com.sendbird.uikit.log.Logger
@@ -38,13 +39,19 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
         onNotificationTemplateActionHandler: OnNotificationTemplateActionHandler? = null
     ) {
         val handler = object : GetTemplateResultHandler {
-            override fun onResult(templateKey: String, jsonTemplate: String?, e: SendbirdException?) {
+            override fun onResult(templateKey: String, jsonTemplate: String?, isDataTemplate: Boolean, e: SendbirdException?) {
                 Logger.d("++ get template has been succeed, matched=${parentView.tag == message.messageId}")
                 if (parentView.tag != message.messageId) return
                 val layout = try {
                     e?.let { throw e }
+
                     jsonTemplate?.let {
-                        val viewParams: Params = MessageTemplateParser.parse(jsonTemplate)
+                        val viewParams = if (isDataTemplate) {
+                            MessageTemplateParser.parseDataTemplate(jsonTemplate)
+                        } else {
+                            MessageTemplateParser.parse(jsonTemplate)
+                        }
+
                         TemplateViewGenerator.inflateViews(
                             context,
                             viewParams,
@@ -89,7 +96,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                 templateKey, templateVariables, themeMode, handler
             )
         } catch (e: Throwable) {
-            handler.onResult(templateKey, null, SendbirdException(e))
+            handler.onResult(templateKey, null, false, SendbirdException(e))
         }
     }
 
@@ -98,7 +105,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
         themeMode: NotificationThemeMode,
         onNotificationTemplateActionHandler: OnNotificationTemplateActionHandler? = null
     ): View {
-        return TemplateViewGenerator.createDefaultViewParam(
+        return TemplateParamsCreator.createDefaultViewParam(
             message,
             context.getString(R.string.sb_text_notification_fallback_title),
             context.getString(R.string.sb_text_notification_fallback_description),
@@ -158,7 +165,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                     val loading = DrawableUtils.setTintList(
                         context,
                         R.drawable.sb_progress,
-                        ColorStateList.valueOf(TemplateViewGenerator.getSpinnerColor(themeMode))
+                        ColorStateList.valueOf(themeMode.spinnerColor)
                     )
                     this.indeterminateDrawable = loading
                 }

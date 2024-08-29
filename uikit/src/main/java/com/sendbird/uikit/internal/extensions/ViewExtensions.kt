@@ -26,13 +26,13 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FeedbackRating
-import com.sendbird.android.message.FeedbackStatus
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.template_messages.Params
-import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator
+import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
+import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.spinnerColor
 import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.widgets.FeedbackView
 
@@ -148,13 +148,7 @@ internal fun View.setBackgroundColorAndRadii(colorStateList: ColorStateList?, ra
     background = drawable
 }
 
-internal fun FeedbackView.drawFeedback(message: BaseMessage, shouldHideFeedback: Boolean, listener: OnFeedbackRatingClickListener?) {
-    this.visibility = if (shouldHideFeedback || message.myFeedbackStatus == FeedbackStatus.NOT_APPLICABLE) {
-        View.GONE
-    } else {
-        View.VISIBLE
-    }
-
+internal fun FeedbackView.drawFeedback(message: BaseMessage, listener: OnFeedbackRatingClickListener?) {
     this.drawFeedback(message.myFeedback)
     this.onFeedbackRatingClickListener = { feedbackRating: FeedbackRating ->
         listener?.onFeedbackClicked(message, feedbackRating)
@@ -175,7 +169,7 @@ internal fun Context.createTemplateMessageLoadingView(): View {
                 val loading = DrawableUtils.setTintList(
                     context,
                     R.drawable.sb_progress,
-                    ColorStateList.valueOf(TemplateViewGenerator.getSpinnerColor(NotificationThemeMode.Default))
+                    ColorStateList.valueOf(NotificationThemeMode.Default.spinnerColor)
                 )
                 this.indeterminateDrawable = loading
             }
@@ -188,7 +182,7 @@ internal fun Context.createFallbackViewParams(message: BaseMessage): Params {
 }
 
 internal fun Context.createFallbackViewParams(message: String): Params {
-    return TemplateViewGenerator.createMessageTemplateDefaultViewParam(
+    return TemplateParamsCreator.createMessageTemplateDefaultViewParam(
         message,
         this.getString(R.string.sb_text_template_message_fallback_title),
         this.getString(R.string.sb_text_template_message_fallback_description),

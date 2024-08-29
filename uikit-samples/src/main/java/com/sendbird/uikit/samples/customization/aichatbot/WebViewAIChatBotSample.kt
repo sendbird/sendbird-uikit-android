@@ -17,7 +17,8 @@ import com.sendbird.uikit.samples.databinding.ActivityWebViewAiChatbotBinding
 import com.sendbird.uikit.samples.databinding.DialogWebViewAiChatbotBinding
 
 // Set the Bot ID
-private const val BOT_ID = "client_bot"
+private const val BOT_ID = "onboarding_bot"
+private const val WEB_VIEW_SAMPLE_APP_ID = "C127D74A-67AF-4762-ABF8-09354638B138"
 
 fun showWebViewAiChatBotSample(activity: Activity) {
     activity.startActivity(Intent(activity, WebViewAiChatBotActivity::class.java))
@@ -71,7 +72,7 @@ class WebViewAiChatBotActivity : AppCompatActivity() {
             if (url == null) {
                 loadDataWithBaseURL(
                     "app://local", // Added baseUrl to preserve chat history when the page reloads, allowing restoration of previous chat sessions
-                    widgetHtmlString(PreferenceUtils.appId, BOT_ID),
+                    widgetHtmlString(WEB_VIEW_SAMPLE_APP_ID, BOT_ID),
                     "text/html",
                     "utf-8",
                     null

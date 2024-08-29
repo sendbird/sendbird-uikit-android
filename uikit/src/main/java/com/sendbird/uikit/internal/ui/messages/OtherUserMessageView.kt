@@ -8,17 +8,18 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.FeedbackStatus
 import com.sendbird.android.message.SendingStatus
 import com.sendbird.android.user.User
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.consts.ReplyType
-import com.sendbird.uikit.consts.SuggestedRepliesDirection
 import com.sendbird.uikit.databinding.SbViewOtherUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.isStreamMessage
+import com.sendbird.uikit.internal.extensions.isSuggestedRepliesVisible
 import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
@@ -48,12 +49,8 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
     var onFeedbackRatingClickListener: OnFeedbackRatingClickListener? = null
     var onSuggestedRepliesClickListener: OnItemClickListener<String>? = null
 
-    private val horizontalSuggestedRepliesViews: SuggestedRepliesView? by lazy {
-        binding.horizontalSuggestedRepliesViewStub.inflate() as? SuggestedRepliesView
-    }
-
-    private val verticalSuggestedRepliesView: SuggestedRepliesView? by lazy {
-        binding.verticalSuggestedRepliesViewStub.inflate() as? SuggestedRepliesView
+    private val suggestedRepliesViewStub: SuggestedRepliesView? by lazy {
+        binding.suggestedRepliesViewStub.inflate() as? SuggestedRepliesView
     }
 
     init {
@@ -215,28 +212,29 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
         }
         ViewUtils.drawThreadInfo(binding.threadInfo, message, params)
 
-        val shouldHideFeedback = !params.channelConfig.enableFeedback ||
-            (message.hasParentMessage() && params.channelConfig.replyType == ReplyType.THREAD)
-
-        binding.feedback.drawFeedback(message, shouldHideFeedback) { _, rating ->
-            onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+        val shouldShowFeedback = params.channelConfig.enableFeedback &&
+            !(message.hasParentMessage() && params.channelConfig.replyType == ReplyType.THREAD)
+        if (shouldShowFeedback && message.myFeedbackStatus != FeedbackStatus.NOT_APPLICABLE) {
+            binding.feedback.visibility = View.VISIBLE
+            binding.feedback.drawFeedback(message) { _, rating ->
+                onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
+            }
+        } else {
+            binding.feedback.visibility = View.GONE
         }
 
-        if (message.shouldShowSuggestedReplies) {
-            val suggestedRepliesListener = OnItemClickListener<String> { v, position, data ->
-                onSuggestedRepliesClickListener?.onItemClick(v, position, data)
-            }
-
-            when (val direction = params.channelConfig.suggestedRepliesDirection) {
-                SuggestedRepliesDirection.VERTICAL -> {
-                    verticalSuggestedRepliesView?.drawSuggestedReplies(message, direction)
-                    verticalSuggestedRepliesView?.onItemClickListener = suggestedRepliesListener
-                }
-                SuggestedRepliesDirection.HORIZONTAL -> {
-                    horizontalSuggestedRepliesViews?.drawSuggestedReplies(message, direction)
-                    horizontalSuggestedRepliesViews?.onItemClickListener = suggestedRepliesListener
+        val shouldShowSuggestedReplies = message.shouldShowSuggestedReplies
+        message.isSuggestedRepliesVisible = shouldShowSuggestedReplies
+        if (shouldShowSuggestedReplies) {
+            suggestedRepliesViewStub?.let {
+                it.visibility = View.VISIBLE
+                it.drawSuggestedReplies(message, params.channelConfig.suggestedRepliesDirection)
+                it.onItemClickListener = OnItemClickListener<String> { v, position, data ->
+                    onSuggestedRepliesClickListener?.onItemClick(v, position, data)
                 }
             }
+        } else {
+            suggestedRepliesViewStub?.visibility = View.GONE
         }
     }
 }

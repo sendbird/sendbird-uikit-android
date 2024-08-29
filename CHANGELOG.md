@@ -1,4 +1,15 @@
 # Changelog
+### v3.20.0 (Aug 29, 2024) with Chat SDK `v4.18.0`
+* Added support for EmojiCategory. You can now filter emojis for different messages when adding Reactions to a message.
+    * New Interfaces
+       ```kotlin
+          class BaseMessageListAdapter {
+              fun getEmojiCategories(message: BaseMessage): List<Long>? {
+                  return null
+              }
+          }
+       ```
+    * Note: You need to set your custom EmojiCategory using [Sendbird Platform API](https://sendbird.com/docs/chat/platform-api/v3/message/reactions-and-emojis/reactions-and-emojis-overview) in advance.
 ### v3.19.0 (Aug 1, 2024) with Chat SDK `v4.17.0`
 * Deprecated `authenticateFeed(AuthenticationHandler)` in `SendbirdUIKit`, which is replaced by `authenticate(AuthenticationHandler)`.
 * Fixed the crash issue caused by the `bindingAdapterPosition` in the RecyclerView not being returned correctly.

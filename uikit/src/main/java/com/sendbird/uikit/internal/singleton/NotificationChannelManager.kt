@@ -64,9 +64,10 @@ internal object NotificationChannelManager {
     ) {
         Logger.d(">> NotificationChannelManager::makeTemplate(), key=$key, handler=$callback")
 
-        templateRepository.getTemplate(key)?.getTemplateSyntax(variables, themeMode)?.let {
-            Logger.d("++ template[$key]=$it")
-            callback.onResult(key, it, null)
+        templateRepository.getTemplate(key)?.let {
+            val jsonTemplate = it.getTemplateSyntax(variables, themeMode)
+            Logger.d("++ template[$key]=$jsonTemplate")
+            callback.onResult(key, jsonTemplate, it.isDataTemplate, null)
             return
         }
 
@@ -101,7 +102,7 @@ internal object NotificationChannelManager {
                     templateRequestDatas[key]?.forEach { requestData ->
                         // The template may be the same but variable may be a different message.(NOTI-1027)
                         val template = rawTemplate.getTemplateSyntax(requestData.variables, requestData.themeMode)
-                        requestData.handler.onResult(key, template, null)
+                        requestData.handler.onResult(key, template, rawTemplate.isDataTemplate, null)
                     }
                 } finally {
                     templateRequestDatas.remove(key)
@@ -116,7 +117,7 @@ internal object NotificationChannelManager {
                 try {
                     Logger.d("NotificationChannelManager::notifyError()")
                     templateRequestDatas[key]?.forEach { requestData ->
-                        requestData.handler.onResult(key, null, e)
+                        requestData.handler.onResult(key, null, false, e)
                     }
                 } finally {
                     templateRequestDatas.remove(key)
