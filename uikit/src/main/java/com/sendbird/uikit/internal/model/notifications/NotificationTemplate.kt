@@ -33,7 +33,7 @@ internal data class NotificationTemplate constructor(
     private val _uiTemplate: String,
     @SerialName(KeySet.data_template)
     @Serializable(with = JsonElementToStringSerializer::class)
-    private val _dataTemplate: String,
+    private val _dataTemplate: String = "{}", // for backward compatibility. [since 3.20.1]
     @SerialName(KeySet.color_variables)
     private val _colorVariables: Map<String, String>
 ) {
