@@ -17,3 +17,7 @@ internal fun String?.toDisplayText(default: String): String {
 internal fun String.upperFirstChar(): String {
     return this.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }
 }
+
+internal infix fun List<String>?.isEqualTo(other: List<String>?): Boolean {
+    return this == other
+}

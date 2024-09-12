@@ -5,19 +5,24 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.android.message.MessageForm
+import com.sendbird.android.message.SendingStatus
 import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
-import com.sendbird.uikit.activities.adapter.FormFieldAdapter
+import com.sendbird.uikit.activities.adapter.FormItemAdapter
+import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewFormMessageComponentBinding
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.utils.DrawableUtils
+import com.sendbird.uikit.utils.MessageUtils
 import com.sendbird.uikit.utils.ViewUtils
+
+internal const val MESSAGE_FORM_VERSION = 1
 
 internal class FormMessageView @JvmOverloads internal constructor(
     context: Context,
@@ -29,7 +34,10 @@ internal class FormMessageView @JvmOverloads internal constructor(
     private val sentAtAppearance: Int
     private val nicknameAppearance: Int
     private val messageAppearance: Int
-    private val formFieldAdapter: FormFieldAdapter = FormFieldAdapter()
+    private val formItemAdapter: FormItemAdapter = FormItemAdapter {
+        setSubmitButtonEnabled(if (messageForm?.isSubmitted == true) false else it)
+    }
+    private var messageForm: MessageForm? = null
 
     override val layout: View
         get() = binding.root
@@ -38,7 +46,6 @@ internal class FormMessageView @JvmOverloads internal constructor(
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.MessageView_User, defStyle, 0)
         try {
             binding = SbViewFormMessageComponentBinding.inflate(LayoutInflater.from(getContext()), this, true)
-            val isDarkMode = SendbirdUIKit.isDarkMode()
             sentAtAppearance = a.getResourceId(
                 R.styleable.MessageView_User_sb_message_time_text_appearance,
                 R.style.SendbirdCaption4OnLight03
@@ -65,12 +72,84 @@ internal class FormMessageView @JvmOverloads internal constructor(
             binding.contentPanel.background =
                 DrawableUtils.setTintList(context, messageBackground, messageBackgroundTint)
 
-            binding.rvFormFields.adapter = formFieldAdapter
-            binding.rvFormFields.layoutManager = LinearLayoutManager(context)
-            binding.rvFormFields.addItemDecoration(
-                ItemSpacingDecoration(resources.getDimensionPixelSize(R.dimen.sb_size_8))
+            binding.rvFormItems.adapter = formItemAdapter
+            binding.rvFormItems.layoutManager = LinearLayoutManager(context)
+            binding.rvFormItems.addItemDecoration(
+                ItemSpacingDecoration(resources.getDimensionPixelSize(R.dimen.sb_size_12))
             )
+            binding.rvFormItems.itemAnimator = null
+        } finally {
+            a.recycle()
+        }
+    }
 
+    fun drawFormMessage(message: BaseMessage, messageListUIParams: MessageListUIParams) {
+        val messageGroupType = messageListUIParams.messageGroupType
+        val isSent = message.sendingStatus == SendingStatus.SUCCEEDED
+        val showProfile =
+            messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL
+        val showNickname =
+            (messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE || messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD) &&
+                (!messageListUIParams.shouldUseQuotedView() || !MessageUtils.hasParentMessage(message))
+        val showSentAt =
+            isSent && (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_SINGLE)
+
+        binding.ivProfileView.visibility = if (showProfile) VISIBLE else INVISIBLE
+        binding.tvNickname.visibility = if (showNickname) VISIBLE else GONE
+        binding.tvSentAt.visibility = if (showSentAt) VISIBLE else GONE
+
+        val paddingTop =
+            resources.getDimensionPixelSize(if (messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) R.dimen.sb_size_1 else R.dimen.sb_size_8)
+        val paddingBottom =
+            resources.getDimensionPixelSize(if (messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) R.dimen.sb_size_1 else R.dimen.sb_size_8)
+        binding.root.setPadding(binding.root.paddingLeft, paddingTop, binding.root.paddingRight, paddingBottom)
+
+        messageUIConfig?.let {
+            it.otherSentAtTextUIConfig.mergeFromTextAppearance(context, sentAtAppearance)
+            it.otherNicknameTextUIConfig.mergeFromTextAppearance(context, nicknameAppearance)
+            it.otherMessageBackground?.let { background -> binding.contentPanel.background = background }
+            it.otherEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
+            it.otherMessageTextUIConfig.mergeFromTextAppearance(context, messageAppearance)
+        }
+
+        ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, false)
+        ViewUtils.drawProfile(binding.ivProfileView, message)
+        ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
+
+        val form = message.messageForm ?: return
+        messageForm = form
+
+        if (messageListUIParams.channelConfig.enableFormTypeMessage && form.version <= MESSAGE_FORM_VERSION) {
+            binding.formEnabledLayout.visibility = VISIBLE
+            binding.tvMessageFormDisabled.visibility = GONE
+            formItemAdapter.setMessageForm(form)
+            setSubmitButtonEnabled(!form.isSubmitted)
+        } else {
+            binding.tvMessageFormDisabled.setAppearance(
+                context,
+                if (SendbirdUIKit.isDarkMode()) R.style.SendbirdBody3OnDark03 else R.style.SendbirdBody3OnLight03
+            )
+            binding.formEnabledLayout.visibility = GONE
+            binding.tvMessageFormDisabled.visibility = VISIBLE
+        }
+    }
+
+    private fun setSubmitButtonEnabled(enabled: Boolean) {
+        val isDarkMode = SendbirdUIKit.isDarkMode()
+        binding.buttonSubmit.isClickable = enabled
+        binding.buttonSubmit.isEnabled = enabled
+        if (!enabled) {
+            binding.buttonSubmit.background = if (isDarkMode) {
+                ResourcesCompat.getDrawable(resources, R.drawable.sb_shape_submit_disabled_button_dark, null)
+            } else {
+                ResourcesCompat.getDrawable(resources, R.drawable.sb_shape_submit_disabled_button_light, null)
+            }
+            binding.buttonSubmit.setAppearance(
+                context,
+                if (isDarkMode) R.style.SendbirdButtonOnDark04 else R.style.SendbirdButtonOnLight04
+            )
+            if (messageForm?.isSubmitted == true) binding.buttonSubmit.text = context.getString(R.string.sb_forms_submitted_successfully)
+        } else {
             binding.buttonSubmit.background = if (isDarkMode) {
                 ResourcesCompat.getDrawable(resources, R.drawable.sb_shape_submit_button_dark, null)
             } else {
@@ -81,66 +160,14 @@ internal class FormMessageView @JvmOverloads internal constructor(
                 context,
                 if (isDarkMode) R.style.SendbirdButtonOnLight01 else R.style.SendbirdButtonOnDark01
             )
-            val linkTextColor = a.getColorStateList(R.styleable.MessageView_User_sb_message_other_link_text_color)
-            val clickedLinkBackgroundColor = a.getResourceId(
-                R.styleable.MessageView_User_sb_message_other_clicked_link_background_color,
-                R.color.primary_extra_light
-            )
-            binding.tvMessageFormDisabled.setLinkTextColor(linkTextColor)
-            binding.tvMessageFormDisabled.clickedLinkBackgroundColor = ContextCompat.getColor(context, clickedLinkBackgroundColor)
-        } finally {
-            a.recycle()
+            binding.buttonSubmit.text = context.getString(R.string.sb_forms_submit)
         }
-    }
-
-    fun drawFormMessage(message: BaseMessage, messageListUIParams: MessageListUIParams) {
-        val form = message.forms.firstOrNull() ?: return
-        formFieldAdapter.setFormFields(form)
-        messageUIConfig?.let {
-            it.otherSentAtTextUIConfig.mergeFromTextAppearance(context, sentAtAppearance)
-            it.otherNicknameTextUIConfig.mergeFromTextAppearance(context, nicknameAppearance)
-            it.otherMessageBackground?.let { background -> binding.contentPanel.background = background }
-            it.otherEditedTextMarkUIConfig.mergeFromTextAppearance(context, editedAppearance)
-            it.otherMessageTextUIConfig.mergeFromTextAppearance(context, messageAppearance)
-            it.linkedTextColor?.let { linkedTextColor -> binding.tvMessageFormDisabled.setLinkTextColor(linkedTextColor) }
-        }
-
-        if (messageListUIParams.channelConfig.enableFormTypeMessage) {
-            binding.formEnabledLayout.visibility = VISIBLE
-            binding.tvMessageFormDisabled.visibility = GONE
-        } else {
-            binding.formEnabledLayout.visibility = GONE
-            binding.tvMessageFormDisabled.visibility = VISIBLE
-        }
-
-        ViewUtils.drawTextMessage(
-            binding.tvMessageFormDisabled,
-            message,
-            messageUIConfig,
-            false,
-            null,
-            null
-        )
-
-        if (form.isSubmitted) {
-            setSubmitButtonVisibility(View.GONE)
-        } else {
-            setSubmitButtonVisibility(View.VISIBLE)
-        }
-        ViewUtils.drawNickname(binding.tvNickname, message, messageUIConfig, false)
-        ViewUtils.drawProfile(binding.ivProfileView, message)
-        ViewUtils.drawSentAt(binding.tvSentAt, message, messageUIConfig)
-    }
-
-    private fun setSubmitButtonVisibility(visibility: Int) {
-        if (visibility !in setOf(View.VISIBLE, View.GONE)) return
-        binding.buttonSubmit.visibility = visibility
     }
 
     fun setSubmitButtonClickListener(listener: OnClickListener?) {
         binding.buttonSubmit.setOnClickListener { view ->
-            val isSubmittable = formFieldAdapter.isSubmittable()
-            formFieldAdapter.updateValidation()
+            val isSubmittable = formItemAdapter.isSubmittable()
+            formItemAdapter.updateValidation()
             if (!isSubmittable) {
                 return@setOnClickListener
             }

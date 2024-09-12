@@ -84,7 +84,7 @@ class BaseApplication : MultiDexApplication() {
          */
         fun setupConfigurations() {
             when (PreferenceUtils.selectedSampleType) {
-                SampleType.Basic -> {
+                null, SampleType.Basic -> {
                     // set whether to use user profile
                     UIKitConfig.common.enableUsingDefaultUserProfile = true
                     // set whether to use typing indicators in channel list

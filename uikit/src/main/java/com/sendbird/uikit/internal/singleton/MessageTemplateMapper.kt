@@ -3,6 +3,7 @@ package com.sendbird.uikit.internal.singleton
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.internal.extensions.childTemplateKeys
 import com.sendbird.uikit.internal.extensions.isTemplateMessage
+import com.sendbird.uikit.internal.extensions.isValid
 import com.sendbird.uikit.internal.extensions.messageTemplateStatus
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus
 import com.sendbird.uikit.log.Logger
@@ -51,7 +52,14 @@ internal class MessageTemplateMapper(
                 }
             }
 
-            cachedTemplateMessages.forEach { it.messageTemplateStatus = MessageTemplateStatus.CACHED }
+            cachedTemplateMessages.forEach {
+                it.messageTemplateStatus = if (it.templateMessageData.isValid()) {
+                    MessageTemplateStatus.CACHED
+                } else {
+                    Logger.i("This template message is not supported. key=${it.templateMessageData}")
+                    MessageTemplateStatus.NOT_APPLICABLE
+                }
+            }
 
             Logger.d("3. filter not cached template keys result >> template messages[${templateMessages.size}], cached[${cachedTemplateMessages.size}], not cached[${notCachedTemplateMessages.size}]")
 

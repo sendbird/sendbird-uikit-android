@@ -27,7 +27,7 @@ import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.message.Feedback;
 import com.sendbird.android.message.FeedbackRating;
 import com.sendbird.android.message.FileMessage;
-import com.sendbird.android.message.Form;
+import com.sendbird.android.message.MessageForm;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.android.params.MessageListParams;
 import com.sendbird.android.params.UserMessageCreateParams;
@@ -579,8 +579,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param form The form to be submitted
      * since 3.12.1
      */
-    protected void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull Form form) {
-        message.submitForm(form, (e) -> {
+    protected void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull MessageForm form) {
+        message.submitMessageForm((e) -> {
             if (e != null) {
                 showConfirmDialog(getString(R.string.sb_forms_submit_failed));
             }

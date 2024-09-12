@@ -15,6 +15,7 @@ import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
+import com.sendbird.uikit.internal.extensions.isContentDisplayed
 import com.sendbird.uikit.internal.interfaces.GetTemplateResultHandler
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.template_messages.KeySet
@@ -66,10 +67,13 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                                     )
                                 }
                             }
-                        )
+                        ).also {
+                            message.isContentDisplayed = true
+                        }
                     }
                 } catch (e: Throwable) {
                     Logger.w("${e.printStackTrace()}")
+                    message.isContentDisplayed = false
                     createFallbackNotification(message, themeMode, onNotificationTemplateActionHandler)
                 }
                 parentView.removeAllViews()
@@ -88,6 +92,7 @@ internal abstract class BaseNotificationView @JvmOverloads internal constructor(
                 throw IllegalArgumentException("this message must have template key.")
             }
             if (!NotificationChannelManager.hasTemplate(templateKey)) {
+                message.isContentDisplayed = false
                 val layout = createLoadingView(!message.isFeedChannel, themeMode)
                 parentView.addView(layout)
             }

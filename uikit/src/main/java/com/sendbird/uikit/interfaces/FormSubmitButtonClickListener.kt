@@ -1,7 +1,7 @@
 package com.sendbird.uikit.interfaces
 
 import com.sendbird.android.message.BaseMessage
-import com.sendbird.android.message.Form
+import com.sendbird.android.message.MessageForm
 
 /**
  * Interface definition for a callback to be invoked when the submit button of the form is clicked.
@@ -16,5 +16,5 @@ fun interface FormSubmitButtonClickListener {
      * @param form the form to be submitted
      * @since 3.12.1
      */
-    fun onClicked(message: BaseMessage, form: Form)
+    fun onClicked(message: BaseMessage, form: MessageForm)
 }

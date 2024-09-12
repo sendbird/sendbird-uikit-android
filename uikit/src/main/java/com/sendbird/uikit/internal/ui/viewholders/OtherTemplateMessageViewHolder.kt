@@ -6,13 +6,14 @@ import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.activities.viewholder.MessageViewHolder
 import com.sendbird.uikit.consts.ClickableViewIdentifier
 import com.sendbird.uikit.databinding.SbViewOtherTemplateMessageBinding
+import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.messages.OtherTemplateMessageView
 import com.sendbird.uikit.internal.utils.TemplateViewCachePool
 import com.sendbird.uikit.model.MessageListUIParams
 
-internal class OtherTemplateMessageViewHolder constructor(
+internal class OtherTemplateMessageViewHolder(
     val binding: SbViewOtherTemplateMessageBinding,
     messageListUIParams: MessageListUIParams
 ) : MessageViewHolder(binding.root, messageListUIParams) {
@@ -24,6 +25,7 @@ internal class OtherTemplateMessageViewHolder constructor(
     var onMessageTemplateActionHandler: OnMessageTemplateActionHandler? = null
 
     var onFeedbackRatingClickListener: OnFeedbackRatingClickListener? = null
+    var onSuggestedRepliesClickListener: OnItemClickListener<String>? = null
 
     override fun bind(channel: BaseChannel, message: BaseMessage, params: MessageListUIParams) {
         binding.otherMessageView.messageUIConfig = messageUIConfig
@@ -31,9 +33,8 @@ internal class OtherTemplateMessageViewHolder constructor(
             onMessageTemplateActionHandler?.onHandleAction(view, action, message)
         }
 
-        messageView.onFeedbackRatingClickListener = OnFeedbackRatingClickListener { message, rating ->
-            this.onFeedbackRatingClickListener?.onFeedbackClicked(message, rating)
-        }
+        messageView.onFeedbackRatingClickListener = onFeedbackRatingClickListener
+        messageView.onSuggestedRepliesClickListener = onSuggestedRepliesClickListener
     }
 
     override fun getClickableViewMap(): Map<String, View> {

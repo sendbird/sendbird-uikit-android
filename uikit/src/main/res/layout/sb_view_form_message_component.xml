@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/sb_size_12"
     android:paddingEnd="@dimen/sb_size_12"
-    android:paddingBottom="@dimen/sb_size_16"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -43,41 +42,52 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_4"
         app:layout_constraintStart_toEndOf="@id/contentPanel"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <FrameLayout
         android:id="@+id/contentPanel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/ivProfileView"
         app:layout_constraintEnd_toStartOf="@id/tvSentAt"
         app:layout_constraintTop_toBottomOf="@id/nicknameBarrier"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_max="@dimen/sb_forms_message_width">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/formEnabledLayout"
-            android:layout_width="@dimen/sb_forms_message_width"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/sb_size_16"
             android:paddingBottom="@dimen/sb_size_16"
             android:paddingStart="@dimen/sb_size_12"
             android:paddingEnd="@dimen/sb_size_12">
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFormFields"
+                android:id="@+id/rvFormItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/buttonSubmit"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/sb_size_36"
-                android:text="@string/sb_forms_submit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sb_size_12"
-                app:layout_constraintTop_toBottomOf="@id/rvFormFields"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:minHeight="@dimen/sb_size_36"
+                android:text="@string/sb_forms_submit"
+                android:textAllCaps="false"
+                android:textSize="@dimen/sb_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvFormItems" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.sendbird.uikit.internal.ui.widgets.AutoLinkTextView
@@ -89,6 +99,7 @@
             android:paddingBottom="@dimen/sb_size_7"
             android:paddingStart="@dimen/sb_size_12"
             android:paddingEnd="@dimen/sb_size_12"
+            android:text="@string/sb_forms_version_not_available"
             app:sb_auto_link_text_view_linkify_mask="all"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"

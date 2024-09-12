@@ -5,15 +5,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout.LayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.sendbird.uikit.R
-import com.sendbird.uikit.internal.extensions.intToDp
 import com.sendbird.uikit.internal.model.template_messages.Params
 import com.sendbird.uikit.internal.model.template_messages.SizeType
 import com.sendbird.uikit.internal.model.template_messages.ViewLifecycleHandler
 import com.sendbird.uikit.internal.ui.messages.MessageTemplateView
-import kotlin.math.max
 
-internal class CarouselChildViewAdapter : RecyclerView.Adapter<CarouselChildViewAdapter.CarouselChildItemViewHolder>() {
+internal class CarouselChildViewAdapter(private val maxChildWidth: Int) : RecyclerView.Adapter<CarouselChildViewAdapter.CarouselChildItemViewHolder>() {
     private val childTemplateParams: MutableList<Params> = mutableListOf()
     internal var onChildViewCreated: ViewLifecycleHandler? = null
 
@@ -47,11 +44,12 @@ internal class CarouselChildViewAdapter : RecyclerView.Adapter<CarouselChildView
         )
     ) : RecyclerView.ViewHolder(contentView) {
         fun bind(params: Params) {
+            contentView.maxWidth = maxChildWidth
+
+            // If width is fill, the width of the parent is not fixed, so we can't set the value because there is no value to base it on. Therefore, we set the maximum size of the parent child item.
             val hasFillWidth = params.hasFillWidth
             val width = if (hasFillWidth) {
-                val defaultWidth = contentView.context.resources.getDimensionPixelSize(R.dimen.sb_message_max_width)
-                val maxChildFixedWidthSize = contentView.context.resources.intToDp(params.maxChildFixedWidthSize ?: 0)
-                max(defaultWidth, maxChildFixedWidthSize)
+                maxChildWidth
             } else {
                 LayoutParams.WRAP_CONTENT
             }
@@ -59,24 +57,12 @@ internal class CarouselChildViewAdapter : RecyclerView.Adapter<CarouselChildView
             contentView.layoutParams = contentView.layoutParams.apply {
                 this.width = width
             }
-
             contentView.draw(
                 params,
                 onViewCreated = { view, viewParams -> onChildViewCreated?.invoke(view, viewParams) }
             )
         }
 
-        private val Params.maxChildFixedWidthSize: Int?
-            get() {
-                return this.body.items
-                    .filter { it.width.type == SizeType.Fixed }
-                    .takeIf { it.isNotEmpty() }
-                    ?.maxOf {
-                        it.width.value +
-                        (it.viewStyle.margin?.left ?: 0) +
-                        (it.viewStyle.margin?.right ?: 0)
-                    }
-            }
         private val Params.hasFillWidth: Boolean
             get() {
                 return this.body.items.any { it.width.type == SizeType.Flex && it.width.value == ViewGroup.LayoutParams.MATCH_PARENT }

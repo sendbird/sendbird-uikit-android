@@ -12,6 +12,7 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -156,13 +157,13 @@ internal fun FeedbackView.drawFeedback(message: BaseMessage, listener: OnFeedbac
 }
 
 internal fun Context.createTemplateMessageLoadingView(): View {
-    val maxWidth = resources.getDimensionPixelSize(R.dimen.sb_message_max_width)
+    val height = resources.getDimensionPixelSize(R.dimen.sb_template_message_loading_view_height)
     return FrameLayout(this).apply {
-        layoutParams = FrameLayout.LayoutParams(maxWidth, maxWidth)
+        layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
         setBackgroundColor(Color.TRANSPARENT)
         addView(
             ProgressBar(context).apply {
-                val size = resources.intToDp(36)
+                val size = resources.intToDp(42)
                 layoutParams = FrameLayout.LayoutParams(
                     size, size, Gravity.CENTER
                 )

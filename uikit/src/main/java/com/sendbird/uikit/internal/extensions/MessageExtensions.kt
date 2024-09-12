@@ -6,12 +6,14 @@ import com.sendbird.android.message.BaseFileMessage
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.FileMessage
-import com.sendbird.android.message.FormField
+import com.sendbird.android.message.MessageFormItem
 import com.sendbird.android.message.MultipleFilesMessage
 import com.sendbird.android.shadow.com.google.gson.JsonParser
 import com.sendbird.uikit.R
+import com.sendbird.uikit.activities.adapter.MessageFormViewType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager
+import com.sendbird.uikit.model.MessageList
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.EmojiManager
 import com.sendbird.uikit.model.UserMessageDisplayData
@@ -84,21 +86,31 @@ internal fun BaseFileMessage.getName(context: Context): String {
 }
 
 internal fun List<BaseMessage>.clearLastValidations() {
-    this.flatMap { message -> message.forms }
-        .flatMap { form -> form.formFields }
-        .forEach { formField -> formField.lastValidation = null }
+    this.flatMap { message -> message.messageForm?.items ?: emptyList() }
+        .forEach { messageFormItem -> messageFormItem.shouldCheckValidation = null }
 }
 
 internal val lastValidations: MutableMap<String, Boolean?> = mutableMapOf()
-internal var FormField.lastValidation: Boolean?
-    get() = lastValidations[this.identifier]
+internal var MessageFormItem.shouldCheckValidation: Boolean?
+    get() = lastValidations["$id"]
     set(value) {
         if (value == null) {
-            lastValidations.remove(this.identifier)
+            lastValidations.remove("$id")
         } else {
-            lastValidations[this.identifier] = value
+            lastValidations["$id"] = value
         }
     }
+internal val MessageFormItem.isSubmittable: Boolean
+    get() = (this.required == false && this.draftValues == null) || (!(this.draftValues.isNullOrEmpty()) && this.draftValues?.all { this.isValid(it) } == true)
+
+internal fun MessageFormItem.MessageFormLayout.convertToViewType(): Int {
+    return when (this) {
+        MessageFormItem.MessageFormLayout.TEXT -> MessageFormViewType.TEXT.value
+        MessageFormItem.MessageFormLayout.TEXTAREA -> MessageFormViewType.TEXTAREA.value
+        MessageFormItem.MessageFormLayout.CHIP -> MessageFormViewType.CHIP.value
+        else -> MessageFormViewType.UNKNOWN.value
+    }
+}
 
 private val emojiCategoriesMap: MutableMap<Long, List<Long>> = mutableMapOf()
 internal var BaseMessage.emojiCategories: List<Long>?
@@ -132,9 +144,6 @@ internal fun updateMessageEmojiCategories(messageList: List<BaseMessage>, emojiC
     }
 }
 
-private val FormField.identifier: String
-    get() = "${this.messageId}_${this.key}"
-
 @OptIn(AIChatBotExperimental::class)
 internal var BaseMessage.shouldShowSuggestedReplies: Boolean
     get() = this.extras[StringSet.should_show_suggested_replies] as? Boolean ?: false
@@ -161,3 +170,11 @@ internal val BaseMessage.isStreamMessage: Boolean
             false
         }
     }
+
+internal val BaseMessage.disableChatInput: Boolean
+    get() = extendedMessagePayload[StringSet.disable_chat_input] == true.toString()
+
+internal fun MessageList.activeDisableInputMessageList(order: MessageList.Order): List<BaseMessage> {
+    val copied = if (order == MessageList.Order.DESC) this.toList() else this.toList().asReversed()
+    return copied.takeWhile { it.disableChatInput }
+}
