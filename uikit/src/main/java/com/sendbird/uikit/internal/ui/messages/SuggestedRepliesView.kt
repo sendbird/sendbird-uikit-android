@@ -57,33 +57,18 @@ internal class SuggestedRepliesView @JvmOverloads internal constructor(
             when (direction) {
                 SuggestedRepliesDirection.VERTICAL -> {
                     layoutManager?.orientation = LinearLayoutManager.VERTICAL
-
-                    binding.rvSuggestedReplies.setPaddingRelative(
-                        0,
-                        binding.rvSuggestedReplies.paddingTop,
-                        binding.rvSuggestedReplies.paddingEnd,
-                        binding.rvSuggestedReplies.paddingBottom
-                    )
-
                     layoutParams.setMargins(
                         resources.getDimensionPixelSize(R.dimen.sb_size_42),
                         resources.getDimensionPixelSize(R.dimen.sb_size_20),
-                        layoutParams.rightMargin,
+                        resources.getDimensionPixelSize(R.dimen.sb_size_12),
                         layoutParams.bottomMargin
                     )
                 }
                 SuggestedRepliesDirection.HORIZONTAL -> {
                     layoutManager?.orientation = LinearLayoutManager.HORIZONTAL
 
-                    binding.rvSuggestedReplies.setPaddingRelative(
-                        resources.getDimensionPixelSize(R.dimen.sb_size_38),
-                        binding.rvSuggestedReplies.paddingTop,
-                        binding.rvSuggestedReplies.paddingEnd,
-                        binding.rvSuggestedReplies.paddingBottom
-                    )
-
                     layoutParams.setMargins(
-                        layoutParams.leftMargin,
+                        resources.getDimensionPixelSize(R.dimen.sb_size_50),
                         resources.getDimensionPixelSize(R.dimen.sb_size_8),
                         layoutParams.rightMargin,
                         layoutParams.bottomMargin

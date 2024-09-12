@@ -1,6 +1,7 @@
 package com.sendbird.uikit.internal.utils
 
 import android.graphics.Rect
+import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.recyclerview.widget.RecyclerView
 import com.sendbird.uikit.internal.extensions.runOnUiThread
@@ -23,6 +24,24 @@ internal class NotificationViewedTracker(
     private var initialDataLoaded = false
     private var isRunning = false
     var onNotificationViewedDetected: (() -> Unit)? = null
+    private val onChildAttachStateChangeListener by lazy {
+        object : RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewAttachedToWindow(view: View) {
+                if (!initialDataLoaded && recyclerView.childCount > 0) {
+                    initialDataLoaded = true
+                    startSchedule()
+                }
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {
+                // this callback is called just before the view is detached.
+                // so child count never be 0.
+                if (initialDataLoaded && recyclerView.childCount <= 1) {
+                    initialDataLoaded = false
+                }
+            }
+        }
+    }
 
     override fun onScrollStateChanged(view: RecyclerView, scrollState: Int) {
         if (view.childCount <= 0) return
@@ -62,6 +81,7 @@ internal class NotificationViewedTracker(
         Logger.d(">> NotificationViewedTracker::start()")
         if (isRunning) return
         recyclerView.addOnScrollListener(this)
+        recyclerView.addOnChildAttachStateChangeListener(onChildAttachStateChangeListener)
 
         /**
          * If it is organized in tabs, the View's Visibility is View.Visible, but it may not actually be visible on the screen.
@@ -78,6 +98,7 @@ internal class NotificationViewedTracker(
         isRunning = false
         recyclerView.removeOnScrollListener(this)
         recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        recyclerView.removeOnChildAttachStateChangeListener(onChildAttachStateChangeListener)
         cancelSchedule()
     }
 
@@ -88,7 +109,7 @@ internal class NotificationViewedTracker(
         if (initialDelay > 0L) {
             scheduler.schedule({
                 notifyNotificationViewed()
-            }, debounce, TimeUnit.MILLISECONDS)
+            }, initialDelay, TimeUnit.MILLISECONDS)
             return
         } else {
             notifyNotificationViewed()

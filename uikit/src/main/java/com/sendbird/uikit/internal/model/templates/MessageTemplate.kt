@@ -1,7 +1,6 @@
 package com.sendbird.uikit.internal.model.templates
 
 import com.sendbird.android.channel.SimpleTemplateData
-import com.sendbird.uikit.internal.extensions.MAX_CHILD_COUNT
 import com.sendbird.uikit.internal.model.notifications.CSVColor
 import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.serializer.JsonElementToStringSerializer
@@ -16,7 +15,7 @@ import org.json.JSONObject
 
 // TODO : Bind with [NotificationTemplate] after api spec finalize
 @Serializable
-internal data class MessageTemplate constructor(
+internal data class MessageTemplate(
     @SerialName(KeySet.key)
     val templateKey: String,
     @SerialName(KeySet.created_at)
@@ -75,7 +74,6 @@ internal data class MessageTemplate constructor(
             val variableDataList = viewVariables[variable] ?: return@replace matchResult.value
             val jsonArray = JSONArray()
             variableDataList.forEach { childTemplateData ->
-                if (jsonArray.length() >= MAX_CHILD_COUNT) return@forEach
                 val template = MessageTemplateManager.getTemplate(childTemplateData.key) ?: return@replace matchResult.value
                 jsonArray.put(JSONObject(template.getTemplateSyntax(childTemplateData.variables)))
             }

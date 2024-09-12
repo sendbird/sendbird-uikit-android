@@ -159,6 +159,7 @@
     <dimen name="sb_size_99">99dp</dimen>
     <dimen name="sb_size_100">100dp</dimen>
 
+    <dimen name="sb_template_message_loading_view_height">300dp</dimen>
     <dimen name="sb_message_max_height">400dp</dimen>
     <dimen name="sb_message_max_width">240dp</dimen>
     <dimen name="sb_message_half_width">120dp</dimen>

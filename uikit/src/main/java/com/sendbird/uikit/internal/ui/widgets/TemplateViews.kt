@@ -2,6 +2,7 @@ package com.sendbird.uikit.internal.ui.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -204,10 +205,9 @@ internal class CarouselView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RoundCornerLayout(context, attrs, defStyleAttr) {
-    private val maxChildrenCount = 10 // (it's default value, not available to change at this point)
     val recyclerView: RecyclerView
     private var itemDecoration: CarouselViewItemDecoration? = null
-    private val startPadding: Int = context.resources.intToDp(12 + 26 + 12) // left padding of profile + profile width + right padding of profile
+
     init {
         layoutParams = LayoutParams(
             LayoutParams.WRAP_CONTENT,
@@ -218,9 +218,13 @@ internal class CarouselView @JvmOverloads constructor(
             // If padding is touched, the event should be dispatched to the parent view.
             override fun onTouchEvent(e: MotionEvent): Boolean {
                 val layoutManager = this.layoutManager as? LinearLayoutManager
-                val isTouchEventInPadding = e.x < startPadding
-                if (isTouchEventInPadding && layoutManager?.findFirstVisibleItemPosition() == 0) {
-                    return false
+                layoutManager?.let {
+                    val firstVisibleItemPosition = it.findFirstVisibleItemPosition()
+                    val lastVisibleItemPosition = it.findLastVisibleItemPosition()
+                    val isTouchEventInPadding = (e.x < paddingStart) || (e.x > width - paddingEnd)
+                    if (isTouchEventInPadding && (firstVisibleItemPosition == 0 || lastVisibleItemPosition == it.itemCount - 1)) {
+                        return false
+                    }
                 }
 
                 return super.onTouchEvent(e)
@@ -231,30 +235,32 @@ internal class CarouselView @JvmOverloads constructor(
                 LayoutParams.WRAP_CONTENT
             )
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-            setPaddingRelative(startPadding, paddingTop, paddingEnd, paddingBottom)
             clipToPadding = false
 
             CarouselLeftSnapHelper().attachToRecyclerView(this)
         }
 
-        recyclerView.adapter = CarouselChildViewAdapter()
         this.addView(recyclerView)
     }
 
     fun apply(params: CarouselViewParams, orientation: Orientation, onChildViewCreated: ViewLifecycleHandler?) {
-        val spaceInPixel = context.resources.intToDp(params.spacing)
+        val spaceInPixel = context.resources.intToDp(params.carouselStyle.spacing)
         itemDecoration?.let { recyclerView.removeItemDecoration(it) }
         itemDecoration = CarouselViewItemDecoration(spaceInPixel).also {
             recyclerView.addItemDecoration(it)
         }
 
-        val adapter = recyclerView.adapter as? CarouselChildViewAdapter ?: return
-        adapter.onChildViewCreated = onChildViewCreated
-        adapter.setChildTemplateParams(params.items.take(maxChildrenCount)) // platform synced
+        CarouselChildViewAdapter(context.resources.intToDp(params.carouselStyle.maxChildWidth)).apply {
+            recyclerView.adapter = this
+            this.onChildViewCreated = onChildViewCreated
+            this.setChildTemplateParams(params.items)
+        }
         params.applyLayoutParams(context, layoutParams, orientation)
 
-        // Currently, viewStyle is not used in CarouselView.
-        // params.viewStyle.apply(this, true)
+        // apply ViewStyle to RecyclerView but Recycler is not a ViewRoundable instance.
+        // So, we need to apply the style to parent view directly. (workaround)
+        params.viewStyle.apply(recyclerView)
+        setRadiusIntSize(params.viewStyle.radius ?: 0)
+        setBorder(params.viewStyle.borderWidth ?: 0, params.viewStyle.borderColor ?: Color.TRANSPARENT)
     }
 }

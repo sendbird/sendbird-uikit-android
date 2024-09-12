@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvFormItemTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierFormItemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tvFormItemTitle" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/barrierFormItemTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/unansweredLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/etFormItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_6"
+                android:ellipsize="end"
+                android:gravity="top"
+                android:hint="@string/sb_edittext_hint_default_description"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:paddingStart="@dimen/sb_size_12"
+                android:paddingTop="@dimen/sb_size_8"
+                android:paddingEnd="@dimen/sb_size_12"
+                android:paddingBottom="@dimen/sb_size_8"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="Autofill" />
+
+            <TextView
+                android:id="@+id/tvFormItemError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_4"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/etFormItem"
+                app:layout_constraintTop_toBottomOf="@id/etFormItem" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/answeredLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/sb_size_6">
+
+            <EditText
+                android:id="@+id/etAnswer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:enabled="false"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:paddingStart="@dimen/sb_size_12"
+                android:paddingTop="@dimen/sb_size_8"
+                android:paddingEnd="@dimen/sb_size_12"
+                android:paddingBottom="@dimen/sb_size_8"
+                app:layout_constraintEnd_toStartOf="@id/iconDone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="Autofill" />
+
+            <ImageView
+                android:id="@+id/iconDone"
+                android:layout_width="@dimen/sb_size_20"
+                android:layout_height="@dimen/sb_size_20"
+                android:layout_marginEnd="@dimen/sb_size_12"
+                android:layout_marginBottom="@dimen/sb_size_8"
+                android:importantForAccessibility="no"
+                android:src="@drawable/icon_done"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

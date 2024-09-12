@@ -1,7 +1,5 @@
 package com.sendbird.uikit.activities.adapter;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -19,8 +17,8 @@ import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.ui.viewholders.FormMessageViewHolder;
 import com.sendbird.uikit.internal.ui.viewholders.OtherTemplateMessageViewHolder;
-import com.sendbird.uikit.internal.utils.TemplateViewCachePool;
 import com.sendbird.uikit.internal.ui.viewholders.OtherUserMessageViewHolder;
+import com.sendbird.uikit.internal.utils.TemplateViewCachePool;
 import com.sendbird.uikit.model.MessageListUIParams;
 
 /**
@@ -82,6 +80,12 @@ public class MessageListAdapter extends BaseMessageListAdapter {
                 final OnFeedbackRatingClickListener finalListener = this.feedbackRatingClickListener;
                 if (finalListener != null) {
                     finalListener.onFeedbackClicked(view, rating);
+                }
+            });
+            otherTemplateMessageViewHolder.setOnSuggestedRepliesClickListener((view, pos, data) -> {
+                final OnItemClickListener<String> finalListener = this.suggestedRepliesClickListener;
+                if (finalListener != null) {
+                    finalListener.onItemClick(view, pos, data);
                 }
             });
         } else if (viewHolder instanceof FormMessageViewHolder) {

@@ -150,11 +150,10 @@ object StringSet {
     const val delete = "delete"
 
     // template message
-    const val template = "template"
     const val message_template_params = "message_template_params"
     const val message_template_status = "message_template_status"
-    const val container_type = "container_type"
     const val ui = "ui"
+    const val default = "default"
 
     // Config
     const val none = "none"

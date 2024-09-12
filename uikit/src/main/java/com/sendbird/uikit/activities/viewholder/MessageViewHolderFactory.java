@@ -264,8 +264,9 @@ public class MessageViewHolderFactory {
     public static MessageType getMessageType(@NonNull BaseMessage message) {
         MessageType type;
 
-        MessageTemplateStatus messageTemplateStatus = MessageTemplateExtensionsKt.getMessageTemplateStatus(message);
-        if (messageTemplateStatus != null) {
+        // NOT_APPLICABLE is possible when the message is a unknown version of template message or the message is not a template message.
+        final MessageTemplateStatus messageTemplateStatus = MessageTemplateExtensionsKt.getMessageTemplateStatus(message);
+        if (MessageTemplateExtensionsKt.isTemplateMessage(message) && messageTemplateStatus != null) {
             switch (messageTemplateStatus) {
                 case CACHED:
                 case LOADING:
@@ -273,11 +274,11 @@ public class MessageViewHolderFactory {
                 case FAILED_TO_PARSE:
                     return MessageType.VIEW_TYPE_TEMPLATE_MESSAGE_OTHER;
                 case NOT_APPLICABLE:
-                    break;
+                    return MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_OTHER;
             }
         }
 
-        if (message.getChannelType() == ChannelType.GROUP && !message.getForms().isEmpty()) {
+        if (message.getChannelType() == ChannelType.GROUP && message.getMessageForm() != null) {
             return MessageType.VIEW_TYPE_FORM_TYPE_MESSAGE;
         }
 

@@ -16,7 +16,7 @@ internal class FormMessageViewHolder internal constructor(
     var onSubmitClickListener: FormSubmitButtonClickListener? = null
     override fun bind(channel: BaseChannel, message: BaseMessage, messageListUIParams: MessageListUIParams) {
         if (message !is UserMessage) return
-        val form = message.forms.firstOrNull() ?: return
+        val form = message.messageForm ?: return
         binding.formsMessageView.messageUIConfig = messageUIConfig
         binding.formsMessageView.drawFormMessage(message, messageListUIParams)
         binding.formsMessageView.setSubmitButtonClickListener {

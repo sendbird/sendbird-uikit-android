@@ -239,7 +239,7 @@ internal data class CarouselViewParams(
     override val height: SizeSpec = SizeSpec(SizeType.Flex, WRAP_CONTENT),
     override val viewStyle: ViewStyle = ViewStyle(),
     val items: List<Params>,
-    val spacing: Int = 10
+    val carouselStyle: CarouselStyle = CarouselStyle()
 ) : ViewParams()
 
 internal object TemplateParamsCreator {
@@ -384,6 +384,9 @@ internal object TemplateParamsCreator {
                             backgroundColor = NotificationThemeMode.Default.backgroundColor,
                             padding = Padding(
                                 6, 6, 12, 12
+                            ),
+                            margin = Margin(
+                                0, 0, 50, 0
                             ),
                             radius = 16
                         ),

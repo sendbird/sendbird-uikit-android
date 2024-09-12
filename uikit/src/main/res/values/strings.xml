@@ -227,7 +227,11 @@
 
     <!-- AI Chatbot -->
     <string name="sb_forms_submit">Submit</string>
-    <string name="sb_forms_invalid_form_field">Please check the value</string>
+    <string name="sb_forms_submitted_successfully">Submitted successfully</string>
+    <string name="sb_forms_invalid_form_item">Please check the value</string>
+    <string name="sb_forms_required_form_item">This field is required.</string>
+    <string name="sb_forms_version_not_available">Form type messages are not available in this version.</string>
+    <string name="sb_forms_empty_response">No response</string>
     <string name="sb_forms_submit_failed">Submit failed</string>
     <string name="sb_forms_optional">(optional)</string>
 

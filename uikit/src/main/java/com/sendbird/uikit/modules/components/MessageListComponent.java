@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.sendbird.android.channel.GroupChannel;
 import com.sendbird.android.message.BaseMessage;
-import com.sendbird.android.message.Form;
+import com.sendbird.android.message.MessageForm;
 import com.sendbird.android.message.SendingStatus;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.consts.StringSet;
@@ -240,7 +240,7 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * @param form the form to be submitted
      * since 3.12.1
      */
-    public void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull Form form) {
+    public void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull MessageForm form) {
         if (formSubmitButtonClickListener != null)
             formSubmitButtonClickListener.onClicked(message, form);
     }

@@ -78,6 +78,12 @@ internal data class ViewStyle(
 }
 
 @Serializable
+internal data class CarouselStyle(
+    val spacing: Int = 10,
+    val maxChildWidth: Int = 240 // default value
+)
+
+@Serializable
 internal data class Margin(
     val top: Int = 0,
     val bottom: Int = 0,

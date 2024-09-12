@@ -18,6 +18,7 @@ internal class MessageTemplateView @JvmOverloads internal constructor(
     defStyle: Int = 0,
     autoAdjustHeightWhenInvisible: Boolean = true,
 ) : RoundCornerLayout(context, attrs, defStyle, autoAdjustHeightWhenInvisible) {
+    var maxWidth: Int = Int.MAX_VALUE
     init {
         this.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         this.radius = 0f
@@ -57,5 +58,19 @@ internal class MessageTemplateView @JvmOverloads internal constructor(
         }
         if (cacheKey != null) viewCachePool?.cacheView(cacheKey, view)
         this.addView(view)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        var totalWidth = measuredWidth
+
+        if (totalWidth > maxWidth) {
+            totalWidth = maxWidth
+            val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.EXACTLY)
+            super.onMeasure(newWidthMeasureSpec, heightMeasureSpec)
+        }
+
+        setMeasuredDimension(totalWidth, measuredHeight)
     }
 }

@@ -19,6 +19,7 @@ import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.internal.extensions.MessageTemplateExtensionsKt;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TimelineMessage;
@@ -95,6 +96,11 @@ public class MessageUtils {
         }
 
         if (!message.getSendingStatus().equals(SendingStatus.SUCCEEDED)) {
+            return MessageGroupType.GROUPING_TYPE_SINGLE;
+        }
+
+        // template message should be displayed as a single message
+        if (MessageTemplateExtensionsKt.isTemplateMessage(message)) {
             return MessageGroupType.GROUPING_TYPE_SINGLE;
         }
 

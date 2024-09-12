@@ -15,6 +15,7 @@ import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler
 import com.sendbird.uikit.interfaces.OnNotificationCategorySelectListener
 import com.sendbird.uikit.interfaces.OnNotificationTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.intToDp
+import com.sendbird.uikit.internal.extensions.isContentDisplayed
 import com.sendbird.uikit.internal.extensions.setTypeface
 import com.sendbird.uikit.internal.interfaces.OnNotificationViewedDetectedListener
 import com.sendbird.uikit.internal.model.notifications.NotificationConfig
@@ -22,7 +23,6 @@ import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.Action
 import com.sendbird.uikit.utils.DrawableUtils
-import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -107,8 +107,13 @@ internal open class FeedNotificationListComponent @JvmOverloads constructor(
             val copiedList = adapter?.getItems()?.toList()
             if (copiedList != null) {
                 try {
-                    val items = range.mapNotNull { i -> copiedList[i] }
-                    it.onNotificationViewedDetected(items)
+                    val items = range.mapNotNull { i ->
+                        val message = copiedList[i]
+                        if (!message.isContentDisplayed) null else message
+                    }
+                    if (items.isNotEmpty()) {
+                        it.onNotificationViewedDetected(items)
+                    }
                 } catch (ignore: Exception) {
                 }
             }

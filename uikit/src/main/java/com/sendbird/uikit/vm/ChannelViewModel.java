@@ -1,5 +1,7 @@
 package com.sendbird.uikit.vm;
 
+import static com.sendbird.uikit.internal.extensions.MessageExtensionsKt.activeDisableInputMessageList;
+
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -44,9 +46,11 @@ import com.sendbird.uikit.internal.contracts.SendbirdChatContract;
 import com.sendbird.uikit.internal.contracts.SendbirdChatImpl;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
+import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
 import com.sendbird.uikit.log.Logger;
+import com.sendbird.uikit.model.MessageList;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
@@ -109,6 +113,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
     @NonNull
     private final MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper();
+
+    // The code associated with this flag will be deleted in bulk when the server-side value is activated.
+    Boolean TEMPORARY_DISABLE_CHAT_INPUT = true;
 
     /**
      * Class that holds message data in a channel.
@@ -560,6 +567,17 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
+            if (TEMPORARY_DISABLE_CHAT_INPUT) {
+                BaseMessage lastMessage = cachedMessages.getLatestMessage();
+                if (channel != null && lastMessage != null) {
+                    if (MessageExtensionsKt.getDisableChatInput(lastMessage)) {
+                        ChannelExtensionsKt.clearDisabledChatInputMessages(channel);
+                        MessageList.Order order = (messageListParams == null || messageListParams.getReverse()) ? MessageList.Order.DESC : MessageList.Order.ASC;
+                        List<BaseMessage> messageList = activeDisableInputMessageList(cachedMessages, order);
+                        ChannelExtensionsKt.saveDisabledChatInputMessages(channel, messageList);
+                    }
+                }
+            }
         }
 
         messageList.setValue(new ChannelMessageData(traceName, finalMessageList));

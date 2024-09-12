@@ -3,17 +3,23 @@ package com.sendbird.uikit.internal.extensions
 import com.sendbird.android.annotation.AIChatBotExperimental
 import com.sendbird.android.channel.TemplateMessageData
 import com.sendbird.android.message.BaseMessage
-import com.sendbird.android.shadow.com.google.gson.JsonParser
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.model.template_messages.Params
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus
 import com.sendbird.uikit.internal.singleton.MessageTemplateManager
 import com.sendbird.uikit.internal.singleton.MessageTemplateParser
 
-internal const val MAX_CHILD_COUNT = 10
-
 internal fun BaseMessage.isTemplateMessage(): Boolean {
     return this.templateMessageData != null
+}
+
+/**
+ * Check if the message is a valid template message.
+ * if the message is null or the type is not "default", it returns false.
+ * @return `true` if the message is a valid template message, `false` otherwise.
+ */
+internal fun TemplateMessageData?.isValid(): Boolean {
+    return this != null && MessageTemplateContainerType.from(type) != MessageTemplateContainerType.UNKNOWN
 }
 
 internal fun BaseMessage.saveParamsFromTemplate() {
@@ -42,13 +48,11 @@ internal fun TemplateMessageData.childTemplateKeys(): List<String> {
     return viewVariables.values.flatten().map { it.key }.distinct()
 }
 
-internal val BaseMessage.messageTemplateContainerType: MessageTemplateContainerType
-    get() = try {
-        val uiObj = this.extendedMessagePayload[StringSet.ui]
-        val containerType = JsonParser.parseString(uiObj).asJsonObject.get(StringSet.container_type).asString
-        MessageTemplateContainerType.create(containerType)
-    } catch (_: Exception) {
-        MessageTemplateContainerType.DEFAULT
+internal val contentDisplayed: MutableMap<Long, Boolean> = mutableMapOf()
+internal var BaseMessage.isContentDisplayed: Boolean
+    get() = contentDisplayed[messageId] ?: false
+    set(value) {
+        contentDisplayed[messageId] = value
     }
 
 @OptIn(AIChatBotExperimental::class)
@@ -74,13 +78,13 @@ internal var BaseMessage.messageTemplateParams: Params?
     }
 
 internal enum class MessageTemplateContainerType {
-    DEFAULT, WIDE, CAROUSEL;
+    UNKNOWN, DEFAULT;
 
     companion object {
-        fun create(value: String?): MessageTemplateContainerType {
-            return when (value) {
-                "wide" -> WIDE
-                else -> DEFAULT
+        fun from(value: String): MessageTemplateContainerType {
+            return when (value.lowercase()) {
+                StringSet.default -> DEFAULT
+                else -> UNKNOWN
             }
         }
     }

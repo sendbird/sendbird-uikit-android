@@ -55,10 +55,14 @@
     <color name="onlight_text_mid_emphasis">@color/onlight_02</color>
     <color name="onlight_text_low_emphasis">@color/onlight_03</color>
     <color name="onlight_text_disabled">@color/onlight_04</color>
+    <color name="onlight_chip_disabled">#323232</color>
+    <color name="onlight_chip_not_selected">#2a2a2a</color>
     <color name="ondark_text_high_emphasis">@color/ondark_01</color>
     <color name="ondark_text_mid_emphasis">@color/ondark_02</color>
     <color name="ondark_text_low_emphasis">@color/ondark_03</color>
     <color name="ondark_text_disabled">@color/ondark_04</color>
+    <color name="ondark_chip_disabled">#f7f7f7</color>
+    <color name="ondark_chip_not_selected">#ffffff</color>
 
     <!-- common color set -->
     <color name="highlight">#fff2b6</color>
