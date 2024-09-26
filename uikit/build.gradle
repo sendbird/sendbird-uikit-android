@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlinx-serialization'
     id 'kotlin-parcelize'
-    id 'org.jetbrains.dokka' version "$kotlin_version"
+    id 'org.jetbrains.dokka' version "1.9.20"
 }
 
 
