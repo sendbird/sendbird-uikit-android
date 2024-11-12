@@ -6,6 +6,8 @@ import com.sendbird.uikit.internal.singleton.JsonParser
 import com.sendbird.uikit.log.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 
 @Serializable
 internal data class NotificationTemplateList constructor(
@@ -14,7 +16,17 @@ internal data class NotificationTemplateList constructor(
     companion object {
         @JvmStatic
         fun fromJson(value: String): NotificationTemplateList {
-            return JsonParser.fromJson(value)
+            val mutableTemplates = mutableListOf<NotificationTemplate>()
+            JsonParser.toJsonElement(value).jsonObject[KeySet.templates]?.jsonArray?.let { templateList ->
+                for (element in templateList) {
+                    try {
+                        mutableTemplates.add(JsonParser.fromJsonElement(element))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            return NotificationTemplateList(mutableTemplates.toList())
         }
     }
 }

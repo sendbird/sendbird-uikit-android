@@ -90,10 +90,10 @@ internal class NotificationTemplateRepository(context: Context) {
         ) { notificationTemplateList, _, token, e ->
             error = e
             try {
-                if (!token.isNullOrEmpty()) lastCacheToken = token
                 val templateList = notificationTemplateList?.let {
                     NotificationTemplateList.fromJson(it.jsonPayload)
                 }
+                if (!token.isNullOrEmpty()) lastCacheToken = token
                 result.set(templateList)
             } catch (e: Throwable) {
                 error = SendbirdException("notification template list data is not valid", e)

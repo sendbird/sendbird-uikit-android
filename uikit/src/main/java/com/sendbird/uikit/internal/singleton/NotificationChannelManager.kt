@@ -1,6 +1,7 @@
 package com.sendbird.uikit.internal.singleton
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.uikit.internal.extensions.runOnUiThread
@@ -13,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
+@VisibleForTesting
+internal const val MAX_REQUEST_TEMPLATE_RETRY_COUNT = 10
 internal object NotificationChannelManager {
     private data class TemplateRequestData(
         val key: String,
@@ -24,9 +27,13 @@ internal object NotificationChannelManager {
     private val worker = Executors.newFixedThreadPool(10)
     private val isInitialized: AtomicBoolean = AtomicBoolean()
     private val templateRequestDatas: MutableMap<String, MutableSet<TemplateRequestData>> = ConcurrentHashMap()
+    @VisibleForTesting
+    internal val templateRequestCount: MutableMap<String, Int> = ConcurrentHashMap()
 
-    private lateinit var templateRepository: NotificationTemplateRepository
-    private lateinit var channelSettingsRepository: NotificationChannelRepository
+    @VisibleForTesting
+    internal lateinit var templateRepository: NotificationTemplateRepository
+    @VisibleForTesting
+    internal lateinit var channelSettingsRepository: NotificationChannelRepository
 
     /**
      * To avoid sending an unintended exception, if the NotificationChannelManager hasn't been initialized it tries to initialize automatically.
@@ -71,6 +78,14 @@ internal object NotificationChannelManager {
             return
         }
 
+        // Apply a retry count to prevent infinite requests in case of failure.
+        val retryCount = templateRequestCount[key] ?: 0
+        if (retryCount >= MAX_REQUEST_TEMPLATE_RETRY_COUNT) {
+            notifyError(key, SendbirdException("Too many template requests have been made.[key=$key]"))
+            return
+        }
+        templateRequestCount[key] = retryCount + 1
+
         synchronized(templateRequestDatas) {
             val request = TemplateRequestData(key, variables, themeMode, callback)
             templateRequestDatas[key]?.let {
@@ -89,6 +104,7 @@ internal object NotificationChannelManager {
                 val rawTemplate = templateRepository.requestTemplateBlocking(key)
                 makeAndNotifyTemplate(key, rawTemplate)
             } catch (e: Throwable) {
+                templateRequestCount[key] = 1
                 notifyError(key, SendbirdException(e))
             }
         }
