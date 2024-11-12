@@ -4,7 +4,6 @@ import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.Reaction
 
 internal fun Collection<Emoji>.containsEmoji(emojiKey: String): Boolean {
-    if (emojiKey == "sendbird_emoji_thumbsup") return false
     return this.any { it.key == emojiKey }
 }
 

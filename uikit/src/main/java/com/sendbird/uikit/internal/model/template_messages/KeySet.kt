@@ -58,6 +58,7 @@ internal object KeySet {
     const val sub_data = "sub_data"
     const val sub_type = "sub_type"
     const val carouselView = "carouselView"
+    const val templates = "templates"
 
     // notifications
     const val key = "key"

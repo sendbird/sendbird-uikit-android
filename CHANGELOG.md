@@ -1,4 +1,6 @@
 # Changelog
+### v3.21.1 (Nov 12, 2024) with Chat SDK `v4.20.0`
+* Fixed thumbs up reaction not working in chat messages.
 ### v3.21.0 (Sep 12, 2024) with Chat SDK `v4.19.0`
 * Changed the Form type message UI rendering due to the modification of the Form model from BaseMessage to MessageForm.
 * Sendbird Business Messaging changes
