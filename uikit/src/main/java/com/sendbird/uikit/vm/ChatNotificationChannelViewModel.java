@@ -23,10 +23,13 @@ import com.sendbird.android.handler.MessageCollectionInitHandler;
 import com.sendbird.android.message.BaseMessage;
 import com.sendbird.android.params.MessageCollectionCreateParams;
 import com.sendbird.android.params.MessageListParams;
+import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnCompleteHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
+import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.LiveDataEx;
 import com.sendbird.uikit.model.MessageData;
@@ -37,11 +40,13 @@ import com.sendbird.uikit.widgets.StatusFrameView;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+
+import kotlin.Unit;
 
 /**
  * ViewModel preparing and managing data related with the notification channel.
- *
  * since 3.5.0
  */
 public class ChatNotificationChannelViewModel extends BaseViewModel implements OnPagedDataLoader<List<BaseMessage>>, LifecycleEventObserver {
@@ -65,6 +70,9 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
     private GroupChannel channel;
 
     private boolean isVisible = false;
+    private final MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper(NotificationChannelManager.getMapper(), Executors.newSingleThreadExecutor());
+    @NonNull
+    private final MessageList cachedMessages = new MessageList(MessageList.Order.DESC, false);
 
     /**
      * Constructor
@@ -204,10 +212,12 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
             return false;
         }
 
+        cachedMessages.clear();
         collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendbirdException e) {
-                if (e == null && cachedList != null && cachedList.size() > 0) {
+                if (e == null && cachedList != null && !cachedList.isEmpty()) {
+                    cachedMessages.addAll(cachedList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
                 }
             }
@@ -215,8 +225,10 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendbirdException e) {
                 if (e == null && apiResultList != null) {
+                    cachedMessages.clear();
+                    cachedMessages.addAll(apiResultList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                    if (apiResultList.size() > 0) {
+                    if (!apiResultList.isEmpty()) {
                         markAsRead();
                     }
                 }
@@ -249,6 +261,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
             try {
                 if (e == null) {
                     messages = messages == null ? Collections.emptyList() : messages;
+                    cachedMessages.addAll(messages);
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
                 }
@@ -304,8 +317,18 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
     private synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> ChatNotificationChannelViewModel::notifyDataSetChanged()");
         if (collection == null) return;
-        final List<BaseMessage> copiedList = collection.getSucceededMessages();
-        if (copiedList.size() == 0) {
+        final List<BaseMessage> updatedTemplateMessages = messageTemplateMapper.mapTemplate(cachedMessages.toList(), notCachedMessages -> {
+            cachedMessages.updateAll(notCachedMessages);
+            SendbirdUIKit.runOnUIThread(() -> notifyDataSetChanged(StringSet.EVENT_MESSAGE_TEMPLATE_UPDATED));
+            return Unit.INSTANCE;
+        });
+
+        if (!updatedTemplateMessages.isEmpty()) {
+            cachedMessages.updateAll(updatedTemplateMessages);
+        }
+
+        final List<BaseMessage> copiedList = cachedMessages.toList();
+        if (copiedList.isEmpty()) {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
@@ -343,6 +366,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
                 Logger.d(">> ChatNotificationChannelViewModel::onMessagesAdded() from=%s", context.getCollectionEventSource());
                 if (messages.isEmpty()) return;
 
+                cachedMessages.addAll(messages);
                 switch (context.getCollectionEventSource()) {
                     case EVENT_MESSAGE_RECEIVED:
                     case EVENT_MESSAGE_SENT:
@@ -357,6 +381,7 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onMessagesUpdated(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> ChatNotificationChannelViewModel::onMessagesUpdated() from=%s", context.getCollectionEventSource());
+                cachedMessages.updateAll(messages);
                 notifyDataSetChanged(context);
             }
 
@@ -364,7 +389,9 @@ public class ChatNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onMessagesDeleted(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> ChatNotificationChannelViewModel::onMessagesDeleted() from=%s", context.getCollectionEventSource());
+
                 // Remove the succeeded message from the succeeded message datasource.
+                cachedMessages.deleteAll(messages);
                 notifyMessagesDeleted(messages);
                 notifyDataSetChanged(context);
             }

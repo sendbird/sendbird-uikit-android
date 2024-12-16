@@ -1,6 +1,5 @@
 package com.sendbird.uikit.model
 
-import com.sendbird.uikit.internal.model.template_messages.ActionData
 import java.util.Locale
 
 /**
@@ -47,13 +46,13 @@ internal constructor(
         /**
          * Convert ActionData to Action class. This is used only for internal.
          *
-         * @param actionData The data from the given custom data filed.
+         * @param action The data from the given custom data filed.
          * @return Action data.
          * @since 3.5.0
          */
         @JvmStatic
-        internal fun from(actionData: ActionData): Action {
-            return Action(actionData.type.name.lowercase(Locale.getDefault()), actionData.data, actionData.alterData)
+        internal fun from(action: com.sendbird.message.template.model.Action): Action {
+            return Action(action.type.name.lowercase(Locale.getDefault()), action.data, action.alterData)
         }
     }
 }

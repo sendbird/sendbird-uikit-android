@@ -366,7 +366,7 @@ public class ChatNotificationChannelFragment extends BaseModuleFragment<ChatNoti
 
         /**
          * Sets the click listener on the message template view clicked.
-         * Sets the click listener when the view component that has {@link com.sendbird.uikit.model.Action} is clicked
+         * Sets the click listener when the view component that has {@link Action} is clicked
          *
          * @param handler The callback that will run.
          * @return This Builder object to allow for chaining of calls to set methods.

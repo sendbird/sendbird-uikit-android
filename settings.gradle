@@ -16,5 +16,5 @@ dependencyResolutionManagement {
 }
 
 include ':uikit'
-rootProject.name='sendbird-uikit-android-sources'
 include ':uikit-samples'
+rootProject.name='sendbird-uikit-android-sources'
