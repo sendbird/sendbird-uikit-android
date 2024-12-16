@@ -2,12 +2,17 @@ package com.sendbird.uikit.internal.extensions
 
 import com.sendbird.android.annotation.AIChatBotExperimental
 import com.sendbird.android.channel.TemplateMessageData
+import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.message.template.consts.MessageTemplateError
+import com.sendbird.message.template.consts.TemplateTheme
+import com.sendbird.message.template.model.TemplateParams
+import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.SendbirdUIKit.ThemeMode
 import com.sendbird.uikit.consts.StringSet
-import com.sendbird.uikit.internal.model.template_messages.Params
+import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus
 import com.sendbird.uikit.internal.singleton.MessageTemplateManager
-import com.sendbird.uikit.internal.singleton.MessageTemplateParser
 
 internal fun BaseMessage.isTemplateMessage(): Boolean {
     return this.templateMessageData != null
@@ -25,22 +30,16 @@ internal fun TemplateMessageData?.isValid(): Boolean {
 internal fun BaseMessage.saveParamsFromTemplate() {
     val templateMessageData = this.templateMessageData ?: return
     val key = templateMessageData.key
-    val template = MessageTemplateManager.getTemplate(key)
-    if (template != null) {
-        val syntax = template.getTemplateSyntax(
-            templateMessageData.variables,
-            templateMessageData.viewVariables
-        )
 
-        try {
-            val params = MessageTemplateParser.parse(syntax)
-            this.messageTemplateStatus = MessageTemplateStatus.CACHED
-            this.messageTemplateParams = params
-        } catch (e: Exception) {
-            this.messageTemplateStatus = MessageTemplateStatus.FAILED_TO_PARSE
+    try {
+        val params = MessageTemplateManager.parseTemplate(key, templateMessageData.variables, templateMessageData.viewVariables)
+        this.messageTemplateStatus = MessageTemplateStatus.CACHED
+        this.messageTemplateParams = params
+    } catch (e: SendbirdException) {
+        when (e.code) {
+            MessageTemplateError.ERROR_TEMPLATE_NOT_EXIST -> this.messageTemplateStatus = MessageTemplateStatus.FAILED_TO_FETCH
+            MessageTemplateError.ERROR_TEMPLATE_PARSE_FAILED -> this.messageTemplateStatus = MessageTemplateStatus.FAILED_TO_PARSE
         }
-    } else {
-        this.messageTemplateStatus = MessageTemplateStatus.FAILED_TO_FETCH
     }
 }
 
@@ -67,8 +66,8 @@ internal var BaseMessage.messageTemplateStatus: MessageTemplateStatus?
     }
 
 @OptIn(AIChatBotExperimental::class)
-internal var BaseMessage.messageTemplateParams: Params?
-    get() = extras[StringSet.message_template_params] as? Params
+internal var BaseMessage.messageTemplateParams: TemplateParams?
+    get() = extras[StringSet.message_template_params] as? TemplateParams
     set(value) {
         if (value == null) {
             extras.remove(StringSet.message_template_params)
@@ -76,6 +75,21 @@ internal var BaseMessage.messageTemplateParams: Params?
             extras[StringSet.message_template_params] = value
         }
     }
+
+internal fun ThemeMode.toTemplateTheme(): TemplateTheme {
+    return when (this) {
+        ThemeMode.Light -> TemplateTheme.Light
+        ThemeMode.Dark -> TemplateTheme.Dark
+    }
+}
+
+internal fun NotificationThemeMode.toTemplateTheme(): TemplateTheme {
+    return when (this) {
+        NotificationThemeMode.Light -> TemplateTheme.Light
+        NotificationThemeMode.Dark -> TemplateTheme.Dark
+        NotificationThemeMode.Default -> SendbirdUIKit.getDefaultThemeMode().toTemplateTheme()
+    }
+}
 
 internal enum class MessageTemplateContainerType {
     UNKNOWN, DEFAULT;

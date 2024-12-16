@@ -7,7 +7,7 @@ import com.sendbird.uikit.utils.DateUtils
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentHashMap
 
-internal class MessageList @JvmOverloads constructor(private val order: Order = Order.DESC) {
+internal class MessageList @JvmOverloads constructor(private val order: Order = Order.DESC, private val useTimeline: Boolean = true) {
     enum class Order {
         ASC, DESC
     }
@@ -58,6 +58,10 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     @Synchronized
     fun add(message: BaseMessage) {
         Logger.d(">> MessageList::addAll()")
+        if (!useTimeline) {
+            BaseMessage.clone(message)?.let { messages.add(it) }
+            return
+        }
         val createdAt = message.createdAt
         val dateStr = DateUtils.getDateString(createdAt)
         var timeline = timelineMap[dateStr]
@@ -93,7 +97,7 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     fun delete(message: BaseMessage): Boolean {
         Logger.d(">> MessageList::deleteMessage()")
         val removed = messages.remove(message)
-        if (removed) {
+        if (removed && useTimeline) {
             val createdAt = message.createdAt
             val dateStr = DateUtils.getDateString(createdAt)
             val timeline = timelineMap[dateStr] ?: return true

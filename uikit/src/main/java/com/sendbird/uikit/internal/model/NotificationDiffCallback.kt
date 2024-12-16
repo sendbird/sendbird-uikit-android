@@ -2,6 +2,7 @@ package com.sendbird.uikit.internal.model
 
 import androidx.recyclerview.widget.DiffUtil
 import com.sendbird.android.message.BaseMessage
+import com.sendbird.uikit.internal.extensions.messageTemplateStatus
 
 internal class NotificationDiffCallback(
     private val oldMessageList: List<BaseMessage>,
@@ -72,6 +73,10 @@ internal class NotificationDiffCallback(
         }
 
         if (oldMessage.updatedAt != newMessage.updatedAt) {
+            return false
+        }
+
+        if (oldMessage.messageTemplateStatus != newMessage.messageTemplateStatus) {
             return false
         }
 

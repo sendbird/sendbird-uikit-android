@@ -5,7 +5,8 @@ import androidx.annotation.WorkerThread
 import com.sendbird.android.SendbirdChat
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.params.MessageTemplateListParams
-import com.sendbird.uikit.internal.model.templates.MessageTemplate
+import com.sendbird.message.template.model.MessageTemplate
+import com.sendbird.message.template.providers.MessageTemplateProvider
 import com.sendbird.uikit.log.Logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
@@ -21,7 +22,7 @@ private const val PREFERENCE_FILE_NAME = "com.sendbird.message.templates"
  * This class is used to store templates which is used for [com.sendbird.android.channel.GroupChannel].
  * It doesn't manage the templates for Notification. For Notification, use [NotificationTemplateRepository].
  */
-internal class MessageTemplateRepository(context: Context) {
+internal class MessageTemplateRepository(context: Context) : MessageTemplateProvider {
     private val templateCache: MutableMap<String, MessageTemplate> = ConcurrentHashMap()
     private val preferences = BaseSharedPreference(context.applicationContext, PREFERENCE_FILE_NAME)
     internal var lastCachedToken: String = ""
@@ -117,4 +118,7 @@ internal class MessageTemplateRepository(context: Context) {
     }
 
     private fun String.toMessageTemplateKey() = MESSAGE_TEMPLATE_KEY_PREFIX + this
+    override fun provide(key: String): MessageTemplate? {
+        return getTemplate(key)
+    }
 }

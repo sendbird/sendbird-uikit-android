@@ -25,16 +25,23 @@ import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
+import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
+import com.sendbird.uikit.internal.singleton.NotificationChannelManager;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.LiveDataEx;
 import com.sendbird.uikit.model.MessageData;
+import com.sendbird.uikit.model.MessageList;
 import com.sendbird.uikit.model.MutableLiveDataEx;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+
+import kotlin.Unit;
 
 /**
  * ViewModel preparing and managing data related with the notification channel.
@@ -60,6 +67,9 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
     @Nullable
     private FeedChannel channel;
     private boolean isVisible = false;
+    private final MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper(NotificationChannelManager.getMapper(), Executors.newSingleThreadExecutor());
+    @NonNull
+    private final MessageList cachedMessages = new MessageList(MessageList.Order.DESC, false);
 
     /**
      * Constructor
@@ -203,11 +213,13 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             return false;
         }
 
+        cachedMessages.clear();
         collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendbirdException e) {
-                if (e == null && cachedList != null && cachedList.size() > 0) {
+                if (e == null && cachedList != null && !cachedList.isEmpty()) {
                     Logger.d("++ loadInitial from cache cachedList.size=%s", cachedList.size());
+                    cachedMessages.addAll(cachedList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
                 }
             }
@@ -216,8 +228,10 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             public void onApiResult(@Nullable List<BaseMessage> apiResultList, @Nullable SendbirdException e) {
                 if (e == null && apiResultList != null) {
                     Logger.d("++ loadInitial from remote apiResultList.size=%s", apiResultList.size());
+                    cachedMessages.clear();
+                    cachedMessages.addAll(apiResultList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                    if (apiResultList.size() > 0) {
+                    if (!apiResultList.isEmpty()) {
                         if (isVisible) markAsRead();
                     }
                 }
@@ -250,6 +264,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             try {
                 if (e == null) {
                     messages = messages == null ? Collections.emptyList() : messages;
+                    cachedMessages.addAll(messages);
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
                 }
@@ -305,8 +320,19 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
     private synchronized void notifyDataSetChanged(@NonNull String traceName) {
         Logger.d(">> FeedNotificationChannelViewModel::notifyDataSetChanged()");
         if (collection == null) return;
-        final List<BaseMessage> copiedList = collection.getSucceededMessages();
-        if (copiedList.size() == 0) {
+
+        final List<BaseMessage> updatedTemplateMessages = messageTemplateMapper.mapTemplate(cachedMessages.toList(), notCachedMessages -> {
+            cachedMessages.updateAll(notCachedMessages);
+            SendbirdUIKit.runOnUIThread(() -> notifyDataSetChanged(StringSet.EVENT_MESSAGE_TEMPLATE_UPDATED));
+            return Unit.INSTANCE;
+        });
+
+        if (!updatedTemplateMessages.isEmpty()) {
+            cachedMessages.updateAll(updatedTemplateMessages);
+        }
+
+        final List<BaseMessage> copiedList = cachedMessages.toList();
+        if (copiedList.isEmpty()) {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
@@ -347,6 +373,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
                 Logger.d(">> FeedNotificationChannelViewModel::onMessagesAdded() from=%s", context.getCollectionEventSource());
                 if (messages.isEmpty()) return;
 
+                cachedMessages.addAll(messages);
                 switch (context.getCollectionEventSource()) {
                     case EVENT_MESSAGE_RECEIVED:
                     case EVENT_MESSAGE_SENT:
@@ -361,6 +388,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             @Override
             public void onMessagesUpdated(@NonNull NotificationContext context, @NonNull FeedChannel channel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> FeedNotificationChannelViewModel::onMessagesUpdated() from=%s", context.getCollectionEventSource());
+                cachedMessages.updateAll(messages);
                 notifyDataSetChanged(context);
             }
 
@@ -369,6 +397,7 @@ public class FeedNotificationChannelViewModel extends BaseViewModel implements O
             public void onMessagesDeleted(@NonNull NotificationContext context, @NonNull FeedChannel channel, @NonNull List<BaseMessage> messages) {
                 Logger.d(">> FeedNotificationChannelViewModel::onMessagesDeleted() from=%s", context.getCollectionEventSource());
                 // Remove the succeeded message from the succeeded message datasource.
+                cachedMessages.deleteAll(messages);
                 notifyMessagesDeleted(messages);
                 notifyDataSetChanged(context);
             }

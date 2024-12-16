@@ -48,6 +48,7 @@ import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
+import com.sendbird.uikit.internal.singleton.MessageTemplateManager;
 import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageList;
@@ -112,10 +113,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     private final ChannelConfig channelConfig;
 
     @NonNull
-    private final MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper();
-
-    // The code associated with this flag will be deleted in bulk when the server-side value is activated.
-    Boolean TEMPORARY_DISABLE_CHAT_INPUT = true;
+    @VisibleForTesting
+    MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper(MessageTemplateManager.getMapper());
 
     /**
      * Class that holds message data in a channel.
@@ -567,15 +566,15 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             statusFrame.setValue(StatusFrameView.Status.EMPTY);
         } else {
             statusFrame.setValue(StatusFrameView.Status.NONE);
-            if (TEMPORARY_DISABLE_CHAT_INPUT) {
+            if (channel != null) {
                 BaseMessage lastMessage = cachedMessages.getLatestMessage();
-                if (channel != null && lastMessage != null) {
-                    if (MessageExtensionsKt.getDisableChatInput(lastMessage)) {
-                        ChannelExtensionsKt.clearDisabledChatInputMessages(channel);
-                        MessageList.Order order = (messageListParams == null || messageListParams.getReverse()) ? MessageList.Order.DESC : MessageList.Order.ASC;
-                        List<BaseMessage> messageList = activeDisableInputMessageList(cachedMessages, order);
-                        ChannelExtensionsKt.saveDisabledChatInputMessages(channel, messageList);
-                    }
+                if (lastMessage != null && MessageExtensionsKt.getDisableChatInput(lastMessage)) {
+                    ChannelExtensionsKt.clearDisabledChatInputMessages(channel);
+                    MessageList.Order order = (messageListParams == null || messageListParams.getReverse()) ? MessageList.Order.DESC : MessageList.Order.ASC;
+                    List<BaseMessage> messageList = activeDisableInputMessageList(cachedMessages, order);
+                    ChannelExtensionsKt.saveDisabledChatInputMessages(channel, messageList);
+                } else {
+                    ChannelExtensionsKt.clearDisabledChatInputMessages(channel);
                 }
             }
         }
@@ -781,7 +780,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API, new MessageCollectionInitHandler() {
             @Override
             public void onCacheResult(@Nullable List<BaseMessage> cachedList, @Nullable SendbirdException e) {
-                if (e == null && cachedList != null && cachedList.size() > 0) {
+                if (e == null && cachedList != null && !cachedList.isEmpty()) {
                     cachedMessages.addAll(cachedList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_CACHE);
                 }
@@ -793,7 +792,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                     cachedMessages.clear();
                     cachedMessages.addAll(apiResultList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
-                    if (apiResultList.size() > 0) {
+                    if (!apiResultList.isEmpty()) {
                         markAsRead();
                     }
                 }

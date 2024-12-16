@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import com.sendbird.android.SendbirdChat
 import com.sendbird.android.exception.SendbirdException
+import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.params.NotificationTemplateListParams
-import com.sendbird.uikit.internal.model.notifications.NotificationTemplate
+import com.sendbird.message.template.model.MessageTemplate
+import com.sendbird.message.template.providers.MessageTemplateProvider
 import com.sendbird.uikit.internal.model.notifications.NotificationTemplateList
 import com.sendbird.uikit.log.Logger
 import java.util.concurrent.ConcurrentHashMap
@@ -18,8 +20,8 @@ private const val TEMPLATE_COUNT = "TEMPLATE_COUNT"
 private const val PREFERENCE_FILE_NAME = "com.sendbird.notifications.templates"
 private const val MAX_CACHED_TEMPLATE_COUNT = 1000
 
-internal class NotificationTemplateRepository(context: Context) {
-    private val templateCache: MutableMap<String, NotificationTemplate> = ConcurrentHashMap()
+internal class NotificationTemplateRepository(context: Context) : MessageTemplateProvider, TemplateMapperDataProvider {
+    private val templateCache: MutableMap<String, MessageTemplate> = ConcurrentHashMap()
     private val preferences = BaseSharedPreference(context.applicationContext, PREFERENCE_FILE_NAME)
     private var lastCacheToken: String = ""
         get() {
@@ -40,7 +42,7 @@ internal class NotificationTemplateRepository(context: Context) {
         preferences.loadAll({ key ->
             key.startsWith(TEMPLATE_KEY_PREFIX)
         }, { key, value ->
-            templateCache[key] = NotificationTemplate.fromJson(value.toString())
+            templateCache[key] = MessageTemplate.fromJson(value.toString())
         }).also {
             preferences.putInt(TEMPLATE_COUNT, templateCache.size)
         }
@@ -54,46 +56,54 @@ internal class NotificationTemplateRepository(context: Context) {
         }
     }
 
-    private fun getTemplateKey(key: String) = "${TEMPLATE_KEY_PREFIX}$key"
+    private fun getCacheKey(key: String) = "${TEMPLATE_KEY_PREFIX}$key"
 
     @WorkerThread
     @Synchronized
-    private fun saveToCache(template: NotificationTemplate) {
+    private fun saveToCache(template: MessageTemplate) {
         Logger.d(">> NotificationTemplateRepository::saveToCache() key=${template.templateKey}")
-        val key = getTemplateKey(template.templateKey)
+        val key = getCacheKey(template.templateKey)
         templateCache[key] = template
         preferences.putString(key, template.toString())
         preferences.putInt(TEMPLATE_COUNT, templateCache.size)
     }
 
-    fun needToUpdateTemplateList(latestUpdatedToken: String?): Boolean {
+    internal fun needToUpdateTemplateList(latestUpdatedToken: String?): Boolean {
         return lastCacheToken.isEmpty() || lastCacheToken != latestUpdatedToken
     }
 
-    fun getTemplate(key: String): NotificationTemplate? {
+    internal fun getTemplate(key: String): MessageTemplate? {
         Logger.d(">> NotificationTemplateRepository::getTemplate() key=$key")
-        return templateCache[getTemplateKey(key)]
+        return templateCache[getCacheKey(key)]
     }
 
     @WorkerThread
     @Throws(SendbirdException::class)
-    fun requestTemplateListBlocking(): NotificationTemplateList {
+    internal fun requestTemplateListBlocking(): NotificationTemplateList {
+        return requestTemplateListBlocking(
+            NotificationTemplateListParams().apply { limit = 100 },
+            lastCacheToken
+        )
+    }
+
+    @WorkerThread
+    @Throws(SendbirdException::class)
+    internal fun requestTemplateListBlocking(params: NotificationTemplateListParams, cachedToken: String? = null): NotificationTemplateList {
         Logger.d(">> NotificationTemplateRepository::requestTemplateList()")
         val latch = CountDownLatch(1)
         var error: SendbirdException? = null
         val result: AtomicReference<NotificationTemplateList> = AtomicReference()
+        val shouldUpdateToken = cachedToken != null
         SendbirdChat.getNotificationTemplateListByToken(
-            lastCacheToken,
-            NotificationTemplateListParams().apply {
-                limit = 100
-            }
+            cachedToken,
+            params
         ) { notificationTemplateList, _, token, e ->
             error = e
             try {
                 val templateList = notificationTemplateList?.let {
                     NotificationTemplateList.fromJson(it.jsonPayload)
                 }
-                if (!token.isNullOrEmpty()) lastCacheToken = token
+                if (shouldUpdateToken && !token.isNullOrEmpty()) lastCacheToken = token
                 result.set(templateList)
             } catch (e: Throwable) {
                 error = SendbirdException("notification template list data is not valid", e)
@@ -114,17 +124,17 @@ internal class NotificationTemplateRepository(context: Context) {
 
     @WorkerThread
     @Throws(SendbirdException::class)
-    fun requestTemplateBlocking(key: String): NotificationTemplate {
+    internal fun requestTemplateBlocking(key: String): MessageTemplate {
         Logger.d(">> NotificationTemplateRepository::requestTemplate() key=$key")
         val latch = CountDownLatch(1)
         var error: SendbirdException? = null
-        val result: AtomicReference<NotificationTemplate> = AtomicReference()
+        val result: AtomicReference<MessageTemplate> = AtomicReference()
         SendbirdChat.getNotificationTemplate(key) { template, e ->
             error = e
             try {
                 template?.let {
                     Logger.i("++ request response template key=$key : ${it.jsonPayload}")
-                    result.set(NotificationTemplate.fromJson(it.jsonPayload))
+                    result.set(MessageTemplate.fromJson(it.jsonPayload))
                 }
             } catch (e: Throwable) {
                 error = SendbirdException("notification template response data is not valid", e)
@@ -139,9 +149,35 @@ internal class NotificationTemplateRepository(context: Context) {
         return result.get().also { saveToCache(it) }
     }
 
-    fun clearAll() {
+    internal fun clearAll() {
         lastCacheToken = ""
         templateCache.clear()
         preferences.clearAll()
+    }
+
+    override fun provide(key: String): MessageTemplate? {
+        return getTemplate(key)
+    }
+
+    override fun isValid(message: BaseMessage): Boolean = message.notificationData != null
+    override fun isTemplateMessage(message: BaseMessage): Boolean = message.notificationData != null
+    override fun hasAllTemplates(message: BaseMessage): Boolean {
+        // if the sbm message supports the CarouselView later, it should also check the child templates.
+        return message.notificationData?.let {
+            return hasTemplate(it.templateKey)
+        } ?: false
+    }
+
+    override fun hasTemplate(key: String): Boolean = getTemplate(key) != null
+    override fun getTemplateKey(message: BaseMessage): String? = message.notificationData?.templateKey
+    override fun childTemplateKeys(message: BaseMessage): List<String> = emptyList()
+
+    @WorkerThread
+    @Throws(SendbirdException::class)
+    override fun requestTemplateListBlocking(keys: List<String>): List<MessageTemplate> {
+        return requestTemplateListBlocking(NotificationTemplateListParams().apply {
+            this.limit = 100
+            this.keys = keys
+        }).templates
     }
 }
