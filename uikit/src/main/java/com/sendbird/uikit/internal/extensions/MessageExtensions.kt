@@ -8,16 +8,16 @@ import com.sendbird.android.message.Emoji
 import com.sendbird.android.message.FileMessage
 import com.sendbird.android.message.MessageFormItem
 import com.sendbird.android.message.MultipleFilesMessage
-import com.sendbird.android.shadow.com.google.gson.JsonParser
 import com.sendbird.uikit.R
 import com.sendbird.uikit.activities.adapter.MessageFormViewType
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.singleton.MessageDisplayDataManager
-import com.sendbird.uikit.model.MessageList
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.model.EmojiManager
+import com.sendbird.uikit.model.MessageList
 import com.sendbird.uikit.model.UserMessageDisplayData
 import com.sendbird.uikit.utils.MessageUtils
+import org.json.JSONObject
 
 internal fun BaseMessage.hasParentMessage() = parentMessageId != 0L
 
@@ -165,7 +165,7 @@ internal val BaseMessage.isStreamMessage: Boolean
             return false
         }
         return try {
-            JsonParser.parseString(data).asJsonObject[StringSet.stream].asBoolean
+            JSONObject(data).getBoolean(StringSet.stream)
         } catch (e: Exception) {
             false
         }

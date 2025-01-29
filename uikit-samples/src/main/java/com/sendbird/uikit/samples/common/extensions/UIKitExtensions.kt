@@ -193,6 +193,7 @@ internal fun Region.apiHost(): String? {
         Region.NO2 -> "https://api-no2.sendbirdtest.com"
         Region.NO3 -> "https://api-no3.sendbirdtest.com"
         Region.NO4 -> "https://api-no4.sendbirdtest.com"
+        Region.NO5 -> "https://api-no5.sendbirdtest.com"
         else -> null
     }
 }
@@ -203,6 +204,7 @@ internal fun Region.wsHost(): String? {
         Region.NO2 -> "wss://ws-no2.sendbirdtest.com"
         Region.NO3 -> "wss://ws-no3.sendbirdtest.com"
         Region.NO4 -> "wss://ws-no4.sendbirdtest.com"
+        Region.NO5 -> "wss://ws-no5.sendbirdtest.com"
         else -> null
     }
 }

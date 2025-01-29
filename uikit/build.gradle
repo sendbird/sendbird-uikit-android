@@ -70,7 +70,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Sendbird
-    api 'com.sendbird.sdk:sendbird-chat:4.19.0'
+    api 'com.sendbird.sdk:sendbird-chat:4.21.1'
+    implementation "com.sendbird.sdk:message-template:1.0.0"
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
@@ -96,7 +97,7 @@ dokkaHtml {
 
     String dokkaBaseConfiguration = """
     {
-      "footerMessage": "<a href=\\"https://dashboard.sendbird.com/settings/contact_us\\">Report a bug or request a feature.</a>\\tFor further developer documentation, see <a href=\\"https://sendbird.com/docs/uikit/v3/android/overview\\">UIkit SDK Documentation</a>. That documentation contains more detailed descriptions, conceptual overviews, definitions of terms, and code examples.<br/> Copyright &copy; 2022, Sendbird or its affiliates. All rights reserved."
+      "footerMessage": "<a href=\\"https://dashboard.sendbird.com/settings/contact_us\\">Report a bug or request a feature.</a>\\tFor further developer documentation, see <a href=\\"https://sendbird.com/docs/chat/uikit/v3/android-view/overview\\">UIkit SDK Documentation</a>. That documentation contains more detailed descriptions, conceptual overviews, definitions of terms, and code examples.<br/> Copyright &copy; 2022, Sendbird or its affiliates. All rights reserved."
     }
     """
     pluginsMapConfiguration.set(
