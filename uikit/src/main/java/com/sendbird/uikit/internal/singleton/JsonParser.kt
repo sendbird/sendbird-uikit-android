@@ -4,7 +4,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.decodeFromJsonElement
 
 internal object JsonParser {
     private val json by lazy {
@@ -24,7 +24,12 @@ internal object JsonParser {
     }
 
     @JvmStatic
-    inline fun <reified T> toJsonElement(value: T): JsonElement {
-        return json.encodeToJsonElement(value)
+    inline fun <reified T> fromJsonElement(element: JsonElement): T {
+        return json.decodeFromJsonElement(element)
+    }
+
+    @JvmStatic
+    internal fun toJsonElement(value: String): JsonElement {
+        return json.parseToJsonElement(value)
     }
 }

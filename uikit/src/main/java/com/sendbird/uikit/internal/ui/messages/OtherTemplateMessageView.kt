@@ -9,13 +9,12 @@ import com.sendbird.android.channel.TemplateContainerOptions
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FeedbackStatus
 import com.sendbird.uikit.R
+import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.databinding.SbViewOtherTemplateMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.ERR_MESSAGE_TEMPLATE_NOT_APPLICABLE
-import com.sendbird.uikit.internal.extensions.createFallbackViewParams
-import com.sendbird.uikit.internal.extensions.createTemplateMessageLoadingView
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.isSuggestedRepliesVisible
@@ -24,10 +23,13 @@ import com.sendbird.uikit.internal.extensions.messageTemplateStatus
 import com.sendbird.uikit.internal.extensions.saveParamsFromTemplate
 import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.extensions.toContextThemeWrapper
+import com.sendbird.uikit.internal.extensions.toTemplateTheme
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
+import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus
 import com.sendbird.uikit.internal.utils.TemplateViewCachePool
 import com.sendbird.uikit.log.Logger
+import com.sendbird.uikit.model.Action
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.utils.ViewUtils
 
@@ -127,13 +129,13 @@ internal class OtherTemplateMessageView @JvmOverloads internal constructor(
                 val errorMessage = context.getString(R.string.sb_text_template_message_fallback_error).format(
                     ERR_MESSAGE_TEMPLATE_NOT_APPLICABLE
                 )
-                context.createFallbackViewParams(errorMessage)
+                TemplateParamsCreator.createFallbackViewParams(context, errorMessage)
             }
             MessageTemplateStatus.FAILED_TO_PARSE, MessageTemplateStatus.FAILED_TO_FETCH -> {
-                context.createFallbackViewParams(message)
+                TemplateParamsCreator.createFallbackViewParams(context, message)
             }
             MessageTemplateStatus.LOADING -> {
-                val loadingView = context.createTemplateMessageLoadingView()
+                val loadingView = TemplateParamsCreator.createTemplateMessageLoadingView(context)
                 binding.messageTemplateView.removeAllViews()
                 binding.messageTemplateView.addView(loadingView)
                 return
@@ -145,23 +147,25 @@ internal class OtherTemplateMessageView @JvmOverloads internal constructor(
                     message.messageTemplateParams
                 }
 
-                params ?: context.createFallbackViewParams(message)
+                params ?: TemplateParamsCreator.createFallbackViewParams(context, message)
             }
         }
 
+        val theme = SendbirdUIKit.getDefaultThemeMode().toTemplateTheme()
         val cacheKey = "${message.messageId}_${message.messageTemplateStatus}"
         binding.messageTemplateView.draw(
             params,
+            theme,
             cacheKey,
             viewCachePool,
             onViewCreated = { v, p ->
                 p.action?.register(v, message) { view, action, message ->
-                    handler?.onHandleAction(view, action, message)
+                    handler?.onHandleAction(view, Action.from(action), message)
                 }
             },
             onChildViewCreated = { v, p ->
                 p.action?.register(v, message) { view, action, message ->
-                    handler?.onHandleAction(view, action, message)
+                    handler?.onHandleAction(view, Action.from(action), message)
                 }
             }
         )

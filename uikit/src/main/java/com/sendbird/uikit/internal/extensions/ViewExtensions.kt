@@ -3,20 +3,15 @@ package com.sendbird.uikit.internal.extensions
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -30,11 +25,6 @@ import com.sendbird.android.message.FeedbackRating
 import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
-import com.sendbird.uikit.internal.model.notifications.NotificationThemeMode
-import com.sendbird.uikit.internal.model.template_messages.Params
-import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
-import com.sendbird.uikit.internal.model.template_messages.TemplateViewGenerator.spinnerColor
-import com.sendbird.uikit.utils.DrawableUtils
 import com.sendbird.uikit.widgets.FeedbackView
 
 @Suppress("DEPRECATION")
@@ -153,47 +143,5 @@ internal fun FeedbackView.drawFeedback(message: BaseMessage, listener: OnFeedbac
     this.drawFeedback(message.myFeedback)
     this.onFeedbackRatingClickListener = { feedbackRating: FeedbackRating ->
         listener?.onFeedbackClicked(message, feedbackRating)
-    }
-}
-
-internal fun Context.createTemplateMessageLoadingView(): View {
-    val height = resources.getDimensionPixelSize(R.dimen.sb_template_message_loading_view_height)
-    return FrameLayout(this).apply {
-        layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
-        setBackgroundColor(Color.TRANSPARENT)
-        addView(
-            ProgressBar(context).apply {
-                val size = resources.intToDp(42)
-                layoutParams = FrameLayout.LayoutParams(
-                    size, size, Gravity.CENTER
-                )
-                val loading = DrawableUtils.setTintList(
-                    context,
-                    R.drawable.sb_progress,
-                    ColorStateList.valueOf(NotificationThemeMode.Default.spinnerColor)
-                )
-                this.indeterminateDrawable = loading
-            }
-        )
-    }
-}
-
-internal fun Context.createFallbackViewParams(message: BaseMessage): Params {
-    return createFallbackViewParams(message.message)
-}
-
-internal fun Context.createFallbackViewParams(message: String): Params {
-    return TemplateParamsCreator.createMessageTemplateDefaultViewParam(
-        message,
-        this.getString(R.string.sb_text_template_message_fallback_title),
-        this.getString(R.string.sb_text_template_message_fallback_description),
-    )
-}
-
-internal fun TextView.applyTextAlignment(gravity: Int) {
-    if ((gravity and Gravity.START) == Gravity.START) {
-        textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-    } else if ((gravity and Gravity.END) == Gravity.END) {
-        textAlignment = View.TEXT_ALIGNMENT_VIEW_END
     }
 }

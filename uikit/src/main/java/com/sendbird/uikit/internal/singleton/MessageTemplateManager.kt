@@ -3,11 +3,19 @@ package com.sendbird.uikit.internal.singleton
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
+import com.sendbird.android.channel.SimpleTemplateData
 import com.sendbird.android.exception.SendbirdException
+import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.params.MessageTemplateListParams
-import com.sendbird.uikit.internal.model.templates.MessageTemplate
+import com.sendbird.message.template.TemplateParser
+import com.sendbird.message.template.model.MessageTemplate
+import com.sendbird.message.template.model.TemplateParams
+import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.internal.extensions.childTemplateKeys
+import com.sendbird.uikit.internal.extensions.isTemplateMessage
+import com.sendbird.uikit.internal.extensions.isValid
+import com.sendbird.uikit.internal.extensions.toTemplateTheme
 import com.sendbird.uikit.log.Logger
-import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -16,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 internal object MessageTemplateManager {
     internal lateinit var instance: MessageTemplateManagerImpl
+    private lateinit var templateParser: TemplateParser
     @VisibleForTesting
     internal val isInitialized: AtomicBoolean = AtomicBoolean()
 
@@ -30,7 +39,14 @@ internal object MessageTemplateManager {
     fun init(context: Context) {
         val messageTemplateRepository = MessageTemplateRepository(context.applicationContext)
         instance = MessageTemplateManagerImpl(messageTemplateRepository)
+        templateParser = TemplateParser(messageTemplateRepository)
         isInitialized.set(true)
+    }
+
+    @Throws(SendbirdException::class)
+    @JvmStatic
+    fun parseTemplate(key: String, dataVariables: Map<String, String>, viewVariables: Map<String, List<SimpleTemplateData>> = emptyMap()): TemplateParams {
+        return templateParser.parse(key, SendbirdUIKit.getDefaultThemeMode().toTemplateTheme(), dataVariables, viewVariables)
     }
 
     @JvmStatic
@@ -61,11 +77,16 @@ internal object MessageTemplateManager {
 
     @VisibleForTesting
     internal fun isInstanceInitialized() = this::instance.isInitialized
+
+    @JvmStatic
+    val mapper: TemplateMapperDataProvider
+        get() = instance
 }
 
-internal class MessageTemplateManagerImpl(private val messageTemplateRepository: MessageTemplateRepository) {
-    private val worker = Executors.newSingleThreadExecutor()
-    fun hasTemplate(key: String): Boolean = messageTemplateRepository.getTemplate(key) != null
+internal class MessageTemplateManagerImpl(
+    private val messageTemplateRepository: MessageTemplateRepository
+) : TemplateMapperDataProvider {
+    override fun hasTemplate(key: String): Boolean = messageTemplateRepository.getTemplate(key) != null
 
     @WorkerThread
     @Throws(SendbirdException::class)
@@ -111,5 +132,35 @@ internal class MessageTemplateManagerImpl(private val messageTemplateRepository:
     fun clearAll() {
         Logger.d("MessageTemplateManager::clearAll()")
         messageTemplateRepository.clearAll()
+    }
+
+    override fun isValid(message: BaseMessage): Boolean {
+        return message.templateMessageData.isValid()
+    }
+
+    override fun isTemplateMessage(message: BaseMessage): Boolean {
+        return message.isTemplateMessage()
+    }
+
+    override fun hasAllTemplates(message: BaseMessage): Boolean {
+        val templateMessageData = message.templateMessageData ?: return false
+        val hasParentTemplate = hasTemplate(templateMessageData.key)
+        return hasParentTemplate && templateMessageData.childTemplateKeys().all { key ->
+            hasTemplate(key)
+        }
+    }
+
+    override fun getTemplateKey(message: BaseMessage): String? {
+        return message.templateMessageData?.key
+    }
+
+    override fun childTemplateKeys(message: BaseMessage): List<String> {
+        return message.templateMessageData?.childTemplateKeys() ?: emptyList()
+    }
+
+    @WorkerThread
+    @Throws(SendbirdException::class)
+    override fun requestTemplateListBlocking(keys: List<String>): List<MessageTemplate> {
+        return getMessageTemplatesBlocking(keys)
     }
 }

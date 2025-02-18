@@ -106,7 +106,7 @@ internal open class NotificationListComponent @JvmOverloads constructor(
     }
 
     /**
-     * Called when the view that has an [com.sendbird.uikit.model.Action] data is clicked.
+     * Called when the view that has an [Action] data is clicked.
      *
      * @param view the view that was clicked.
      * @param action the registered Action data
