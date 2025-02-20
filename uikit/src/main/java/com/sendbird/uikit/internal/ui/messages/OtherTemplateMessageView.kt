@@ -14,16 +14,7 @@ import com.sendbird.uikit.consts.ReplyType
 import com.sendbird.uikit.databinding.SbViewOtherTemplateMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler
-import com.sendbird.uikit.internal.extensions.ERR_MESSAGE_TEMPLATE_NOT_APPLICABLE
-import com.sendbird.uikit.internal.extensions.drawFeedback
-import com.sendbird.uikit.internal.extensions.hasParentMessage
-import com.sendbird.uikit.internal.extensions.isSuggestedRepliesVisible
-import com.sendbird.uikit.internal.extensions.messageTemplateParams
-import com.sendbird.uikit.internal.extensions.messageTemplateStatus
-import com.sendbird.uikit.internal.extensions.saveParamsFromTemplate
-import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
-import com.sendbird.uikit.internal.extensions.toContextThemeWrapper
-import com.sendbird.uikit.internal.extensions.toTemplateTheme
+import com.sendbird.uikit.internal.extensions.*
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.model.template_messages.TemplateParamsCreator
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus
@@ -102,7 +93,6 @@ internal class OtherTemplateMessageView @JvmOverloads internal constructor(
         }
 
         val shouldShowSuggestedReplies = message.shouldShowSuggestedReplies
-        message.isSuggestedRepliesVisible = shouldShowSuggestedReplies
         if (shouldShowSuggestedReplies) {
             suggestedRepliesViewStub?.let {
                 it.visibility = View.VISIBLE

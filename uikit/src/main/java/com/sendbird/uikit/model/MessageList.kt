@@ -133,11 +133,13 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     }
 
     @Synchronized
-    fun update(message: BaseMessage) {
+    fun update(message: BaseMessage): BaseMessage? {
         Logger.d(">> MessageList::updateMessage()")
-        if (message is CustomizableMessage) return
-        if (messages.remove(message)) {
-            BaseMessage.clone(message)?.let { messages.add(it) }
+        if (message is CustomizableMessage) return null
+        return if (messages.remove(message)) {
+            BaseMessage.clone(message)?.also { messages.add(it) }
+        } else {
+            null
         }
     }
 

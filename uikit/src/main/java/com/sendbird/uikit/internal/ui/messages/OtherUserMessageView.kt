@@ -19,7 +19,6 @@ import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
 import com.sendbird.uikit.internal.extensions.isStreamMessage
-import com.sendbird.uikit.internal.extensions.isSuggestedRepliesVisible
 import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
@@ -224,7 +223,6 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
         }
 
         val shouldShowSuggestedReplies = message.shouldShowSuggestedReplies
-        message.isSuggestedRepliesVisible = shouldShowSuggestedReplies
         if (shouldShowSuggestedReplies) {
             suggestedRepliesViewStub?.let {
                 it.visibility = View.VISIBLE

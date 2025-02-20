@@ -668,8 +668,10 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         for (BaseMessage message : messages) {
             boolean shouldShowSuggestedReplies = MessageExtensionsKt.getShouldShowSuggestedReplies(message);
             if (shouldShowSuggestedReplies) {
-                MessageExtensionsKt.setShouldShowSuggestedReplies(message, false);
-                cachedMessages.update(message);
+                final BaseMessage updated = cachedMessages.update(message);
+                if (updated != null) {
+                    MessageExtensionsKt.setShouldShowSuggestedReplies(updated, false);
+                }
             }
         }
 
@@ -684,14 +686,18 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
             BaseMessage lastMessage = messages.get(0);
             if (lastMessage != null && !lastMessage.getSuggestedReplies().isEmpty()) {
-                MessageExtensionsKt.setShouldShowSuggestedReplies(lastMessage, true);
-                cachedMessages.update(lastMessage);
+                final BaseMessage updated = cachedMessages.update(lastMessage);
+                if (updated != null) {
+                    MessageExtensionsKt.setShouldShowSuggestedReplies(updated, true);
+                }
             }
         } else if (suggestedRepliesFor == SuggestedRepliesFor.ALL_MESSAGES) {
             for (BaseMessage message : messages) {
                 if (!message.getSuggestedReplies().isEmpty()) {
-                    MessageExtensionsKt.setShouldShowSuggestedReplies(message, true);
-                    cachedMessages.update(message);
+                    final BaseMessage updated = cachedMessages.update(message);
+                    if (updated != null) {
+                        MessageExtensionsKt.setShouldShowSuggestedReplies(updated, true);
+                    }
                 }
             }
         }
