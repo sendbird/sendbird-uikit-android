@@ -14,9 +14,9 @@ import com.sendbird.android.message.ThreadInfo;
 import com.sendbird.android.user.User;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.consts.ReplyType;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.extensions.MessageTemplateExtensionsKt;
 import com.sendbird.uikit.internal.model.templates.MessageTemplateStatus;
-import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.model.MessageListUIParams;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.utils.MessageUtils;
@@ -93,7 +93,7 @@ class MessageDiffCallback extends DiffUtil.Callback {
             }
         }
 
-        if (MessageExtensionsKt.isSuggestedRepliesVisible(oldMessage) != MessageExtensionsKt.getShouldShowSuggestedReplies(newMessage)) {
+        if (MessageExtensionsKt.getShouldShowSuggestedReplies(oldMessage) != MessageExtensionsKt.getShouldShowSuggestedReplies(newMessage)) {
             return false;
         }
 

@@ -2,12 +2,7 @@ package com.sendbird.uikit.internal.extensions
 
 import android.content.Context
 import com.sendbird.android.annotation.AIChatBotExperimental
-import com.sendbird.android.message.BaseFileMessage
-import com.sendbird.android.message.BaseMessage
-import com.sendbird.android.message.Emoji
-import com.sendbird.android.message.FileMessage
-import com.sendbird.android.message.MessageFormItem
-import com.sendbird.android.message.MultipleFilesMessage
+import com.sendbird.android.message.*
 import com.sendbird.uikit.R
 import com.sendbird.uikit.activities.adapter.MessageFormViewType
 import com.sendbird.uikit.consts.StringSet
@@ -149,13 +144,6 @@ internal var BaseMessage.shouldShowSuggestedReplies: Boolean
     get() = this.extras[StringSet.should_show_suggested_replies] as? Boolean ?: false
     set(value) {
         this.extras[StringSet.should_show_suggested_replies] = value
-    }
-
-@OptIn(AIChatBotExperimental::class)
-internal var BaseMessage.isSuggestedRepliesVisible: Boolean
-    get() = this.extras[StringSet.is_suggested_replies_visible] as? Boolean ?: false
-    set(value) {
-        this.extras[StringSet.is_suggested_replies_visible] = value
     }
 
 internal val BaseMessage.isStreamMessage: Boolean

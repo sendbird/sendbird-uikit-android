@@ -1,4 +1,7 @@
 # Changelog
+### v3.22.1 (Feb 20, 2025) with Chat SDK `v4.23.1`
+* Fixed suggested replies not disappearing after sending a message.
+* Fixed the mention list not showing up when typing a nickname.
 ### v3.22.0 (Dec 16, 2024) with Chat SDK `v4.21.1`
 * Templated-related code has been moved to a separate module.
 ### v3.21.1 (Nov 12, 2024) with Chat SDK `v4.20.0`

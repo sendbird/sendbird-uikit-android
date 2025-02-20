@@ -70,7 +70,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Sendbird
-    api 'com.sendbird.sdk:sendbird-chat:4.21.1'
+    api 'com.sendbird.sdk:sendbird-chat:4.23.1'
     implementation "com.sendbird.sdk:message-template:1.0.0"
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
