@@ -1,4 +1,6 @@
 # Changelog
+### v3.22.2 (Feb 28, 2025) with Chat SDK `v4.24.0`
+* Replaced `newIntent` methods, which had a channelUrl parameter, with one that does not include it. in `OpenChannelListActivity`
 ### v3.22.1 (Feb 20, 2025) with Chat SDK `v4.23.1`
 * Fixed suggested replies not disappearing after sending a message.
 * Fixed the mention list not showing up when typing a nickname.

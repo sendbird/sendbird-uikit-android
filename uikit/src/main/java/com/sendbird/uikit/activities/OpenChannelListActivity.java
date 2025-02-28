@@ -30,10 +30,13 @@ public class OpenChannelListActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @return OpenChannelListActivity Intent.
      * since 3.2.0
+     * @deprecated 3.22.2
+     * <p> Use {@link OpenChannelListActivity#newIntent(Context)} instead.</p>
      */
+    @Deprecated
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
-        return newIntentFromCustomActivity(context, OpenChannelListActivity.class, channelUrl);
+        return newIntentFromCustomActivity(context, OpenChannelListActivity.class);
     }
 
     /**
@@ -44,10 +47,13 @@ public class OpenChannelListActivity extends AppCompatActivity {
      * @param themeResId the resource identifier for custom theme.
      * @return OpenChannelListActivity Intent.
      * since 3.5.6
+     * @deprecated 3.22.2
+     * <p> Use {@link OpenChannelListActivity#newIntent(Context, int)} instead.</p>
      */
+    @Deprecated
     @NonNull
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl, @StyleRes int themeResId) {
-        return newIntentFromCustomActivity(context, OpenChannelListActivity.class, channelUrl, themeResId);
+        return newIntentFromCustomActivity(context, OpenChannelListActivity.class, themeResId);
     }
 
     /**
@@ -58,10 +64,13 @@ public class OpenChannelListActivity extends AppCompatActivity {
      * @param channelUrl the url of the channel will be implemented.
      * @return Returns a newly created Intent that can be used to launch the activity.
      * since 3.2.0
+     * @deprecated 3.22.2
+     * <p> Use {@link OpenChannelListActivity#newIntentFromCustomActivity(Context, Class)} instead.</p>
      */
+    @Deprecated
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends OpenChannelListActivity> cls, @NonNull String channelUrl) {
-        return newIntentFromCustomActivity(context, cls, channelUrl, SendbirdUIKit.getDefaultThemeMode().getResId());
+        return newIntentFromCustomActivity(context, cls, SendbirdUIKit.getDefaultThemeMode().getResId());
     }
 
     /**
@@ -73,11 +82,65 @@ public class OpenChannelListActivity extends AppCompatActivity {
      * @param themeResId the resource identifier for custom theme.
      * @return Returns a newly created Intent that can be used to launch the activity.
      * since 3.5.6
+     * @deprecated 3.22.2
+     * <p> Use {@link OpenChannelListActivity#newIntentFromCustomActivity(Context, Class, int)} instead.</p>
      */
+    @Deprecated
     @NonNull
     public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends OpenChannelListActivity> cls, @NonNull String channelUrl, @StyleRes int themeResId) {
+        return newIntentFromCustomActivity(context, cls, themeResId);
+    }
+
+    /**
+     * Create an intent for a {@link OpenChannelListActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @return OpenChannelListActivity Intent.
+     * since 3.22.2
+     */
+    @NonNull
+    public static Intent newIntent(@NonNull Context context) {
+        return newIntentFromCustomActivity(context, OpenChannelListActivity.class);
+    }
+
+    /**
+     * Create an intent for a {@link OpenChannelListActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @param themeResId the resource identifier for custom theme.
+     * @return OpenChannelListActivity Intent.
+     * since 3.22.2
+     */
+    @NonNull
+    public static Intent newIntent(@NonNull Context context, @StyleRes int themeResId) {
+        return newIntentFromCustomActivity(context, OpenChannelListActivity.class, themeResId);
+    }
+
+    /**
+     * Create an intent for a custom activity. The custom activity must inherit {@link OpenChannelListActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @param cls        The activity class that is to be used for the intent.
+     * @return Returns a newly created Intent that can be used to launch the activity.
+     * since 3.22.2
+     */
+    @NonNull
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends OpenChannelListActivity> cls) {
+        return newIntentFromCustomActivity(context, cls, SendbirdUIKit.getDefaultThemeMode().getResId());
+    }
+
+    /**
+     * Create an intent for a custom activity. The custom activity must inherit {@link OpenChannelListActivity}.
+     *
+     * @param context    A Context of the application package implementing this class.
+     * @param cls        The activity class that is to be used for the intent.
+     * @param themeResId the resource identifier for custom theme.
+     * @return Returns a newly created Intent that can be used to launch the activity.
+     * since 3.22.2
+     */
+    @NonNull
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends OpenChannelListActivity> cls,  @StyleRes int themeResId) {
         Intent intent = new Intent(context, cls);
-        intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
         intent.putExtra(StringSet.KEY_THEME_RES_ID, themeResId);
         return intent;
     }
@@ -89,17 +152,12 @@ public class OpenChannelListActivity extends AppCompatActivity {
         setTheme(themeResId);
         setContentView(R.layout.sb_activity);
 
-        String url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
-        if (TextUtils.isEmpty(url)) {
-            ContextUtils.toastError(this, R.string.sb_text_error_get_channel);
-        } else {
-            Fragment fragment = createFragment();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.popBackStack();
-            manager.beginTransaction()
-                .replace(R.id.sb_fragment_container, fragment)
-                .commit();
-        }
+        Fragment fragment = createFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.popBackStack();
+        manager.beginTransaction()
+            .replace(R.id.sb_fragment_container, fragment)
+            .commit();
     }
 
     /**
