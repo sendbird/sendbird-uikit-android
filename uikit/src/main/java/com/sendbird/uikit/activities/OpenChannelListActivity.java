@@ -1,8 +1,11 @@
 package com.sendbird.uikit.activities;
 
+import static com.sendbird.uikit.internal.extensions.ViewExtensionsKt.setInsetMarginAndStatusBarColor;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,8 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendbirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
-import com.sendbird.uikit.utils.ContextUtils;
-import com.sendbird.uikit.utils.TextUtils;
 
 /**
  * Activity displays settings of a channel.
@@ -151,6 +152,10 @@ public class OpenChannelListActivity extends AppCompatActivity {
         int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
         setTheme(themeResId);
         setContentView(R.layout.sb_activity);
+
+        View activityContainer = findViewById(R.id.sb_activity_container);
+        View fragmentContainer = findViewById(R.id.sb_fragment_container);
+        setInsetMarginAndStatusBarColor(activityContainer, fragmentContainer, getWindow());
 
         Fragment fragment = createFragment();
         FragmentManager manager = getSupportFragmentManager();

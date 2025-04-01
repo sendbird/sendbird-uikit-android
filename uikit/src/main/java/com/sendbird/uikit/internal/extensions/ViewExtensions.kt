@@ -9,11 +9,19 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -23,6 +31,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.android.message.FeedbackRating
 import com.sendbird.uikit.R
+import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.StringSet
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
 import com.sendbird.uikit.widgets.FeedbackView
@@ -144,4 +153,55 @@ internal fun FeedbackView.drawFeedback(message: BaseMessage, listener: OnFeedbac
     this.onFeedbackRatingClickListener = { feedbackRating: FeedbackRating ->
         listener?.onFeedbackClicked(message, feedbackRating)
     }
+}
+
+internal fun View.setInsetMarginAndStatusBarColor(insetTargetView: View, window: Window) {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
+        val insets = windowInsets.getInsets(
+            WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
+        )
+
+        val insetTargetLayoutParams = (insetTargetView.layoutParams as? ViewGroup.MarginLayoutParams)
+        insetTargetLayoutParams?.let { params ->
+            params.setMargins(insets.left, insets.top, insets.right, insets.bottom)
+            insetTargetView.layoutParams = params
+        }
+
+        SendbirdUIKit.getEdgeToEdgeConfig().let { config ->
+            val statusBarColor = if (SendbirdUIKit.isDarkMode()) {
+                config.statusBarColorDark
+            } else {
+                config.statusBarColorLight
+            }
+
+            statusBarColor?.let {
+                addStatusBarColorView(this as ViewGroup, insets, it)
+            }
+        }
+
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+        WindowInsetsCompat.CONSUMED
+    }
+}
+
+/**
+ * To set a custom status bar color in Edge-To-Edge mode, add a view with the custom color
+ */
+private fun addStatusBarColorView(
+    container: ViewGroup,
+    systemInsets: Insets,
+    statusBarColor: Int
+) {
+    val statusBarView = View(container.context).apply {
+        layoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            systemInsets.top
+        ).apply {
+            gravity = Gravity.TOP
+        }
+
+        setBackgroundColor(statusBarColor)
+    }
+
+    container.addView(statusBarView, 0)
 }

@@ -23,6 +23,7 @@ import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.SampleSettingsFragment
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
+import com.sendbird.uikit.samples.common.extensions.setInsetMargin
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.CustomTabView
 import com.sendbird.uikit.samples.databinding.ActivityGroupChannelMainBinding
@@ -35,6 +36,7 @@ class GroupChannelMainActivity : AppCompatActivity() {
         setTheme(SendbirdUIKit.getDefaultThemeMode().resId)
         binding = ActivityGroupChannelMainBinding.inflate(layoutInflater).apply {
             setContentView(root)
+            root.setInsetMargin(window)
             viewPager.adapter = MainAdapter(this@GroupChannelMainActivity)
             val isDarkMode = PreferenceUtils.themeMode.isUsingDarkTheme()
             val backgroundRedId = if (isDarkMode) R.color.background_600 else R.color.background_50

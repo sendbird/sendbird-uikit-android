@@ -317,4 +317,9 @@ public class FileUtils {
         int digitGroups = (int) (Math.log10(length) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(length / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
+
+    @NonNull
+    public static String generateCacheKey(@NonNull String plainUrl, @NonNull String requestId) {
+        return (TextUtils.isNotEmpty(requestId)) ? requestId : String.valueOf(plainUrl.hashCode());
+    }
 }

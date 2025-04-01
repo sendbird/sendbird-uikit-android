@@ -2,6 +2,8 @@ package com.sendbird.uikit.fragments;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.sendbird.uikit.utils.FileUtils.generateCacheKey;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -80,6 +82,7 @@ import com.sendbird.uikit.utils.IntentUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.PermissionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
+import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.vm.BaseMessageListViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
 
@@ -377,8 +380,9 @@ abstract public class BaseMessageListFragment<
             @NonNull
             public Boolean call() throws Exception {
                 if (getContext() == null) return false;
+                String cacheKey = generateCacheKey(fileMessage.getUrl(), fileMessage.getRequestId());
                 FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
-                    fileMessage.getType(), fileMessage.getName());
+                    fileMessage.getType(), fileMessage.getName(), cacheKey);
                 return true;
             }
 
