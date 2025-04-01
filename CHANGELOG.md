@@ -1,4 +1,11 @@
 # Changelog
+### v3.23.0 (Apr 1, 2025) with Chat SDK `v4.24.1`
+- Added a new interface to set the status bar color in edge-to-edge mode.
+    - Added `void setEdgeToEdgeConfig(EdgeToEdgeConfig)`
+    - Added `EdgeToEdgeConfig getEdgeToEdgeConfig()`
+    - Added `EdgeToEdgeConfig` which defines a configuration for UI styling in edge-to-edge mode
+- Fixed an issue where some UIKit components were unresponsive when both the status bar and navigation bar were hidden in edge-to-edge mode.
+- Fixed an issue where images, GIFs, and videos could not be downloaded while the network was offline.
 ### v3.22.2 (Feb 28, 2025) with Chat SDK `v4.24.0`
 * Replaced `newIntent` methods, which had a channelUrl parameter, with one that does not include it. in `OpenChannelListActivity`
 ### v3.22.1 (Feb 20, 2025) with Chat SDK `v4.23.1`

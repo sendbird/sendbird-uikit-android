@@ -26,6 +26,7 @@ import com.sendbird.uikit.fragments.OpenChannelFragment
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
+import com.sendbird.uikit.samples.common.extensions.setInsetMargin
 import com.sendbird.uikit.samples.common.extensions.toggleVisibility
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.databinding.ActivityLiveStreamBinding
@@ -71,6 +72,7 @@ class LiveStreamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLiveStreamBinding.inflate(layoutInflater).apply {
             setContentView(root)
+            root.setInsetMargin(window)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 sbFragmentContainer.setBackgroundResource(android.R.color.transparent)
             } else {
