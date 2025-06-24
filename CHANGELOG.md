@@ -1,4 +1,6 @@
 # Changelog
+### v3.23.1 (Jun 24, 2025) with Chat SDK `v4.27.2`
+- Release with [the latest chat SDK](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/4.27.2) to avoid potential issues
 ### v3.23.0 (Apr 1, 2025) with Chat SDK `v4.24.1`
 - Added a new interface to set the status bar color in edge-to-edge mode.
     - Added `void setEdgeToEdgeConfig(EdgeToEdgeConfig)`

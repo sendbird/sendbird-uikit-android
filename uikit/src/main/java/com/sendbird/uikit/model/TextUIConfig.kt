@@ -344,6 +344,6 @@ open class TextUIConfig private constructor(
     }
 
     companion object {
-        const val UNDEFINED_RESOURCE_ID = -1
+        const val UNDEFINED_RESOURCE_ID = Int.MIN_VALUE
     }
 }
