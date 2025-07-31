@@ -67,6 +67,7 @@ import com.sendbird.uikit.model.DialogListItem;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.ChannelModule;
 import com.sendbird.uikit.modules.components.ChannelHeaderComponent;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
@@ -86,7 +87,6 @@ import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -134,6 +134,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     private OnInputModeChangedListener inputModeChangedListener;
     @Nullable
     private View.OnClickListener tooltipClickListener;
+    @Nullable
+    private View.OnClickListener unreadCountTooltipClickListener;
     @Nullable
     private View.OnClickListener onVoiceRecorderButtonClickListener;
     @Nullable
@@ -221,6 +223,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         if (channelMessageData != null) {
             MessageExtensionsKt.clearLastValidations(channelMessageData.getMessages());
         }
+
+        MessageExtensionsKt.setNewLineMessageId(null);
     }
 
     /**
@@ -280,6 +284,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         messageListComponent.setFormSubmitButtonClickListener(this::onFormSubmitButtonClicked);
         messageListComponent.setOnFeedbackRatingClickListener(this::onFeedbackRatingClicked);
         messageListComponent.setOnTooltipClickListener(tooltipClickListener != null ? tooltipClickListener : this::onMessageTooltipClicked);
+        messageListComponent.setOnUnreadTooltipClickListener(unreadCountTooltipClickListener != null ? unreadCountTooltipClickListener : this::onUnreadCountTooltipClicked);
 
         messageListComponent.setOnQuoteReplyMessageLongClickListener(this::onQuoteReplyMessageLongClicked);
         messageListComponent.setOnQuoteReplyMessageClickListener(this::onQuoteReplyMessageClicked);
@@ -293,6 +298,26 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             return false;
         });
         messageListComponent.setMessageTemplateActionHandler(this.messageTemplateActionHandler != null ? this.messageTemplateActionHandler : this::handleTemplateMessageAction);
+
+        if (messageListComponent.getRecyclerView() != null) {
+            messageListComponent.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    if (layoutManager != null) {
+                        boolean isScrollAtBottom = layoutManager.findFirstVisibleItemPosition() == 0;
+                        viewModel.onScrollChanged(isScrollAtBottom);
+                    }
+
+                    if (UIKitConfig.getGroupChannelConfig().getEnableMarkAsUnread()) {
+                        boolean isNewLineVisible = messageListComponent.updateTooltipByNewLine(channel);
+                        if (isNewLineVisible) viewModel.onNewLineSeen();
+                    }
+                }
+            });
+        }
 
         final ChannelModule module = getModule();
         viewModel.getMessageList().observeAlways(getViewLifecycleOwner(), receivedMessageData -> {
@@ -338,13 +363,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                                 }
                             }
                             break;
-                        case StringSet.ACTION_INIT_FROM_REMOTE:
                         case StringSet.MESSAGE_CHANGELOG:
                         case StringSet.MESSAGE_FILL:
                             messageListComponent.notifyMessagesFilled(!anchorDialogShowing.get());
                             break;
                         case StringSet.EVENT_TYPING_STATUS_UPDATED:
                             messageListComponent.notifyTypingIndicatorUpdated(!anchorDialogShowing.get());
+                            break;
+                        case StringSet.ACTION_INIT_FROM_REMOTE:
+                            refreshNewLineVisibility();
+                            messageListComponent.notifyMessagesFilled(!anchorDialogShowing.get());
+                            break;
+                        case StringSet.EVENT_USER_MARKED_UNREAD:
+                            refreshNewLineVisibility();
                             break;
                     }
                 }
@@ -384,7 +415,13 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 }
             }
         });
-        viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), messageListComponent::notifyChannelChanged);
+        viewModel.onChannelUpdated().observe(getViewLifecycleOwner(), groupChannel -> {
+            if (UIKitConfig.getGroupChannelConfig().getEnableMarkAsUnread()) {
+                messageListComponent.updateTooltipByNewLine(groupChannel);
+            }
+
+            messageListComponent.notifyChannelChanged(groupChannel);
+        });
         viewModel.onMessagesDeleted().observe(getViewLifecycleOwner(), deletedMessages -> {
             for (final BaseMessage deletedMessage : deletedMessages) {
                 if (deletedMessage instanceof FileMessage && MessageUtils.isVoiceMessage((FileMessage) deletedMessage)) {
@@ -425,6 +462,21 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             final SendbirdException e = result.second;
             if (e != null) {
                 toastError(R.string.sb_text_toast_failure_feedback_delete);
+            }
+        });
+
+        viewModel.onNewLineUpdated().observe(getViewLifecycleOwner(), newLineData -> {
+            MessageListAdapter adapter = messageListComponent.getAdapter();
+            if (adapter == null) return;
+
+            Integer prevPosition = newLineData.getPrevPosition();
+            if (prevPosition != null) {
+                adapter.notifyItemChanged(prevPosition);
+            }
+
+            Integer currentPosition = newLineData.getCurrentPosition();
+            if (currentPosition != null) {
+                adapter.notifyItemChanged(currentPosition);
             }
         });
     }
@@ -640,8 +692,26 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         return false;
     }
 
+    private void refreshNewLineVisibility() {
+        if (!UIKitConfig.getGroupChannelConfig().getEnableMarkAsUnread()) return;
+
+        final MessageListComponent messageListComponent = getModule().getMessageListComponent();
+        final GroupChannel channel = getViewModel().getChannel();
+
+        getViewModel().updateNewLine();
+
+        boolean isNewLineVisible = messageListComponent.updateTooltipByNewLine(channel);
+        if (isNewLineVisible) {
+            getViewModel().onNewLineSeen();
+        }
+    }
+
     private void onMessageTooltipClicked(@NonNull View view) {
         scrollToFirst();
+    }
+
+    private void onUnreadCountTooltipClicked(@NonNull View view) {
+        getViewModel().markAsRead();
     }
 
     private void onInputRightButtonClicked(@NonNull View view) {
@@ -708,6 +778,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         DialogListItem reply = new DialogListItem(replyStringRes, replyDrawableRes, false, MessageUtils.hasParentMessage(message));
         DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
         DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
+        DialogListItem markAsUnread = UIKitConfig.getGroupChannelConfig().getEnableMarkAsUnread()
+            ? new DialogListItem(R.string.sb_text_channel_anchor_mark_as_unread, R.drawable.icon_mark_as_unread)
+            : null;
 
         DialogListItem[] actions = null;
         final ReplyType replyType = channelConfig.getReplyType();
@@ -715,9 +788,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{copy, edit, delete};
+                        actions = new DialogListItem[]{copy, edit, markAsUnread, delete};
                     } else {
-                        actions = new DialogListItem[]{copy, edit, delete, reply};
+                        actions = new DialogListItem[]{copy, edit, markAsUnread, delete, reply};
                     }
                 } else if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
@@ -725,9 +798,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                 break;
             case VIEW_TYPE_USER_MESSAGE_OTHER:
                 if (replyType == ReplyType.NONE) {
-                    actions = new DialogListItem[]{copy};
+                    actions = new DialogListItem[]{copy, markAsUnread};
                 } else {
-                    actions = new DialogListItem[]{copy, reply};
+                    actions = new DialogListItem[]{copy, markAsUnread, reply};
                 }
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
@@ -737,9 +810,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     actions = new DialogListItem[]{retry, deleteFailed};
                 } else {
                     if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{delete, save};
+                        actions = new DialogListItem[]{save, markAsUnread, delete};
                     } else {
-                        actions = new DialogListItem[]{delete, save, reply};
+                        actions = new DialogListItem[]{save, markAsUnread, delete, reply};
                     }
                 }
                 break;
@@ -747,9 +820,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
                 if (replyType == ReplyType.NONE) {
-                    actions = new DialogListItem[]{save};
+                    actions = new DialogListItem[]{save, markAsUnread};
                 } else {
-                    actions = new DialogListItem[]{save, reply};
+                    actions = new DialogListItem[]{save, markAsUnread, reply};
                 }
                 break;
             case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_ME:
@@ -758,27 +831,34 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                     actions = new DialogListItem[]{retry, deleteFailed};
                 } else {
                     if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{delete};
+                        actions = new DialogListItem[]{markAsUnread, delete};
                     } else {
-                        actions = new DialogListItem[]{delete, reply};
+                        actions = new DialogListItem[]{markAsUnread, delete, reply};
                     }
                 }
                 break;
             case VIEW_TYPE_MULTIPLE_FILES_MESSAGE_OTHER:
             case VIEW_TYPE_VOICE_MESSAGE_OTHER:
                 if (replyType != ReplyType.NONE) {
-                    actions = new DialogListItem[]{reply};
+                    actions = new DialogListItem[]{markAsUnread, reply};
+                } else {
+                    actions = new DialogListItem[]{markAsUnread};
                 }
                 break;
             case VIEW_TYPE_UNKNOWN_MESSAGE_ME:
-                actions = new DialogListItem[]{delete};
+                actions = new DialogListItem[]{markAsUnread, delete};
             default:
                 break;
         }
 
         if (actions != null) {
-            items.addAll(Arrays.asList(actions));
+            for (DialogListItem action : actions) {
+                if (action != null) {
+                    items.add(action);
+                }
+            }
         }
+
         return items;
     }
 
@@ -815,6 +895,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             return true;
         } else if (key == R.string.sb_text_channel_anchor_retry) {
             resendMessage(message);
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_mark_as_unread) {
+            getViewModel().markAsUnread(message, true);
             return true;
         }
         return false;
@@ -1056,6 +1139,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         private OnInputModeChangedListener inputModeChangedListener;
         @Nullable
         private View.OnClickListener tooltipClickListener;
+        @Nullable
+        private View.OnClickListener unreadCountTooltipClickListener;
         @Nullable
         @Deprecated
         private View.OnClickListener scrollBottomButtonClickListener;
@@ -2007,6 +2092,19 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
         }
 
         /**
+         * Register a callback to be invoked when the unread count tooltip is clicked.
+         *
+         * @param unreadCountTooltipClickListener The callback that will run
+         * @return This Builder object to allow for chaining of calls to set methods.
+         * since 3.24.0
+         */
+        @NonNull
+        public Builder setOnUnreadCountTooltipClickListener(@Nullable View.OnClickListener unreadCountTooltipClickListener) {
+            this.unreadCountTooltipClickListener = unreadCountTooltipClickListener;
+            return this;
+        }
+
+        /**
          * Register a callback to be invoked when the button to scroll to the bottom is clicked.
          *
          * @param scrollBottomButtonClickListener The callback that will run
@@ -2138,6 +2236,7 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
             fragment.replyModeCloseButtonClickListener = replyModeCloseButtonClickListener;
             fragment.inputModeChangedListener = inputModeChangedListener;
             fragment.tooltipClickListener = tooltipClickListener;
+            fragment.unreadCountTooltipClickListener = unreadCountTooltipClickListener;
             fragment.scrollBottomButtonClickListener = scrollBottomButtonClickListener;
             fragment.scrollFirstButtonClickListener = scrollFirstButtonClickListener;
             fragment.setAdapter(adapter);

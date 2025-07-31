@@ -52,6 +52,7 @@ internal object KeySet {
     const val show_suggested_replies_for = "show_suggested_replies_for"
     const val enable_markdown_for_user_message = "enable_markdown_for_user_message"
     const val suggested_replies_direction = "suggested_replies_direction"
+    const val enable_mark_as_unread = "enable_mark_as_unread"
 
     // analytics
     const val noti_stats = "noti:stats"

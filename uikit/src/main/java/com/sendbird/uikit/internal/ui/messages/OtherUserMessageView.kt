@@ -18,6 +18,7 @@ import com.sendbird.uikit.databinding.SbViewOtherUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.internal.extensions.isStreamMessage
 import com.sendbird.uikit.internal.extensions.shouldShowSuggestedReplies
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener
@@ -145,6 +146,7 @@ internal class OtherUserMessageView @JvmOverloads internal constructor(
 
         binding.ivProfileView.visibility = if (showProfile) VISIBLE else INVISIBLE
         binding.tvNickname.visibility = if (showNickname) VISIBLE else GONE
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.ogtagBackground.visibility = if (enableOgTag) VISIBLE else GONE

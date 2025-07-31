@@ -13,6 +13,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyVoiceMessageComponentBinding
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.configurations.ChannelConfig
@@ -106,6 +107,7 @@ internal class MyVoiceMessageView @JvmOverloads internal constructor(
             message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
 
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =

@@ -22,5 +22,12 @@ data class EdgeToEdgeConfig(
      * @since 3.23.0
      */
     @ColorInt
-    val statusBarColorDark: Int? = null
+    val statusBarColorDark: Int? = null,
+
+    /**
+     * Returns the flag indicating whether to use the light status bar appearance.
+     *
+     * @since 3.23.3
+     */
+    val useAppearanceLightStatusBars: Boolean? = null
 )

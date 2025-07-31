@@ -14,6 +14,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyUserMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.internal.ui.widgets.OnLinkLongClickListener
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.TextUIConfig
@@ -116,7 +117,7 @@ internal class MyUserMessageView @JvmOverloads internal constructor(
         val enableReactions =
             message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val enableMarkdown = params.channelConfig.enableMarkdownForUserMessage
-
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.ogtagBackground.visibility = if (enableOgTag) VISIBLE else GONE

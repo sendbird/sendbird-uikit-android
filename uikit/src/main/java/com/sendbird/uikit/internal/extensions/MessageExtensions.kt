@@ -166,3 +166,9 @@ internal fun MessageList.activeDisableInputMessageList(order: MessageList.Order)
     val copied = if (order == MessageList.Order.DESC) this.toList() else this.toList().asReversed()
     return copied.takeWhile { it.disableChatInput }
 }
+
+internal var newLineMessageId: Long? = null
+internal val BaseMessage.isNewLineMessage: Boolean
+    get() {
+        return messageId == newLineMessageId
+    }

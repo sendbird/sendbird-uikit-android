@@ -1,4 +1,11 @@
 # Changelog
+### v3.24.0 (Jul 31, 2025) with Chat SDK `v4.28.2`
+- Support MarkAsUnread in UIKit Android View
+  - Added new configuration option `enableMarkAsUnread` to enable/disable the feature
+  - Added new interfaces for using markAsUnread feature to `ChannelFragment` and `ChannelViewModel`
+  - Added `NewLineView` to indicate the start of unread messages.
+  - New `markAsUnread` menu item in `ChannelFragment`
+- Fixed an issue where messages with same `createdAt` timestamps disappeared from `ChannelFragment`
 ### v3.23.3 (Jul 17, 2025) with Chat SDK `v4.27.3`
 - Added support for setting `isAppearanceLightStatusBars` in edge-to-edge mode.
     - Added `useAppearanceLightStatusBars` to `EdgeToEdgeConfig`.
