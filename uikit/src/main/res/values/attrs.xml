@@ -340,6 +340,11 @@
         <attr name="sb_chat_notification_sent_at_text_appearance" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="MessageView.NewLineView">
+        <attr name="sb_new_line_background" format="reference"/>
+        <attr name="sb_new_line_text_appearance" format="reference"/>
+    </declare-styleable>
+
     <declare-styleable name="Emoji">
         <attr name="sb_emoji_background" format="reference"/>
         <attr name="sb_emoji_more_button_src" format="reference"/>
@@ -393,6 +398,8 @@
         <attr name="sb_message_recyclerview_background" format="reference"/>
         <attr name="sb_message_recyclerview_tooltip_background" format="reference"/>
         <attr name="sb_message_recyclerview_tooltip_textappearance" format="reference"/>
+        <attr name="sb_message_recyclerview_unread_count_tooltip_textappearance" format="reference"/>
+        <attr name="sb_message_recyclerview_unread_count_tooltip_icon_tint" format="color|reference"/>
         <attr name="sb_message_typing_indicator_textappearance" format="reference"/>
         <attr name="sb_message_recyclerview_banner_background" format="reference"/>
         <attr name="sb_message_recyclerview_banner_textappearance" format="reference"/>

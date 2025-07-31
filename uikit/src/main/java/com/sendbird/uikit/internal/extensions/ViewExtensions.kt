@@ -156,7 +156,7 @@ internal fun FeedbackView.drawFeedback(message: BaseMessage, listener: OnFeedbac
 }
 
 internal fun View.setInsetMarginAndStatusBarColor(insetTargetView: View, window: Window) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
+    ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
         val insets = windowInsets.getInsets(
             WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
         )
@@ -177,9 +177,11 @@ internal fun View.setInsetMarginAndStatusBarColor(insetTargetView: View, window:
             statusBarColor?.let {
                 addStatusBarColorView(this as ViewGroup, insets, it)
             }
+
+            val isAppearanceLightStatusBars = config.useAppearanceLightStatusBars ?: !SendbirdUIKit.isDarkMode()
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = isAppearanceLightStatusBars
         }
 
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
         WindowInsetsCompat.CONSUMED
     }
 }

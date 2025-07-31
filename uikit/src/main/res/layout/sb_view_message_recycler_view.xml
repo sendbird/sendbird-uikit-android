@@ -80,4 +80,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/vgUnreadCountTooltip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBanner" >
+
+        <TextView
+            android:id="@+id/tvUnreadCountTooltipText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingEnd="@dimen/sb_size_4"
+            android:singleLine="true"
+            android:paddingStart="@dimen/sb_size_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/vgUnreadCountTooltipClose"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/vgUnreadCountTooltipClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/sb_size_4"
+            android:paddingEnd="@dimen/sb_size_16"
+            android:paddingVertical="@dimen/sb_size_12"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvUnreadCountTooltipText"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivUnreadCountTooltipClose"
+                android:layout_width="@dimen/sb_size_14"
+                android:layout_height="@dimen/sb_size_14"
+                android:src="@drawable/icon_close" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

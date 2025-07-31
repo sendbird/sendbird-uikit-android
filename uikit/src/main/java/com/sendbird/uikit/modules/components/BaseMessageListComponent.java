@@ -34,6 +34,7 @@ import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.interfaces.OnMessageListUpdateHandler;
 import com.sendbird.uikit.interfaces.OnPagedDataLoader;
 import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
+import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
 import com.sendbird.uikit.internal.interfaces.OnFeedbackRatingClickListener;
 import com.sendbird.uikit.internal.ui.widgets.InnerLinearLayoutManager;
 import com.sendbird.uikit.internal.ui.widgets.MessageRecyclerView;
@@ -95,6 +96,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     private View.OnClickListener scrollBottomButtonClickListener;
     @Nullable
     private OnConsumableClickListener scrollFirstButtonClickListener;
+    @Nullable
+    private View.OnClickListener unreadCountTooltipClickListener;
 
     BaseMessageListComponent(@NonNull Params params, boolean useMessageTooltip, boolean useScrollFirstButton) {
         this.params = params;
@@ -221,7 +224,8 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
             }
         });
 
-        this.messageRecyclerView.getTooltipView().setOnClickListener(this::onMessageTooltipClicked);
+        messageRecyclerView.getTooltipView().setOnClickListener(this::onMessageTooltipClicked);
+        messageRecyclerView.getUnreadCountTooltipIcon().setOnClickListener(this::onUnreadCountTooltipClicked);
 
         final LinearLayoutManager layoutManager = createInnerLayoutManager(recyclerView);
         layoutManager.setReverseLayout(true);
@@ -297,6 +301,16 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      */
     public void setOnTooltipClickListener(@Nullable View.OnClickListener tooltipClickListener) {
         this.tooltipClickListener = tooltipClickListener;
+    }
+
+    /**
+     * Register a callback to be invoked when the unread count tooltip is clicked.
+     *
+     * @param unreadCountTooltipClickListener The callback that will run
+     * since 3.24.0
+     */
+    public void setOnUnreadTooltipClickListener(@Nullable View.OnClickListener unreadCountTooltipClickListener) {
+        this.unreadCountTooltipClickListener = unreadCountTooltipClickListener;
     }
 
     /**
@@ -513,6 +527,32 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     }
 
     /**
+     * Checks if the new line is visible on screen and shows or hides the unread message count tooltip.
+     *
+     * @param channel the GroupChannel containing the messages and unread count
+     * @return <code>true</code> if the new line is visible, <code>false</code> otherwise
+     * since 3.24.0
+     */
+    public boolean updateTooltipByNewLine(GroupChannel channel) {
+        if (messageRecyclerView == null) return false;
+
+        if (isNewLineVisible(channel)) {
+            messageRecyclerView.hideUnreadCountTooltip();
+            return true;
+        } else {
+            int count = channel.getUnreadMessageCount();
+            if (count == 0) {
+                messageRecyclerView.hideUnreadCountTooltip();
+                hideNewMessageTooltip();
+            } else {
+                messageRecyclerView.showUnreadCountTooltip(getUnreadCountTooltipMessage(messageRecyclerView.getContext(), count));
+            }
+
+            return false;
+        }
+    }
+
+    /**
      * Returns the text on the tooltip.
      *
      * @param context The {@code Context} this view is currently associated with
@@ -529,6 +569,30 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         } else if (count == 1) {
             result = String.format(Locale.US, context.getString(R.string.sb_text_channel_tooltip), count);
         }
+        return result;
+    }
+
+    /**
+     * Returns the text on the unread count tooltip.
+     *
+     * @param context The {@code Context} this view is currently associated with
+     * @param count   Number of unread message counts
+     * @return Text to be shown on the unread count tooltip
+     * since 3.24.0
+     */
+    @NonNull
+    protected String getUnreadCountTooltipMessage(@NonNull Context context, int count) {
+        if (messageRecyclerView == null) return "";
+        String result = "";
+
+        String countText = count > 99 ? context.getString(R.string.sb_text_channel_message_unread_count_max) : String.valueOf(count);
+
+        if (count > 1) {
+            result = String.format(Locale.US, context.getString(R.string.sb_text_channel_unread_count_tooltip_with_count), countText);
+        } else if (count == 1) {
+            result = String.format(Locale.US, context.getString(R.string.sb_text_channel_unread_count_tooltip), countText);
+        }
+
         return result;
     }
 
@@ -687,6 +751,43 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     /********************************************************************************************
      *                                      PRIVATE AREA
      *********************************************************************************************/
+    private void onUnreadCountTooltipClicked(@NonNull View view) {
+        if (unreadCountTooltipClickListener != null) unreadCountTooltipClickListener.onClick(view);
+    }
+
+    private boolean isNewLineVisible(GroupChannel channel) {
+        if (MessageExtensionsKt.getNewLineMessageId() == null) return false;
+
+        if (getRecyclerView() == null || adapter == null) return false;
+
+        final List<BaseMessage> messages = adapter.getItems();
+        if (messages.isEmpty()) return false;
+
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) getRecyclerView().getLayoutManager();
+        if (layoutManager == null) return false;
+
+        final int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+        final int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+        if (firstVisibleItemPosition == RecyclerView.NO_POSITION
+            || lastVisibleItemPosition == RecyclerView.NO_POSITION) return false;
+
+        final long lastRead = channel.getMyLastRead();
+        BaseMessage firstVisibleMessage = messages.get(firstVisibleItemPosition);
+        BaseMessage lastVisibleMessage = messages.get(lastVisibleItemPosition);
+
+        return firstVisibleMessage.getCreatedAt() >= lastRead && lastVisibleMessage.getCreatedAt() <= lastRead;
+    }
+
+    private void hideNewMessageTooltip() {
+        if (messageRecyclerView == null) return;
+
+        if (useMessageTooltip) {
+            tooltipMessageCount.set(0);
+            messageRecyclerView.hideNewMessageTooltip();
+        }
+    }
+
     boolean hasNextMessages() {
         return pagedDataLoader != null && pagedDataLoader.hasNext();
     }
@@ -799,10 +900,7 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     private void onScrollEndReaches(@NonNull PagerRecyclerView.ScrollDirection direction, @NonNull MessageRecyclerView messageListView) {
         final PagerRecyclerView.ScrollDirection endDirection = PagerRecyclerView.ScrollDirection.Bottom;
         if (!hasNextMessages() && direction == endDirection) {
-            if (useMessageTooltip) {
-                tooltipMessageCount.set(0);
-                messageListView.hideNewMessageTooltip();
-            }
+            hideNewMessageTooltip();
             if (useScrollFirstButton) {
                 messageListView.hideScrollFirstButton();
             }
