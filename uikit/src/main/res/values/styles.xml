@@ -257,6 +257,8 @@
         <item name="sb_message_recyclerview_background">@color/background_50</item>
         <item name="sb_message_recyclerview_tooltip_background">@drawable/selector_tooltip_background_light</item>
         <item name="sb_message_recyclerview_tooltip_textappearance">@style/SendbirdCaption1Primary300</item>
+        <item name="sb_message_recyclerview_unread_count_tooltip_textappearance">@style/SendbirdBody2OnLight02</item>
+        <item name="sb_message_recyclerview_unread_count_tooltip_icon_tint">@color/primary_main</item>
         <item name="sb_message_recyclerview_banner_background">@drawable/sb_shape_channel_information_bg</item>
         <item name="sb_message_recyclerview_banner_textappearance">@style/SendbirdCaption2OnLight01</item>
         <item name="sb_message_typing_indicator_textappearance">@style/SendbirdCaption1OnLight02</item>
@@ -446,6 +448,8 @@
         <item name="sb_message_recyclerview_background">@color/background_50</item>
         <item name="sb_message_recyclerview_tooltip_background">@drawable/selector_tooltip_background_light</item>
         <item name="sb_message_recyclerview_tooltip_textappearance">@style/SendbirdCaption1Primary300</item>
+        <item name="sb_message_recyclerview_unread_count_tooltip_textappearance">@style/SendbirdBody2OnLight02</item>
+        <item name="sb_message_recyclerview_unread_count_tooltip_icon_tint">@color/primary_main</item>
         <item name="sb_message_recyclerview_banner_background">@drawable/sb_shape_channel_information_bg</item>
         <item name="sb_message_recyclerview_banner_textappearance">@style/SendbirdCaption2OnLight01</item>
         <item name="sb_message_typing_indicator_textappearance">@style/SendbirdCaption1OnLight02</item>
@@ -1043,6 +1047,11 @@
         <item name="sb_feedback_good_button">@drawable/selector_feedback_good_button_light</item>
         <item name="sb_feedback_bad_background">@drawable/sb_feedback_background_light</item>
         <item name="sb_feedback_bad_button">@drawable/selector_feedback_bad_button_light</item>
+    </style>
+
+    <style name="Widget.Sendbird.Message.NewLineView">
+        <item name="sb_new_line_background">@color/primary_main</item>
+        <item name="sb_new_line_text_appearance">@style/SendbirdCaption3Primary300</item>
     </style>
 
     <!-- DialogView -->

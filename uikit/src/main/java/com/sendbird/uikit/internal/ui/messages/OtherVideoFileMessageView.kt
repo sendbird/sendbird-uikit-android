@@ -12,6 +12,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewOtherFileVideoMessageComponentBinding
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DrawableUtils
@@ -42,6 +43,7 @@ internal class OtherVideoFileMessageView @JvmOverloads constructor(
 
         binding.ivProfileView.visibility = if (showProfile) VISIBLE else INVISIBLE
         binding.tvNickname.visibility = if (showNickname) VISIBLE else GONE
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =

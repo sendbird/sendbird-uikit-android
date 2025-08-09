@@ -151,13 +151,6 @@ internal var BaseMessage.shouldShowSuggestedReplies: Boolean
         this.extras[StringSet.should_show_suggested_replies] = value
     }
 
-@OptIn(AIChatBotExperimental::class)
-internal var BaseMessage.isSuggestedRepliesVisible: Boolean
-    get() = this.extras[StringSet.is_suggested_replies_visible] as? Boolean ?: false
-    set(value) {
-        this.extras[StringSet.is_suggested_replies_visible] = value
-    }
-
 internal val BaseMessage.isStreamMessage: Boolean
     get() {
         val data = this.data
@@ -178,3 +171,9 @@ internal fun MessageList.activeDisableInputMessageList(order: MessageList.Order)
     val copied = if (order == MessageList.Order.DESC) this.toList() else this.toList().asReversed()
     return copied.takeWhile { it.disableChatInput }
 }
+
+internal var newLineMessageId: Long? = null
+internal val BaseMessage.isNewLineMessage: Boolean
+    get() {
+        return messageId == newLineMessageId
+    }

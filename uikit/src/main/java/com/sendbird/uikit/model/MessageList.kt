@@ -13,12 +13,19 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     }
 
     private val messages: TreeSet<BaseMessage> = TreeSet { o1: BaseMessage, o2: BaseMessage ->
-        if (o1.createdAt > o2.createdAt) {
-            return@TreeSet if (order == Order.DESC) -1 else 1
+        return@TreeSet if (o1.createdAt > o2.createdAt) {
+            if (order == Order.DESC) -1 else 1
         } else if (o1.createdAt < o2.createdAt) {
-            return@TreeSet if (order == Order.DESC) 1 else -1
+            if (order == Order.DESC) 1 else -1
+        } else {
+            if (o1.messageId > o2.messageId) {
+                if (order == Order.DESC) -1 else 1
+            } else if (o1.messageId < o2.messageId) {
+                if (order == Order.DESC) 1 else -1
+            } else {
+                if (o1 == o2) 0 else -1 // never happen
+            }
         }
-        0
     }
 
     private val timelineMap: MutableMap<String, BaseMessage> = ConcurrentHashMap()
@@ -133,11 +140,13 @@ internal class MessageList @JvmOverloads constructor(private val order: Order = 
     }
 
     @Synchronized
-    fun update(message: BaseMessage) {
+    fun update(message: BaseMessage): BaseMessage? {
         Logger.d(">> MessageList::updateMessage()")
-        if (message is CustomizableMessage) return
-        if (messages.remove(message)) {
-            BaseMessage.clone(message)?.let { messages.add(it) }
+        if (message is CustomizableMessage) return null
+        return if (messages.remove(message)) {
+            BaseMessage.clone(message)?.also { messages.add(it) }
+        } else {
+            null
         }
     }
 

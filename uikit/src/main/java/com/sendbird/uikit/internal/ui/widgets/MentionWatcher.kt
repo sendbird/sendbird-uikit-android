@@ -66,9 +66,9 @@ internal class MentionWatcher(
             while (i-- > 0) {
                 val targetWord = words[i]
                 // 3. finds the first token in a string.
-                val contains = trigger == targetWord
+                val startsWithTrigger = targetWord.startsWith(trigger)
                 val triggerIndex = targetWord.indexOf(trigger)
-                if (contains && triggerIndex != -1) {
+                if (startsWithTrigger && triggerIndex != -1) {
                     val wordIndex = src.lastIndexOf(targetWord)
                     result = from + wordIndex + triggerIndex
                     break

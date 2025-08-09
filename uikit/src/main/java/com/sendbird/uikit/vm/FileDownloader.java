@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.Thumbnail;
@@ -103,15 +102,14 @@ public class FileDownloader {
     }
 
     public void saveFile(@NonNull Context context, @NonNull String url,
-                         @NonNull String type, @NonNull String filename) throws Exception {
+                         @NonNull String type, @NonNull String filename, @NonNull String cacheKey) throws Exception {
         if (downloadingFileSet.contains(url)) {
             return;
         }
 
         try {
             downloadingFileSet.add(url);
-            final RequestManager glide = Glide.with(context);
-            File file = glide.asFile().load(url).submit().get();
+            File file = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, cacheKey).submit().get();
             FileUtils.saveFile(context, file, type, filename);
         } finally {
             downloadingFileSet.remove(url);

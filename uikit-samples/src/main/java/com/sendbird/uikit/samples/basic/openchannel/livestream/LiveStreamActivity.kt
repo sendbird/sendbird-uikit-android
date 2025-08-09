@@ -26,14 +26,15 @@ import com.sendbird.uikit.fragments.OpenChannelFragment
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
+import com.sendbird.uikit.samples.common.extensions.setInsetMargin
 import com.sendbird.uikit.samples.common.extensions.toggleVisibility
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.databinding.ActivityLiveStreamBinding
 import com.sendbird.uikit.utils.ContextUtils
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.Locale
 import java.lang.ref.WeakReference
+import java.util.Locale
 
 /**
  * Displays an open channel screen used for live stream.
@@ -71,6 +72,7 @@ class LiveStreamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLiveStreamBinding.inflate(layoutInflater).apply {
             setContentView(root)
+            root.setInsetMargin(window)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 sbFragmentContainer.setBackgroundResource(android.R.color.transparent)
             } else {

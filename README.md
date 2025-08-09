@@ -1,12 +1,13 @@
 # PIVOT
 
-## Sendbird UIKit version: v3.22.0 (Dec 16, 2024) with Chat SDK v4.21.1
+## Sendbird UIKit version: v3.24.0 (Jul 31, 2025) with Chat SDK v4.28.2
 
 ## Updating Sendbird library
 Pull the origin repository.
 Don't use rebase because it messes up git history by overriding original PRs/commit.
 
 `git fetch sendbird`
+
 `git pull sendbird main`
 
 Next, to store a history of updates:

@@ -25,6 +25,7 @@ import com.sendbird.android.handler.GroupChannelHandler;
 import com.sendbird.android.handler.MessageCollectionHandler;
 import com.sendbird.android.handler.MessageCollectionInitHandler;
 import com.sendbird.android.message.BaseMessage;
+import com.sendbird.android.message.CustomizableMessage;
 import com.sendbird.android.message.Feedback;
 import com.sendbird.android.message.FeedbackRating;
 import com.sendbird.android.message.FileMessage;
@@ -48,10 +49,12 @@ import com.sendbird.uikit.internal.contracts.SendbirdUIKitContract;
 import com.sendbird.uikit.internal.contracts.SendbirdUIKitImpl;
 import com.sendbird.uikit.internal.extensions.ChannelExtensionsKt;
 import com.sendbird.uikit.internal.extensions.MessageExtensionsKt;
+import com.sendbird.uikit.internal.model.ChannelUnreadInfo;
 import com.sendbird.uikit.internal.singleton.MessageTemplateManager;
 import com.sendbird.uikit.internal.singleton.MessageTemplateMapper;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.MessageList;
+import com.sendbird.uikit.model.NewLineData;
 import com.sendbird.uikit.model.TypingIndicatorMessage;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
 import com.sendbird.uikit.model.configurations.UIKitConfig;
@@ -100,6 +103,8 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     private final MutableLiveData<Pair<BaseMessage, SendbirdException>> feedbackUpdated = new MutableLiveData<>();
     @NonNull
     private final MutableLiveData<Pair<BaseMessage, SendbirdException>> feedbackDeleted = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<NewLineData> newLineUpdated = new MutableLiveData<>();
     @Nullable
     private MessageListParams messageListParams;
     @Nullable
@@ -116,6 +121,10 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @NonNull
     @VisibleForTesting
     MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper(MessageTemplateManager.getMapper());
+
+    @NonNull
+    private final ChannelUnreadInfo channelUnreadInfo = new ChannelUnreadInfo();
+    private boolean isScrollEnd = true;
 
     /**
      * Class that holds message data in a channel.
@@ -180,7 +189,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             @Override
             public void onMessageReceived(@NonNull BaseChannel channel, @NonNull BaseMessage message) {
                 if (ChannelViewModel.this.getChannel() != null && channel.getUrl().equals(channelUrl) && hasNext()) {
-                    markAsRead();
+                    tryMarkAsRead();
                     notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, SendingStatus.SUCCEEDED));
                 }
             }
@@ -290,6 +299,10 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                 if (ChannelViewModel.this.handler != null) {
                     ChannelViewModel.this.handler.onMessagesDeleted(context, channel, messages);
                 }
+
+                if (channelConfig.getEnableMarkAsUnread()) {
+                    channelUnreadInfo.removeUnseenMessages(messages);
+                }
             }
 
             @UiThread
@@ -328,6 +341,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                             notifyDataSetChanged(context);
                         }
                         break;
+                    case EVENT_USER_MARKED_UNREAD:
                     case EVENT_DELIVERY_STATUS_UPDATED:
                     case EVENT_READ_STATUS_UPDATED:
                         notifyDataSetChanged(context);
@@ -353,8 +367,35 @@ public class ChannelViewModel extends BaseMessageListViewModel {
             case EVENT_MESSAGE_RECEIVED:
             case EVENT_MESSAGE_SENT:
             case MESSAGE_FILL:
-                markAsRead();
+                if (!channelConfig.getEnableMarkAsUnread()) {
+                    markAsRead();
+                } else {
+                    if (isScrollEnd) {
+                        if (channelUnreadInfo.shouldClearNewLine()) markAsRead();
+                    } else {
+                        channelUnreadInfo.addUnseenMessages(messages);
+                    }
+                }
+
                 break;
+        }
+    }
+
+    @Override
+    void onMessagesUpdated(@NonNull MessageContext context, @NonNull GroupChannel channel, @NonNull List<BaseMessage> messages) {
+        super.onMessagesUpdated(context, channel, messages);
+        if (context.getMessagesSendingStatus() == SendingStatus.SUCCEEDED) {
+            if (context.getCollectionEventSource() == CollectionEventSource.EVENT_MESSAGE_SENT) {
+                if (!channelConfig.getEnableMarkAsUnread()) {
+                    markAsRead();
+                } else {
+                    if (isScrollEnd) {
+                        if (channelUnreadInfo.shouldClearNewLine()) markAsRead();
+                    } else {
+                        channelUnreadInfo.addUnseenMessages(messages);
+                    }
+                }
+            }
         }
     }
 
@@ -520,6 +561,17 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         return feedbackDeleted;
     }
 
+    /**
+     * Returns LiveData that can be observed for the result of updating the new line.
+     *
+     * @return The NewLineData that holds the prev and current positions of the new line.
+     * since 3.24.0
+     */
+    @NonNull
+    public LiveData<NewLineData> onNewLineUpdated() {
+        return newLineUpdated;
+    }
+
     @Override
     public boolean hasNext() {
         return collection == null || collection.getHasNext();
@@ -669,8 +721,10 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         for (BaseMessage message : messages) {
             boolean shouldShowSuggestedReplies = MessageExtensionsKt.getShouldShowSuggestedReplies(message);
             if (shouldShowSuggestedReplies) {
-                MessageExtensionsKt.setShouldShowSuggestedReplies(message, false);
-                cachedMessages.update(message);
+                final BaseMessage updated = cachedMessages.update(message);
+                if (updated != null) {
+                    MessageExtensionsKt.setShouldShowSuggestedReplies(updated, false);
+                }
             }
         }
 
@@ -685,14 +739,18 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
             BaseMessage lastMessage = messages.get(0);
             if (lastMessage != null && !lastMessage.getSuggestedReplies().isEmpty()) {
-                MessageExtensionsKt.setShouldShowSuggestedReplies(lastMessage, true);
-                cachedMessages.update(lastMessage);
+                final BaseMessage updated = cachedMessages.update(lastMessage);
+                if (updated != null) {
+                    MessageExtensionsKt.setShouldShowSuggestedReplies(updated, true);
+                }
             }
         } else if (suggestedRepliesFor == SuggestedRepliesFor.ALL_MESSAGES) {
             for (BaseMessage message : messages) {
                 if (!message.getSuggestedReplies().isEmpty()) {
-                    MessageExtensionsKt.setShouldShowSuggestedReplies(message, true);
-                    cachedMessages.update(message);
+                    final BaseMessage updated = cachedMessages.update(message);
+                    if (updated != null) {
+                        MessageExtensionsKt.setShouldShowSuggestedReplies(updated, true);
+                    }
                 }
             }
         }
@@ -712,11 +770,174 @@ public class ChannelViewModel extends BaseMessageListViewModel {
         return null;
     }
 
+    /**
+     * Marks the channel as read.
+     *
+     * since 3.24.0
+     */
     public void markAsRead() {
+        Logger.dev(">> ChannelViewModel::markAsRead()");
         if (!isChatScreenVisible) return;
 
-        Logger.dev("markAsRead");
-        if (channel != null) channel.markAsRead(null);
+        if (channel == null) return;
+        channel.markAsRead(null);
+
+        if (channelConfig.getEnableMarkAsUnread()) {
+            channelUnreadInfo.setNewLineExistInChannel(false);
+        }
+    }
+
+    private void tryMarkAsRead() {
+        Logger.dev(">> ChannelViewModel::tryMarkAsRead()");
+        boolean enableMarkAsUnread = channelConfig.getEnableMarkAsUnread();
+        if (!enableMarkAsUnread) {
+            markAsRead();
+        }
+    }
+
+    /**
+     * Marks the message as unread.
+     *
+     * @param message The message to be marked as unread
+     * @param isUserRequestedUnread Indicates whether the unread action is requested by the user or not.
+     * since 3.24.0
+     */
+    public void markAsUnread(@NonNull BaseMessage message, boolean isUserRequestedUnread) {
+        Logger.dev(">> ChannelViewModel::markAsUnread()");
+        if (channel == null) return;
+
+        if (isUserRequestedUnread) {
+            channelUnreadInfo.setHasUserMarkedUnread(true);
+        }
+        markAsUnreadInternal(message);
+    }
+
+    private void markAsUnreadInternal(@NonNull BaseMessage message) {
+        Logger.dev(">> ChannelViewModel::markAsUnreadInternal()");
+        if (channel == null) return;
+
+        channel.markAsUnread(message, null);
+    }
+
+    /**
+     * Updates the read status when a new line message becomes visible to the user.
+     * If there are no new unseen messages after the new line, marks the channel as read.
+     * Otherwise, marks the message at the new line as unread.
+     *
+     * since 3.24.0
+     */
+    public void onNewLineSeen() {
+        Logger.dev(">> ChannelViewModel::onNewLineSeen()");
+        if (channel == null || !channelConfig.getEnableMarkAsUnread()) return;
+        if (channelUnreadInfo.getHasUserMarkedUnread()) return;
+
+        channelUnreadInfo.setHasSeenNewLine(true);
+
+        BaseMessage firstUnseenMessage = channelUnreadInfo.getFirstUnseenMessage();
+        if (firstUnseenMessage == null) {
+            markAsRead();
+        } else {
+            markAsUnreadInternal(firstUnseenMessage);
+        }
+    }
+
+    /**
+     * Updates the scroll state of the channel.
+     *
+     * @param isScrollEndReached The flag indicating whether the scroll end is reached or not.
+     * since 3.24.0
+     */
+    public void onScrollChanged(boolean isScrollEndReached) {
+        if (channel == null || isScrollEnd == isScrollEndReached) return;
+
+        isScrollEnd = isScrollEndReached;
+
+        if (isScrollEnd) {
+            if (channelConfig.getEnableMarkAsUnread()) {
+                channelUnreadInfo.clearUnseenMessages();
+
+                if (channelUnreadInfo.shouldClearNewLine()) {
+                    markAsRead();
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Updates the new line position in the message list.
+     * Also updates NewLineData if the position changes.
+     *
+     * since 3.24.0
+     */
+    public void updateNewLine() {
+        Logger.d(">> ChannelViewModel::updateNewLine()");
+        if (channel == null) return;
+
+        if (!channelConfig.getEnableMarkAsUnread()) return;
+
+        BaseMessage oldestMessage = cachedMessages.getOldestMessage();
+        BaseMessage lastMessage = channel.getLastMessage();
+
+        if (oldestMessage == null || lastMessage == null) {
+            channelUnreadInfo.setNewLineExistInChannel(false);
+            return;
+        }
+
+        boolean isNewLineExistInChannel = (channel.getMyLastRead() < channel.getLastMessage().getCreatedAt()) || MessageExtensionsKt.getNewLineMessageId() != null;
+        channelUnreadInfo.setNewLineExistInChannel(isNewLineExistInChannel);
+
+        if (!channelUnreadInfo.isNewLineExistInChannel()) {
+            return;
+        }
+
+        Long newLineMessageId = MessageExtensionsKt.getNewLineMessageId();
+        NewLineData prevNewLineData = newLineUpdated.getValue();
+        boolean isNewLineInLoadedMessages = channel.getMyLastRead() >= oldestMessage.getCreatedAt();
+
+        if (!isNewLineInLoadedMessages) {
+            boolean hasPreviousNewLine = newLineMessageId != null && prevNewLineData != null;
+
+            if (hasPreviousNewLine) {
+                NewLineData newLineData = new NewLineData(prevNewLineData.getCurrentPosition(), null);
+                refreshNewLineData(newLineData, null);
+            }
+        } else {
+            refreshNewLineInLoadedMessages(channel.getMyLastRead(), prevNewLineData);
+        }
+    }
+
+    private void refreshNewLineInLoadedMessages(long myLastRead, @Nullable NewLineData prevNewLineData) {
+        Integer prevNewLinePositionIndex = prevNewLineData == null ? null : prevNewLineData.getCurrentPosition();
+        Integer newLinePositionIndex = null;
+
+        List<BaseMessage> messages = cachedMessages.toList();
+
+        // cachedMessages is descending order.
+        // run from latest message to oldest message to find first unread message.
+        for (int i = 0; i < messages.size(); i++) {
+            BaseMessage message = messages.get(i);
+
+            boolean isFirstReadMessage = myLastRead >= message.getCreatedAt();
+            if (isFirstReadMessage && newLinePositionIndex != null) {
+                NewLineData newLineData = new NewLineData(prevNewLinePositionIndex, newLinePositionIndex);
+                long targetMessageId = messages.get(newLinePositionIndex).getMessageId();
+
+                refreshNewLineData(newLineData, targetMessageId);
+                break;
+            }
+
+            boolean isNewLineAllowedMessage = !(message instanceof CustomizableMessage) && !(message.isSilent());
+            if (isNewLineAllowedMessage) {
+                newLinePositionIndex = i;
+            }
+        }
+    }
+
+    @UiThread
+    private synchronized void refreshNewLineData(NewLineData newLineData, @Nullable Long messageId) {
+        MessageExtensionsKt.setNewLineMessageId(messageId);
+        newLineUpdated.setValue(newLineData);
     }
 
     public void setIsChatScreenVisible(boolean visible) {
@@ -801,7 +1022,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                     cachedMessages.addAll(apiResultList);
                     notifyDataSetChanged(StringSet.ACTION_INIT_FROM_REMOTE);
                     if (!apiResultList.isEmpty()) {
-                        markAsRead();
+                        tryMarkAsRead();
                     }
                 }
                 messageLoadState.postValue(MessageLoadState.LOAD_ENDED);
@@ -838,6 +1059,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
                     if (messages != null) {
                         cachedMessages.addAll(messages);
                     }
+                    updateNewLine();
                     result.set(messages);
                     notifyDataSetChanged(StringSet.ACTION_PREVIOUS);
                 }
