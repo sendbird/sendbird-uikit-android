@@ -65,6 +65,8 @@ data class ChannelConfig internal constructor(
     @SerialName(KeySet.suggested_replies_direction)
     @Serializable(with = SuggestedRepliesDirectionAsStringSerializer::class)
     private var _suggestedRepliesDirection: SuggestedRepliesDirection = SuggestedRepliesDirection.VERTICAL,
+    @SerialName(KeySet.enable_mark_as_unread)
+    private var _enableMarkAsUnread: Boolean = false,
 
     /**
      * Returns <code>Input</code>, which is the configuration of the input area.
@@ -105,7 +107,9 @@ data class ChannelConfig internal constructor(
     @Transient
     private var enableMarkdownForUserMessageMutable: Boolean? = null,
     @Transient
-    private var suggestedRepliesDirectionMutable: SuggestedRepliesDirection? = null
+    private var suggestedRepliesDirectionMutable: SuggestedRepliesDirection? = null,
+    @Transient
+    private var enableMarkAsUnreadMutable: Boolean? = null
 ) : Parcelable {
     companion object {
         /**
@@ -492,6 +496,26 @@ data class ChannelConfig internal constructor(
             enableMarkdownForUserMessageMutable = value
         }
 
+    var enableMarkAsUnread: Boolean
+        /**
+         * Returns a value that determines whether to use mark as unread or not.
+         * true, if channel displays new line when the message is marked as unread.
+         * false, otherwise.
+         *
+         * @return true if the mark as unread is enabled, false otherwise
+         * @since 3.24.0
+         */
+        get() = enableMarkAsUnreadMutable ?: _enableMarkAsUnread
+        /**
+         * Sets whether to use mark as unread or not.
+         *
+         * @param value true if the mark as unread is enabled, false otherwise
+         * @since 3.24.0
+         */
+        set(value) {
+            enableMarkAsUnreadMutable = value
+        }
+
     @JvmSynthetic
     internal fun merge(config: ChannelConfig): ChannelConfig {
         this._enableOgTag = config._enableOgTag
@@ -510,6 +534,7 @@ data class ChannelConfig internal constructor(
         this._suggestedRepliesFor = config._suggestedRepliesFor
         this._enableMarkdownForUserMessage = config._enableMarkdownForUserMessage
         this._suggestedRepliesDirection = config._suggestedRepliesDirection
+        this._enableMarkAsUnread = config._enableMarkAsUnread
         this.input.merge(config.input)
         return this
     }
@@ -531,6 +556,7 @@ data class ChannelConfig internal constructor(
         this.suggestedRepliesForMutable = null
         this.enableMarkdownForUserMessageMutable = null
         this.suggestedRepliesDirectionMutable = null
+        this.enableMarkAsUnreadMutable = null
         this.input.clear()
     }
 

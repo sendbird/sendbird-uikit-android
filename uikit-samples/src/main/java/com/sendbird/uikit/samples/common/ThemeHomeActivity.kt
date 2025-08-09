@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.sendbird.uikit.samples.R
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
+import com.sendbird.uikit.samples.common.extensions.setInsetMargin
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 
 abstract class ThemeHomeActivity : AppCompatActivity() {
@@ -18,6 +19,7 @@ abstract class ThemeHomeActivity : AppCompatActivity() {
         setTheme(if (PreferenceUtils.themeMode.isUsingDarkTheme()) R.style.AppTheme_Dark else R.style.AppTheme)
         setContentView(binding.root)
         applyTheme()
+        binding.root.setInsetMargin(window)
     }
 
     override fun onResume() {

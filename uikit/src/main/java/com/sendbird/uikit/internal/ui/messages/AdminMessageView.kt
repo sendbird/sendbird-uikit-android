@@ -7,6 +7,7 @@ import android.view.View
 import com.sendbird.android.message.BaseMessage
 import com.sendbird.uikit.R
 import com.sendbird.uikit.databinding.SbViewAdminMessageComponentBinding
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.internal.extensions.setAppearance
 
 internal class AdminMessageView @JvmOverloads internal constructor(
@@ -44,5 +45,6 @@ internal class AdminMessageView @JvmOverloads internal constructor(
 
     fun drawMessage(message: BaseMessage) {
         binding.tvMessage.text = message.message
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
     }
 }

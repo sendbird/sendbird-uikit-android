@@ -17,7 +17,6 @@ import com.sendbird.uikit.interfaces.OnMessageTemplateActionHandler
 import com.sendbird.uikit.internal.extensions.ERR_MESSAGE_TEMPLATE_NOT_APPLICABLE
 import com.sendbird.uikit.internal.extensions.drawFeedback
 import com.sendbird.uikit.internal.extensions.hasParentMessage
-import com.sendbird.uikit.internal.extensions.isSuggestedRepliesVisible
 import com.sendbird.uikit.internal.extensions.messageTemplateParams
 import com.sendbird.uikit.internal.extensions.messageTemplateStatus
 import com.sendbird.uikit.internal.extensions.saveParamsFromTemplate
@@ -102,7 +101,6 @@ internal class OtherTemplateMessageView @JvmOverloads internal constructor(
         }
 
         val shouldShowSuggestedReplies = message.shouldShowSuggestedReplies
-        message.isSuggestedRepliesVisible = shouldShowSuggestedReplies
         if (shouldShowSuggestedReplies) {
             suggestedRepliesViewStub?.let {
                 it.visibility = View.VISIBLE

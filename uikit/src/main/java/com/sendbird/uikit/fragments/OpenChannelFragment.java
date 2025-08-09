@@ -1,6 +1,7 @@
 package com.sendbird.uikit.fragments;
 
 import static android.app.Activity.RESULT_OK;
+import static com.sendbird.uikit.utils.FileUtils.generateCacheKey;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -946,8 +947,9 @@ public class OpenChannelFragment extends BaseModuleFragment<OpenChannelModule, O
             @NonNull
             public Boolean call() throws Exception {
                 if (getContext() == null) return false;
+                String cacheKey = generateCacheKey(fileMessage.getUrl(), fileMessage.getRequestId());
                 FileDownloader.getInstance().saveFile(getContext(), fileMessage.getUrl(),
-                    fileMessage.getType(), fileMessage.getName());
+                    fileMessage.getType(), fileMessage.getName(), cacheKey);
                 return true;
             }
 

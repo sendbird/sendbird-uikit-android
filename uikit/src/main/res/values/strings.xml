@@ -25,7 +25,10 @@
     <string name="sb_text_channel_message_badge_edited">&#160;(edited)</string>
     <string name="sb_text_channel_tooltip">%d new message</string>
     <string name="sb_text_channel_tooltip_with_count">%d new messages</string>
+    <string name="sb_text_channel_unread_count_tooltip">%s unread message</string>
+    <string name="sb_text_channel_unread_count_tooltip_with_count">%s unread messages</string>
     <string name="sb_text_channel_anchor_copy">Copy</string>
+    <string name="sb_text_channel_anchor_mark_as_unread">Mark as unread</string>
     <string name="sb_text_channel_anchor_save">Save</string>
     <string name="sb_text_channel_anchor_edit">Edit</string>
     <string name="sb_text_channel_anchor_delete">Delete</string>
@@ -47,6 +50,7 @@
     <string name="sb_text_channel_reaction_count_max">99</string>
     <string name="sb_text_channel_message_empty">No messages</string>
     <string name="sb_text_channel_message_unavailable">Message unavailable</string>
+    <string name="sb_text_channel_message_unread_count_max">99+</string>
     <string name="sb_text_notification_fallback_title">(Template error)</string>
     <string name="sb_text_notification_fallback_description">Can\'t read this notification.</string>
     <string name="sb_text_notification_channel_message_empty">No notifications</string>
@@ -165,7 +169,7 @@
     <string name="sb_text_group">Group</string>
     <string name="sb_text_super_group">Supergroup</string>
     <string name="sb_text_broadcast">Broadcast</string>
-    <string name="sb_text_information_channel_frozen">Channel frozen</string>
+    <string name="sb_text_information_channel_frozen">Channel is frozen</string>
     <string name="sb_text_operator">Operator</string>
     <string name="sb_text_menu_operators">Operators</string>
     <string name="sb_text_menu_muted_members">Muted members</string>

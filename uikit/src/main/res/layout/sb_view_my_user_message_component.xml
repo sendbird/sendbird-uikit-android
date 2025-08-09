@@ -8,6 +8,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.sendbird.uikit.internal.ui.messages.NewLineView
+        android:id="@+id/newLineView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/sb_size_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/brBottom"
         android:layout_width="wrap_content"
@@ -57,7 +66,7 @@
         android:layout_height="wrap_content"
         android:translationY="@dimen/sb_size_10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newLineView"
         app:layout_constraintBottom_toTopOf="@id/contentPanel"
         android:visibility="gone"/>
 

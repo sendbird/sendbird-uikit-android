@@ -1,10 +1,13 @@
 package com.sendbird.uikit.activities;
 
+import static com.sendbird.uikit.internal.extensions.ViewExtensionsKt.setInsetMarginAndStatusBarColor;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
@@ -37,6 +40,10 @@ public class MessageThreadActivity extends AppCompatActivity {
         int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
         setTheme(themeResId);
         setContentView(R.layout.sb_activity);
+
+        View activityContainer = findViewById(R.id.sb_activity_container);
+        View fragmentContainer = findViewById(R.id.sb_fragment_container);
+        setInsetMarginAndStatusBarColor(activityContainer, fragmentContainer, getWindow());
 
         Fragment fragment = createFragment();
         FragmentManager manager = getSupportFragmentManager();

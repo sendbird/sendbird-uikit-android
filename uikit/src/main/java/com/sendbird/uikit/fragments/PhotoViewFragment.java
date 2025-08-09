@@ -1,5 +1,7 @@
 package com.sendbird.uikit.fragments;
 
+import static com.sendbird.uikit.utils.FileUtils.generateCacheKey;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -229,11 +231,6 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         attacher.setOnPhotoTapListener((view, x, y) -> togglePhotoActionBar());
     }
 
-    @NonNull
-    private String generateCacheKey(@NonNull String plainUrl, @NonNull String requestId) {
-        return (TextUtils.isNotEmpty(requestId)) ? requestId : String.valueOf(plainUrl.hashCode());
-    }
-
     private void togglePhotoActionBar() {
         View vgHeader = binding.vgHeader;
         View vgBottom = binding.vgBottom;
@@ -302,7 +299,10 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             public Boolean call() throws Exception {
                 if (!isFragmentAlive()) return null;
                 if (url == null || mimeType == null || fileName == null) return null;
-                FileDownloader.getInstance().saveFile(requireContext(), url, mimeType, fileName);
+
+                String requestIdForCacheKey = requestId == null ? "" : requestId;
+                String plainUrlForCacheKey = plainUrl == null ? "" : plainUrl;
+                FileDownloader.getInstance().saveFile(requireContext(), url, mimeType, fileName, generateCacheKey(plainUrlForCacheKey, requestIdForCacheKey));
                 Logger.dev("++ file name : %s", fileName);
                 return true;
             }

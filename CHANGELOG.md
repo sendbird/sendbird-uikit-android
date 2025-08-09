@@ -1,4 +1,30 @@
 # Changelog
+### v3.24.0 (Jul 31, 2025) with Chat SDK `v4.28.2`
+- Support MarkAsUnread in UIKit Android View
+  - Added new configuration option `enableMarkAsUnread` to enable/disable the feature
+  - Added new interfaces for using markAsUnread feature to `ChannelFragment` and `ChannelViewModel`
+  - Added `NewLineView` to indicate the start of unread messages.
+  - New `markAsUnread` menu item in `ChannelFragment`
+- Fixed an issue where messages with same `createdAt` timestamps disappeared from `ChannelFragment`
+### v3.23.3 (Jul 17, 2025) with Chat SDK `v4.27.3`
+- Added support for setting `isAppearanceLightStatusBars` in edge-to-edge mode.
+    - Added `useAppearanceLightStatusBars` to `EdgeToEdgeConfig`.
+### v3.23.2 (Jun 27, 2025) with Chat SDK `v4.27.3`
+- Release with [the latest chat SDK](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/4.27.3) to avoid potential issues
+### v3.23.1 (Jun 24, 2025) with Chat SDK `v4.27.2`
+- Release with [the latest chat SDK](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/4.27.2) to avoid potential issues
+### v3.23.0 (Apr 1, 2025) with Chat SDK `v4.24.1`
+- Added a new interface to set the status bar color in edge-to-edge mode.
+    - Added `void setEdgeToEdgeConfig(EdgeToEdgeConfig)`
+    - Added `EdgeToEdgeConfig getEdgeToEdgeConfig()`
+    - Added `EdgeToEdgeConfig` which defines a configuration for UI styling in edge-to-edge mode
+- Fixed an issue where some UIKit components were unresponsive when both the status bar and navigation bar were hidden in edge-to-edge mode.
+- Fixed an issue where images, GIFs, and videos could not be downloaded while the network was offline.
+### v3.22.2 (Feb 28, 2025) with Chat SDK `v4.24.0`
+* Replaced `newIntent` methods, which had a channelUrl parameter, with one that does not include it. in `OpenChannelListActivity`
+### v3.22.1 (Feb 20, 2025) with Chat SDK `v4.23.1`
+* Fixed suggested replies not disappearing after sending a message.
+* Fixed the mention list not showing up when typing a nickname.
 ### v3.22.0 (Dec 16, 2024) with Chat SDK `v4.21.1`
 * Templated-related code has been moved to a separate module.
 ### v3.21.1 (Nov 12, 2024) with Chat SDK `v4.20.0`
