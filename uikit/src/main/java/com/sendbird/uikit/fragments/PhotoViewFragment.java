@@ -42,7 +42,6 @@ import com.sendbird.uikit.internal.model.GlideCachedUrlLoader;
 import com.sendbird.uikit.internal.tasks.JobResultTask;
 import com.sendbird.uikit.internal.tasks.TaskQueue;
 import com.sendbird.uikit.log.Logger;
-import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.TextUtils;
@@ -89,7 +88,8 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Logger.d("PhotoViewFragment::onViewCreated()");
-        binding.ivClose.setOnClickListener(v -> shouldActivityFinish());
+//        binding.ivClose.setOnClickListener(v -> shouldActivityFinish());
+        binding.ivClose.setVisibility(View.GONE);   // Hide close button because shouldActivityFinish() is commented out and doesn't work
 
         Bundle args = getArguments();
         if (args != null) {
@@ -179,8 +179,8 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
         final String plainUrl = this.plainUrl == null ? "" : this.plainUrl;
         final String requestId = this.requestId == null ? "" : this.requestId;
 
-        tvTitle.setText(senderNickname);
-        tvCreatedAt.setText(DateUtils.formatTime(requireContext(), this.createdAt));
+//        tvTitle.setText(senderNickname);      // Text only contains UUID of the user and doesn't support the cutout
+//        tvCreatedAt.setText(DateUtils.formatTime(requireContext(), this.createdAt));
         loading.setVisibility(View.VISIBLE);
 
         if (url != null) {
