@@ -20,6 +20,7 @@ import com.sendbird.uikit.samples.basic.openchannel.livestream.LiveStreamListFra
 import com.sendbird.uikit.samples.common.SampleSettingsFragment
 import com.sendbird.uikit.samples.common.consts.StringSet
 import com.sendbird.uikit.samples.common.extensions.isUsingDarkTheme
+import com.sendbird.uikit.samples.common.extensions.setInsetMargin
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.CustomTabView
 import com.sendbird.uikit.samples.databinding.ActivityOpenChannelMainBinding
@@ -46,6 +47,7 @@ class OpenChannelMainActivity : AppCompatActivity() {
                 )
             )
             setSupportActionBar(titleBar)
+            root.setInsetMargin(window)
             viewPager.adapter = MainAdapter(this@OpenChannelMainActivity)
             val backgroundRedId = if (isDarkMode) R.color.background_600 else R.color.background_50
             tabLayout.setBackgroundResource(backgroundRedId)

@@ -14,6 +14,7 @@ import com.sendbird.uikit.activities.PhotoViewActivity
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyMultipleFilesMessageComponentBinding
 import com.sendbird.uikit.interfaces.OnItemClickListener
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.internal.extensions.toContextThemeWrapper
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.configurations.ChannelConfig
@@ -72,6 +73,7 @@ internal class MyMultipleFilesMessageView @JvmOverloads internal constructor(
         val enableReactions =
             message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =

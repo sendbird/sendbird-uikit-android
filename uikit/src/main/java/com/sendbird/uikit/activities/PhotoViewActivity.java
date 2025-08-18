@@ -1,8 +1,11 @@
 package com.sendbird.uikit.activities;
 
+import static com.sendbird.uikit.internal.extensions.ViewExtensionsKt.setInsetMarginAndStatusBarColor;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -122,6 +125,10 @@ public class PhotoViewActivity extends AppCompatActivity {
         int themeResId = getIntent().getIntExtra(StringSet.KEY_THEME_RES_ID, SendbirdUIKit.getDefaultThemeMode().getResId());
         setTheme(themeResId);
         setContentView(R.layout.sb_activity);
+
+        View activityContainer = findViewById(R.id.sb_activity_container);
+        View fragmentContainer = findViewById(R.id.sb_fragment_container);
+        setInsetMarginAndStatusBarColor(activityContainer, fragmentContainer, getWindow());
 
         final Intent intent = getIntent();
         final long messageId = intent.getLongExtra(StringSet.KEY_MESSAGE_ID, 0L);

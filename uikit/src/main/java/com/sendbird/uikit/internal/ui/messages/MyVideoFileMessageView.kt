@@ -12,6 +12,7 @@ import com.sendbird.uikit.R
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.consts.MessageGroupType
 import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageComponentBinding
+import com.sendbird.uikit.internal.extensions.isNewLineMessage
 import com.sendbird.uikit.model.MessageListUIParams
 import com.sendbird.uikit.model.configurations.ChannelConfig
 import com.sendbird.uikit.utils.DateUtils
@@ -60,6 +61,7 @@ internal class MyVideoFileMessageView @JvmOverloads constructor(
         val enableReactions = message.reactions.isNotEmpty() && ChannelConfig.getEnableReactions(params.channelConfig, channel)
         val messageGroupType = params.messageGroupType
 
+        binding.newLineView.visibility = if (message.isNewLineMessage) VISIBLE else GONE
         binding.emojiReactionListBackground.visibility = if (enableReactions) VISIBLE else GONE
         binding.rvEmojiReactionList.visibility = if (enableReactions) VISIBLE else GONE
         binding.tvSentAt.visibility =

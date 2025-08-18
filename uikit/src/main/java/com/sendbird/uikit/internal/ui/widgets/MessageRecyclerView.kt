@@ -38,12 +38,21 @@ internal class MessageRecyclerView @JvmOverloads constructor(
         binding.ivScrollFirstIcon.visibility = VISIBLE
     }
 
+    fun showUnreadCountTooltip(unreadCount: String) {
+        binding.vgUnreadCountTooltip.visibility = VISIBLE
+        binding.tvUnreadCountTooltipText.text = unreadCount
+    }
+
     fun hideScrollFirstButton() {
         binding.ivScrollFirstIcon.visibility = GONE
     }
 
     fun hideNewMessageTooltip() {
         binding.vgTooltipBox.visibility = GONE
+    }
+
+    fun hideUnreadCountTooltip() {
+        binding.vgUnreadCountTooltip.visibility = GONE
     }
 
     fun rotateScrollFirstButton(rotation: Float) {
@@ -56,6 +65,8 @@ internal class MessageRecyclerView @JvmOverloads constructor(
         get() = binding.rvMessageList
     val tooltipView: View
         get() = binding.tvTooltipText
+    val unreadCountTooltipIcon: View
+        get() = binding.vgUnreadCountTooltipClose
     val scrollFirstView: View
         get() = binding.ivScrollFirstIcon
     val typingIndicator: View
@@ -88,6 +99,12 @@ internal class MessageRecyclerView @JvmOverloads constructor(
                 R.styleable.MessageListView_sb_message_recyclerview_tooltip_textappearance,
                 R.style.SendbirdCaption1Primary300
             )
+            val unreadCountTooltipTextAppearance = a.getResourceId(
+                R.styleable.MessageListView_sb_message_recyclerview_unread_count_tooltip_textappearance,
+                R.style.SendbirdBody2OnLight02
+            )
+            val unreadCountTooltipIconTintColor =
+                a.getColorStateList(R.styleable.MessageListView_sb_message_recyclerview_unread_count_tooltip_icon_tint)
             val typingIndicatorTextAppearance = a.getResourceId(
                 R.styleable.MessageListView_sb_message_typing_indicator_textappearance,
                 R.style.SendbirdCaption1OnLight02
@@ -120,6 +137,9 @@ internal class MessageRecyclerView @JvmOverloads constructor(
             binding.rvMessageList.setDividerHeight(dividerHeight)
             binding.tvTooltipText.setBackgroundResource(tooltipBackground)
             binding.tvTooltipText.setAppearance(context, tooltipTextAppearance)
+            binding.vgUnreadCountTooltip.setBackgroundResource(tooltipBackground)
+            binding.tvUnreadCountTooltipText.setAppearance(context, unreadCountTooltipTextAppearance)
+            binding.ivUnreadCountTooltipClose.imageTintList = unreadCountTooltipIconTintColor
             binding.tvTypingIndicator.setAppearance(context, typingIndicatorTextAppearance)
             binding.ivScrollFirstIcon.setBackgroundResource(scrollBottomBackground)
             binding.ivScrollFirstIcon.setImageResource(scrollBottomIcon)
