@@ -1,4 +1,6 @@
 # Changelog
+### v3.24.1 (Nov 3, 2025) with Chat SDK `v4.31.1`
+- Fixed a possible binary compatibility issue when using Chat SDK in multiple products.
 ### v3.24.0 (Jul 31, 2025) with Chat SDK `v4.28.2`
 - Support MarkAsUnread in UIKit Android View
   - Added new configuration option `enableMarkAsUnread` to enable/disable the feature

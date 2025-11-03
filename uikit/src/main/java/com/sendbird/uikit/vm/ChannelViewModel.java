@@ -117,9 +117,28 @@ public class ChannelViewModel extends BaseMessageListViewModel {
     @NonNull
     private final ChannelConfig channelConfig;
 
+    @Nullable
+    private volatile MessageTemplateMapper messageTemplateMapper;
+
     @NonNull
-    @VisibleForTesting
-    MessageTemplateMapper messageTemplateMapper = new MessageTemplateMapper(MessageTemplateManager.getMapper());
+    private MessageTemplateMapper getMessageTemplateMapper() {
+        MessageTemplateMapper result = messageTemplateMapper;
+        if (result == null) {
+            synchronized (this) {
+                result = messageTemplateMapper;
+                if (result == null) {
+                    result = new MessageTemplateMapper(MessageTemplateManager.getMapper());
+                    messageTemplateMapper = result;
+                }
+            }
+        }
+        return result;
+    }
+
+    @TestOnly
+    void injectMessageTemplateMapper(@NonNull MessageTemplateMapper mapper) {
+        this.messageTemplateMapper = mapper;
+    }
 
     @NonNull
     private final ChannelUnreadInfo channelUnreadInfo = new ChannelUnreadInfo();
@@ -636,7 +655,7 @@ public class ChannelViewModel extends BaseMessageListViewModel {
 
     private void processMessageTemplate(@NonNull List<BaseMessage> messages, @NonNull String traceName) {
         Logger.d("[MessageTemplate] traceName: " + traceName);
-        final List<BaseMessage> updatedTemplateMessages = messageTemplateMapper.mapTemplate(messages, (updatedMessages) -> {
+        final List<BaseMessage> updatedTemplateMessages = getMessageTemplateMapper().mapTemplate(messages, (updatedMessages) -> {
             cachedMessages.updateAll(updatedMessages);
             SendbirdUIKit.runOnUIThread(() -> notifyDataSetChanged(StringSet.EVENT_MESSAGE_TEMPLATE_UPDATED));
             return Unit.INSTANCE;
