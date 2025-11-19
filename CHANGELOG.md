@@ -1,5 +1,5 @@
 # Changelog
-### v3.25.1 (Nov 19, 2025) with Chat SDK `v4.32.1`
+### v3.25.0 (Nov 19, 2025) with Chat SDK `v4.32.1`
 - Added connection-delayed handling: new dialog with live countdown and a new event (`onConnectionDelayed()`) to observe retry timers.
   - Added `BaseViewModel.onConnectionDelayed` live data to observe connection-delayed events for the delayed seconds.
   - Added `showConnectionDelayedDialog()` and `hideConnectionDelayedDialog()` in `BaseModuleFragment`.
