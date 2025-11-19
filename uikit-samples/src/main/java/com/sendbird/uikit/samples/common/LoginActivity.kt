@@ -2,8 +2,8 @@ package com.sendbird.uikit.samples.common
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.sendbird.android.SendbirdChat.sdkVersion
+import com.sendbird.android.exception.SendbirdError
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.push.SendbirdPushHelper
 import com.sendbird.android.user.User
@@ -24,8 +24,14 @@ import com.sendbird.uikit.utils.ContextUtils
 /**
  * Displays a login screen.
  */
-open class LoginActivity : AppCompatActivity() {
+open class LoginActivity : BaseActivity() {
     protected val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
+
+    protected val inputUserId: String
+        get() = binding.userId.text.toString().replace("\\s".toRegex(), "")
+    protected val inputNickname: String
+        get() = binding.nickname.text.toString()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.apply {
@@ -43,20 +49,18 @@ open class LoginActivity : AppCompatActivity() {
             title.text = "${sampleType?.name} Sample"
             signInButton.setOnClickListener {
                 // Remove all spaces from userID
-                val userId = binding.userId.text.toString().replace("\\s".toRegex(), "")
-                val nickname = binding.nickname.text.toString()
-                if (userId.isEmpty() || nickname.isEmpty()) {
+                if (inputUserId.isEmpty() || inputNickname.isEmpty()) {
                     return@setOnClickListener
                 }
-                PreferenceUtils.userId = userId
-                PreferenceUtils.nickname = nickname
+                PreferenceUtils.userId = inputUserId
+                PreferenceUtils.nickname = inputNickname
                 // set region
                 val region = PreferenceUtils.region
                 SendbirdUIKit.setCustomHosts(
                     region.apiHost(),
                     region.wsHost()
                 )
-                onSignUp(userId, nickname)
+                onSignUp()
             }
             selectSampleLayout.setOnClickListener {
                 startActivity(Intent(context, SelectServiceActivity::class.java))
@@ -66,25 +70,37 @@ open class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    open fun onSignUp(userId: String, nickname: String) {
+    open fun onSignUp() {
         Logger.i(">> LoginActivity::onSignUp()")
         WaitingDialog.show(this)
         authenticate { _: User?, e: SendbirdException? ->
+            WaitingDialog.dismiss()
             if (e != null) {
                 Logger.e(e)
                 PreferenceUtils.userId = ""
                 PreferenceUtils.nickname = ""
+
                 ContextUtils.toastError(this@LoginActivity, "${e.message}")
-                WaitingDialog.dismiss()
                 return@authenticate
             }
-            WaitingDialog.dismiss()
-            PreferenceUtils.userId = userId
-            PreferenceUtils.nickname = nickname
-            SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
-            val intent = PreferenceUtils.selectedSampleType.startingIntent(this)
-            startActivity(intent)
-            finish()
+
+            onSignIn()
         }
+    }
+
+    protected fun onSignIn() {
+        Logger.i(">> LoginActivity::onSignIn()")
+        PreferenceUtils.userId = inputUserId
+        PreferenceUtils.nickname = inputNickname
+
+        SendbirdPushHelper.registerHandler(MyFirebaseMessagingService())
+        val intent = PreferenceUtils.selectedSampleType.startingIntent(this)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onConnectedAfterDelay() {
+        super.onConnectedAfterDelay()
+        onSignIn()
     }
 }

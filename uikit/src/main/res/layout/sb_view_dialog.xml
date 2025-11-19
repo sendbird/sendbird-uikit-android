@@ -40,7 +40,8 @@
     <FrameLayout
         android:id="@+id/sbContentPanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/sb_size_12" >
 
         <TextView
             android:id="@+id/tvDialogMessage"
@@ -82,7 +83,6 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/sb_size_12"
         android:paddingBottom="@dimen/sb_size_12"
         android:paddingStart="@dimen/sb_size_8"
         android:paddingEnd="@dimen/sb_size_8"

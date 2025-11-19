@@ -1,4 +1,12 @@
 # Changelog
+### v3.25.1 (Nov 19, 2025) with Chat SDK `v4.32.1`
+- Added connection-delayed handling: new dialog with live countdown and a new event (`onConnectionDelayed()`) to observe retry timers.
+  - Added `BaseViewModel.onConnectionDelayed` live data to observe connection-delayed events for the delayed seconds.
+  - Added `showConnectionDelayedDialog()` and `hideConnectionDelayedDialog()` in `BaseModuleFragment`.
+    - These methods shows or hides the default connection-delayed dialog upon receiving `onConnectionDelayed()` live data events.
+    - You can override these methods to customize the dialog behavior.
+  - Added `DialogUtils.showConnectionDelayedDialog` to show the default connection-delayed dialog.
+
 ### v3.24.1 (Nov 3, 2025) with Chat SDK `v4.31.1`
 - Fixed a possible binary compatibility issue when using Chat SDK in multiple products.
 ### v3.24.0 (Jul 31, 2025) with Chat SDK `v4.28.2`
