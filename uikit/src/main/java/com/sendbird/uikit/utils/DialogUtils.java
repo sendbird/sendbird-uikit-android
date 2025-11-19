@@ -5,8 +5,12 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +29,7 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.LoadingDialogHandler;
 import com.sendbird.uikit.interfaces.OnEditTextResultListener;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
+import com.sendbird.uikit.internal.extensions.StringExtensionsKt;
 import com.sendbird.uikit.internal.ui.reactions.DialogView;
 import com.sendbird.uikit.internal.ui.widgets.UserProfile;
 import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
@@ -252,6 +257,65 @@ public final class DialogUtils {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setLayout((int) context.getResources().getDimension(R.dimen.sb_dialog_width_280), WRAP_CONTENT);
         }
+
+        return dialog;
+    }
+
+    /**
+     * Shows connection delayed dialog.
+     * @param context
+     * @param retryAfter
+     * @param refreshButtonListener
+     * @return The instance of AlertDialog
+     * @since 3.25.0
+     */
+    @NonNull
+    public static AlertDialog showConnectionDelayedDialog(
+        @NonNull Context context,
+        long retryAfter,
+        @Nullable View.OnClickListener refreshButtonListener
+    ) {
+        int themeResId = SendbirdUIKit.isDarkMode() ? R.style.Widget_Sendbird_Dark_DialogView : R.style.Widget_Sendbird_DialogView;
+        final Context themeWrapperContext = new ContextThemeWrapper(context, themeResId);
+        final DialogView dialogView = new DialogView(themeWrapperContext);
+        dialogView.setTitle(context.getString(R.string.sb_text_connection_delayed_title));
+        dialogView.setTitleMaxLines(Integer.MAX_VALUE);
+        dialogView.setMessage(StringExtensionsKt.toEstimatedTimeString(retryAfter, context));
+        dialogView.setMessageTextAppearance(
+            SendbirdUIKit.isDarkMode() ?
+                R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02
+        );
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Sendbird_Dialog);
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+
+        dialog.setCancelable(false); // cannot be dismissed by back button or outside touch
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout((int) context.getResources().getDimension(R.dimen.sb_dialog_width_280), WRAP_CONTENT);
+        }
+
+        // Start countdown timer
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final AtomicLong remainingSeconds = new AtomicLong(retryAfter);
+        final Runnable countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long remaining = remainingSeconds.get();
+                if (remaining >= 0 && dialog.isShowing()) {
+                    dialogView.setMessage(StringExtensionsKt.toEstimatedTimeString(remaining, context));
+                    remainingSeconds.decrementAndGet();
+                    handler.postDelayed(this, 1000);
+                } else {
+                    handler.removeCallbacks(this);
+                }
+            }
+        };
+        handler.post(countdownRunnable);
+
+        // Clean up handler when dialog is dismissed
+        dialog.setOnDismissListener(d -> handler.removeCallbacks(countdownRunnable));
 
         return dialog;
     }

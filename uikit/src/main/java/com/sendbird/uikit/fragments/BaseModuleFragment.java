@@ -7,11 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
+import com.sendbird.android.SendbirdChat;
 import com.sendbird.uikit.interfaces.AuthenticateHandler;
+import com.sendbird.uikit.internal.ui.widgets.WaitingDialog;
+import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.modules.BaseModule;
+import com.sendbird.uikit.utils.DialogUtils;
 import com.sendbird.uikit.vm.BaseViewModel;
+
+import kotlin.jvm.Synchronized;
 
 /**
  * Fragments provided to use UIKit's modules.
@@ -39,6 +46,8 @@ import com.sendbird.uikit.vm.BaseViewModel;
 public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseViewModel> extends PermissionFragment {
     private MT module;
     private VM viewModel;
+
+    private AlertDialog connectionDelayedDialog = null;
 
     /**
      * Create a module and a view model, and proceed with the authentication process in the view model.
@@ -146,6 +155,7 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
     // It shouldn't exist other than a function that is always called.
     void onAuthenticateComplete(@NonNull ReadyStatus status, @NonNull MT module) {
         if (!isFragmentAlive()) return;
+        observeConnectionDelay();
         onBeforeReady(status, module, viewModel);
         onReady(status, module, viewModel);
     }
@@ -195,4 +205,57 @@ public abstract class BaseModuleFragment<MT extends BaseModule, VM extends BaseV
             }
         });
     }
+
+    //region Connection Delay
+    private void observeConnectionDelay() {
+        this.viewModel.onConnectionDelayed().observe(getViewLifecycleOwner(), retryAfter -> {
+            if (retryAfter == null) return;
+            WaitingDialog.dismiss();
+
+            if (retryAfter > 0) {
+                showConnectionDelayedDialog(retryAfter);
+            } else {
+                hideConnectionDelayedDialog();
+            }
+        });
+    }
+
+    /**
+     * Override this method to customize the connection delayed dialog.
+     * @param retryAfter seconds after which connection will be retried
+     * @since 3.25.0
+     */
+    @Synchronized
+    protected void showConnectionDelayedDialog(long retryAfter) {
+        Logger.dev("retryAfter: %d", retryAfter);
+        if (getContext() == null) return;
+        WaitingDialog.dismiss();
+        hideConnectionDelayedDialog();
+
+        connectionDelayedDialog = DialogUtils.showConnectionDelayedDialog(
+            requireContext(),
+            retryAfter,
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WaitingDialog.show(requireContext());
+                    SendbirdChat.reconnect();
+                }
+            }
+        );
+    }
+
+    /**
+     * Hides the connection delayed dialog if it's showing.
+     * @since 3.25.0
+     */
+    @Synchronized
+    protected void hideConnectionDelayedDialog() {
+        Logger.dev("connectionDelayedDialog showing: %s", connectionDelayedDialog != null ? String.valueOf(connectionDelayedDialog.isShowing()) : "null");
+        if (connectionDelayedDialog != null && connectionDelayedDialog.isShowing()) {
+            connectionDelayedDialog.dismiss();
+        }
+        connectionDelayedDialog = null;
+    }
+    //endregion Connection Delay
 }

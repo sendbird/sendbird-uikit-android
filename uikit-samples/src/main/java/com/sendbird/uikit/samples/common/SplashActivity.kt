@@ -3,7 +3,6 @@ package com.sendbird.uikit.samples.common
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.samples.BaseApplication.Companion.initStateChanges
 import com.sendbird.uikit.samples.R
@@ -14,12 +13,13 @@ import com.sendbird.uikit.samples.common.extensions.startingIntent
 import com.sendbird.uikit.samples.common.preferences.PreferenceUtils
 import com.sendbird.uikit.samples.common.widgets.WaitingDialog
 import com.sendbird.uikit.samples.databinding.ActivitySplashBinding
+import com.sendbird.uikit.utils.ContextUtils
 
 /**
  * Displays a splash screen.
  */
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivitySplashBinding.inflate(layoutInflater).apply {
@@ -37,13 +37,16 @@ class SplashActivity : AppCompatActivity() {
                 InitState.FAILED, InitState.SUCCEED -> {
                     WaitingDialog.dismiss()
                     if (PreferenceUtils.userId.isNotEmpty()) {
-                        authenticate { _, _ ->
-                            startActivity(getNextIntent())
-                            finish()
+                        authenticate { _, e ->
+                            if (e != null) {
+                                ContextUtils.toastError(this@SplashActivity, "${e.message}")
+                                return@authenticate
+                            }
+
+                            moveToNext()
                         }
                     } else {
-                        startActivity(getNextIntent())
-                        finish()
+                        moveToNext()
                     }
                 }
             }
@@ -52,5 +55,16 @@ class SplashActivity : AppCompatActivity() {
 
     private fun getNextIntent(): Intent {
         return PreferenceUtils.selectedSampleType.startingIntent(this@SplashActivity)
+    }
+
+    private fun moveToNext() {
+        startActivity(getNextIntent())
+        finish()
+    }
+
+    override fun onConnectedAfterDelay() {
+        super.onConnectedAfterDelay()
+
+        moveToNext()
     }
 }

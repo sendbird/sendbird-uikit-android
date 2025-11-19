@@ -154,6 +154,10 @@ internal class DialogView @JvmOverloads constructor(
         binding.sbTopEmpty.visibility = VISIBLE
     }
 
+    fun setTitleMaxLines(lines: Int) {
+        binding.tvDialogTitle.maxLines = lines
+    }
+
     fun setMessageTextAppearance(@StyleRes resId: Int) {
         binding.tvDialogMessage.setAppearance(context, resId)
     }
