@@ -10,12 +10,12 @@ plugins {
 version = UIKIT_VERSION
 android {
     namespace 'com.sendbird.uikit'
-    compileSdk 34
+    compileSdk 35
 
     version = UIKIT_VERSION
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode Integer.parseInt(UIKIT_VERSION_CODE)
         versionName UIKIT_VERSION
 
