@@ -54,6 +54,7 @@
     <string name="sb_text_notification_channel_list_error">Algo salió mal.</string>
 
     <!-- Channel Settings -->
+    <string name="sb_text_feedback_remove_comment">Eliminar comentarios</string>
     <string name="sb_text_channel_settings_moderations">Moderaciones</string>
     <string name="sb_text_channel_settings_notification">Notificaciones</string>
     <string name="sb_text_channel_settings_members">Miembros</string>
@@ -82,6 +83,7 @@
     <string name="sb_text_toast_success_start_upload_file">Subiendo&#8230;</string>
     <string name="sb_text_toast_success_start_download_file">Descargando&#8230;</string>
     <string name="sb_text_toast_success_download_file">Archivo guardado</string>
+    <string name="sb_text_toast_failure_feedback_delete">No se pudo eliminar. Inténtalo de nuevo.</string>
     <string name="sb_text_button_edit">Editar</string>
     <string name="sb_text_button_invite">Invitar</string>
     <string name="sb_text_button_cancel">Cancelar</string>
@@ -92,6 +94,7 @@
     <string name="sb_text_button_selected">Seleccionado</string>
     <string name="sb_text_button_add">Agregar</string>
     <string name="sb_text_button_ok">Aceptar</string>
+    <string name="sb_text_button_submit">Enviar</string>
     <string name="sb_text_ellipsis">&#8230;</string>
 
     <!--  Message Thread  -->
@@ -222,4 +225,53 @@
     <string name="sb_forms_invalid_form_field">Verifica el valor</string>
     <string name="sb_forms_submit_failed">Erro en la entrega</string>
     <string name="sb_forms_optional">(opcional)</string>
+    <string name="sb_fragment_photo_view_close_description">cerrar</string>
+    <string name="sb_fragment_photo_view_save_description">guardar</string>
+    <string name="sb_fragment_photo_view_delete_description">eliminar</string>
+    <string name="sb_view_channel_list_item_broadcast_icon_description">canal de emisión</string>
+    <string name="sb_view_channel_list_item_frozen_icon_description">canal congelado</string>
+    <string name="sb_view_channel_profile_input_select_channel_cover_description">seleccionar cubierta del canal</string>
+    <string name="sb_view_channel_profile_input_clear_channel_name_description">nombre del canal claro</string>
+    <string name="sb_view_feed_notification_unread_indicator_description">mensaje no leído</string>
+    <string name="sb_view_header_left_button_description">atrás</string>
+    <string name="sb_view_header_right_button_description">menú</string>
+    <string name="sb_view_image_file_description">archivo de imagen</string>
+    <string name="sb_view_member_item_profile_description">perfil de miembro</string>
+    <string name="sb_view_member_item_action_button_description">acción</string>
+    <string name="sb_view_message_input_close_reply_description">cerrar respuesta</string>
+    <string name="sb_view_message_input_add_button_description">añadir</string>
+    <string name="sb_view_message_input_send_button_description">enviar mensaje</string>
+    <string name="sb_view_message_input_voice_recorder_button_description">enviar mensaje de voz</string>
+    <string name="sb_view_message_recycler_view_scroll_to_bottom_description">desplazarse hasta la parte inferior</string>
+    <string name="sb_view_my_file_image_message_description">mi mensaje con imagen</string>
+    <string name="sb_view_my_file_video_message_description">mi mensaje de vídeo</string>
+    <string name="sb_view_my_quoted_file_message_description">mi mensaje de respuesta</string>
+    <string name="sb_view_ogtag_image_description">ogtag</string>
+    <string name="sb_view_open_channel_file_image_message_description">mensaje con imagen</string>
+    <string name="sb_view_open_channel_file_video_message_description">mensaje de vídeo</string>
+    <string name="sb_view_other_file_image_message_description">otro mensaje con imagen</string>
+    <string name="sb_view_other_file_video_message_description">otro mensaje de vídeo</string>
+    <string name="sb_view_other_quoted_file_message_description">otro mensaje de archivo respondido</string>
+    <string name="sb_view_parent_message_info_menu_icon_description">menú de mensajes para padres</string>
+    <string name="sb_view_search_bar_clear_button_description">texto sin cifrar</string>
+    <string name="sb_view_suggested_mention_item_profile_description">perfil de mención sugerido</string>
+    <string name="sb_view_toast_success_description">éxito</string>
+    <string name="sb_view_toast_error_description">error</string>
+    <string name="sb_view_voice_message_play_button_description">jugar</string>
+    <string name="sb_view_voice_message_pause_button_description">pausa</string>
+    <string name="sb_view_voice_message_input_record_button_description">registro</string>
+    <string name="sb_view_voice_message_input_play_button_description">jugar</string>
+    <string name="sb_view_voice_message_input_stop_button_description">detener</string>
+    <string name="sb_view_voice_message_input_pause_button_description">pausa</string>
+    <string name="sb_view_voice_message_input_send_button_description">enviar</string>
+    <string name="sb_edittext_hint_default_description">introducir texto</string>
+    <string name="sb_emoji_default_description">emoji</string>
+    <string name="sb_sender_profile_description">perfil del remitente</string>
+    <string name="sb_channel_cover_description">cubierta del canal</string>
+    <string name="sb_text_feedback_comment_title">Proporcione comentarios adicionales (opcional)</string>
+    <string name="sb_text_feedback_comment_hint">Deja un comentario</string>
+    <string name="sb_text_feedback_edit_comment">Editar comentario</string>
+    <string name="sb_text_toast_success_feedback_update">Cambios guardados.</string>
+    <string name="sb_text_toast_failure_feedback_submit">No se pudo enviar. Inténtalo de nuevo.</string>
+    <string name="sb_text_toast_failure_feedback_update">No se pudo guardar. Inténtalo de nuevo.</string>
 </resources>

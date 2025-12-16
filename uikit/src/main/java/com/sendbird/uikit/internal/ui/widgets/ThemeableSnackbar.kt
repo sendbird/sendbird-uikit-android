@@ -1,5 +1,6 @@
 package com.sendbird.uikit.internal.ui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
@@ -24,6 +25,7 @@ internal class ThemeableSnackbar @JvmOverloads constructor(
     private val binding: SbViewMentionLimitAlertBinding
     private var snackbar: Snackbar? = null
 
+    @SuppressLint("RestrictedApi")
     fun init(anchorView: View) {
         if (this.parent != null) (this.parent as ViewGroup).removeAllViews()
         val snackbar = Snackbar.make(anchorView, "", Snackbar.LENGTH_INDEFINITE).apply {
