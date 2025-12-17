@@ -1,4 +1,6 @@
 # Changelog
+### v3.25.2 (Dec 17, 2025) with Chat SDK `v4.32.4`
+- Fixed an issue where messages in `ChannelFragment` were not displayed after returning from another fragment when using Navigation Component.
 ### v3.25.1 (Dec 10, 2025) with Chat SDK `v4.32.3`
 - Fixed message resend functionality to properly handle rate limit errors (`900200`).
 ### v3.25.0 (Nov 19, 2025) with Chat SDK `v4.32.1`

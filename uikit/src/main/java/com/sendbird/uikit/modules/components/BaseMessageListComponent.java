@@ -230,6 +230,12 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         final LinearLayoutManager layoutManager = createInnerLayoutManager(recyclerView);
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
+
+        LA adapter = getAdapter();
+        if (adapter != null) {
+            setAdapter(adapter);
+        }
+
         return this.messageRecyclerView;
     }
 
