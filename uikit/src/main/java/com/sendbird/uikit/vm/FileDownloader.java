@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.sendbird.android.exception.SendbirdException;
 import com.sendbird.android.message.FileMessage;
 import com.sendbird.android.message.Thumbnail;
@@ -48,7 +47,7 @@ public class FileDownloader {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public File downloadToCache(@NonNull Context context, @NonNull FileMessage message) throws ExecutionException, InterruptedException, IOException {
-        final File destFile = FileUtils.createCachedDirFile(context, System.currentTimeMillis() + "_" + message.getName());
+        final File destFile = FileUtils.createCachedDirFile(context, message.getMessageId() + "_" + message.getName());
         return downloadToCache(context, message, destFile);
     }
 
@@ -57,45 +56,72 @@ public class FileDownloader {
     public File downloadToCache(@NonNull Context context, @NonNull FileMessage message, @NonNull final File destFile) throws ExecutionException, InterruptedException, IOException {
         final String url = message.getUrl();
         final String plainUrl = message.getPlainUrl();
+        final String cacheKey = String.valueOf(plainUrl.hashCode());
 
-        if (isFileValid(destFile, message)) {
-            Logger.dev("__ return exist file");
+        if (hasValidCacheFile(destFile)) {
+            Logger.dev("__ return cached file");
             return destFile;
-        } else {
-            destFile.delete();
         }
+        destFile.delete();
 
         if (downloadingFileSet.contains(url)) {
             return null;
         }
+
+        final File tempFile = FileUtils.createDeletableFile(context, destFile.getName() + ".tmp");
+
         try {
             downloadingFileSet.add(url);
 
-            File glideFile = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, String.valueOf(plainUrl.hashCode())).submit().get();
-            Logger.dev("__ file size : " + glideFile.length());
-            Logger.d("__ destFile path : " + glideFile.getAbsolutePath());
-            // if glide returns cached file, it can return the failed or different file.
-            if (isFileValid(glideFile, message)) {
-                FileUtils.copyFile(glideFile, destFile);
-                Logger.dev("__ return exist file");
-                return destFile;
-            } else {
-                glideFile.delete();
+            File result = downloadAndSaveToFile(context, url, cacheKey, tempFile, destFile);
+            if (result != null) {
+                return result;
             }
 
-            glideFile = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, String.valueOf(plainUrl.hashCode())).submit().get();
-            if (isFileValid(glideFile, message)) {
-                FileUtils.copyFile(glideFile, destFile);
-                return destFile;
-            }
+            // Retry (handles corrupted Glide cache - glideFile was deleted in the above call)
+            return downloadAndSaveToFile(context, url, cacheKey, tempFile, destFile);
         } finally {
             downloadingFileSet.remove(url);
         }
+    }
+
+    /**
+     * Downloads a file via Glide, copies it to a temp file, then saves via atomic rename.
+     *
+     * @return destFile on success, null on failure (tempFile and glideFile are deleted on failure)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Nullable
+    private File downloadAndSaveToFile(
+        @NonNull Context context,
+        @NonNull String url,
+        @NonNull String cacheKey,
+        @NonNull File tempFile,
+        @NonNull File destFile
+    ) throws ExecutionException, InterruptedException, IOException {
+        File glideFile = GlideCachedUrlLoader.load(Glide.with(context).asFile(), url, cacheKey).submit().get();
+        Logger.dev("__ file size : " + glideFile.length());
+        Logger.d("__ glideFile path : " + glideFile.getAbsolutePath());
+
+        tempFile.delete();
+        FileUtils.copyFile(glideFile, tempFile);
+
+        // Verify copy was successful by comparing sizes before replacing destFile
+        if (tempFile.length() > 0 && tempFile.length() == glideFile.length()) {
+            destFile.delete();
+            if (tempFile.renameTo(destFile)) {
+                return destFile;
+            }
+        }
+
+        // Cleanup on failure
+        tempFile.delete();
+        glideFile.delete();
         return null;
     }
 
-    private boolean isFileValid(@Nullable File file, @NonNull FileMessage fileMessage) {
-        return file != null && file.exists() && file.length() == fileMessage.getSize();
+    private boolean hasValidCacheFile(@Nullable File file) {
+        return file != null && file.exists() && file.length() > 0;
     }
 
     public boolean isDownloading(@NonNull String url) {
