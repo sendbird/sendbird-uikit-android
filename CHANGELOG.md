@@ -1,4 +1,6 @@
 # Changelog
+### v3.25.3 (Jan 19, 2026) with Chat SDK `v4.32.4`
+- Fixed issue where files sent via Platform API failed to download due to size mismatch between server metadata and actual file size.
 ### v3.25.2 (Dec 17, 2025) with Chat SDK `v4.32.4`
 - Fixed an issue where messages in `ChannelFragment` were not displayed after returning from another fragment when using Navigation Component.
 ### v3.25.1 (Dec 10, 2025) with Chat SDK `v4.32.3`
