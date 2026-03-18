@@ -516,6 +516,19 @@ data class ChannelConfig internal constructor(
             enableMarkAsUnreadMutable = value
         }
 
+    /**
+     * Determines whether to automatically scroll to the top of a new incoming message
+     * when the message height overflows the visible screen.
+     * This only applies when the user is looking at the bottom of the message list in a group channel.
+     *
+     * Note: This is a local-only config, not controlled by the dashboard.
+     *
+     * Default is `false`.
+     * @since 3.26.0
+     */
+    @Transient
+    var enableAutoscrollMessageOverflowToTop: Boolean = false
+
     @JvmSynthetic
     internal fun merge(config: ChannelConfig): ChannelConfig {
         this._enableOgTag = config._enableOgTag
@@ -557,6 +570,7 @@ data class ChannelConfig internal constructor(
         this.enableMarkdownForUserMessageMutable = null
         this.suggestedRepliesDirectionMutable = null
         this.enableMarkAsUnreadMutable = null
+        this.enableAutoscrollMessageOverflowToTop = false
         this.input.clear()
     }
 

@@ -264,19 +264,54 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
     }
 
     /**
+     * Scrolls to the first position of the recycler view and adjusts the scroll
+     * to show the top of the message if it overflows the visible area.
+     */
+    private void scrollToFirstWithOverflowToTop() {
+        if (messageRecyclerView == null) return;
+        final PagerRecyclerView rv = messageRecyclerView.getRecyclerView();
+        rv.stopScroll();
+        rv.scrollToPosition(0);
+        rv.post(() -> {
+            RecyclerView.ViewHolder holder = rv.findViewHolderForAdapterPosition(0);
+            if (holder == null) return;
+
+            int offsetTop = holder.itemView.getTop() - rv.getPaddingTop();
+            if (offsetTop < 0) {
+                rv.scrollBy(0, offsetTop);
+            }
+        });
+    }
+
+    /**
      * After receiving the message from another user, handle the necessary tasks at this component.
      *
      * @param showTooltipIfPossible Whether to show the tooltip when new messages are received
      * since 3.0.0
      */
     public void notifyOtherMessageReceived(boolean showTooltipIfPossible) {
+        notifyOtherMessageReceived(showTooltipIfPossible, false);
+    }
+
+    /**
+     * After receiving the message from another user, handle the necessary tasks at this component.
+     *
+     * @param showTooltipIfPossible Whether to show the tooltip when new messages are received
+     * @param autoScrollOverflowToTop Whether to auto-scroll to the top of the message if it overflows the visible area
+     * since 3.26.0
+     */
+    public void notifyOtherMessageReceived(boolean showTooltipIfPossible, boolean autoScrollOverflowToTop) {
         int firstVisibleItemPosition = getFirstVisibleItemPosition();
 
         if (useMessageTooltip && (firstVisibleItemPosition > 0 || showTooltipIfPossible)) {
             messageRecyclerView.showNewMessageTooltip(getTooltipMessage(messageRecyclerView.getContext(), tooltipMessageCount.incrementAndGet()));
             return;
         }
-        scrollToFirstIfLastMessageVisible(true);
+        if (autoScrollOverflowToTop && firstVisibleItemPosition == 0 && !hasNextMessages()) {
+            scrollToFirstWithOverflowToTop();
+        } else {
+            scrollToFirstIfLastMessageVisible(true);
+        }
     }
 
     /**
@@ -366,7 +401,9 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
      *
      * @param feedbackRatingClickListener The callback that will run
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void setOnFeedbackRatingClickListener(@Nullable OnFeedbackRatingClickListener feedbackRatingClickListener) {
         this.feedbackRatingClickListener = feedbackRatingClickListener;
     }
@@ -1302,4 +1339,3 @@ abstract public class BaseMessageListComponent<LA extends BaseMessageListAdapter
         return useScrollFirstButton;
     }
 }
-

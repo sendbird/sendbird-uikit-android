@@ -572,7 +572,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      *
      * @return {@link OnFeedbackRatingClickListener} to be invoked when the feedback rating is clicked.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     @Nullable
     public OnFeedbackRatingClickListener getFeedbackRatingClickListener() {
         return feedbackRatingClickListener;
@@ -583,7 +585,9 @@ abstract public class BaseMessageListAdapter extends BaseMessageAdapter<BaseMess
      *
      * @param feedbackRatingClickListener The callback that will run
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void setFeedbackRatingClickListener(@Nullable OnFeedbackRatingClickListener feedbackRatingClickListener) {
         this.feedbackRatingClickListener = feedbackRatingClickListener;
     }
