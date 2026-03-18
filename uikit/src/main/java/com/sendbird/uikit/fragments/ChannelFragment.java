@@ -148,6 +148,8 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
     private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     @NonNull
     private final AtomicBoolean isThreadRedirected = new AtomicBoolean(false);
+    private final boolean enableAutoscrollOverflowToTop =
+        UIKitConfig.getGroupChannelConfig().getEnableAutoscrollMessageOverflowToTop();
 
     @Nullable
     private OnMessageTemplateActionHandler messageTemplateActionHandler;
@@ -352,15 +354,21 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
                             scrollToFirst();
                             break;
                         case StringSet.EVENT_MESSAGE_RECEIVED:
+                            // Only apply overflow-to-top scroll after initial load is complete.
+                            final boolean useOverflowScroll = isInitialCallFinished &&
+                                enableAutoscrollOverflowToTop;
+                            messageListComponent.notifyOtherMessageReceived(
+                                anchorDialogShowing.get(),
+                                useOverflowScroll
+                            );
+                            break;
                         case StringSet.EVENT_MESSAGE_SENT:
                             messageListComponent.notifyOtherMessageReceived(anchorDialogShowing.get());
-                            if (eventSource.equals(StringSet.EVENT_MESSAGE_SENT)) {
-                                final MessageListParams messageListParams = viewModel.getMessageListParams();
-                                final BaseMessage latestMessage = adapter.getItem(messageListParams != null && messageListParams.getReverse() ? 0 : adapter.getItemCount() - 1);
-                                if (latestMessage instanceof FileMessage) {
-                                    // Download from files already sent for quick image loading.
-                                    FileDownloader.downloadThumbnail(context, (FileMessage) latestMessage);
-                                }
+                            final MessageListParams messageListParams = viewModel.getMessageListParams();
+                            final BaseMessage latestMessage = adapter.getItem(messageListParams != null && messageListParams.getReverse() ? 0 : adapter.getItemCount() - 1);
+                            if (latestMessage instanceof FileMessage) {
+                                // Download from files already sent for quick image loading.
+                                FileDownloader.downloadThumbnail(context, (FileMessage) latestMessage);
                             }
                             break;
                         case StringSet.MESSAGE_CHANGELOG:
@@ -630,7 +638,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param message The message that contains the form
      * @param form The form to be submitted
      * since 3.12.1
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     protected void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull MessageForm form) {
         message.submitMessageForm((e) -> {
             if (e != null) {
@@ -645,7 +655,9 @@ public class ChannelFragment extends BaseMessageListFragment<MessageListAdapter,
      * @param message The message that contains feedback
      * @param feedbackRating The clicked feedback rating
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     protected void onFeedbackRatingClicked(@NonNull BaseMessage message, @NonNull FeedbackRating feedbackRating) {
         Feedback currentFeedback = message.getMyFeedback();
         if (currentFeedback != null) {

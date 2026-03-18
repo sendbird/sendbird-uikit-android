@@ -50,6 +50,7 @@ import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.model.TextUIConfig;
 import com.sendbird.uikit.model.configurations.ChannelConfig;
+import com.sendbird.uikit.model.configurations.UIKitConfig;
 import com.sendbird.uikit.modules.MessageThreadModule;
 import com.sendbird.uikit.modules.components.MessageInputComponent;
 import com.sendbird.uikit.modules.components.MessageThreadHeaderComponent;
@@ -115,6 +116,8 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
     private ThreadMessageListParams params;
     @NonNull
     private final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
+    private final boolean enableAutoscrollOverflowToTop =
+        UIKitConfig.getGroupChannelConfig().getEnableAutoscrollMessageOverflowToTop();
 
     @NonNull
     @Override
@@ -255,14 +258,17 @@ public class MessageThreadFragment extends BaseMessageListFragment<ThreadListAda
                             }
                             break;
                         case StringSet.EVENT_MESSAGE_RECEIVED:
+                            messageListComponent.notifyOtherMessageReceived(
+                                false,
+                                enableAutoscrollOverflowToTop
+                            );
+                            break;
                         case StringSet.EVENT_MESSAGE_SENT:
                             messageListComponent.notifyOtherMessageReceived(false);
-                            if (eventSource.equals(StringSet.EVENT_MESSAGE_SENT)) {
-                                final BaseMessage latestMessage = adapter.getItem(adapter.getItemCount() - 1);
-                                if (latestMessage instanceof FileMessage) {
-                                    // Download from files already sent for quick image loading.
-                                    FileDownloader.downloadThumbnail(context, (FileMessage) latestMessage);
-                                }
+                            final BaseMessage latestMessage = adapter.getItem(adapter.getItemCount() - 1);
+                            if (latestMessage instanceof FileMessage) {
+                                // Download from files already sent for quick image loading.
+                                FileDownloader.downloadThumbnail(context, (FileMessage) latestMessage);
                             }
                             break;
                         case StringSet.ACTION_INIT_FROM_REMOTE:

@@ -27,7 +27,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
+import com.sendbird.uikit.internal.ui.widgets.ZoomableImageView;
 import com.sendbird.android.channel.BaseChannel;
 import com.sendbird.android.channel.ChannelType;
 import com.sendbird.android.channel.GroupChannel;
@@ -169,7 +169,7 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
     protected void onDrawPage() {
         if (!isFragmentAlive()) return;
         Logger.d("PhotoViewFragment::onDrawPage() - nickname:" + senderNickname);
-        final ImageView ivPhoto = binding.ivPhoto;
+        final ZoomableImageView ivPhoto = binding.ivPhoto;
         final ImageView ivDelete = binding.ivDelete;
         final ImageView ivDownload = binding.ivDownload;
         final TextView tvTitle = binding.tvTitle;
@@ -227,8 +227,10 @@ public class PhotoViewFragment extends PermissionFragment implements PermissionF
             }
         });
 
-        PhotoViewAttacher attacher = new PhotoViewAttacher(ivPhoto);
-        attacher.setOnPhotoTapListener((view, x, y) -> togglePhotoActionBar());
+        ivPhoto.setOnSingleTapListener(() -> {
+            togglePhotoActionBar();
+            return kotlin.Unit.INSTANCE;
+        });
     }
 
     private void togglePhotoActionBar() {

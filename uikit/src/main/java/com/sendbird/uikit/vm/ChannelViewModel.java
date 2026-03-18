@@ -552,7 +552,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @return The BaseMessage that feedback is submitted.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackSubmitted() {
         return feedbackSubmitted;
     }
@@ -562,7 +564,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @return The BaseMessage that feedback is updated.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     @NonNull
     public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackUpdated() {
         return feedbackUpdated;
@@ -573,7 +577,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @return The BaseMessage that feedback is deleted.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     @NonNull
     public LiveData<Pair<BaseMessage, SendbirdException>> onFeedbackDeleted() {
         return feedbackDeleted;
@@ -1154,7 +1160,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      * @param rating The rating for the message.
      * @param comment The comment for the message.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void submitFeedback(@NonNull BaseMessage message, @NonNull FeedbackRating rating, @Nullable String comment) {
         // If using BaseMessage without copying it, the properties of the message are updated immediately when updating the feedback,
         // so the UI is not updated because the changes are not caught in the diff callback.
@@ -1178,7 +1186,9 @@ public class ChannelViewModel extends BaseMessageListViewModel {
      *
      * @param message The message for removing feedback.
      * since 3.13.0
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void removeFeedback(@NonNull BaseMessage message) {
         // If using BaseMessage without copying it, the properties of the message are updated immediately when updating the feedback,
         // so the UI is not updated because the changes are not caught in the diff callback.

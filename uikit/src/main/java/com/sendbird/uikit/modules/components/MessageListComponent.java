@@ -151,7 +151,9 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      *
      * @param formSubmitButtonClickListener The callback that will run.
      * since 3.12.1
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void setFormSubmitButtonClickListener(@Nullable FormSubmitButtonClickListener formSubmitButtonClickListener) {
         this.formSubmitButtonClickListener = formSubmitButtonClickListener;
     }
@@ -239,7 +241,9 @@ public class MessageListComponent extends BaseMessageListComponent<MessageListAd
      * @param message the message that contains the form
      * @param form the form to be submitted
      * since 3.12.1
+     * @deprecated As of 3.26.0, this feature is no longer supported.
      */
+    @Deprecated
     public void onFormSubmitButtonClicked(@NonNull BaseMessage message, @NonNull MessageForm form) {
         if (formSubmitButtonClickListener != null)
             formSubmitButtonClickListener.onClicked(message, form);

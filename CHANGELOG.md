@@ -1,4 +1,8 @@
 # Changelog
+### v3.26.0 (Mar 18, 2026) with Chat SDK `v4.34.1`
+- Deprecated feedback and form related APIs.
+- Added `ChannelConfig.enableAutoscrollMessageOverflowToTop` configuration to automatically scroll to the top of a new incoming message when the message height overflows the visible screen.
+- Removed jitpack dependency.
 ### v3.25.3 (Jan 19, 2026) with Chat SDK `v4.32.4`
 - Fixed issue where files sent via Platform API failed to download due to size mismatch between server metadata and actual file size.
 ### v3.25.2 (Dec 17, 2025) with Chat SDK `v4.32.4`
