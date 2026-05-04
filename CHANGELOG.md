@@ -1,4 +1,6 @@
 # Changelog
+### v3.26.1 (May 4, 2026) with Chat SDK `v4.36.2`
+- Updated Sendbird Chat SDK to [v4.36.2](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/chat%2F4.36.2).
 ### v3.26.0 (Mar 18, 2026) with Chat SDK `v4.34.1`
 - Deprecated feedback and form related APIs.
 - Added `ChannelConfig.enableAutoscrollMessageOverflowToTop` configuration to automatically scroll to the top of a new incoming message when the message height overflows the visible screen.
