@@ -1,4 +1,7 @@
 # Changelog
+### v3.26.3 (Jul 23, 2026) with Chat SDK `v4.36.4`
+- Updated Sendbird Chat SDK to [v4.36.4](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/chat%2F4.36.4).
+- Improved the way to check if the application supports super group channels.
 ### v3.26.2 (May 28, 2026) with Chat SDK `v4.36.3`
 - Updated Sendbird Chat SDK to [v4.36.3](https://github.com/sendbird/sendbird-chat-sdk-android/releases/tag/chat%2F4.36.3).
 ### v3.26.1 (May 4, 2026) with Chat SDK `v4.36.2`
