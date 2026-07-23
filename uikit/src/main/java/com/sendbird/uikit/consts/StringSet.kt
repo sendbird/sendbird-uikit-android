@@ -113,9 +113,13 @@ object StringSet {
     // attributes list
     const val reactions = "reactions"
     const val enable_og_tag = "enable_og_tag"
+    @Deprecated("Use StringSet.super_group_channel against AppInfo.premiumFeatureList instead.")
     const val allow_super_group_channel = "allow_super_group_channel"
     const val allow_broadcast_channel = "allow_broadcast_channel"
     const val message_search_v3 = "message_search_v3"
+
+    // premium feature list
+    const val super_group_channel = "super_group_channel"
     const val ACTION_PENDING_MESSAGE_ADDED = "ACTION_PENDING_MESSAGE_ADDED"
     const val ACTION_PENDING_MESSAGE_REMOVED = "ACTION_PENDING_MESSAGE_REMOVED"
     const val ACTION_FAILED_MESSAGE_ADDED = "ACTION_FAILED_MESSAGE_ADDED"

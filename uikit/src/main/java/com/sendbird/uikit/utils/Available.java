@@ -9,9 +9,14 @@ import com.sendbird.uikit.consts.StringSet;
 
 @SuppressWarnings("unused")
 public class Available {
-    private static boolean isAvailable(@NonNull String key) {
+    private static boolean isAvailableAttribute(@NonNull String key) {
         final AppInfo appInfo = SendbirdChat.getAppInfo();
         return appInfo != null && appInfo.getAttributesInUse().contains(key);
+    }
+
+    private static boolean isAvailablePremiumFeature(@NonNull String key) {
+        final AppInfo appInfo = SendbirdChat.getAppInfo();
+        return appInfo != null && appInfo.getPremiumFeatureList().contains(key);
     }
 
     /**
@@ -21,7 +26,7 @@ public class Available {
      * since 1.2.0
      */
     public static boolean isSupportSuper() {
-        return isAvailable(StringSet.allow_super_group_channel);
+        return isAvailablePremiumFeature(StringSet.super_group_channel);
     }
 
     /**
@@ -31,7 +36,7 @@ public class Available {
      * since 1.2.0
      */
     public static boolean isSupportBroadcast() {
-        return isAvailable(StringSet.allow_broadcast_channel);
+        return isAvailableAttribute(StringSet.allow_broadcast_channel);
     }
 
     /**
@@ -41,7 +46,7 @@ public class Available {
      * since 1.2.0
      */
     public static boolean isSupportReaction() {
-        return isAvailable(StringSet.reactions);
+        return isAvailableAttribute(StringSet.reactions);
     }
 
     /**
@@ -51,7 +56,7 @@ public class Available {
      * since 1.2.0
      */
     public static boolean isSupportOgTag() {
-        return isAvailable(StringSet.enable_og_tag);
+        return isAvailableAttribute(StringSet.enable_og_tag);
     }
 
     /**
@@ -61,7 +66,7 @@ public class Available {
      * since 2.1.0
      */
     public static boolean isSupportMessageSearch() {
-        return isAvailable(StringSet.message_search_v3);
+        return isAvailableAttribute(StringSet.message_search_v3);
     }
 
     /**
